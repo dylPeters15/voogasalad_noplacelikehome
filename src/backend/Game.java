@@ -11,7 +11,7 @@ import backend.grid.Grid;
  * @author Dylan Peters
  *
  */
-public interface Game {
+public interface Game extends XMLsavable{
 
 	Time getTime();
 

@@ -13,7 +13,9 @@ import backend.unit.Unit;
  */
 public interface Cell {
 
-	Coordinate getCoordinate();
+	Grid getGrid();
+
+	Coordinate getCoordinates();
 
 	Terrain getTerrain();
 

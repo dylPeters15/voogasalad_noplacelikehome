@@ -1,18 +1,36 @@
 /**
- * 
+ *
  */
 package backend.unit.properties;
 
+import backend.XMLsavable;
+import backend.unit.Unit;
+
+import java.util.ResourceBundle;
+
 /**
- * @author Dylan Peters
- *
+ * @author Dylan Peters, Timmy Huang
  */
-public interface Ability<T> {
+public abstract class Ability<T> implements XMLsavable {
+    private final String name;
+    private final String description;
 
-	String getName();
+    Ability(ResourceBundle resourceBundle) {
+        this(resourceBundle.getString("Name"), resourceBundle.getString("Description"));
+    }
 
-	String getDescription();
+    Ability(String name, String description) {
+        this.name = name;
+        this.description = description;
+    }
 
-	void affect(T target);
+    public String getName() {
+        return name;
+    }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public abstract void affect(Unit user, T target);
 }

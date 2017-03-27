@@ -1,41 +1,64 @@
 /**
- * 
+ *
  */
 package backend.unit;
+
+import backend.XMLsavable;
+import backend.grid.Cell;
+import backend.grid.Coordinate;
+import backend.grid.Grid;
+import backend.grid.Terrain;
+import backend.unit.properties.Ability;
+import backend.unit.properties.HitPoints;
 
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Map;
-
-import backend.grid.Cell;
-import backend.grid.Coordinate;
-import backend.unit.properties.Ability;
-import backend.unit.properties.HP;
+import java.util.function.UnaryOperator;
 
 /**
- * @author Dylan Peters
- *
+ * @author Dylan Peters, Timmy Huang
  */
-public interface Unit {
+public interface Unit extends XMLsavable {
 
-	Collection<Unit> getNeighbors();
+    Cell getCurrentCell();
 
-	Map<String, Ability<Object>> getAbilities();
+    Grid getGrid();
 
-	default void moveTo(Cell cell) {
-		moveTo(cell.getCoordinate());
-	}
+    default Coordinate getCurrentLocation() {
+        return getCurrentCell().getCoordinates();
+    }
 
-	void moveTo(Coordinate coordinate);
+    default Collection<Cell> getNeighbors() {
+        return getGrid().getNeighbors(getCurrentCell());
+    }
 
-	HP getHP();
+    Map<String, Ability> getAbilities();
 
-	int movePointsTo(Coordinate other);
+    void moveTo(Cell cell);
 
-	MovementPattern getMovementPattern();
+    default double getCurrentHitChance() {
+        return getHitChance().get(getCurrentCell().getTerrain());
+    }
 
-	String getDescription();
-	
-	Path imagePath();
+    Map<Terrain, Double> getHitChance();
+
+    UnaryOperator<Double> getAttackModifier();
+
+    UnaryOperator<Double> getDefenseModifier();
+
+    default void moveTo(Coordinate coordinate) {
+        moveTo(getGrid().getCells().get(coordinate));
+    }
+
+    HitPoints getHitPoints();
+
+    int movePointsTo(Coordinate other);
+
+    MovementPattern getMovementPattern();
+
+    String getDescription();
+
+    Path imagePath();
 
 }

@@ -20,7 +20,7 @@ public interface Grid {
 	Map<List<Integer>, Cell> getCells();
 
 	default Collection<Cell> getNeighbors(Cell cell) {
-		return getNeighbors(cell.getCoordinate());
+		return getNeighbors(cell.getCoordinates());
 	}
 
 	Collection<Cell> getNeighbors(Coordinate coordinate);
