@@ -4,7 +4,6 @@
 package backend.grid;
 
 import java.util.Collection;
-import java.util.List;
 
 import backend.unit.Unit;
 
@@ -14,7 +13,7 @@ import backend.unit.Unit;
  */
 public interface Cell {
 
-	List<Integer> getCoordinate();
+	Coordinate getCoordinate();
 
 	Terrain getTerrain();
 

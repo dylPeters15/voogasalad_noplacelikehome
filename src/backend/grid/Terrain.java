@@ -8,7 +8,7 @@ package backend.grid;
  *
  */
 public interface Terrain {
-	
+
 	String getName();
-	
+
 }

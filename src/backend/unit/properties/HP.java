@@ -9,4 +9,9 @@ package backend.unit.properties;
  */
 public interface HP {
 
+	double getCurrentHP();
+
+	double getMaxHP();
+
+	void setHP(double numPoints);
 }
