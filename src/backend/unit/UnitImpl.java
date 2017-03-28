@@ -6,6 +6,7 @@ import backend.grid.Grid;
 import backend.grid.Terrain;
 import backend.unit.properties.Ability;
 import backend.unit.properties.HitPoints;
+import backend.unit.properties.MovementPoints;
 
 import java.nio.file.Path;
 import java.util.Map;
@@ -17,7 +18,7 @@ import java.util.function.UnaryOperator;
 public class UnitImpl implements Unit {
     private final String unitName;
     private final HitPoints hitPoints;
-    private final Movement movement;
+    private final MovementPoints movement;
     private final MovementPattern movePattern;
     private final Map<String, Ability> abilities;
     private final Map<Terrain, Double> terrainDefenses;
@@ -26,7 +27,7 @@ public class UnitImpl implements Unit {
 
     private Cell currentCell;
 
-    UnitImpl(double hitPoints, Movement movement, MovementPattern movePattern, Map<String, Ability> abilities, Map<Terrain, Double> terrainDefenses, String unitName) {
+    UnitImpl(double hitPoints, MovementPoints movement, MovementPattern movePattern, Map<String, Ability> abilities, Map<Terrain, Double> terrainDefenses, String unitName) {
         this.unitName = unitName;
         this.hitPoints = new HitPoints(hitPoints);
         this.movement = movement;

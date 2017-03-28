@@ -12,7 +12,6 @@ import backend.unit.properties.Ability;
 import backend.unit.properties.HitPoints;
 
 import java.nio.file.Path;
-import java.util.Collection;
 import java.util.Map;
 import java.util.function.UnaryOperator;
 
@@ -29,7 +28,7 @@ public interface Unit extends XMLsavable {
         return getCurrentCell().getCoordinates();
     }
 
-    default Collection<Cell> getNeighbors() {
+    default Map<CoordinateTuple, Cell> getNeighbors() {
         return getGrid().getNeighbors(getCurrentCell());
     }
 

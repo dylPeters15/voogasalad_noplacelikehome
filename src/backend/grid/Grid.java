@@ -4,13 +4,13 @@
 package backend.grid;
 
 import backend.Player;
-import backend.grid.boundary.BoundaryConditions;
 import javafx.util.Pair;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -23,7 +23,7 @@ public interface Grid {
 
     Map<CoordinateTuple, Cell> getCells();
 
-    default Collection<Cell> getNeighbors(Cell cell) {
+    default Map<CoordinateTuple, Cell> getNeighbors(Cell cell) {
         return getNeighbors(cell.getCoordinates());
     }
 
@@ -31,15 +31,11 @@ public interface Grid {
 
     GridBounds getRectangularBounds();
 
-    /*
-     * this should be either protected or private to prevent dynamic changing of
-     * boundary conditions (in the first sprint at least.)
-     */
     void setBoundaryConditions(BoundaryConditions boundaryConditions) throws IllegalAccessException;
 
-    Collection<Cell> getVisibleCells(Player player, Predicate<Cell> visibilityPredicate);
+    Collection<Cell> getVisibleCells(Player currentPlayer, BiPredicate<Player, Cell> visibilityPredicate);
 
-    Collection<Cell> getExploredCells(Player player, Predicate<Cell> visibilityPredicate);
+    Collection<Cell> getExploredCells(Player currentPlayer, BiPredicate<Player, Cell> visibilityPredicate);
 
     class GridBounds {
         private final List<Pair<Integer, Integer>> bounds;

@@ -15,10 +15,6 @@ public abstract class Ability<T> implements XMLsavable {
     private final String name;
     private final String description;
 
-    Ability(ResourceBundle resourceBundle) {
-        this(resourceBundle.getString("Name"), resourceBundle.getString("Description"));
-    }
-
     Ability(String name, String description) {
         this.name = name;
         this.description = description;
