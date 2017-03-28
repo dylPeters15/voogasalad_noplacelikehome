@@ -15,7 +15,7 @@ public interface Cell {
 
 	Grid getGrid();
 
-	Coordinate getCoordinates();
+	CoordinateTuple getCoordinates();
 
 	Terrain getTerrain();
 

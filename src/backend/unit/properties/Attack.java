@@ -35,7 +35,7 @@ public final class Attack extends Ability<Unit> {
     }
 
     @Override
-    public String toXML(int indents) {
+    public String toXml() {
         return null;
     }
 }

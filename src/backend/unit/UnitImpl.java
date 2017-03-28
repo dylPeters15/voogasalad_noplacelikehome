@@ -1,13 +1,11 @@
 package backend.unit;
 
 import backend.grid.Cell;
-import backend.grid.Coordinate;
+import backend.grid.CoordinateTuple;
 import backend.grid.Grid;
 import backend.grid.Terrain;
 import backend.unit.properties.Ability;
 import backend.unit.properties.HitPoints;
-import backend.unit.properties.HitPointsImpl;
-import backend.unit.properties.Movement;
 
 import java.nio.file.Path;
 import java.util.Map;
@@ -30,7 +28,7 @@ public class UnitImpl implements Unit {
 
     UnitImpl(double hitPoints, Movement movement, MovementPattern movePattern, Map<String, Ability> abilities, Map<Terrain, Double> terrainDefenses, String unitName) {
         this.unitName = unitName;
-        this.hitPoints = new HitPointsImpl(hitPoints);
+        this.hitPoints = new HitPoints(hitPoints);
         this.movement = movement;
         this.movePattern = movePattern;
         this.abilities = abilities;
@@ -79,7 +77,7 @@ public class UnitImpl implements Unit {
     }
 
     @Override
-    public int movePointsTo(Coordinate other) {
+    public int movePointsTo(CoordinateTuple other) {
         return 0;
     }
 
@@ -99,7 +97,7 @@ public class UnitImpl implements Unit {
     }
 
     @Override
-    public String toXML(int indents) {
+    public String toXml() {
         return null;
     }
 }

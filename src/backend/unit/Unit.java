@@ -5,7 +5,7 @@ package backend.unit;
 
 import backend.XMLsavable;
 import backend.grid.Cell;
-import backend.grid.Coordinate;
+import backend.grid.CoordinateTuple;
 import backend.grid.Grid;
 import backend.grid.Terrain;
 import backend.unit.properties.Ability;
@@ -25,7 +25,7 @@ public interface Unit extends XMLsavable {
 
     Grid getGrid();
 
-    default Coordinate getCurrentLocation() {
+    default CoordinateTuple getCurrentLocation() {
         return getCurrentCell().getCoordinates();
     }
 
@@ -47,13 +47,13 @@ public interface Unit extends XMLsavable {
 
     UnaryOperator<Double> getDefenseModifier();
 
-    default void moveTo(Coordinate coordinate) {
+    default void moveTo(CoordinateTuple coordinate) {
         moveTo(getGrid().getCells().get(coordinate));
     }
 
     HitPoints getHitPoints();
 
-    int movePointsTo(Coordinate other);
+    int movePointsTo(CoordinateTuple other);
 
     MovementPattern getMovementPattern();
 

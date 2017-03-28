@@ -1,26 +1,18 @@
-/**
- *
- */
 package backend.unit.properties;
 
-import backend.XMLsavable;
-
 /**
- * @author Dylan Peters
+ * @author Created by th174 on 3/27/2017.
  */
-public interface HitPoints extends XMLsavable{
-
-    double getCurrentHP();
-
-    double getMaxHP();
-
-    void setHP(double numPoints);
-
-    default void takeDamage(double numPoints) {
-        setHP(getCurrentHP() - numPoints);
+public class HitPoints extends UnitStat<Double> {
+    public HitPoints(Double initialValue) {
+        super(initialValue);
     }
 
-    default void fullHeal() {
-        setHP(getMaxHP());
+    public HitPoints(Double currentValue, Double initialValue) {
+        super(currentValue, initialValue);
+    }
+
+    public void takeDamage(double dmg) {
+        set(getCurrentValue() - dmg);
     }
 }
