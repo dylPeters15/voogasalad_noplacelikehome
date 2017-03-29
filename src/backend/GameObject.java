@@ -12,18 +12,6 @@ public class GameObject implements XMLsavable {
     private final String description;
     private final Path imgPath;
 
-    protected GameObject(Game currentGame) {
-        this("", currentGame);
-    }
-
-    protected GameObject(Path imgPath, Game currentGame) {
-        this("", imgPath, currentGame);
-    }
-
-    protected GameObject(String name, Game currentGame) {
-        this(name, "", currentGame);
-    }
-
     protected GameObject(String name, Path imgPath, Game currentGame) {
         this(name, "", imgPath, currentGame);
     }
@@ -42,7 +30,6 @@ public class GameObject implements XMLsavable {
         this.imgPath = imgPath;
         this.currentGame = currentGame;
     }
-
 
     public Game getGame() {
         return currentGame;

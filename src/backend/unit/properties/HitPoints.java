@@ -11,7 +11,7 @@ public class HitPoints extends UnitStat<Double> {
     public static final String IMG_PATH = "<3.png";
 
     public HitPoints(double initialValue, Game game) {
-        this(initialValue,initialValue,game);
+        this(initialValue, initialValue, game);
     }
 
     public HitPoints(double currentValue, double initialValue, Game game) {

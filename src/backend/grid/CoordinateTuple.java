@@ -1,9 +1,6 @@
 package backend.grid;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -35,6 +32,18 @@ public final class CoordinateTuple implements Iterable<Integer> {
 
     public int dimension() {
         return coordinates.size();
+    }
+
+    public Set<CoordinateTuple> getNeighbors() {
+        Set<CoordinateTuple> neighboringCoordinates = new HashSet<>();
+        CoordinateTuple origin = CoordinateTuple.getOrigin(this.dimension());
+        for (int i = 0; i < this.dimension(); i++) {
+            CoordinateTuple neighbor1 = origin.replace(i, -1);
+            CoordinateTuple neighbor2 = origin.replace(i, 1);
+            neighboringCoordinates.add(this.sum(neighbor1));
+            neighboringCoordinates.add(this.sum(neighbor2));
+        }
+        return neighboringCoordinates;
     }
 
     public double euclideanDistanceTo(CoordinateTuple other) {

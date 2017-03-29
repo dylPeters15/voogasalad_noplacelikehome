@@ -11,8 +11,11 @@ import java.util.Collection;
  * @author Dylan Peters
  */
 public interface Cell {
-
     CoordinateTuple getCoordinates();
+
+    default int dimension() {
+        return getCoordinates().dimension();
+    }
 
     Terrain getTerrain();
 

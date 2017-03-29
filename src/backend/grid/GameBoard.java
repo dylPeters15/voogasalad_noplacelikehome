@@ -4,6 +4,7 @@ import backend.Player;
 import backend.XMLsavable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableMap;
+import javafx.util.Pair;
 
 import java.util.*;
 import java.util.function.BiPredicate;
@@ -35,15 +36,13 @@ public class GameBoard implements Grid, XMLsavable, Iterable {
 
     @Override
     public Map<CoordinateTuple, Cell> getNeighbors(CoordinateTuple coordinate) {
-        Map<CoordinateTuple, Cell> neighbors = new HashMap<>();
-        CoordinateTuple origin = CoordinateTuple.getOrigin(coordinate.dimension());
-        for (int i = 0; i < coordinate.dimension(); i++) {
-            CoordinateTuple neighbor1 = origin.replace(i, -1);
-            CoordinateTuple neighbor2 = origin.replace(i, 1);
-            neighbors.put(neighbor1, gameBoard.get(coordinate.sum(neighbor1)));
-            neighbors.put(neighbor2, gameBoard.get(coordinate.sum(neighbor2)));
-        }
-        return neighbors;
+        return CoordinateTuple
+                .getOrigin(coordinate.dimension())
+                .getNeighbors()
+                .stream()
+                .map(e -> new Pair<>(e, gameBoard.get(coordinate.sum(e))))
+                .filter(e -> Objects.nonNull(e.getValue()))
+                .collect(Collectors.toMap(Pair::getKey, Pair::getValue));
     }
 
     @Override
@@ -61,13 +60,13 @@ public class GameBoard implements Grid, XMLsavable, Iterable {
 
     @Override
     public Collection<Cell> filterCells(Player currentPlayer, BiPredicate<Player, Cell> visibilityPredicate) {
-        return stream().filter(c -> visibilityPredicate.test(currentPlayer,c)).collect(Collectors.toList());
+        return stream().filter(c -> visibilityPredicate.test(currentPlayer, c)).collect(Collectors.toList());
     }
 
     @Override
     public Collection<Cell> getExploredCells(Player currentPlayer, BiPredicate<Player, Cell> visibilityPredicate) {
         //TODO: How do we want to keep track of explored cells?
-        return stream().filter(c -> visibilityPredicate.test(currentPlayer,c)).collect(Collectors.toList());
+        return stream().filter(c -> visibilityPredicate.test(currentPlayer, c)).collect(Collectors.toList());
     }
 
     @Override

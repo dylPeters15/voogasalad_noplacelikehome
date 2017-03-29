@@ -1,36 +1,31 @@
 /**
- * 
+ *
  */
 package backend;
 
-import java.util.Collection;
-
 import backend.grid.Grid;
+
+import java.util.List;
 
 /**
  * @author Dylan Peters
- *
  */
-public interface Game extends XMLsavable{
+public interface Game extends XMLsavable {
+    List<Player> getPlayers();
 
-	Time getTime();
+    Grid getGrid();
 
-	Collection<Player> getPlayers();
+    Player getCurrentPlayer();
 
-	Grid getGrid();
+    int getTurnNumber();
 
-	Player getCurrentPlayer();
+    void start();
 
-	int getTurnNumber();
+    void restart();
 
-	void start();
+    void quit();
 
-	void restart();
+    void save();
 
-	void quit();
-
-	void save();
-
-	void load();
-
+    void load();
 }
