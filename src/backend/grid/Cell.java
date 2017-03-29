@@ -1,28 +1,38 @@
 /**
- * 
+ *
  */
 package backend.grid;
 
-import java.util.Collection;
-
 import backend.unit.Unit;
+
+import java.util.Collection;
 
 /**
  * @author Dylan Peters
- *
  */
 public interface Cell {
 
-	Grid getGrid();
+    CoordinateTuple getCoordinates();
 
-	CoordinateTuple getCoordinates();
+    Terrain getTerrain();
 
-	Terrain getTerrain();
+    default void addOccupant(Unit unit) {
+        getOccupants().remove(unit);
+    }
 
-	/**
-	 * 
-	 * @return empty collection if there are no units
-	 */
-	Collection<Unit> getOccupyingUnits();
+    default void removeOccupant(Unit unit) {
+        getOccupants().add(unit);
+    }
 
+    default void addAllOccupants(Collection<Unit> units) {
+        getOccupants().addAll(units);
+    }
+
+    default void removeAllOccupants(Collection<Unit> units) {
+        getOccupants().removeAll(units);
+    }
+
+    void applyAbilities();
+
+    Collection<Unit> getOccupants();
 }

@@ -1,10 +1,11 @@
 package backend.unit.properties;
 
+import backend.Game;
+import backend.unit.InteractionModifier;
 import backend.unit.Unit;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.UnaryOperator;
 
 /**
  * @author Created by th174 on 3/27/2017.
@@ -12,23 +13,17 @@ import java.util.function.UnaryOperator;
 public final class Attack extends Ability<Unit> {
     private final double damage;
     private final int numHits;
-    private final List<UnaryOperator<Double>> damageModifiers;
-    private final List<UnaryOperator<Double>> accuracyModifier;
+    private final List<InteractionModifier<Double>> damageModifiers;
 
-    public Attack(String name, String description, Double damage, int numHits) {
-        this(name, description, damage, numHits, new ArrayList<>());
+    public Attack(String name, String description, String imgPath, Double damage, int numHits, Game game) {
+        this(name, description, imgPath, damage, numHits, new ArrayList<>(), game);
     }
 
-    public Attack(String name, String description, Double damage, int numHits, List<UnaryOperator<Double>> damageModifiers) {
-        this(name, description, damage, numHits, damageModifiers, new ArrayList<>());
-    }
-
-    public Attack(String name, String description, Double damage, int numHits, List<UnaryOperator<Double>> damageModifiers, List<UnaryOperator<Double>> accuracyModifier) {
-        super(name, description);
+    public Attack(String name, String description, String imgPath, Double damage, int numHits, List<InteractionModifier<Double>> damageModifiers, Game game) {
+        super(name, description, imgPath, game);
         this.damage = damage;
         this.numHits = numHits;
         this.damageModifiers = damageModifiers;
-        this.accuracyModifier = accuracyModifier;
     }
 
     public int getNumHits() {
@@ -39,35 +34,16 @@ public final class Attack extends Ability<Unit> {
         return damage;
     }
 
+    public double getDamage(Unit user, Unit target) {
+        return InteractionModifier.modifyAll(damageModifiers, getBaseDamage(), user, target, getGame());
+    }
+
     @Override
     public void affect(Unit user, Unit target) {
         for (int i = 0; i < getNumHits(); i++) {
-            if (Math.random() < getHitChance(target.getCurrentHitChance())) {
-                target.getHitPoints().takeDamage(target.getDefenseModifier().apply(user.getAttackModifier().apply(getDamage())));
-            }
+            double attackDamage = user.getAttackModifier().modify(getDamage(user, target), user, target, getGame());
+            double totalDamage = target.getDefenseModifier().modify(attackDamage, user, target, getGame());
+            target.getHitPoints().takeDamage(totalDamage);
         }
-    }
-
-    public double getHitChance(double baseChance) {
-        for (UnaryOperator<Double> op : accuracyModifier) {
-            baseChance = op.apply(baseChance);
-        }
-        return baseChance;
-    }
-
-    public double getDamage() {
-        return getDamage(getBaseDamage());
-    }
-
-    public double getDamage(double baseDamage) {
-        for (UnaryOperator<Double> op : damageModifiers) {
-            baseDamage = op.apply(baseDamage);
-        }
-        return baseDamage;
-    }
-
-    @Override
-    public String toXml() {
-        return null;
     }
 }

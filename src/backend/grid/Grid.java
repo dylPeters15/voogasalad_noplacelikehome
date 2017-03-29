@@ -33,7 +33,7 @@ public interface Grid {
 
     void setBoundaryConditions(BoundaryConditions boundaryConditions) throws IllegalAccessException;
 
-    Collection<Cell> getVisibleCells(Player currentPlayer, BiPredicate<Player, Cell> visibilityPredicate);
+    Collection<Cell> filterCells(Player currentPlayer, BiPredicate<Player, Cell> visibilityPredicate);
 
     Collection<Cell> getExploredCells(Player currentPlayer, BiPredicate<Player, Cell> visibilityPredicate);
 

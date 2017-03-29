@@ -8,7 +8,5 @@ package backend;
  *
  */
 public interface Model {
-
 	Game getGame();
-
 }

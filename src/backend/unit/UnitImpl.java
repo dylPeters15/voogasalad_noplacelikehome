@@ -1,50 +1,38 @@
 package backend.unit;
 
+import backend.Game;
+import backend.GameObject;
 import backend.grid.Cell;
 import backend.grid.CoordinateTuple;
-import backend.grid.Grid;
-import backend.grid.Terrain;
 import backend.unit.properties.Ability;
 import backend.unit.properties.HitPoints;
-import backend.unit.properties.MovementPoints;
+import backend.unit.properties.MovePoints;
 
-import java.nio.file.Path;
 import java.util.Map;
-import java.util.function.UnaryOperator;
 
 /**
  * @author Created by th174 on 3/27/2017.
  */
-public class UnitImpl implements Unit {
-    private final String unitName;
+public class UnitImpl extends GameObject implements Unit {
     private final HitPoints hitPoints;
-    private final MovementPoints movement;
+    private final MovePoints movePoints;
     private final MovementPattern movePattern;
     private final Map<String, Ability> abilities;
-    private final Map<Terrain, Double> terrainDefenses;
-    private final UnaryOperator<Double> attackDamageModifier = baseDamage -> baseDamage;
-    private final UnaryOperator<Double> defenseDamageModifier = baseDamage -> baseDamage;
 
     private Cell currentCell;
 
-    UnitImpl(double hitPoints, MovementPoints movement, MovementPattern movePattern, Map<String, Ability> abilities, Map<Terrain, Double> terrainDefenses, String unitName) {
-        this.unitName = unitName;
-        this.hitPoints = new HitPoints(hitPoints);
-        this.movement = movement;
+    //TODO: Make actually usable constructor
+    public UnitImpl(String unitName, double hitPoints, int movePoints, MovementPattern movePattern, Map<String, Ability> abilities, String unitDescription, String imgPath, Game game) {
+        super(unitName, unitDescription, imgPath, game);
+        this.hitPoints = new HitPoints(hitPoints, game);
+        this.movePoints = new MovePoints(movePoints, game);
         this.movePattern = movePattern;
         this.abilities = abilities;
-        this.terrainDefenses = terrainDefenses;
     }
-
 
     @Override
     public Cell getCurrentCell() {
         return currentCell;
-    }
-
-    @Override
-    public Grid getGrid() {
-        return currentCell.getGrid();
     }
 
     @Override
@@ -53,18 +41,15 @@ public class UnitImpl implements Unit {
     }
 
     @Override
-    public Map<Terrain, Double> getHitChance() {
-        return null;
+    public InteractionModifier<Double> getAttackModifier() {
+        //TODO
+        return InteractionModifier.NO_CHANGE;
     }
 
     @Override
-    public UnaryOperator<Double> getAttackModifier() {
-        return attackDamageModifier;
-    }
-
-    @Override
-    public UnaryOperator<Double> getDefenseModifier() {
-        return defenseDamageModifier;
+    public InteractionModifier<Double> getDefenseModifier() {
+        //TODO
+        return InteractionModifier.NO_CHANGE;
     }
 
     @Override
@@ -78,27 +63,17 @@ public class UnitImpl implements Unit {
     }
 
     @Override
+    public MovePoints getMovePoints() {
+        return movePoints;
+    }
+
+    @Override
     public int movePointsTo(CoordinateTuple other) {
-        return 0;
+        throw new RuntimeException("Not Implemented Yet");
     }
 
     @Override
     public MovementPattern getMovementPattern() {
-        return null;
-    }
-
-    @Override
-    public String getDescription() {
-        return null;
-    }
-
-    @Override
-    public Path imagePath() {
-        return null;
-    }
-
-    @Override
-    public String toXml() {
-        return null;
+        return movePattern;
     }
 }

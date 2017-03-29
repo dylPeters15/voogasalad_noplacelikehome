@@ -3,29 +3,17 @@
  */
 package backend.unit.properties;
 
-import backend.XMLsavable;
+import backend.Game;
+import backend.GameObject;
 import backend.unit.Unit;
-
-import java.util.ResourceBundle;
 
 /**
  * @author Dylan Peters, Timmy Huang
  */
-public abstract class Ability<T> implements XMLsavable {
-    private final String name;
-    private final String description;
+public abstract class Ability<T> extends GameObject {
 
-    Ability(String name, String description) {
-        this.name = name;
-        this.description = description;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getDescription() {
-        return description;
+    public Ability(String name, String description, String imgPath, Game game) {
+        super(name, description, imgPath, game);
     }
 
     public abstract void affect(Unit user, T target);
