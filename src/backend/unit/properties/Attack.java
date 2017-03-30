@@ -1,12 +1,9 @@
 package backend.unit.properties;
 
-import backend.GameObjectImpl;
 import backend.game_engine.GameState;
-import backend.grid.CoordinateTuple;
 import backend.unit.Unit;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -14,27 +11,25 @@ import java.util.List;
  *
  * @author Created by th174 on 3/27/2017.
  */
-public final class Attack extends GameObjectImpl implements ActiveAbility<Unit> {
-    private final Collection<CoordinateTuple> attackPattern;
+public final class Attack implements ActiveAbility.AbilityEffect<Unit> {
+    private final GridPattern attackPattern;
     private final double damage;
     private final int numHits;
     private final List<InteractionModifier<Double>> damageModifiers;
 
-    public Attack(String name, String description, String imgPath, Double damage, int numHits, GameState game) {
-        this(name, description, imgPath, damage, numHits, CoordinateTuple.getOrigin(game.getGrid().dimension()).getNeighbors());
+    public Attack(double damage, int numHits, GameState game) {
+        this(damage, numHits, game, Collections.EMPTY_LIST);
     }
 
-    public Attack(String name, String description, String imgPath, Double damage, int numHits, Collection<CoordinateTuple> attackPattern) {
-        this(name, description, imgPath, damage, numHits, attackPattern, new ArrayList<>());
+    public Attack(double damage, int numHits, GridPattern attackPattern) {
+        this(damage, numHits, attackPattern, Collections.EMPTY_LIST);
     }
 
-    //Uses CoordinateTuple.getNeighbors() as default attack pattern
-    public Attack(String name, String description, String imgPath, Double damage, int numHits, GameState game, List<InteractionModifier<Double>> damageModifiers) {
-        this(name, description, imgPath, damage, numHits, CoordinateTuple.getOrigin(game.getGrid().dimension()).getNeighbors(), damageModifiers);
+    public Attack(double damage, int numHits, GameState game, List<InteractionModifier<Double>> damageModifiers) {
+        this(damage, numHits, GridPattern.getNeighborPattern(game.getGrid().dimension()), damageModifiers);
     }
 
-    public Attack(String name, String description, String imgPath, Double damage, int numHits, Collection<CoordinateTuple> attackPattern, List<InteractionModifier<Double>> damageModifiers) {
-        super(name, description, imgPath, null);
+    public Attack(double damage, int numHits, GridPattern attackPattern, List<InteractionModifier<Double>> damageModifiers) {
         this.damage = damage;
         this.numHits = numHits;
         this.damageModifiers = damageModifiers;
@@ -53,16 +48,17 @@ public final class Attack extends GameObjectImpl implements ActiveAbility<Unit> 
         return InteractionModifier.modifyAll(damageModifiers, getBaseDamage(), user, target, game);
     }
 
-    public Collection<CoordinateTuple> getAttackPattern() {
+    public GridPattern getAttackPattern() {
         return attackPattern;
     }
 
     @Override
-    public void affect(Unit user, Unit target, GameState game) {
+    public void useAbility(Unit user, Unit target, GameState game) {
         for (int i = 0; i < getNumHits(); i++) {
-            double attackDamage = InteractionModifier.modifyAll(user.getAttackModifier(), getDamage(user, target, game), user, target, game);
-            double totalDamage = InteractionModifier.modifyAll(target.getDefenseModifier(), attackDamage, user, target, game);
+            double attackDamage = InteractionModifier.modifyAll(user.getOffensiveModifiers(), getDamage(user, target, game), user, target, game);
+            double totalDamage = InteractionModifier.modifyAll(target.getDefenseModifiers(), attackDamage, user, target, game);
             target.getHitPoints().takeDamage(totalDamage);
         }
     }
 }
+

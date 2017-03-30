@@ -5,15 +5,20 @@ package backend.cell;
 
 import backend.grid.CoordinateTuple;
 import backend.unit.Unit;
+import com.sun.istack.internal.NotNull;
 
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * Dylan
+ *
  * @author Dylan Peters
  */
 public interface Cell {
     CoordinateTuple getCoordinates();
+
+    Map<CoordinateTuple, Cell> getNeighbors();
 
     default int dimension() {
         return getCoordinates().dimension();
@@ -39,5 +44,6 @@ public interface Cell {
 
     void applyAbilities();
 
+    @NotNull
     Collection<Unit> getOccupants();
 }

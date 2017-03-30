@@ -1,10 +1,11 @@
 package backend.unit.properties;
 
-import backend.game_engine.GameState;
 import backend.GameObjectImpl;
+import backend.game_engine.GameState;
 
 /**
  * Timmy
+ *
  * @author Created by th174 on 3/28/2017.
  */
 public class UnitStat<T> extends GameObjectImpl {
@@ -35,5 +36,9 @@ public class UnitStat<T> extends GameObjectImpl {
 
     public void resetValue() {
         set(getInitialValue());
+    }
+
+    public boolean isFull() {
+        return getCurrentValue().equals(getInitialValue());
     }
 }

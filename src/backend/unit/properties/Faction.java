@@ -17,7 +17,7 @@ public class Faction extends GameObjectImpl {
     private Map<String, Unit> units;
 
     public Faction(String name, String description, String imgPath, Unit... units) {
-        super(name, description, imgPath, null);
+        super(name, description, imgPath);
         this.units = new HashMap<>();
         this.units = Arrays.stream(units).collect(Collectors.toMap(Unit::getName, u -> u));
     }

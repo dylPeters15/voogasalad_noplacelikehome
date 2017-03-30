@@ -1,7 +1,7 @@
 package backend.cell;
 
-import backend.game_engine.GameState;
 import backend.GameObjectImpl;
+import backend.game_engine.GameState;
 import backend.grid.CoordinateTuple;
 import backend.unit.Unit;
 
@@ -9,9 +9,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
 
 /**
  * Dylan
+ *
  * @author Created by th174 on 3/28/2017.
  */
 public class CellImpl extends GameObjectImpl implements Cell {
@@ -39,6 +41,11 @@ public class CellImpl extends GameObjectImpl implements Cell {
     @Override
     public CoordinateTuple getCoordinates() {
         return coordinates;
+    }
+
+    @Override
+    public Map<CoordinateTuple, Cell> getNeighbors() {
+        return getGame().getGrid().getNeighbors(this);
     }
 
     @Override

@@ -13,4 +13,8 @@ public interface GameObject extends XMLsavable {
     String getDescription();
 
     Path getImgPath();
+
+    boolean isVisible();
+
+    void setVisible(boolean visible);
 }

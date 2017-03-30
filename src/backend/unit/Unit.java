@@ -8,6 +8,7 @@ import backend.game_engine.GameState;
 import backend.game_engine.Player;
 import backend.grid.CoordinateTuple;
 import backend.unit.properties.*;
+import javafx.util.Pair;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -17,40 +18,93 @@ import java.util.stream.Collectors;
  *
  * @author Created by th174 on 3/27/2017.
  */
-public class Unit extends GameObjectImpl {
+public class Unit extends GameObjectImpl implements GameObject {
     private final HitPoints hitPoints;
     private final MovePoints movePoints;
-    private final MovementPattern movePattern;
+    private final GridPattern movePattern;
     private final Map<String, ActiveAbility<GameObject>> activeAbilities;
     private final Map<String, PassiveAbility> passiveAbilties;
+    private final List<OffensiveModifier> offensiveModifiers;
+    private final List<DefensiveModifier> defensiveModifiers;
     private final Map<Terrain, Integer> moveCosts;
     private final Faction faction;
 
     private Player ownedBy;
     private Cell currentCell;
 
-    public Unit(String unitName, double hitPoints, int movePoints, Faction faction, MovementPattern movePattern, Map<Terrain, Integer> moveCosts, Collection<ActiveAbility> activeAbilities, Collection<PassiveAbility> passiveAbilties, String unitDescription, String imgPath, GameState game) {
+    public Unit(String unitName, double hitPoints, int movePoints, Faction faction, String unitDescription, String imgPath, GameState game) {
+        this(unitName, hitPoints, movePoints, faction, Collections.EMPTY_MAP, unitDescription, imgPath, game);
+    }
+
+    public Unit(String unitName, double hitPoints, int movePoints, Faction faction, Map<Terrain, Integer> moveCosts, String unitDescription, String imgPath, GameState game) {
+        this(unitName, hitPoints, movePoints, faction, GridPattern.getNeighborPattern(game.getGrid().dimension()), moveCosts, Collections.EMPTY_SET, Collections.EMPTY_SET, Collections.EMPTY_LIST, Collections.EMPTY_LIST, unitDescription, imgPath, game);
+    }
+
+    public Unit(String unitName, double hitPoints, int movePoints, Faction faction, GridPattern movePattern, Map<Terrain, Integer> moveCosts, Collection<ActiveAbility<GameObject>> activeAbilities, Collection<PassiveAbility> passiveAbilties, Collection<OffensiveModifier> offensiveModifiers, Collection<DefensiveModifier> defensiveModifiers, String unitDescription, String imgPath, GameState game) {
         super(unitName, unitDescription, imgPath, game);
         this.faction = faction;
-        this.moveCosts = moveCosts;
+        this.moveCosts = new HashMap<>(moveCosts);
         this.hitPoints = new HitPoints(hitPoints, game);
         this.movePoints = new MovePoints(movePoints, game);
         this.movePattern = movePattern;
         this.passiveAbilties = passiveAbilties.stream().collect(Collectors.toMap(PassiveAbility::getName, a -> a));
         this.activeAbilities = activeAbilities.stream().collect(Collectors.toMap(ActiveAbility::getName, a -> a));
+        this.offensiveModifiers = new ArrayList<>(offensiveModifiers);
+        this.defensiveModifiers = new ArrayList<>(defensiveModifiers);
+    }
+
+    public void moveTo(Cell cell) {
+        movePoints.useMovePoints(moveCosts.get(cell.getTerrain()));
+        currentCell = cell;
+        triggerPassives(PassiveAbility.TriggerEvent.ON_MOVE);
+    }
+
+    public void startTurn() {
+        triggerPassives(PassiveAbility.TriggerEvent.ON_TURN_START);
+    }
+
+    public void endTurn() {
+        triggerPassives(PassiveAbility.TriggerEvent.ON_TURN_END);
+        movePoints.resetValue();
+    }
+
+    public void useActiveAbility(String activeAbilityName, GameObject target) {
+        useActiveAbility(activeAbilities.get(activeAbilityName), target);
+    }
+
+    public void useActiveAbility(ActiveAbility<GameObject> activeAbility, GameObject target) {
+        activeAbility.affect(this, target, getGame());
+        triggerPassives(PassiveAbility.TriggerEvent.ON_ACTION);
+    }
+
+    private void triggerPassives(PassiveAbility.TriggerEvent event) {
+        passiveAbilties.values().forEach(e -> e.affect(this, event, getGame()));
+    }
+
+    public Collection<Cell> getMoveOptions() {
+        return movePattern.getLegalMoves().stream()
+                .map(e -> getGame().getGrid().get(e.sum(this.getLocation())))
+                .filter(Objects::nonNull)
+                .filter(e -> getTerrainMoveCost(e.getTerrain()) < movePoints.getCurrentValue()).collect(Collectors.toSet());
     }
 
     public Cell getCurrentCell() {
         return currentCell;
     }
 
-    public CoordinateTuple getLocation() {
-        return currentCell.getCoordinates();
+    public Map<CoordinateTuple, Collection<Unit>> getNeighboringUnits() {
+        return currentCell.getNeighbors().entrySet().stream()
+                .map(e -> new Pair<>(e.getKey(), e.getValue().getOccupants()))
+                .filter(e -> !e.getValue().isEmpty())
+                .collect(Collectors.toMap(Pair::getKey, Pair::getValue));
     }
 
-    public void applyPassives() {
-        movePoints.resetValue();
-        passiveAbilties.values().forEach(e -> e.activate(this, getGame()));
+    public Map<CoordinateTuple, Cell> getNeighboringCells() {
+        return currentCell.getNeighbors();
+    }
+
+    public CoordinateTuple getLocation() {
+        return currentCell.getCoordinates();
     }
 
     public Faction getFaction() {
@@ -65,16 +119,8 @@ public class Unit extends GameObjectImpl {
         ownedBy = p;
     }
 
-    public ActiveAbility getAbilityByName(String s) {
+    public ActiveAbility<GameObject> getAbilityByName(String s) {
         return activeAbilities.get(s);
-    }
-
-    public void useActiveAbility(String activeAbilityName, GameObject target) {
-        useActiveAbility(activeAbilities.get(activeAbilityName), target);
-    }
-
-    public void useActiveAbility(ActiveAbility<GameObject> activeAbility, GameObject target) {
-        activeAbility.affect(this, target, getGame());
     }
 
     public Collection<ActiveAbility<GameObject>> getActives() {
@@ -85,30 +131,16 @@ public class Unit extends GameObjectImpl {
         return passiveAbilties.values();
     }
 
-    public List<InteractionModifier<Double>> getAttackModifier() {
-        //TODO
-        return Collections.singletonList(InteractionModifier.NO_CHANGE);
+    public List<OffensiveModifier> getOffensiveModifiers() {
+        return offensiveModifiers;
     }
 
-    public List<InteractionModifier<Double>> getDefenseModifier() {
-        //TODO
-        return Collections.singletonList(InteractionModifier.NO_CHANGE);
+    public List<DefensiveModifier> getDefenseModifiers() {
+        return defensiveModifiers;
     }
 
-    public void moveTo(Cell cell) {
-        movePoints.useMovePoints(moveCosts.get(cell.getTerrain()));
-        currentCell = cell;
-    }
-
-    public int getMoveCost(Terrain terrain) {
-        return moveCosts.get(terrain);
-    }
-
-    public Collection<Cell> getMoveOptions() {
-        return movePattern.getLegalMoves().stream()
-                .map(e -> getGame().getGrid().get(e.sum(this.getLocation())))
-                .filter(Objects::nonNull)
-                .filter(e -> getMoveCost(e.getTerrain()) < movePoints.getCurrentValue()).collect(Collectors.toSet());
+    public int getTerrainMoveCost(Terrain terrain) {
+        return moveCosts.getOrDefault(terrain, terrain.getDefaultMoveCost());
     }
 
     public HitPoints getHitPoints() {
@@ -123,7 +155,7 @@ public class Unit extends GameObjectImpl {
         throw new RuntimeException("Not Implemented Yet");
     }
 
-    public MovementPattern getMovementPattern() {
+    public GridPattern getMovementPattern() {
         return movePattern;
     }
 }

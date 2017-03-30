@@ -1,20 +1,21 @@
 package backend;
 
+import backend.game_engine.GameState;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import backend.game_engine.GameState;
-import backend.io.XMLsavable;
-
 /**
  * Alex
+ *
  * @author Created by th174 on 3/28/2017.
  */
-public class GameObjectImpl implements XMLsavable {
+public class GameObjectImpl implements GameObject {
     private final GameState currentGame;
     private final String name;
     private final String description;
     private final Path imgPath;
+    private boolean isVisible;
 
     public GameObjectImpl(String name, Path imgPath, GameState currentGame) {
         this(name, "", imgPath, currentGame);
@@ -22,6 +23,14 @@ public class GameObjectImpl implements XMLsavable {
 
     public GameObjectImpl(String name, String imgPath, GameState currentGame) {
         this(name, "", imgPath, currentGame);
+    }
+
+    public GameObjectImpl(String name, String description, String imgPath) {
+        this(name, description, imgPath, null);
+    }
+
+    public GameObjectImpl(String name, String description, Path imgPath) {
+        this(name, description, imgPath, null);
     }
 
     public GameObjectImpl(String name, String description, String imgPath, GameState currentGame) {
@@ -49,6 +58,16 @@ public class GameObjectImpl implements XMLsavable {
 
     public Path getImgPath() {
         return imgPath;
+    }
+
+    @Override
+    public boolean isVisible() {
+        return isVisible;
+    }
+
+    @Override
+    public void setVisible(boolean isVisible) {
+        this.isVisible = isVisible;
     }
 
     @Override
