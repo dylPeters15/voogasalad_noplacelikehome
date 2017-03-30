@@ -55,4 +55,6 @@ public interface Grid {
             return bounds.get(i).getValue();
         }
     }
+    
+    public void setGridSize(int x, int y);
 }

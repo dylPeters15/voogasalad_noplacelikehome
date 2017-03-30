@@ -21,9 +21,10 @@ public class GameBoard implements Grid, XMLsavable, Iterable {
     private BoundaryConditions currentBoundsMode;
 
     //TODO: Actual constructor
-    private GameBoard() {
+    public GameBoard(int x, int y) {
         gameBoard = FXCollections.observableHashMap();
         currentBoundsMode = BoundaryConditions.FINITEBOUNDS;
+        setGridSize(x,y);
     }
 
     @Override
@@ -78,4 +79,10 @@ public class GameBoard implements Grid, XMLsavable, Iterable {
     public String toXml() {
         return null;
     }
+
+	@Override
+	public void setGridSize(int x, int y) {
+		// TODO Auto-generated method stub
+		
+	}
 }
