@@ -8,10 +8,7 @@ import backend.grid.CoordinateTuple;
 import backend.grid.Terrain;
 import backend.unit.properties.*;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -42,6 +39,15 @@ public class Unit extends GameObject {
 
     public Cell getCurrentCell() {
         return currentCell;
+    }
+
+    public CoordinateTuple getLocation() {
+        return currentCell.getCoordinates();
+    }
+
+    public void applyPassives() {
+        movePoints.resetValue();
+        passiveAbilties.values().forEach(e -> e.activate(this, getGame()));
     }
 
     public Faction getFaction() {
@@ -83,8 +89,15 @@ public class Unit extends GameObject {
         currentCell = cell;
     }
 
-    public Collection<Cell> getMoveOptions(){
-        //TODO:
+    public int getMoveCost(Terrain terrain) {
+        return moveCosts.get(terrain);
+    }
+
+    public Collection<Cell> getMoveOptions() {
+        return movePattern.getLegalMoves().stream()
+                .map(e -> getGame().getGrid().get(e.sum(this.getLocation())))
+                .filter(Objects::nonNull)
+                .filter(e -> getMoveCost(e.getTerrain()) < movePoints.getCurrentValue()).collect(Collectors.toSet());
     }
 
     public HitPoints getHitPoints() {
