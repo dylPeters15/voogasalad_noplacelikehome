@@ -1,0 +1,8 @@
+<Title>Tic Tac Toe</Title>
+<Description>Tic Tac Toe is a turn-based strategy game in which two users drop Xs or Os, depending on which they are assigned, and attempt to get three units in a row, while preventing the other user from getting three in a row. A perfectly played game by both players will always result in a tie.</Description>
+<MaxNumUnits>5</MaxNumUnits>
+<WinConditions>
+	<!--
+      The Predicates written in Groovy will be saved here.
+      -->
+</WinConditions>
