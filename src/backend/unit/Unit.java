@@ -24,8 +24,8 @@ public class Unit extends GameObjectImpl implements GameObject {
     private final GridPattern movePattern;
     private final Map<String, ActiveAbility<GameObject>> activeAbilities;
     private final Map<String, PassiveAbility> passiveAbilties;
-    private final List<OffensiveModifier> offensiveModifiers;
-    private final List<DefensiveModifier> defensiveModifiers;
+    private final List<InteractionModifier<Double>> offensiveModifiers;
+    private final List<InteractionModifier<Double>> defensiveModifiers;
     private final Map<Terrain, Integer> moveCosts;
     private final Faction faction;
 
@@ -40,7 +40,7 @@ public class Unit extends GameObjectImpl implements GameObject {
         this(unitName, hitPoints, movePoints, faction, GridPattern.getNeighborPattern(game.getGrid().dimension()), moveCosts, Collections.EMPTY_SET, Collections.EMPTY_SET, Collections.EMPTY_LIST, Collections.EMPTY_LIST, unitDescription, imgPath, game);
     }
 
-    public Unit(String unitName, double hitPoints, int movePoints, Faction faction, GridPattern movePattern, Map<Terrain, Integer> moveCosts, Collection<ActiveAbility<GameObject>> activeAbilities, Collection<PassiveAbility> passiveAbilties, Collection<OffensiveModifier> offensiveModifiers, Collection<DefensiveModifier> defensiveModifiers, String unitDescription, String imgPath, GameState game) {
+    public Unit(String unitName, double hitPoints, int movePoints, Faction faction, GridPattern movePattern, Map<Terrain, Integer> moveCosts, Collection<ActiveAbility<GameObject>> activeAbilities, Collection<PassiveAbility> passiveAbilties, Collection<InteractionModifier> offensiveModifiers, Collection<InteractionModifier> defensiveModifiers, String unitDescription, String imgPath, GameState game) {
         super(unitName, unitDescription, imgPath, game);
         this.faction = faction;
         this.moveCosts = new HashMap<>(moveCosts);
@@ -93,10 +93,12 @@ public class Unit extends GameObjectImpl implements GameObject {
     }
 
     public Map<CoordinateTuple, Collection<Unit>> getNeighboringUnits() {
-        return currentCell.getNeighbors().entrySet().stream()
+        Map<CoordinateTuple, Collection<Unit>> neighbors = currentCell.getNeighbors().entrySet().stream()
                 .map(e -> new Pair<>(e.getKey(), e.getValue().getOccupants()))
                 .filter(e -> !e.getValue().isEmpty())
                 .collect(Collectors.toMap(Pair::getKey, Pair::getValue));
+        neighbors.put(CoordinateTuple.getOrigin(currentCell.dimension()), currentCell.getOccupants().stream().filter(e -> !equals(e)).collect(Collectors.toSet()));
+        return neighbors;
     }
 
     public Map<CoordinateTuple, Cell> getNeighboringCells() {
@@ -131,12 +133,20 @@ public class Unit extends GameObjectImpl implements GameObject {
         return passiveAbilties.values();
     }
 
-    public List<OffensiveModifier> getOffensiveModifiers() {
+    public List<InteractionModifier<Double>> getOffenseModifiers() {
         return offensiveModifiers;
     }
 
-    public List<DefensiveModifier> getDefenseModifiers() {
+    public void addOffenseModifier(InteractionModifier<Double> offenseModifier) {
+        offensiveModifiers.add(offenseModifier);
+    }
+
+    public List<InteractionModifier<Double>> getDefenseModifiers() {
         return defensiveModifiers;
+    }
+
+    public void addDefenseModifier(InteractionModifier<Double> defensiveModifier) {
+        defensiveModifiers.add(defensiveModifier);
     }
 
     public int getTerrainMoveCost(Terrain terrain) {
