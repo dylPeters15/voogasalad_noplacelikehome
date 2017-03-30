@@ -31,7 +31,7 @@ public class CellImpl extends GameObjectImpl implements Cell {
     }
 
     public CellImpl(CoordinateTuple coordinates, Terrain terrain, Collection<CellAbility> abilities, Path imgPath, GameState game) {
-        super("Cell@" + coordinates.toString(), imgPath, game);
+        super(terrain.getName() + "@" + coordinates.toString(), imgPath, game);
         this.coordinates = coordinates;
         this.terrain = terrain;
         this.abilities = abilities;
