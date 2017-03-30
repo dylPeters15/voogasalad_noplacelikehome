@@ -2,7 +2,7 @@ package backend.game_engine;
 
 import backend.cell.Terrain;
 import backend.io.XMLsavable;
-import backend.unit.Unit;
+import backend.unit.UnitInstance;
 
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
@@ -27,7 +27,7 @@ public interface GameEngine extends XMLsavable {
 
     void load();
 
-    void newUnit(Unit newUnit);
+    void newUnit(UnitInstance newUnit);
 
     void newTerrain(Terrain terrain);
 
