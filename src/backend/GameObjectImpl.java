@@ -6,7 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
- * Alex
+ * Timmy
  *
  * @author Created by th174 on 3/28/2017.
  */
@@ -72,6 +72,7 @@ public class GameObjectImpl implements GameObject {
 
     @Override
     public String toXml() {
+        //TODO: Make Tavo XStream this shit
         throw new RuntimeException("Not implemented yet");
     }
 }
