@@ -3,8 +3,8 @@
  */
 package backend.cell;
 
-import backend.game_engine.GameEngine;
-import backend.game_engine.GameObject;
+import backend.game_engine.GameState;
+import backend.GameObjectImpl;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -13,7 +13,7 @@ import java.nio.file.Paths;
  * Dylan
  * @author Dylan Peters, Timmy Huang
  */
-public class Terrain extends GameObject {
+public class Terrain extends GameObjectImpl {
     public static final Terrain NONE = new Terrain("None", "Literally nothing", "black_void_of_the_abyss.png");
     public static final Terrain FLAT = new Terrain("Flat", "Open, flat, land that offers little defensive cover, but allows for easy movement.", "grassy_plain.png");
     public static final Terrain FOREST = new Terrain("Forest", "Thick forest that offers plenty of cover, but makes navigating difficult.", "forest.png");
@@ -29,11 +29,11 @@ public class Terrain extends GameObject {
         super(name, description, defaultImgPath, null);
     }
 
-    protected Terrain(String name, String description, String defaultImgPath, GameEngine game) {
+    protected Terrain(String name, String description, String defaultImgPath, GameState game) {
         super(name, description, defaultImgPath, game);
     }
 
-    protected Terrain(String name, String description, Path defaultImgPath, GameEngine game) {
+    protected Terrain(String name, String description, Path defaultImgPath, GameState game) {
         super(name, description, defaultImgPath, game);
     }
 

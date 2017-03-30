@@ -1,9 +1,10 @@
 package backend.unit;
 
+import backend.GameObject;
+import backend.GameObjectImpl;
 import backend.cell.Cell;
 import backend.cell.Terrain;
-import backend.game_engine.GameEngine;
-import backend.game_engine.GameObject;
+import backend.game_engine.GameState;
 import backend.game_engine.Player;
 import backend.grid.CoordinateTuple;
 import backend.unit.properties.*;
@@ -13,13 +14,14 @@ import java.util.stream.Collectors;
 
 /**
  * Timmy
+ *
  * @author Created by th174 on 3/27/2017.
  */
-public class Unit extends GameObject {
+public class Unit extends GameObjectImpl {
     private final HitPoints hitPoints;
     private final MovePoints movePoints;
     private final MovementPattern movePattern;
-    private final Map<String, ActiveAbility> activeAbilities;
+    private final Map<String, ActiveAbility<GameObject>> activeAbilities;
     private final Map<String, PassiveAbility> passiveAbilties;
     private final Map<Terrain, Integer> moveCosts;
     private final Faction faction;
@@ -27,7 +29,7 @@ public class Unit extends GameObject {
     private Player ownedBy;
     private Cell currentCell;
 
-    public Unit(String unitName, double hitPoints, int movePoints, Faction faction, MovementPattern movePattern, Map<Terrain, Integer> moveCosts, Collection<ActiveAbility> activeAbilities, Collection<PassiveAbility> passiveAbilties, String unitDescription, String imgPath, GameEngine game) {
+    public Unit(String unitName, double hitPoints, int movePoints, Faction faction, MovementPattern movePattern, Map<Terrain, Integer> moveCosts, Collection<ActiveAbility> activeAbilities, Collection<PassiveAbility> passiveAbilties, String unitDescription, String imgPath, GameState game) {
         super(unitName, unitDescription, imgPath, game);
         this.faction = faction;
         this.moveCosts = moveCosts;
@@ -67,7 +69,15 @@ public class Unit extends GameObject {
         return activeAbilities.get(s);
     }
 
-    public Collection<ActiveAbility> getActives() {
+    public void useActiveAbility(String activeAbilityName, GameObject target) {
+        useActiveAbility(activeAbilities.get(activeAbilityName), target);
+    }
+
+    public void useActiveAbility(ActiveAbility<GameObject> activeAbility, GameObject target) {
+        activeAbility.affect(this, target, getGame());
+    }
+
+    public Collection<ActiveAbility<GameObject>> getActives() {
         return activeAbilities.values();
     }
 

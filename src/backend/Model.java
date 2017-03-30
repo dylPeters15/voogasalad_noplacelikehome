@@ -1,6 +1,6 @@
 package backend;
 
-import backend.game_engine.GameEngine;
+import backend.game_engine.GameState;
 
 /**
  * Noah
@@ -8,10 +8,10 @@ import backend.game_engine.GameEngine;
  */
 public interface Model {
 	
-	GameEngine getGame();
+	GameState getGame();
 
-	void editGame(GameEngine gameToEdit);
+	void editGame(GameState gameToEdit);
 
-	void loadGame(GameEngine gameToLoad);
+	void loadGame(GameState gameToLoad);
 	
 }

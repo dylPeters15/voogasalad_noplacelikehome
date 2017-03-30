@@ -1,21 +1,21 @@
 package backend.unit.properties;
 
-import backend.game_engine.GameEngine;
-import backend.game_engine.GameObject;
+import backend.game_engine.GameState;
+import backend.GameObjectImpl;
 
 /**
  * Timmy
  * @author Created by th174 on 3/28/2017.
  */
-public class UnitStat<T> extends GameObject {
+public class UnitStat<T> extends GameObjectImpl {
     private final T initialValue;
     private T currentValue;
 
-    public UnitStat(String name, T initialValue, String description, String imgPath, GameEngine game) {
+    public UnitStat(String name, T initialValue, String description, String imgPath, GameState game) {
         this(name, initialValue, initialValue, description, imgPath, game);
     }
 
-    public UnitStat(String name, T currentValue, T initialValue, String description, String imgPath, GameEngine game) {
+    public UnitStat(String name, T currentValue, T initialValue, String description, String imgPath, GameState game) {
         super(name, description, imgPath, game);
         this.currentValue = currentValue;
         this.initialValue = initialValue;

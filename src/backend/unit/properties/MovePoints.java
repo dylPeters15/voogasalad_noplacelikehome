@@ -1,6 +1,6 @@
 package backend.unit.properties;
 
-import backend.game_engine.GameEngine;
+import backend.game_engine.GameState;
 
 /**
  * Timmy
@@ -11,11 +11,11 @@ public class MovePoints extends UnitStat<Integer> {
     public static final String DESCRIPTION = "Remaining movepoints this turn";
     public static final String IMG_PATH = "boot.png";
 
-    public MovePoints(int initialValue, GameEngine game) {
+    public MovePoints(int initialValue, GameState game) {
         this(initialValue, initialValue, game);
     }
 
-    public MovePoints(int currentValue, int initialValue, GameEngine game) {
+    public MovePoints(int currentValue, int initialValue, GameState game) {
         super(NAME, currentValue, initialValue, DESCRIPTION, IMG_PATH, game);
     }
 

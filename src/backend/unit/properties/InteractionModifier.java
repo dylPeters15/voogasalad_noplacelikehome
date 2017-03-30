@@ -1,6 +1,6 @@
 package backend.unit.properties;
 
-import backend.game_engine.GameEngine;
+import backend.game_engine.GameState;
 import backend.unit.Unit;
 
 import java.util.Collection;
@@ -13,9 +13,9 @@ import java.util.Collection;
 public interface InteractionModifier<T> {
     InteractionModifier NO_CHANGE = (baseValue, agent, target, game) -> baseValue;
 
-    T modify(T baseValue, Unit agent, Unit target, GameEngine game);
+    T modify(T baseValue, Unit agent, Unit target, GameState game);
 
-    static <T> T modifyAll(Collection<InteractionModifier<T>> modifiers, T baseValue, Unit agent, Unit target, GameEngine game) {
+    static <T> T modifyAll(Collection<InteractionModifier<T>> modifiers, T baseValue, Unit agent, Unit target, GameState game) {
         for (InteractionModifier<T> op : modifiers) {
             baseValue = op.modify(baseValue, agent, target, game);
         }

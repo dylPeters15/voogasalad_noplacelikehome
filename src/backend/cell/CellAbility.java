@@ -1,6 +1,6 @@
 package backend.cell;
 
-import backend.game_engine.GameEngine;
+import backend.game_engine.GameState;
 import backend.unit.Unit;
 
 /**
@@ -8,5 +8,5 @@ import backend.unit.Unit;
  * @author Created by th174 on 3/28/2017.
  */
 public interface CellAbility {
-    void apply(GameEngine game, Unit occupant);
+    void apply(GameState game, Unit occupant);
 }
