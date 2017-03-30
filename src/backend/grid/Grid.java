@@ -3,7 +3,8 @@
  */
 package backend.grid;
 
-import backend.Player;
+import backend.cell.Cell;
+import backend.game_engine.Player;
 import javafx.util.Pair;
 
 import java.util.Arrays;
@@ -14,6 +15,7 @@ import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
 
 /**
+ * Andreas
  * @author Dylan Peters
  */
 //TODO

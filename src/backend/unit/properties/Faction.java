@@ -1,6 +1,6 @@
 package backend.unit.properties;
 
-import backend.GameObject;
+import backend.game_engine.GameObject;
 import backend.unit.Unit;
 
 import java.util.Arrays;
@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
+ * Timmy
  * @author Created by th174 on 3/29/2017.
  */
 public class Faction extends GameObject {
