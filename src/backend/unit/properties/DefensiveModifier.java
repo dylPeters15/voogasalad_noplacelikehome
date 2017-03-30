@@ -1,7 +1,7 @@
 package backend.unit.properties;
 
 import backend.game_engine.GameState;
-import backend.unit.Unit;
+import backend.unit.UnitInstance;
 
 import java.util.Collection;
 
@@ -30,5 +30,5 @@ public interface DefensiveModifier extends InteractionModifier.Modifier<Double> 
     };
 
     @Override
-    Double modify(Double incomingDamage, Unit agent, Unit target, GameState game);
+    Double modify(Double incomingDamage, UnitInstance agent, UnitInstance target, GameState game);
 }

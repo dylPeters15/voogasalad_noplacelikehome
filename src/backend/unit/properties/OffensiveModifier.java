@@ -1,7 +1,7 @@
 package backend.unit.properties;
 
 import backend.game_engine.GameState;
-import backend.unit.Unit;
+import backend.unit.UnitInstance;
 
 import java.util.Collection;
 
@@ -27,5 +27,5 @@ public interface OffensiveModifier extends InteractionModifier.Modifier<Double> 
             (target.getNeighboringUnits().values().stream().flatMap(Collection::stream).anyMatch(e -> e.getOwner().equals(target.getOwner())) ? 1 : 1.5);
 
     @Override
-    Double modify(Double outgoingDamage, Unit agent, Unit target, GameState game);
+    Double modify(Double outgoingDamage, UnitInstance agent, UnitInstance target, GameState game);
 }

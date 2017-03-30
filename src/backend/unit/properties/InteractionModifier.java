@@ -2,7 +2,7 @@ package backend.unit.properties;
 
 import backend.GameObjectImpl;
 import backend.game_engine.GameState;
-import backend.unit.Unit;
+import backend.unit.UnitInstance;
 
 import java.util.List;
 
@@ -38,11 +38,11 @@ public class InteractionModifier<T> extends GameObjectImpl {
         this.modifier = modifier;
     }
 
-    public T modify(T originalValue, Unit agent, Unit target, GameState game) {
+    public T modify(T originalValue, UnitInstance agent, UnitInstance target, GameState game) {
         return modifier.modify(originalValue, agent, target, game);
     }
 
-    static <T> T modifyAll(List<? extends InteractionModifier<T>> modifiers, T originalValue, Unit agent, Unit target, GameState game) {
+    static <T> T modifyAll(List<? extends InteractionModifier<T>> modifiers, T originalValue, UnitInstance agent, UnitInstance target, GameState game) {
         for (InteractionModifier<T> op : modifiers) {
             originalValue = op.modify(originalValue, agent, target, game);
         }
@@ -50,6 +50,6 @@ public class InteractionModifier<T> extends GameObjectImpl {
     }
 
     public interface Modifier<T> {
-        T modify(T originalValue, Unit agent, Unit target, GameState game);
+        T modify(T originalValue, UnitInstance agent, UnitInstance target, GameState game);
     }
 }

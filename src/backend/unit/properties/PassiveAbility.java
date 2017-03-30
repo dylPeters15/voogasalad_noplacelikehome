@@ -2,7 +2,7 @@ package backend.unit.properties;
 
 import backend.GameObjectImpl;
 import backend.game_engine.GameState;
-import backend.unit.Unit;
+import backend.unit.UnitInstance;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -47,7 +47,7 @@ public class PassiveAbility extends GameObjectImpl {
         this.activationTriggers = activationTriggers;
     }
 
-    public void affect(Unit user, TriggerEvent event, GameState game) {
+    public void affect(UnitInstance user, TriggerEvent event, GameState game) {
         if (activationTriggers.contains(event)) {
             effect.activateAbility(user, event, game);
         }
@@ -59,6 +59,6 @@ public class PassiveAbility extends GameObjectImpl {
 
     @FunctionalInterface
     interface AbilityEffect {
-        void activateAbility(Unit user, TriggerEvent event, GameState game);
+        void activateAbility(UnitInstance user, TriggerEvent event, GameState game);
     }
 }
