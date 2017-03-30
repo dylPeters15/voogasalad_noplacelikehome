@@ -3,36 +3,42 @@
  */
 package backend;
 
-import java.util.List;
-
 import backend.grid.Grid;
 import backend.grid.Terrain;
 import backend.unit.Unit;
+
+import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.BiPredicate;
 
 /**
  * @author Dylan Peters
  */
 public interface Game extends XMLsavable {
-	List<Player> getPlayers();
+    List<Player> getPlayers();
 
-	Grid getGrid();
+    Grid getGrid();
 
-	Player getCurrentPlayer();
+    Player getCurrentPlayer();
 
-	int getTurnNumber();
+    int getTurnNumber();
 
-	void start();
+    int addObjective(BiPredicate<Player, Game> winCondition);
 
-	void restart();
+    int addTrigger(BiConsumer<Player, Game> betweenTurns);
 
-	void quit();
+    void start();
 
-	void save();
+    void restart();
 
-	void load();
+    void quit();
 
-	void newUnit(Unit newUnit);
+    void save();
 
-	void newTerrain(Terrain terrain);
+    void load();
+
+    void newUnit(Unit newUnit);
+
+    void newTerrain(Terrain terrain);
 
 }

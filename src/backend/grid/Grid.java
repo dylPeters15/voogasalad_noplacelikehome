@@ -38,8 +38,6 @@ public interface Grid {
 
     Collection<Cell> filterCells(Player currentPlayer, BiPredicate<Player, Cell> visibilityPredicate);
 
-    Collection<Cell> getExploredCells(Player currentPlayer, BiPredicate<Player, Cell> visibilityPredicate);
-
     class GridBounds {
         private final List<Pair<Integer, Integer>> bounds;
 

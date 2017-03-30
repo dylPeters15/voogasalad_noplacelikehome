@@ -83,6 +83,10 @@ public class Unit extends GameObject {
         currentCell = cell;
     }
 
+    public Collection<Cell> getMoveOptions(){
+        //TODO:
+    }
+
     public HitPoints getHitPoints() {
         return hitPoints;
     }

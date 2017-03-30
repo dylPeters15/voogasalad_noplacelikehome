@@ -64,12 +64,6 @@ public class GameBoard implements Grid, XMLsavable, Iterable {
     }
 
     @Override
-    public Collection<Cell> getExploredCells(Player currentPlayer, BiPredicate<Player, Cell> visibilityPredicate) {
-        //TODO: How do we want to keep track of explored cells?
-        return stream().filter(c -> visibilityPredicate.test(currentPlayer, c)).collect(Collectors.toList());
-    }
-
-    @Override
     public Iterator iterator() {
         return gameBoard.entrySet().iterator();
     }
