@@ -12,7 +12,7 @@ import frontend.sprites.Sprite;
  */
 public interface GridDisplay extends Displayable {
 	
-	void placeInCell(Sprite sprite, Coordinates coord);
+	void placeInCell(Sprite sprite, Coordinates mouseCoord);
 	
 	void updateCells();
 }
