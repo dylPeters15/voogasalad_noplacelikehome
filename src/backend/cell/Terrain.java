@@ -76,6 +76,10 @@ public class Terrain extends GameObjectImpl implements GameObject {
     public boolean equals(Object obj) {
         return (obj instanceof Terrain) && ((Terrain) obj).getName().equals(this.getName());
     }
+    
+    public int hashCode(){
+        return getName().hashCode();
+    }
 
     public int getDefaultMoveCost() {
         return defaultMoveCost;
