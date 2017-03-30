@@ -2,9 +2,12 @@ package backend.grid;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 /**
  * Andreas
+ *
  * @author Dylan Peters, Timmy Huang
  */
 public final class CoordinateTuple implements Iterable<Integer> {
@@ -14,7 +17,7 @@ public final class CoordinateTuple implements Iterable<Integer> {
         this.coordinates = Arrays.stream(coordinates).boxed().collect(Collectors.toList());
     }
 
-    private CoordinateTuple(List<Integer> coordinates) {
+    public CoordinateTuple(List<Integer> coordinates) {
         this.coordinates = new ArrayList<>(coordinates);
     }
 
@@ -22,9 +25,9 @@ public final class CoordinateTuple implements Iterable<Integer> {
     public boolean equals(Object other) {
         return other instanceof CoordinateTuple && this.coordinates.equals(((CoordinateTuple) other).coordinates);
     }
-    
+
     @Override
-    public int hashCode(){
+    public int hashCode() {
         return coordinates.hashCode();
     }
 
@@ -32,32 +35,29 @@ public final class CoordinateTuple implements Iterable<Integer> {
         return coordinates.size();
     }
 
-    public Set<CoordinateTuple> getNeighbors() {
-        Set<CoordinateTuple> neighboringCoordinates = new HashSet<>();
-        CoordinateTuple origin = CoordinateTuple.getOrigin(this.dimension());
-        for (int i = 0; i < this.dimension(); i++) {
-            CoordinateTuple neighbor1 = origin.replace(i, -1);
-            CoordinateTuple neighbor2 = origin.replace(i, 1);
-            neighboringCoordinates.add(this.sum(neighbor1));
-            neighboringCoordinates.add(this.sum(neighbor2));
-        }
-        return neighboringCoordinates;
+    public Collection<CoordinateTuple> getNeighbors() {
+        return IntStream.range(0, dimension()).boxed()
+                .flatMap(i -> {
+                    List<Integer> temp1 = Collections.nCopies(dimension(), 1);
+                    List<Integer> temp2 = Collections.nCopies(dimension(), -1);
+                    temp1.set(i, 0);
+                    temp2.set(i, 0);
+                    return Stream.of(new CoordinateTuple(temp1), new CoordinateTuple(temp2));
+                }).parallel().collect(Collectors.toList());
     }
 
     public double euclideanDistanceTo(CoordinateTuple other) {
-        double sum = 0;
-        for (int i = 0; i < this.dimension(); i++) {
-            sum += Math.pow(this.get(0) - other.get(0), 2);
-        }
-        return Math.sqrt(sum);
+        return Math.sqrt(
+                IntStream.range(0, dimension())
+                        .mapToDouble(i -> Math.pow(this.get(i) - other.get(i), 2))
+                        .sum());
     }
 
     public double manhattanDistanceTo(CoordinateTuple other) {
-        double sum = 0;
-        for (int i = 0; i < this.dimension(); i++) {
-            sum += this.get(0) - other.get(0);
-        }
-        return sum;
+        return ((dimension() == 3) ? 0.5 : 1) *
+                IntStream.range(0, dimension())
+                        .map(i -> this.get(i) - other.get(i))
+                        .sum();
     }
 
     public int get(int index) {
@@ -80,9 +80,9 @@ public final class CoordinateTuple implements Iterable<Integer> {
             throw new DimensionMismatchException(this.dimension(), other.dimension());
         }
         int[] newCoordinates = new int[dimension()];
-        for (int i = 0; i < this.dimension(); i++) {
+        IntStream.range(0, dimension()).forEach(i -> {
             newCoordinates[i] = this.get(i) + other.get(i);
-        }
+        });
         return new CoordinateTuple(newCoordinates);
     }
 

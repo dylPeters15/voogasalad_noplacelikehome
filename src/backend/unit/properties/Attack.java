@@ -5,6 +5,7 @@ import backend.unit.UnitInstance;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 /**
  * Timmy
@@ -40,11 +41,11 @@ public final class Attack implements ActiveAbility.AbilityEffect<UnitInstance> {
 
     @Override
     public void useAbility(UnitInstance user, UnitInstance target, GameState game) {
-        for (int i = 0; i < getNumHits(); i++) {
-            double attackDamage = InteractionModifier.modifyAll(user.getOffensiveModifiers(), getDamage(user, target, game), user, target, game);
-            double totalDamage = InteractionModifier.modifyAll(target.getDefensiveModifiers(), attackDamage, user, target, game);
+        IntStream.range(0, getNumHits()).forEach(i -> {
+            double attackDamage = user.applyAllOffensiveModifiers(getDamage(user, target, game), target);
+            double totalDamage = target.applyAllDefensiveModifiers(attackDamage, user);
             target.getHitPoints().takeDamage(totalDamage);
-        }
+        });
     }
 }
 

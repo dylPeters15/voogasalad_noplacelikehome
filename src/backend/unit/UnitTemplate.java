@@ -2,8 +2,10 @@ package backend.unit;
 
 import backend.GameObject;
 import backend.GameObjectImpl;
+import backend.cell.Cell;
 import backend.cell.Terrain;
 import backend.game_engine.GameState;
+import backend.game_engine.Player;
 import backend.unit.properties.*;
 
 import java.util.*;
@@ -38,14 +40,14 @@ public class UnitTemplate extends GameObjectImpl implements Unit {
         this.hitPoints = hitPoints;
         this.movePoints = movePoints;
         this.movePattern = movePattern;
-        this.passiveAbilties = passiveAbilties.stream().collect(Collectors.toMap(PassiveAbility::getName, a -> a));
-        this.activeAbilities = activeAbilities.stream().collect(Collectors.toMap(ActiveAbility::getName, a -> a));
+        this.passiveAbilties = passiveAbilties.parallelStream().collect(Collectors.toMap(PassiveAbility::getName, a -> a));
+        this.activeAbilities = activeAbilities.parallelStream().collect(Collectors.toMap(ActiveAbility::getName, a -> a));
         this.offensiveModifiers = new ArrayList<>(offensiveModifiers);
         this.defensiveModifiers = new ArrayList<>(defensiveModifiers);
     }
 
-    public UnitInstance createUnit(String unitName, GameState game) {
-        return new UnitInstance(this, unitName, getHitPoints(), getMovePoints(), getFaction(), getMovePattern(), getMoveCosts(), getAllActiveAbilities(), getAllPassiveAbilities(), getOffensiveModifiers(), getDefensiveModifiers(), getDescription(), getImgPath(), game);
+    public UnitInstance createUnit(String unitName, Player ownerPlayer, Cell startingCell, GameState game) {
+        return new UnitInstance(this, unitName, getHitPoints(), getMovePoints(), getFaction(), getMovePattern(), getMoveCosts(), getAllActiveAbilities(), getAllPassiveAbilities(), getOffensiveModifiers(), getDefensiveModifiers(), getDescription(), getImgPath(), ownerPlayer, startingCell, game);
     }
 
     @Override

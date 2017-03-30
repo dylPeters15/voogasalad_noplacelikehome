@@ -8,6 +8,7 @@ import backend.unit.UnitInstance;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 
@@ -22,6 +23,10 @@ public class CellImpl extends GameObjectImpl implements Cell {
     private final Collection<UnitInstance> currentOccupants;
     private final Collection<CellAbility> abilities;
 
+    public CellImpl(CoordinateTuple coordinates, CellImpl templateCell, GameState game) {
+        this(coordinates, templateCell.getTerrain(), templateCell.getAbilities(), templateCell.getImgPath(), game);
+    }
+
     public CellImpl(CoordinateTuple coordinates, Terrain terrain, Collection<CellAbility> abilities, GameState game) {
         this(coordinates, terrain, abilities, terrain.getImgPath(), game);
     }
@@ -34,7 +39,7 @@ public class CellImpl extends GameObjectImpl implements Cell {
         super(terrain.getName() + "@" + coordinates.toString(), imgPath, game);
         this.coordinates = coordinates;
         this.terrain = terrain;
-        this.abilities = abilities;
+        this.abilities = new HashSet<>(abilities);
         currentOccupants = new HashSet<>();
     }
 
@@ -56,6 +61,10 @@ public class CellImpl extends GameObjectImpl implements Cell {
     @Override
     public void applyAbilities() {
         currentOccupants.forEach(unit -> abilities.forEach(ability -> ability.apply(getGame(), unit)));
+    }
+
+    public Collection<CellAbility> getAbilities() {
+        return Collections.unmodifiableCollection(abilities);
     }
 
     @Override

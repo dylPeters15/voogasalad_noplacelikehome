@@ -23,7 +23,7 @@ public interface Grid {
     Cell get(CoordinateTuple coordinateTuple);
 
     default int dimension() {
-        return getCells().values().stream().findAny().orElse(null).dimension();
+        return getCells().values().parallelStream().findAny().orElse(null).dimension();
     }
 
     Map<CoordinateTuple, Cell> getCells();

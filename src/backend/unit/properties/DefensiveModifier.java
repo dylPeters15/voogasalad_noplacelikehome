@@ -14,7 +14,7 @@ public interface DefensiveModifier extends InteractionModifier.Modifier<Double> 
     DefensiveModifier INVULNERABILITY = (incomingDamage, agent, target, game) -> 0.0;
     //Reduced damage when standing next to allied units of the same type
     DefensiveModifier FORMATION = (incomingDamage, agent, target, game) -> incomingDamage *
-            (target.getNeighboringUnits().values().stream().flatMap(Collection::stream).anyMatch(e -> e.getOwner().equals(target.getOwner()) && e.getName().equals(target.getName())) ? .6 : 1);
+            (target.getNeighboringUnits().values().parallelStream().flatMap(Collection::stream).parallel().anyMatch(e -> e.getOwner().equals(target.getOwner()) && e.getName().equals(target.getName())) ? .6 : 1);
     //Extra evasion, but takes extra damage
     DefensiveModifier EVASIVE = (incomingDamage, agent, target, game) -> incomingDamage * Math.random() < .5 ? 0 : 1.5;
     //Extra defense when unit doesn't move

@@ -24,7 +24,7 @@ public interface OffensiveModifier extends InteractionModifier.Modifier<Double> 
     OffensiveModifier BRAVERY = (outgoingDamage, agent, target, game) -> outgoingDamage * (target.getHitPoints().getCurrentValue() > agent.getHitPoints().getCurrentValue() ? 1.5 : 1);
     //This one is pretty cool. 50% extra damage to units that aren't standing near a teammate
     OffensiveModifier ASSASSIN = (outgoingDamage, agent, target, game) -> outgoingDamage *
-            (target.getNeighboringUnits().values().stream().flatMap(Collection::stream).anyMatch(e -> e.getOwner().equals(target.getOwner())) ? 1 : 1.5);
+            (target.getNeighboringUnits().values().parallelStream().flatMap(Collection::stream).parallel().anyMatch(e -> e.getOwner().equals(target.getOwner())) ? 1 : 1.5);
 
     @Override
     Double modify(Double outgoingDamage, UnitInstance agent, UnitInstance target, GameState game);
