@@ -1,14 +1,17 @@
 package backend;
 
+import backend.game_engine.GameEngine;
+
 /**
+ * Noah
  * @author Dylan Peters
  */
 public interface Model {
 	
-	Game getGame();
+	GameEngine getGame();
 
-	void editGame(Game gameToEdit);
+	void editGame(GameEngine gameToEdit);
 
-	void loadGame(Game gameToLoad);
+	void loadGame(GameEngine gameToLoad);
 	
 }

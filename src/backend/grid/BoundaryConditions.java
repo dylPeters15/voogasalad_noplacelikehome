@@ -1,6 +1,7 @@
 package backend.grid;
 
 /**
+ * Andreas
  * @author Created by th174 on 3/28/2017.
  */
 @FunctionalInterface

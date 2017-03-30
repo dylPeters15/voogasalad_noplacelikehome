@@ -1,7 +1,8 @@
-package backend.grid;
+package backend.cell;
 
-import backend.Game;
-import backend.GameObject;
+import backend.game_engine.GameEngine;
+import backend.game_engine.GameObject;
+import backend.grid.CoordinateTuple;
 import backend.unit.Unit;
 
 import java.nio.file.Path;
@@ -10,6 +11,7 @@ import java.util.Collection;
 import java.util.HashSet;
 
 /**
+ * Dylan
  * @author Created by th174 on 3/28/2017.
  */
 public class CellImpl extends GameObject implements Cell {
@@ -18,15 +20,15 @@ public class CellImpl extends GameObject implements Cell {
     private final Collection<Unit> currentOccupants;
     private final Collection<CellAbility> abilities;
 
-    public CellImpl(CoordinateTuple coordinates, Terrain terrain, Collection<CellAbility> abilities, Game game) {
+    public CellImpl(CoordinateTuple coordinates, Terrain terrain, Collection<CellAbility> abilities, GameEngine game) {
         this(coordinates, terrain, abilities, terrain.getImgPath(), game);
     }
 
-    public CellImpl(CoordinateTuple coordinates, Terrain terrain, Collection<CellAbility> abilities, String imgPath, Game game) {
+    public CellImpl(CoordinateTuple coordinates, Terrain terrain, Collection<CellAbility> abilities, String imgPath, GameEngine game) {
         this(coordinates, terrain, abilities, Paths.get(imgPath), game);
     }
 
-    public CellImpl(CoordinateTuple coordinates, Terrain terrain, Collection<CellAbility> abilities, Path imgPath, Game game) {
+    public CellImpl(CoordinateTuple coordinates, Terrain terrain, Collection<CellAbility> abilities, Path imgPath, GameEngine game) {
         super("Cell@" + coordinates.toString(), imgPath, game);
         this.coordinates = coordinates;
         this.terrain = terrain;

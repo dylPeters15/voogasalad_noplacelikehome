@@ -1,37 +1,40 @@
-package backend;
+package backend.game_engine;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import backend.io.XMLsavable;
+
 /**
+ * Alex
  * @author Created by th174 on 3/28/2017.
  */
 public class GameObject implements XMLsavable {
-    private final Game currentGame;
+    private final GameEngine currentGame;
     private final String name;
     private final String description;
     private final Path imgPath;
 
-    public GameObject(String name, Path imgPath, Game currentGame) {
+    public GameObject(String name, Path imgPath, GameEngine currentGame) {
         this(name, "", imgPath, currentGame);
     }
 
-    public GameObject(String name, String imgPath, Game currentGame) {
+    public GameObject(String name, String imgPath, GameEngine currentGame) {
         this(name, "", imgPath, currentGame);
     }
 
-    public GameObject(String name, String description, String imgPath, Game currentGame) {
+    public GameObject(String name, String description, String imgPath, GameEngine currentGame) {
         this(name, description, Paths.get(imgPath), currentGame);
     }
 
-    public GameObject(String name, String description, Path imgPath, Game currentGame) {
+    public GameObject(String name, String description, Path imgPath, GameEngine currentGame) {
         this.name = name;
         this.description = description;
         this.imgPath = imgPath;
         this.currentGame = currentGame;
     }
 
-    public Game getGame() {
+    public GameEngine getGame() {
         return currentGame;
     }
 
