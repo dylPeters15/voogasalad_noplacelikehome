@@ -2,7 +2,6 @@ package backend.unit.properties;
 
 import backend.Game;
 import backend.grid.CoordinateTuple;
-import backend.unit.InteractionModifier;
 import backend.unit.Unit;
 
 import java.util.ArrayList;
@@ -58,8 +57,8 @@ public final class Attack extends ActiveAbility<Unit> {
     @Override
     public void affect(Unit user, Unit target) {
         for (int i = 0; i < getNumHits(); i++) {
-            double attackDamage = user.getAttackModifier().modify(getDamage(user, target), user, target, getGame());
-            double totalDamage = target.getDefenseModifier().modify(attackDamage, user, target, getGame());
+            double attackDamage = InteractionModifier.modifyAll(user.getAttackModifier(), getDamage(user, target), user, target, getGame());
+            double totalDamage = InteractionModifier.modifyAll(target.getDefenseModifier(), attackDamage, user, target, getGame());
             target.getHitPoints().takeDamage(totalDamage);
         }
     }

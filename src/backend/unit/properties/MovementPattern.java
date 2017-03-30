@@ -1,4 +1,4 @@
-package backend.unit;
+package backend.unit.properties;
 
 import backend.grid.CoordinateTuple;
 

@@ -1,6 +1,7 @@
-package backend.unit;
+package backend.unit.properties;
 
 import backend.GameObject;
+import backend.unit.Unit;
 
 import java.util.Arrays;
 import java.util.Collection;
