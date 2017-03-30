@@ -5,15 +5,41 @@ package frontend;
 
 import java.util.List;
 
+import javafx.scene.Group;
+import javafx.scene.Node;
+
 /**
  * @author Stone Mathers Created 3/29/2017
  */
-public interface CollapsibleList extends Displayable {
+public class CollapsibleList implements Displayable {
 
-	void collapse();
+	private Group myGroup = new Group();
+	private List<ListItem> myList;
+	Displayable myParent;
+	
+	public CollapsibleList(Displayable parent){
+		myParent = parent;
+	}
+	
+	
+	public void collapse(){
+		
+	}
+	
+	public void expand(){
+		
+	}
 
-	List<ListItem> getItems();
+	public List<ListItem> getItems(){
+		return myList;
+	}
 
-	void addItem(ListItem item);
+	public void add(ListItem item){
+		myList.add(item);
+	}
+	
+	public Node getView(){
+		return myGroup;
+	}
 
 }

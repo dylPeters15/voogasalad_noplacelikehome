@@ -5,6 +5,8 @@ package frontend.sprites;
 
 import java.util.List;
 import frontend.Displayable;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.image.Image;
 
 /**
@@ -16,12 +18,12 @@ public interface Sprite extends Displayable {
 	/**
 	 * Determines what is done when a Sprite is clicked.
 	 */
-	void setOnClick();
+	void setOnClick(EventHandler<ActionEvent> event);
 	
 	/**
 	 * Determines what is done when a Sprite is clicked and dragged.
 	 */
-	void setOnDrag();
+	void setOnDrag(EventHandler<ActionEvent> event);
 	
 	List<SpriteCell> getSpriteCells();
 	
@@ -34,4 +36,8 @@ public interface Sprite extends Displayable {
 	Image getImage();
 	
 	void setImage(Image image);
+	
+	void setListType(String type);
+	
+	String getListType();
 }
