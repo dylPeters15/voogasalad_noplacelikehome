@@ -90,4 +90,9 @@ public class GameBoard extends GameObjectImpl implements Grid, XMLsavable, Itera
     public String toXml() {
         return null;
     }
+
+	@Override
+	public void setGridSize(int x, int y) {
+		// TODO Implement this
+	}
 }
