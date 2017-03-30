@@ -1,13 +1,15 @@
 /**
  *
  */
-package backend.grid;
+package backend.cell;
 
+import backend.grid.CoordinateTuple;
 import backend.unit.Unit;
 
 import java.util.Collection;
 
 /**
+ * Dylan
  * @author Dylan Peters
  */
 public interface Cell {

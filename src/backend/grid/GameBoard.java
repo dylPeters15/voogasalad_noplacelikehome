@@ -1,7 +1,8 @@
 package backend.grid;
 
-import backend.Player;
-import backend.XMLsavable;
+import backend.cell.Cell;
+import backend.game_engine.Player;
+import backend.io.XMLsavable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableMap;
 import javafx.util.Pair;
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
+ * Andreas
  * @author Created by th174 on 3/28/2017.
  */
 public class GameBoard implements Grid, XMLsavable, Iterable {

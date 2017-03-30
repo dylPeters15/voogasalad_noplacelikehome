@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
+ * Timmy
  * @author Dylan Peters, Timmy Huang
  */
 public class MovementPattern {

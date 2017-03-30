@@ -1,15 +1,16 @@
 /**
  *
  */
-package backend.grid;
+package backend.cell;
 
-import backend.Game;
-import backend.GameObject;
+import backend.game_engine.GameEngine;
+import backend.game_engine.GameObject;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
+ * Dylan
  * @author Dylan Peters, Timmy Huang
  */
 public class Terrain extends GameObject {
@@ -28,11 +29,11 @@ public class Terrain extends GameObject {
         super(name, description, defaultImgPath, null);
     }
 
-    protected Terrain(String name, String description, String defaultImgPath, Game game) {
+    protected Terrain(String name, String description, String defaultImgPath, GameEngine game) {
         super(name, description, defaultImgPath, game);
     }
 
-    protected Terrain(String name, String description, Path defaultImgPath, Game game) {
+    protected Terrain(String name, String description, Path defaultImgPath, GameEngine game) {
         super(name, description, defaultImgPath, game);
     }
 
