@@ -14,6 +14,7 @@ import java.util.Collections;
  * @author Created by th174 on 3/29/2017.
  */
 public class PassiveAbility extends GameObjectImpl {
+    //TODO: ResourceBundle this shit
     public static final PassiveAbility REGENERATOR = new PassiveAbility(
             "Regenerator",
             (user, event, game) -> user.getHitPoints().takeDamage(-6),
