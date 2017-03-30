@@ -20,15 +20,12 @@ public final class CoordinateTuple implements Iterable<Integer> {
 
     @Override
     public boolean equals(Object other) {
-        if (!(other instanceof CoordinateTuple && ((CoordinateTuple) other).dimension() == this.dimension())) {
-            return false;
-        }
-        for (int i = 0; i < this.dimension(); i++) {
-            if (this.get(i) != ((CoordinateTuple) other).get(i)) {
-                return false;
-            }
-        }
-        return true;
+        return other instanceof CoordinateTuple && this.coordinates.equals(((CoordinateTuple) other).coordinates);
+    }
+    
+    @Override
+    public int hashCode(){
+        return coordinates.hashCode();
     }
 
     public int dimension() {
