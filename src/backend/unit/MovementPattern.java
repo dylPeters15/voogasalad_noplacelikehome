@@ -1,20 +1,29 @@
-/**
- * 
- */
 package backend.unit;
 
-import java.util.Collection;
+import backend.grid.CoordinateTuple;
 
-import backend.grid.Coordinate;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
- * @author Dylan Peters
- *
+ * @author Dylan Peters, Timmy Huang
  */
-public interface MovementPattern {
+public class MovementPattern {
+    private final Set<CoordinateTuple> legalMoves;
+    private final int numSteps;
 
-	Collection<Coordinate> legalMoves();
+    public MovementPattern(int numSteps, Collection<CoordinateTuple> legalMoves) {
+        this.numSteps = numSteps;
+        this.legalMoves = new HashSet<>(legalMoves);
+    }
 
-	int numMoves();
+    public Collection<CoordinateTuple> getLegalMoves() {
+        return Collections.unmodifiableSet(legalMoves);
+    }
 
+    public int getNumSteps() {
+        return numSteps;
+    }
 }
