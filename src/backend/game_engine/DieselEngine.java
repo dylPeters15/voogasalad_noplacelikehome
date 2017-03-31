@@ -7,7 +7,8 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 
 import backend.cell.Terrain;
-import backend.unit.Unit;
+import backend.player.Player;
+import backend.unit.UnitInstance;
 
 public class DieselEngine implements GameEngine{
 
@@ -66,7 +67,7 @@ public class DieselEngine implements GameEngine{
 	}
 
 	@Override
-	public void newUnit(Unit newUnit) {
+	public void newUnit(UnitInstance newUnit) {
 		// TODO Auto-generated method stub
 		
 	}
