@@ -16,6 +16,11 @@ import java.util.Map;
 import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
 
+import javafx.util.Pair;
+import backend.cell.Cell;
+import backend.game_engine.Player;
+import backend.unit.Unit;
+
 /**
  * Andreas
  *
@@ -24,6 +29,8 @@ import java.util.stream.Collectors;
 //TODO
 public interface Grid extends GameObject {
     Cell get(CoordinateTuple coordinateTuple);
+    
+    Collection<Unit> getUnits();
 
     default int dimension() {
         return getCells().values().parallelStream().findAny().orElse(null).dimension();
