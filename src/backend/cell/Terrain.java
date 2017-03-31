@@ -5,7 +5,6 @@ package backend.cell;
 
 import backend.GameObject;
 import backend.GameObjectImpl;
-import backend.unit.properties.DefensiveModifier;
 import backend.unit.properties.InteractionModifier;
 
 /**
@@ -18,36 +17,36 @@ public class Terrain extends GameObjectImpl implements GameObject {
     public static final Terrain NONE = new Terrain(
             "None",
             Integer.MAX_VALUE,
-            (originalValue, agent, target, game) -> 0.0,
+            (InteractionModifier<Double>) InteractionModifier.NO_EFFECT,
             "Literally nothing",
             "black_void_of_the_abyss.png");
     public static final Terrain FLAT = new Terrain(
             "Flat",
             1,
-            (originalValue, agent, target, game) -> Math.random() < .7 ? originalValue : 0,
+            new InteractionModifier<>("Default Flat Terrain Defense", (originalValue, agent, target, game) -> Math.random() < .7 ? originalValue : 0, "Units have 30% evasion on Flat terrain by default."),
             "Open, flat, land that offers little defensive cover, but allows for easy movement.",
             "grassy_plain.png");
     public static final Terrain FOREST = new Terrain(
             "Forest",
             2,
-            (originalValue, agent, target, game) -> Math.random() < .4 ? originalValue : 0,
+            new InteractionModifier<>("Default Forest Terrain Defense", (originalValue, agent, target, game) -> Math.random() < .4 ? originalValue : 0, "Units have 60% evasion on Forest terrain by default."),
             "Thick forest that offers plenty of cover, but makes navigating difficult.",
             "forest.png");
     public static final Terrain WATER = new Terrain(
             "Water",
             3,
-            (originalValue, agent, target, game) -> Math.random() < .8 ? originalValue : 0,
+            new InteractionModifier<>("Default Water Terrain Defense", (originalValue, agent, target, game) -> Math.random() < .8 ? originalValue : 0, "Units have 20% evasion on Water terrain by default."),
             "Water that impedes movement for non-aquatic units", "splish_splash.png");
     public static final Terrain MOUNTAIN = new Terrain(
             "Mountain",
             2,
-            (originalValue, agent, target, game) -> Math.random() < .5 ? originalValue : 0,
+            new InteractionModifier<>("Default Mountain Terrain Defense", (originalValue, agent, target, game) -> Math.random() < .5 ? originalValue : 0, "Units have 50% evasion on Mountain terrain by default."),
             "Rugged mountains that are difficult to navigate through",
             "snowy_mountains.png");
     public static final Terrain FORTIFIED = new Terrain(
             "Fortified",
             1,
-            (originalValue, agent, target, game) -> Math.random() < .3 ? originalValue : 0,
+            new InteractionModifier<>("Default Fortified Terrain Defense", (originalValue, agent, target, game) -> Math.random() < .3 ? originalValue : 0, "Units have 70% evasion on Fortified terrain by default."),
             "A fortified defensive position",
             "castle.png");
 
@@ -60,14 +59,14 @@ public class Terrain extends GameObjectImpl implements GameObject {
     }
 
     public Terrain(String name, int defaultMoveCost, String description, String defaultImgPath) {
-        this(name, defaultMoveCost, (DefensiveModifier) InteractionModifier.NO_EFFECT, description, defaultImgPath);
+        this(name, defaultMoveCost, (InteractionModifier<Double>) InteractionModifier.NO_EFFECT, description, defaultImgPath);
     }
 
-    public Terrain(String name, DefensiveModifier defaultDefenseModifier, String description, String defaultImgPath) {
+    public Terrain(String name, InteractionModifier<Double> defaultDefenseModifier, String description, String defaultImgPath) {
         this(name, DEFAULT_DEFAULT_MOVE_COST, defaultDefenseModifier, description, defaultImgPath);
     }
 
-    public Terrain(String name, int defaultMoveCost, DefensiveModifier defaultDefenseModifier, String description, String defaultImgPath) {
+    public Terrain(String name, int defaultMoveCost, InteractionModifier<Double> defaultDefenseModifier, String description, String defaultImgPath) {
         super(name, description, defaultImgPath);
         this.defaultMoveCost = defaultMoveCost;
         this.defaultDefenseModifier = defaultDefenseModifier;
@@ -76,8 +75,8 @@ public class Terrain extends GameObjectImpl implements GameObject {
     public boolean equals(Object obj) {
         return (obj instanceof Terrain) && ((Terrain) obj).getName().equals(this.getName());
     }
-    
-    public int hashCode(){
+
+    public int hashCode() {
         return getName().hashCode();
     }
 

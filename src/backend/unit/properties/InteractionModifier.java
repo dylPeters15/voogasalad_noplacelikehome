@@ -33,6 +33,14 @@ public class InteractionModifier<T> extends GameObjectImpl {
 
     private Modifier<T> modifier;
 
+    public InteractionModifier(String name, Modifier<T> modifier) {
+        this(name, modifier, "");
+    }
+
+    public InteractionModifier(String name, Modifier<T> modifier, String description) {
+        this(name, modifier, description, "");
+    }
+
     public InteractionModifier(String name, Modifier<T> modifier, String description, String imgPath) {
         super(name, description, imgPath);
         this.modifier = modifier;
@@ -42,7 +50,7 @@ public class InteractionModifier<T> extends GameObjectImpl {
         return modifier.modify(originalValue, agent, target, game);
     }
 
-    static <T> T modifyAll(List<? extends InteractionModifier<T>> modifiers, T originalValue, UnitInstance agent, UnitInstance target, GameState game) {
+    public static <T> T modifyAll(List<? extends InteractionModifier<T>> modifiers, T originalValue, UnitInstance agent, UnitInstance target, GameState game) {
         for (InteractionModifier<T> op : modifiers) {
             originalValue = op.modify(originalValue, agent, target, game);
         }

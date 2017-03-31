@@ -1,6 +1,9 @@
 package backend.grid;
 
+import backend.GameObjectImpl;
 import backend.cell.Cell;
+import backend.cell.CellImpl;
+import backend.game_engine.GameState;
 import backend.game_engine.Player;
 import backend.io.XMLsavable;
 import javafx.collections.FXCollections;
@@ -10,20 +13,29 @@ import javafx.util.Pair;
 import java.util.*;
 import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
  * Andreas
+ *
  * @author Created by th174 on 3/28/2017.
  */
-public class GameBoard implements Grid, XMLsavable, Iterable {
+public class GameBoard extends GameObjectImpl implements Grid, XMLsavable, Iterable {
     private final ObservableMap<CoordinateTuple, Cell> gameBoard;
-    private BoundaryConditions currentBoundsMode;
+    private BoundsHandler currentBoundsMode;
 
-    //TODO: Actual constructor
-    private GameBoard() {
-        gameBoard = FXCollections.observableHashMap();
-        currentBoundsMode = BoundaryConditions.FINITEBOUNDS;
+    public GameBoard(String name, CellImpl templateCell, int rows, int columns, BoundsHandler currentBoundsMode, String description, String imgPath, GameState game) {
+        super(name, description, imgPath, game);
+        this.currentBoundsMode = currentBoundsMode;
+        gameBoard = FXCollections.observableMap(
+                IntStream.range(0, rows).boxed()
+                        .flatMap(i -> IntStream.range(0, columns)
+                                .mapToObj(j -> new CoordinateTuple(i, j)))
+                        .parallel()
+                        .map(e -> (templateCell.getCoordinates().dimension() == 3) ? e.convertToHexagonal() : e)
+                        .map(e -> new Pair<CoordinateTuple, Cell>(e, new CellImpl(e, templateCell, getGame())))
+                        .collect(Collectors.toMap(Pair::getKey, Pair::getValue)));
     }
 
     @Override
@@ -41,7 +53,7 @@ public class GameBoard implements Grid, XMLsavable, Iterable {
         return CoordinateTuple
                 .getOrigin(coordinate.dimension())
                 .getNeighbors()
-                .stream()
+                .parallelStream()
                 .map(e -> new Pair<>(e, gameBoard.get(coordinate.sum(e))))
                 .filter(e -> Objects.nonNull(e.getValue()))
                 .collect(Collectors.toMap(Pair::getKey, Pair::getValue));
@@ -49,20 +61,20 @@ public class GameBoard implements Grid, XMLsavable, Iterable {
 
     @Override
     public GridBounds getRectangularBounds() {
-        List<CoordinateTuple> rectCoordinates = gameBoard.keySet().stream().map(CoordinateTuple::convertToRectangular).collect(Collectors.toList());
-        int[] xBounds = new int[]{rectCoordinates.stream().mapToInt(e -> e.get(0)).min().getAsInt(), rectCoordinates.stream().mapToInt(e -> e.get(1)).max().getAsInt()};
-        int[] yBounds = new int[]{rectCoordinates.stream().mapToInt(e -> e.get(1)).min().getAsInt(), rectCoordinates.stream().mapToInt(e -> e.get(1)).max().getAsInt()};
+        List<CoordinateTuple> rectCoordinates = gameBoard.keySet().parallelStream().map(CoordinateTuple::convertToRectangular).collect(Collectors.toList());
+        int[] xBounds = new int[]{rectCoordinates.parallelStream().mapToInt(e -> e.get(0)).min().getAsInt(), rectCoordinates.parallelStream().mapToInt(e -> e.get(1)).max().getAsInt()};
+        int[] yBounds = new int[]{rectCoordinates.parallelStream().mapToInt(e -> e.get(1)).min().getAsInt(), rectCoordinates.parallelStream().mapToInt(e -> e.get(1)).max().getAsInt()};
         return new GridBounds(xBounds, yBounds);
     }
 
     @Override
-    public void setBoundaryConditions(BoundaryConditions boundaryConditions) {
+    public void setBoundaryConditions(BoundsHandler boundaryConditions) {
         this.currentBoundsMode = boundaryConditions;
     }
 
     @Override
     public Collection<Cell> filterCells(Player currentPlayer, BiPredicate<Player, Cell> visibilityPredicate) {
-        return stream().filter(c -> visibilityPredicate.test(currentPlayer, c)).collect(Collectors.toList());
+        return gameBoard.values().parallelStream().filter(c -> visibilityPredicate.test(currentPlayer, c)).collect(Collectors.toList());
     }
 
     @Override
@@ -77,5 +89,10 @@ public class GameBoard implements Grid, XMLsavable, Iterable {
     @Override
     public String toXml() {
         return null;
+    }
+
+    @Override
+    public void setGridSize(int x, int y) {
+        // TODO Implement this
     }
 }

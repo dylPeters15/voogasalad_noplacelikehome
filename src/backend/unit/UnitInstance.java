@@ -31,15 +31,15 @@ public class UnitInstance extends GameObjectImpl implements GameObject, Unit {
     private final Map<Terrain, Integer> moveCosts;
     private final Faction faction;
 
-    private Player ownedBy;
+    private Player ownerPlayer;
     private Cell currentCell;
 
     //LOL 15 parameters and they're all necessary
-    public UnitInstance(UnitTemplate unitType, String unitName, double hitPoints, int movePoints, Faction faction, GridPattern movePattern, Map<Terrain, Integer> moveCosts, Collection<ActiveAbility<GameObject>> activeAbilities, Collection<PassiveAbility> passiveAbilties, Collection<InteractionModifier<Double>> offensiveModifiers, Collection<InteractionModifier<Double>> defensiveModifiers, String unitDescription, Path imgPath, GameState game) {
-        this(unitType,unitName,new HitPoints(hitPoints),new MovePoints(movePoints),faction,movePattern,moveCosts,activeAbilities,passiveAbilties,offensiveModifiers,defensiveModifiers,unitDescription,imgPath,game);
+    public UnitInstance(UnitTemplate unitType, String unitName, double hitPoints, int movePoints, Faction faction, GridPattern movePattern, Map<Terrain, Integer> moveCosts, Collection<ActiveAbility<GameObject>> activeAbilities, Collection<PassiveAbility> passiveAbilties, Collection<InteractionModifier<Double>> offensiveModifiers, Collection<InteractionModifier<Double>> defensiveModifiers, String unitDescription, Path imgPath, Player ownerPlayer, Cell startingCell, GameState game) {
+        this(unitType, unitName, new HitPoints(hitPoints), new MovePoints(movePoints), faction, movePattern, moveCosts, activeAbilities, passiveAbilties, offensiveModifiers, defensiveModifiers, unitDescription, imgPath, ownerPlayer, startingCell, game);
     }
 
-    public UnitInstance(UnitTemplate unitType, String unitName, HitPoints hitPoints, MovePoints movePoints, Faction faction, GridPattern movePattern, Map<Terrain, Integer> moveCosts, Collection<ActiveAbility<GameObject>> activeAbilities, Collection<PassiveAbility> passiveAbilties, Collection<InteractionModifier<Double>> offensiveModifiers, Collection<InteractionModifier<Double>> defensiveModifiers, String unitDescription, Path imgPath, GameState game) {
+    public UnitInstance(UnitTemplate unitType, String unitName, HitPoints hitPoints, MovePoints movePoints, Faction faction, GridPattern movePattern, Map<Terrain, Integer> moveCosts, Collection<ActiveAbility<GameObject>> activeAbilities, Collection<PassiveAbility> passiveAbilties, Collection<InteractionModifier<Double>> offensiveModifiers, Collection<InteractionModifier<Double>> defensiveModifiers, String unitDescription, Path imgPath, Player ownerPlayer, Cell startingCell, GameState game) {
         super(unitName, unitDescription, imgPath, game);
         this.unitType = unitType;
         this.faction = faction;
@@ -47,10 +47,12 @@ public class UnitInstance extends GameObjectImpl implements GameObject, Unit {
         this.hitPoints = hitPoints;
         this.movePoints = movePoints;
         this.movePattern = movePattern;
-        this.passiveAbilties = passiveAbilties.stream().collect(Collectors.toMap(PassiveAbility::getName, a -> a));
-        this.activeAbilities = activeAbilities.stream().collect(Collectors.toMap(ActiveAbility::getName, a -> a));
+        this.passiveAbilties = passiveAbilties.parallelStream().collect(Collectors.toMap(PassiveAbility::getName, a -> a));
+        this.activeAbilities = activeAbilities.parallelStream().collect(Collectors.toMap(ActiveAbility::getName, a -> a));
         this.offensiveModifiers = new ArrayList<>(offensiveModifiers);
         this.defensiveModifiers = new ArrayList<>(defensiveModifiers);
+        setOwner(ownerPlayer);
+        setCurrentCell(startingCell);
     }
 
     public void moveTo(Cell cell) {
@@ -82,10 +84,14 @@ public class UnitInstance extends GameObjectImpl implements GameObject, Unit {
     }
 
     public Collection<Cell> getMoveOptions() {
-        return movePattern.getLegalMoves().stream()
+        return movePattern.getLegalMoves().parallelStream()
                 .map(e -> getGame().getGrid().get(e.sum(this.getLocation())))
                 .filter(Objects::nonNull)
                 .filter(e -> getMoveCostByTerrain(e.getTerrain()) < movePoints.getCurrentValue()).collect(Collectors.toSet());
+    }
+
+    public void setCurrentCell(Cell currentCell) {
+        this.currentCell = currentCell;
     }
 
     public Cell getCurrentCell() {
@@ -93,11 +99,11 @@ public class UnitInstance extends GameObjectImpl implements GameObject, Unit {
     }
 
     public Map<CoordinateTuple, Collection<UnitInstance>> getNeighboringUnits() {
-        Map<CoordinateTuple, Collection<UnitInstance>> neighbors = currentCell.getNeighbors().entrySet().stream()
+        Map<CoordinateTuple, Collection<UnitInstance>> neighbors = currentCell.getNeighbors().entrySet().parallelStream()
                 .map(e -> new Pair<>(e.getKey(), e.getValue().getOccupants()))
                 .filter(e -> !e.getValue().isEmpty())
                 .collect(Collectors.toMap(Pair::getKey, Pair::getValue));
-        neighbors.put(CoordinateTuple.getOrigin(currentCell.dimension()), currentCell.getOccupants().stream().filter(e -> !equals(e)).collect(Collectors.toSet()));
+        neighbors.put(CoordinateTuple.getOrigin(currentCell.dimension()), currentCell.getOccupants().parallelStream().filter(e -> !equals(e)).collect(Collectors.toSet()));
         return neighbors;
     }
 
@@ -110,11 +116,11 @@ public class UnitInstance extends GameObjectImpl implements GameObject, Unit {
     }
 
     public Player getOwner() {
-        return ownedBy;
+        return ownerPlayer;
     }
 
     public void setOwner(Player p) {
-        ownedBy = p;
+        ownerPlayer = p;
     }
 
     public UnitTemplate getUnitType() {
@@ -130,9 +136,17 @@ public class UnitInstance extends GameObjectImpl implements GameObject, Unit {
         return offensiveModifiers;
     }
 
+    public double applyAllOffensiveModifiers(Double originalValue, UnitInstance target) {
+        return InteractionModifier.modifyAll(getOffensiveModifiers(), originalValue, this, target, getGame());
+    }
+
     @Override
     public List<InteractionModifier<Double>> getDefensiveModifiers() {
         return defensiveModifiers;
+    }
+
+    public double applyAllDefensiveModifiers(Double originalValue, UnitInstance agent) {
+        return InteractionModifier.modifyAll(getDefensiveModifiers(), originalValue, agent, this, getGame());
     }
 
     @Override
