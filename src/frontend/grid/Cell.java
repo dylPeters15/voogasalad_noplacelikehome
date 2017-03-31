@@ -1,3 +1,6 @@
+/**
+ * A cell within the frontend GridDisplay.
+ */
 package frontend.grid;
 
 /**
@@ -7,7 +10,7 @@ package frontend.grid;
 public interface Cell {
 	
 	/**
-	 * @return
+	 * @return Coordinates at which the Cell is located.
 	 */
 	Coordinates getCoordinates();
 	

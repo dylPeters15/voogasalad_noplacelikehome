@@ -1,19 +1,60 @@
 /**
- * 
+ * A CollapsibleList is a GUI component that holds a list of ListItems. This list should be collapsible and expandable,
+ * meaning that, visually, the ListItems can disappear and reappear.
  */
 package frontend;
 
 import java.util.List;
 
+import javafx.scene.Group;
+import javafx.scene.Node;
+
 /**
- * @author Stone Mathers Created 3/29/2017
+ * @author Stone Mathers 
+ * Created 3/29/2017
  */
-public interface CollapsibleList extends Displayable {
+public class CollapsibleList implements Displayable {
 
-	void collapse();
+	private Group myGroup = new Group();
+	private List<ListItem> myList;
+	Displayable myParent;
+	
+	public CollapsibleList(Displayable parent){
+		myParent = parent;
+	}
+	
+	
+	/**
+	 * Makes ListItems no longer visible, as they "collapse" down and only a header label remains.
+	 */
+	public void collapse(){
+		
+	}
+	
+	/**
+	 * Makes ListItems once again visible.
+	 */
+	public void expand(){
+		
+	}
 
-	List<ListItem> getItems();
+	/**
+	 * @return List of ListItems
+	 */
+	public List<ListItem> getItems(){
+		return myList;
+	}
 
-	void addItem(ListItem item);
+	/**
+	 * @param ListItem to be added to the CollapsibleList.
+	 */
+	public void add(ListItem item){
+		myList.add(item);
+	}
+	
+	@Override
+	public Node getView(){
+		return myGroup;
+	}
 
 }
