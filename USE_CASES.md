@@ -262,9 +262,23 @@
 
     74. User adds attack to collection and passes attack to a unit’s constructor
 
-17.  Timmy - Need help use casing
+17.  Timmy - User moves a custom unit over Terrain which it doesn't have defined movecosts for.
+    
+    * UnitInstance::moveTo is called on the target cell
+    
+    * Unit looks up its moveCost for that cell's Terrain
+    
+    * A matching value for the Terrain is not found, so it defaults to the default move cost of the Terrain
+    
+    * The default moveCost is deducted from the Unit's movePoints
 
-18.  Timmy - Need help use casing
+18.  Timmy - Unit wants to save load a full set of predefined units that work together
+
+    * User creates a set of different units using unit editor
+    
+    * User stores those units in a Faction
+    
+    * User saves the Faction to XML
 
 19.  Noah - Unit A is told to attack Unit B which is not adjacent to it.
 

@@ -1,12 +1,12 @@
 package backend.unit;
 
-import backend.GameObject;
-import backend.GameObjectImpl;
 import backend.cell.Cell;
 import backend.cell.Terrain;
 import backend.game_engine.GameState;
 import backend.player.Player;
 import backend.unit.properties.*;
+import backend.util.GameObject;
+import backend.util.GameObjectImpl;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -22,7 +22,7 @@ public class UnitTemplate extends GameObjectImpl implements Unit {
     private Map<String, PassiveAbility> passiveAbilties;
     private List<InteractionModifier<Double>> offensiveModifiers;
     private List<InteractionModifier<Double>> defensiveModifiers;
-    private Map<Terrain, Integer> moveCosts;
+    private Map<Terrain, Integer> terrainMoveCosts;
     private Faction faction;
 
     public UnitTemplate(String unitTemplateName, double hitPoints, int movePoints, Faction faction, GridPattern movePattern, String unitTemplateDescription, String imgPath) {
@@ -36,7 +36,7 @@ public class UnitTemplate extends GameObjectImpl implements Unit {
     public UnitTemplate(String unitTemplateName, double hitPoints, int movePoints, Faction faction, GridPattern movePattern, Map<Terrain, Integer> moveCosts, Collection<ActiveAbility<GameObject>> activeAbilities, Collection<PassiveAbility> passiveAbilties, Collection<InteractionModifier<Double>> offensiveModifiers, Collection<InteractionModifier<Double>> defensiveModifiers, String unitDescription, String imgPath) {
         super(unitTemplateName, unitDescription, imgPath);
         this.faction = faction;
-        this.moveCosts = new HashMap<>(moveCosts);
+        this.terrainMoveCosts = new HashMap<>(moveCosts);
         this.hitPoints = hitPoints;
         this.movePoints = movePoints;
         this.movePattern = movePattern;
@@ -47,7 +47,7 @@ public class UnitTemplate extends GameObjectImpl implements Unit {
     }
 
     public UnitInstance createUnit(String unitName, Player ownerPlayer, Cell startingCell, GameState game) {
-        return new UnitInstance(this, unitName, getHitPoints(), getMovePoints(), getFaction(), getMovePattern(), getMoveCosts(), getAllActiveAbilities(), getAllPassiveAbilities(), getOffensiveModifiers(), getDefensiveModifiers(), getDescription(), getImgPath(), ownerPlayer, startingCell, game);
+        return new UnitInstance(this, unitName, getHitPoints(), getMovePoints(), getFaction(), getMovePattern(), getTerrainMoveCosts(), getAllActiveAbilities(), getAllPassiveAbilities(), getOffensiveModifiers(), getDefensiveModifiers(), getDescription(), getImgPath(), ownerPlayer, startingCell, game);
     }
 
     @Override
@@ -112,7 +112,11 @@ public class UnitTemplate extends GameObjectImpl implements Unit {
     }
 
     @Override
-    public Map<Terrain, Integer> getMoveCosts() {
-        return moveCosts;
+    public Map<Terrain, Integer> getTerrainMoveCosts() {
+        return terrainMoveCosts;
+    }
+
+    public static Collection<UnitTemplate> getPredefinedUnitTemplates() {
+        return getPredefined(UnitTemplate.class);
     }
 }

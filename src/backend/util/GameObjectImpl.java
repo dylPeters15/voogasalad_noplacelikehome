@@ -1,9 +1,12 @@
-package backend;
+package backend.util;
 
 import backend.game_engine.GameState;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 /**
  * Timmy
@@ -74,5 +77,15 @@ public class GameObjectImpl implements GameObject {
     public String toXml() {
         //TODO: Make Tavo XStream this shit
         throw new RuntimeException("Not implemented yet");
+    }
+
+    protected static <T extends GameObjectImpl> Collection<T> getPredefined(Class<T> clazz) {
+        return Arrays.stream(clazz.getFields()).map(e -> {
+            try {
+                return e.get(null);
+            } catch (IllegalAccessException e1) {
+                throw new RuntimeException("This will never happen");
+            }
+        }).filter(clazz::isInstance).map(clazz::cast).collect(Collectors.toList());
     }
 }

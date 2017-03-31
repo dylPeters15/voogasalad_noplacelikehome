@@ -1,9 +1,10 @@
 package backend.unit.properties;
 
-import backend.GameObjectImpl;
 import backend.game_engine.GameState;
 import backend.unit.UnitInstance;
+import backend.util.GameObjectImpl;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -11,15 +12,17 @@ import java.util.List;
  *
  * @author Created by th174 on 3/28/2017.
  */
-public class InteractionModifier<T> extends GameObjectImpl {
-    //TODO: ResourceBundle all this shit
-    public static final InteractionModifier<?> NO_EFFECT = new InteractionModifier<>("No effect", (originalValue, agent, target, game) -> originalValue, "Literally does nothing", "Nothing.png");
+public class InteractionModifier<T> extends Ability {
+    //TODO: ResourceBundlify all this shit
+    public static final InteractionModifier<?> DUMMY = new InteractionModifier<>("Dummy", (originalValue, agent, target, game) -> originalValue, "Dummy modifier that doesn't change anything", "Nothing.png");
+    public static final InteractionModifier<Double> NO_EFFECT = new InteractionModifier<Double>("No effect", (originalValue, agent, target, game) -> 0.0, "Literally nothing", "The_abyss_stares_back.png");
     //Offensive modifiers, can go on units or attacks
     public static final InteractionModifier<Double> CHAOTIC = new InteractionModifier<>("Chaotic", OffensiveModifier.CHAOTIC, "Attacks do more damage in nighttime, but less damage in daytime.", "Chaotic.png");
     public static final InteractionModifier<Double> LAWFUL = new InteractionModifier<>("Lawful", OffensiveModifier.LAWFUL, "Attacks do more damage in daytime, but less damage in nightime", "Lawful.png");
     public static final InteractionModifier<Double> BLINDED = new InteractionModifier<>("Blinded", OffensiveModifier.BLINDED, "Attacks have a high chance to miss", "Helen_Keller.png");
     public static final InteractionModifier<Double> FIRST_BLOOD = new InteractionModifier<>("First Blood", OffensiveModifier.FIRST_BLOOD, "Attacks do extra damage to targets at full HP.", "First_blood.png");
     public static final InteractionModifier<Double> EXECUTIONER = new InteractionModifier<>("Executioner", OffensiveModifier.EXECUTIONER, "Attacks do extra damage to targets at low HP.", "Axe.png");
+    public static final InteractionModifier<Double> CRITICAL_STRIKE = new InteractionModifier<>("Critical Strike", OffensiveModifier.CRITICAL_STRIKE, "Attacks have a chance to critical strike, hitting for extra damage.", "RNGesus.png");
     public static final InteractionModifier<Double> BRAVERY = new InteractionModifier<>("Weakened", OffensiveModifier.BRAVERY, "Attacks do extra damage if the defender has more HP than the attacker.", "David&Goliath.png");
     public static final InteractionModifier<Double> ASSASSIN = new InteractionModifier<>("Assassin", OffensiveModifier.ASSASSIN, "Attacks do extra damage to isolated units with no nearby allies", "Zabaniya.png");
     //Defensive modifiers, can go on units only
@@ -57,7 +60,12 @@ public class InteractionModifier<T> extends GameObjectImpl {
         return originalValue;
     }
 
+    @FunctionalInterface
     public interface Modifier<T> {
         T modify(T originalValue, UnitInstance agent, UnitInstance target, GameState game);
+    }
+
+    public static Collection<InteractionModifier> getPredefinedInteractionModifiers() {
+        return getPredefined(InteractionModifier.class);
     }
 }

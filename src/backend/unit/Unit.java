@@ -1,10 +1,9 @@
 package backend.unit;
 
-import backend.GameObject;
+import backend.util.GameObject;
 import backend.cell.Terrain;
 import backend.unit.properties.*;
 
-import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -29,10 +28,10 @@ public interface Unit extends GameObject {
 
     GridPattern getMovePattern();
 
-    Map<Terrain, Integer> getMoveCosts();
+    Map<Terrain, Integer> getTerrainMoveCosts();
 
     default int getMoveCostByTerrain(Terrain terrain) {
-        return getMoveCosts().get(terrain);
+        return getTerrainMoveCosts().get(terrain);
     }
 
     List<InteractionModifier<Double>> getOffensiveModifiers();

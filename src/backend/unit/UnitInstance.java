@@ -1,7 +1,7 @@
 package backend.unit;
 
-import backend.GameObject;
-import backend.GameObjectImpl;
+import backend.util.GameObject;
+import backend.util.GameObjectImpl;
 import backend.cell.Cell;
 import backend.cell.Terrain;
 import backend.game_engine.GameState;
@@ -192,7 +192,7 @@ public class UnitInstance extends GameObjectImpl implements GameObject, Unit {
     }
 
     @Override
-    public Map<Terrain, Integer> getMoveCosts() {
+    public Map<Terrain, Integer> getTerrainMoveCosts() {
         return moveCosts;
     }
 
