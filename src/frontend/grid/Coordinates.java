@@ -1,5 +1,5 @@
 /**
- * 
+ * Data structure holding the coordinates of an object on a Grid.
  */
 package frontend.grid;
 
@@ -12,7 +12,7 @@ import java.util.List;
 public interface Coordinates {
 
 	/**
-	 * 
+	 * Returns a list of coordinates, as they could be on any coordinate system.
 	 * 
 	 * @return List of Integer coordinates the the object contains.
 	 */

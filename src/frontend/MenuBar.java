@@ -1,5 +1,5 @@
 /**
- * 
+ * Interface that represents any menu bar to be created in the GUI.
  */
 package frontend;
 
