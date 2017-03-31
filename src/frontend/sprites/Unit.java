@@ -1,10 +1,12 @@
 /**
- * 
+ * A Unit object is an movable or immovable character/object that can be placed on top of and move across Terrains.
  */
 package frontend.sprites;
 
 import java.util.List;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 
@@ -12,7 +14,7 @@ import javafx.scene.image.Image;
  * @author Stone Mathers
  * Created 3/29/2017
  */
-public abstract class Unit implements Sprite {
+public class Unit implements Sprite {
 
 	/* (non-Javadoc)
 	 * @see frontend.Displayable#getView()
@@ -27,7 +29,7 @@ public abstract class Unit implements Sprite {
 	 * @see frontend.sprites.Sprite#setOnClick()
 	 */
 	@Override
-	public void setOnClick() {
+	public void setOnClick(EventHandler<ActionEvent> event) {
 		// TODO Auto-generated method stub
 
 	}
@@ -36,7 +38,7 @@ public abstract class Unit implements Sprite {
 	 * @see frontend.sprites.Sprite#setOnDrag()
 	 */
 	@Override
-	public void setOnDrag() {
+	public void setOnDrag(EventHandler<ActionEvent> event) {
 		// TODO Auto-generated method stub
 
 	}
@@ -93,6 +95,18 @@ public abstract class Unit implements Sprite {
 	public void setImage(Image image) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void setListType(String type) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String getListType() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

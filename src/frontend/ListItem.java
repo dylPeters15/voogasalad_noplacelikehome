@@ -1,5 +1,5 @@
 /**
- * 
+ * ListItems are visual items that are to be displayed in a list.
  */
 package frontend;
 
@@ -9,6 +9,9 @@ package frontend;
  */
 public interface ListItem extends Displayable {
 
+	/**
+	 * Sets what is to be done when the ListItem is clicked.
+	 */
 	void setOnClick();
 	
 }

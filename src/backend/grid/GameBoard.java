@@ -1,6 +1,6 @@
 package backend.grid;
 
-import backend.GameObjectImpl;
+import backend.util.GameObjectImpl;
 import backend.cell.Cell;
 import backend.cell.CellImpl;
 import backend.game_engine.GameState;

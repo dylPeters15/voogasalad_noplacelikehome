@@ -1,11 +1,13 @@
 package backend.unit.properties;
 
+import backend.util.GameQuantity;
+
 /**
  * Timmy
  *
  * @author Created by th174 on 3/28/2017.
  */
-public class MovePoints extends UnitStat<Integer> {
+public class MovePoints extends GameQuantity<Integer> {
     public static final String NAME = "MP";
     public static final String DESCRIPTION = "Remaining movepoints this turn";
     public static final String IMG_PATH = "boot.png";

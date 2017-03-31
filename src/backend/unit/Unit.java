@@ -1,10 +1,9 @@
 package backend.unit;
 
-import backend.GameObject;
+import backend.util.GameObject;
 import backend.cell.Terrain;
 import backend.unit.properties.*;
 
-import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -29,10 +28,10 @@ public interface Unit extends GameObject {
 
     GridPattern getMovePattern();
 
-    Map<Terrain, Integer> getMoveCosts();
+    Map<Terrain, Integer> getTerrainMoveCosts();
 
     default int getMoveCostByTerrain(Terrain terrain) {
-        return getMoveCosts().get(terrain);
+        return getTerrainMoveCosts().get(terrain);
     }
 
     List<InteractionModifier<Double>> getOffensiveModifiers();
@@ -77,25 +76,25 @@ public interface Unit extends GameObject {
         getActiveAbilities().remove(abilityName);
     }
 
-    Map<String, PassiveAbility> getPassiveAbilities();
+    Map<String, TriggeredAbility> getTriggeredAbilities();
 
-    default Collection<PassiveAbility> getAllPassiveAbilities() {
-        return Collections.unmodifiableCollection(getPassiveAbilities().values());
+    default Collection<TriggeredAbility> getAllTriggeredAbilities() {
+        return Collections.unmodifiableCollection(getTriggeredAbilities().values());
     }
 
-    default PassiveAbility getPassiveAbilityByName(String name) {
-        return getPassiveAbilities().get(name);
+    default TriggeredAbility getTriggeredAbilityByName(String name) {
+        return getTriggeredAbilities().get(name);
     }
 
-    default void addPassiveAbility(PassiveAbility ability) {
-        getPassiveAbilities().put(ability.getName(), ability);
+    default void addTriggeredAbility(TriggeredAbility ability) {
+        getTriggeredAbilities().put(ability.getName(), ability);
     }
 
-    default void removePassiveAbility(PassiveAbility ability) {
-        getPassiveAbilities().remove(ability.getName());
+    default void removeTriggeredAbility(TriggeredAbility ability) {
+        getTriggeredAbilities().remove(ability.getName());
     }
 
-    default void removePassiveAbility(String abilityName) {
-        getPassiveAbilities().remove(abilityName);
+    default void removeTriggeredAbility(String abilityName) {
+        getTriggeredAbilities().remove(abilityName);
     }
 }

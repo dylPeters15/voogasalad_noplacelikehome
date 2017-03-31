@@ -73,7 +73,7 @@ public class DieselEngine implements GameEngine{
 	}
 
 	@Override
-	public void newTerrain(Terrain terrain) {
+	public void newUnit(UnitInstance newUnit) {
 		// TODO Auto-generated method stub
 		
 	}

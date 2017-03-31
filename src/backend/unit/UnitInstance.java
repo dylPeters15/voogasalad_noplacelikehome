@@ -1,7 +1,7 @@
 package backend.unit;
 
-import backend.GameObject;
-import backend.GameObjectImpl;
+import backend.util.GameObject;
+import backend.util.GameObjectImpl;
 import backend.cell.Cell;
 import backend.cell.Terrain;
 import backend.game_engine.GameState;
@@ -26,7 +26,7 @@ public class UnitInstance extends GameObjectImpl implements GameObject, Unit {
     private final MovePoints movePoints;
     private final GridPattern movePattern;
     private final Map<String, ActiveAbility<GameObject>> activeAbilities;
-    private final Map<String, PassiveAbility> passiveAbilties;
+    private final Map<String, TriggeredAbility> triggeredAbilities;
     private final List<InteractionModifier<Double>> offensiveModifiers;
     private final List<InteractionModifier<Double>> defensiveModifiers;
     private final Map<Terrain, Integer> moveCosts;
@@ -35,11 +35,11 @@ public class UnitInstance extends GameObjectImpl implements GameObject, Unit {
     private Player ownerPlayer;
     private Cell currentCell;
 
-    public UnitInstance(UnitTemplate unitType, String unitName, double hitPoints, int movePoints, Faction faction, GridPattern movePattern, Map<Terrain, Integer> moveCosts, Collection<ActiveAbility<GameObject>> activeAbilities, Collection<PassiveAbility> passiveAbilties, Collection<InteractionModifier<Double>> offensiveModifiers, Collection<InteractionModifier<Double>> defensiveModifiers, String unitDescription, Path imgPath, Player ownerPlayer, Cell startingCell, GameState game) {
-        this(unitType, unitName, new HitPoints(hitPoints), new MovePoints(movePoints), faction, movePattern, moveCosts, activeAbilities, passiveAbilties, offensiveModifiers, defensiveModifiers, unitDescription, imgPath, ownerPlayer, startingCell, game);
+    public UnitInstance(UnitTemplate unitType, String unitName, double hitPoints, int movePoints, Faction faction, GridPattern movePattern, Map<Terrain, Integer> moveCosts, Collection<ActiveAbility<GameObject>> activeAbilities, Collection<TriggeredAbility> triggeredAbilities, Collection<InteractionModifier<Double>> offensiveModifiers, Collection<InteractionModifier<Double>> defensiveModifiers, String unitDescription, Path imgPath, Player ownerPlayer, Cell startingCell, GameState game) {
+        this(unitType, unitName, new HitPoints(hitPoints), new MovePoints(movePoints), faction, movePattern, moveCosts, activeAbilities, triggeredAbilities, offensiveModifiers, defensiveModifiers, unitDescription, imgPath, ownerPlayer, startingCell, game);
     }
 
-    public UnitInstance(UnitTemplate unitType, String unitName, HitPoints hitPoints, MovePoints movePoints, Faction faction, GridPattern movePattern, Map<Terrain, Integer> moveCosts, Collection<ActiveAbility<GameObject>> activeAbilities, Collection<PassiveAbility> passiveAbilties, Collection<InteractionModifier<Double>> offensiveModifiers, Collection<InteractionModifier<Double>> defensiveModifiers, String unitDescription, Path imgPath, Player ownerPlayer, Cell startingCell, GameState game) {
+    public UnitInstance(UnitTemplate unitType, String unitName, HitPoints hitPoints, MovePoints movePoints, Faction faction, GridPattern movePattern, Map<Terrain, Integer> moveCosts, Collection<ActiveAbility<GameObject>> activeAbilities, Collection<TriggeredAbility> triggeredAbilities, Collection<InteractionModifier<Double>> offensiveModifiers, Collection<InteractionModifier<Double>> defensiveModifiers, String unitDescription, Path imgPath, Player ownerPlayer, Cell startingCell, GameState game) {
         super(unitName, unitDescription, imgPath, game);
         this.unitType = unitType;
         this.faction = faction;
@@ -47,7 +47,7 @@ public class UnitInstance extends GameObjectImpl implements GameObject, Unit {
         this.hitPoints = hitPoints;
         this.movePoints = movePoints;
         this.movePattern = movePattern;
-        this.passiveAbilties = passiveAbilties.parallelStream().collect(Collectors.toMap(PassiveAbility::getName, a -> a));
+        this.triggeredAbilities = triggeredAbilities.parallelStream().collect(Collectors.toMap(TriggeredAbility::getName, a -> a));
         this.activeAbilities = activeAbilities.parallelStream().collect(Collectors.toMap(ActiveAbility::getName, a -> a));
         this.offensiveModifiers = new ArrayList<>(offensiveModifiers);
         this.defensiveModifiers = new ArrayList<>(defensiveModifiers);
@@ -58,15 +58,15 @@ public class UnitInstance extends GameObjectImpl implements GameObject, Unit {
     public void moveTo(Cell cell) {
         movePoints.useMovePoints(moveCosts.get(cell.getTerrain()));
         currentCell = cell;
-        triggerPassives(PassiveAbility.TriggerEvent.ON_MOVE);
+        trigger(TriggeredAbility.TriggerEvent.ON_MOVE);
     }
 
     public void startTurn() {
-        triggerPassives(PassiveAbility.TriggerEvent.ON_TURN_START);
+        trigger(TriggeredAbility.TriggerEvent.ON_TURN_START);
     }
 
     public void endTurn() {
-        triggerPassives(PassiveAbility.TriggerEvent.ON_TURN_END);
+        trigger(TriggeredAbility.TriggerEvent.ON_TURN_END);
         movePoints.resetValue();
     }
 
@@ -80,11 +80,11 @@ public class UnitInstance extends GameObjectImpl implements GameObject, Unit {
 
     public void useActiveAbility(ActiveAbility<GameObject> activeAbility, GameObject target) {
         activeAbility.affect(this, target, getGame());
-        triggerPassives(PassiveAbility.TriggerEvent.ON_ACTION);
+        trigger(TriggeredAbility.TriggerEvent.ON_ACTION);
     }
 
-    private void triggerPassives(PassiveAbility.TriggerEvent event) {
-        passiveAbilties.values().forEach(e -> e.affect(this, event, getGame()));
+    private void trigger(TriggeredAbility.TriggerEvent event) {
+        triggeredAbilities.values().forEach(e -> e.affect(this, event, getGame()));
     }
 
     public Collection<Cell> getMoveOptions() {
@@ -167,8 +167,8 @@ public class UnitInstance extends GameObjectImpl implements GameObject, Unit {
     }
 
     @Override
-    public Map<String, PassiveAbility> getPassiveAbilities() {
-        return passiveAbilties;
+    public Map<String, TriggeredAbility> getTriggeredAbilities() {
+        return triggeredAbilities;
     }
 
     @Override
@@ -192,7 +192,7 @@ public class UnitInstance extends GameObjectImpl implements GameObject, Unit {
     }
 
     @Override
-    public Map<Terrain, Integer> getMoveCosts() {
+    public Map<Terrain, Integer> getTerrainMoveCosts() {
         return moveCosts;
     }
 

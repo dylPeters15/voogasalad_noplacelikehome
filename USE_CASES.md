@@ -233,8 +233,17 @@
     69. The front-end then uses the controller to remove that unit globally from any collections in Cell and Player. 
 
 13. Alex - The user, in the process of creating a game, wants to set specific winning/losing/tieing conditions for their game:
+	* The user, in the editor, uses Groovy to make a ResultQuadPredicate that will be passed into the back-end  
+	through the controller. 
+	* Once this Predicate is passed into the back-end, it will be added to the DieselEngine's list of  
+	winningConditions which will hold the QuadPredicate.
 
 14. Alex - The user, in the process of a creating a game, wants to add events that are triggered by turns:
+	* The user interacts with the editor and writes Groovy code that will create a BiConsumer that will effect  
+	  the units. 
+	* Along with the BiConsumer, the user should pass an appropriate way of telling the  
+	back-end when the event triggers. The projected way to do this is to send a TurnTrigger Enum to through  
+	the code-editor.
 
 15.  Timmy - Unit A attacks Unit B
 
@@ -262,9 +271,23 @@
 
     74. User adds attack to collection and passes attack to a unit’s constructor
 
-17.  Timmy - Need help use casing
+17.  Timmy - User moves a custom unit over Terrain which it doesn't have defined movecosts for.
+    
+    * UnitInstance::moveTo is called on the target cell
+    
+    * Unit looks up its moveCost for that cell's Terrain
+    
+    * A matching value for the Terrain is not found, so it defaults to the default move cost of the Terrain
+    
+    * The default moveCost is deducted from the Unit's movePoints
 
-18.  Timmy - Need help use casing
+18.  Timmy - Unit wants to save load a full set of predefined units that work together
+
+    * User creates a set of different units using unit editor
+    
+    * User stores those units in a Faction
+    
+    * User saves the Faction to XML
 
 19.  Noah - Unit A is told to attack Unit B which is not adjacent to it.
 

@@ -1,6 +1,6 @@
 package backend.player;
 
-import backend.GameObjectImpl;
+import backend.util.GameObjectImpl;
 import backend.game_engine.GameState;
 import backend.unit.UnitInstance;
 
