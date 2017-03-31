@@ -6,17 +6,16 @@ import backend.player.Player;
 import backend.unit.UnitInstance;
 
 import java.util.function.BiConsumer;
-import java.util.function.BiPredicate;
 
 /**
- * Alex
  *
- * @author Dylan Peters
+ * @author Alexander Zapata
+ * 
  */
 public interface GameEngine extends XMLsavable {
-    int addObjective(BiPredicate<Player, GameEngine> winCondition);
+    void addObjective(ResultQuadPredicate winCondition);
 
-    int addTrigger(BiConsumer<Player, GameEngine> betweenTurns);
+    void addTrigger(BiConsumer<Player, GameState> turnAction, TurnTrigger when);
 
     void start();
 
@@ -32,4 +31,8 @@ public interface GameEngine extends XMLsavable {
 
     void newTerrain(Terrain terrain);
 
+    public enum TurnTrigger {
+		BEGINNING,
+		END
+	}
 }
