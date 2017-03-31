@@ -5,7 +5,8 @@ package backend.grid;
 
 import backend.GameObject;
 import backend.cell.Cell;
-import backend.game_engine.Player;
+import backend.player.Player;
+import backend.unit.UnitInstance;
 import javafx.util.Pair;
 
 import java.util.Arrays;
@@ -29,6 +30,8 @@ public interface Grid extends GameObject {
     }
 
     Map<CoordinateTuple, Cell> getCells();
+
+    Collection<UnitInstance> getUnits();
 
     default Map<CoordinateTuple, Cell> getNeighbors(Cell cell) {
         return getNeighbors(cell.getCoordinates());

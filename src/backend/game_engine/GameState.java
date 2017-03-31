@@ -5,6 +5,7 @@ package backend.game_engine;
 
 import backend.grid.Grid;
 import backend.io.XMLsavable;
+import backend.player.Player;
 
 import java.util.List;
 

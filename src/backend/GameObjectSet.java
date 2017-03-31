@@ -29,7 +29,7 @@ public class GameObjectSet<T extends GameObjectImpl> extends GameObjectImpl impl
     }
 
     public void remove(T u) {
-        gameObjects.remove(u.getName(), u);
+        remove(u.getName());
     }
 
     public void remove(String s) {

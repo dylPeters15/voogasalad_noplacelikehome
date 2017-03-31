@@ -5,8 +5,9 @@ import backend.GameObjectImpl;
 import backend.cell.Cell;
 import backend.cell.Terrain;
 import backend.game_engine.GameState;
-import backend.game_engine.Player;
 import backend.grid.CoordinateTuple;
+import backend.player.Player;
+import backend.player.Team;
 import backend.unit.properties.*;
 import javafx.util.Pair;
 
@@ -34,7 +35,6 @@ public class UnitInstance extends GameObjectImpl implements GameObject, Unit {
     private Player ownerPlayer;
     private Cell currentCell;
 
-    //LOL 15 parameters and they're all necessary
     public UnitInstance(UnitTemplate unitType, String unitName, double hitPoints, int movePoints, Faction faction, GridPattern movePattern, Map<Terrain, Integer> moveCosts, Collection<ActiveAbility<GameObject>> activeAbilities, Collection<PassiveAbility> passiveAbilties, Collection<InteractionModifier<Double>> offensiveModifiers, Collection<InteractionModifier<Double>> defensiveModifiers, String unitDescription, Path imgPath, Player ownerPlayer, Cell startingCell, GameState game) {
         this(unitType, unitName, new HitPoints(hitPoints), new MovePoints(movePoints), faction, movePattern, moveCosts, activeAbilities, passiveAbilties, offensiveModifiers, defensiveModifiers, unitDescription, imgPath, ownerPlayer, startingCell, game);
     }
@@ -68,6 +68,10 @@ public class UnitInstance extends GameObjectImpl implements GameObject, Unit {
     public void endTurn() {
         triggerPassives(PassiveAbility.TriggerEvent.ON_TURN_END);
         movePoints.resetValue();
+    }
+
+    public void takeDamage(double damage) {
+        getHitPoints().takeDamage(damage);
     }
 
     public void useActiveAbility(String activeAbilityName, GameObject target) {
@@ -107,6 +111,10 @@ public class UnitInstance extends GameObjectImpl implements GameObject, Unit {
         return neighbors;
     }
 
+    public Collection<UnitInstance> getAllNeighboringUnits() {
+        return getNeighboringUnits().values().parallelStream().flatMap(Collection::stream).parallel().collect(Collectors.toSet());
+    }
+
     public Map<CoordinateTuple, Cell> getNeighboringCells() {
         return currentCell.getNeighbors();
     }
@@ -117,6 +125,10 @@ public class UnitInstance extends GameObjectImpl implements GameObject, Unit {
 
     public Player getOwner() {
         return ownerPlayer;
+    }
+
+    public Team getTeam() {
+        return ownerPlayer.getTeam();
     }
 
     public void setOwner(Player p) {

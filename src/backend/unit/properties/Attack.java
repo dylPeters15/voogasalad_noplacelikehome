@@ -44,7 +44,7 @@ public final class Attack implements ActiveAbility.AbilityEffect<UnitInstance> {
         IntStream.range(0, getNumHits()).forEach(i -> {
             double attackDamage = user.applyAllOffensiveModifiers(getDamage(user, target, game), target);
             double totalDamage = target.applyAllDefensiveModifiers(attackDamage, user);
-            target.getHitPoints().takeDamage(totalDamage);
+            target.takeDamage(totalDamage);
         });
     }
 }

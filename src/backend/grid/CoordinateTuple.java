@@ -21,16 +21,6 @@ public final class CoordinateTuple implements Iterable<Integer> {
         this.coordinates = new ArrayList<>(coordinates);
     }
 
-    @Override
-    public boolean equals(Object other) {
-        return other instanceof CoordinateTuple && this.coordinates.equals(((CoordinateTuple) other).coordinates);
-    }
-
-    @Override
-    public int hashCode() {
-        return coordinates.hashCode();
-    }
-
     public int dimension() {
         return coordinates.size();
     }
@@ -112,6 +102,16 @@ public final class CoordinateTuple implements Iterable<Integer> {
         DimensionMismatchException(int dim1, int dim2) {
             super(String.format("Coordinate Tuple Dimension Mismatch: %d,%d", dim1, dim2));
         }
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return other instanceof CoordinateTuple && this.coordinates.equals(((CoordinateTuple) other).coordinates);
+    }
+
+    @Override
+    public int hashCode() {
+        return coordinates.hashCode();
     }
 
     @Override

@@ -2,6 +2,7 @@ package backend.game_engine;
 
 import backend.cell.Terrain;
 import backend.io.XMLsavable;
+import backend.player.Player;
 import backend.unit.UnitInstance;
 
 import java.util.function.BiConsumer;

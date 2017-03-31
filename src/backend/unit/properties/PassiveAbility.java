@@ -16,14 +16,14 @@ public class PassiveAbility extends GameObjectImpl {
     //TODO: ResourceBundle this shit
     public static final PassiveAbility REGENERATOR = new PassiveAbility(
             "Regenerator",
-            (user, event, game) -> user.getHitPoints().takeDamage(-6),
+            (user, event, game) -> user.takeDamage(-6),
             "This unit regenerates 6 HP at the start of each turn.",
             "Regenerate.png",
             TriggerEvent.ON_TURN_START
     );
     public static final PassiveAbility HEALER = new PassiveAbility(
             "Healer",
-            (user, event, game) -> user.getNeighboringUnits().values().forEach(c -> c.forEach(u -> u.getHitPoints().takeDamage(-6))),
+            (user, event, game) -> user.getNeighboringUnits().values().forEach(c -> c.forEach(u -> u.takeDamage(-6))),
             "This unit heals nearby units for 6 HP at the start of each turn.",
             "Red Cross.png",
             TriggerEvent.ON_TURN_START

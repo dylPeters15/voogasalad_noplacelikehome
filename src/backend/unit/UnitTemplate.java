@@ -5,7 +5,7 @@ import backend.GameObjectImpl;
 import backend.cell.Cell;
 import backend.cell.Terrain;
 import backend.game_engine.GameState;
-import backend.game_engine.Player;
+import backend.player.Player;
 import backend.unit.properties.*;
 
 import java.util.*;
