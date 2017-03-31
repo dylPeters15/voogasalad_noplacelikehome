@@ -20,6 +20,6 @@ public class Ability extends GameObjectImpl {
     }
 
     public static Collection<Ability> getPredefinedAbilities() {
-        return Stream.of(Ability.getPredefined(Ability.class), ActiveAbility.getPredefinedActiveAbilities(), InteractionModifier.getPredefinedInteractionModifiers(), PassiveAbility.getPredefinedPassiveAbilities()).flatMap(Collection::stream).map(Ability.class::cast).collect(Collectors.toSet());
+        return Stream.of(Ability.getPredefined(Ability.class), ActiveAbility.getPredefinedActiveAbilities(), InteractionModifier.getPredefinedInteractionModifiers(), TriggeredAbility.getPredefinedTriggeredAbilities()).flatMap(Collection::stream).map(Ability.class::cast).collect(Collectors.toSet());
     }
 }

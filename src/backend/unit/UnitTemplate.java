@@ -19,7 +19,7 @@ public class UnitTemplate extends GameObjectImpl implements Unit {
     private int movePoints;
     private GridPattern movePattern;
     private Map<String, ActiveAbility<GameObject>> activeAbilities;
-    private Map<String, PassiveAbility> passiveAbilties;
+    private Map<String, TriggeredAbility> triggeredAbilities;
     private List<InteractionModifier<Double>> offensiveModifiers;
     private List<InteractionModifier<Double>> defensiveModifiers;
     private Map<Terrain, Integer> terrainMoveCosts;
@@ -33,21 +33,21 @@ public class UnitTemplate extends GameObjectImpl implements Unit {
         this(unitTemplateName, hitPoints, movePoints, faction, movePattern, moveCosts, new HashSet<>(), new HashSet<>(), new HashSet<>(), new HashSet<>(), unitTemplateDescription, imgPath);
     }
 
-    public UnitTemplate(String unitTemplateName, double hitPoints, int movePoints, Faction faction, GridPattern movePattern, Map<Terrain, Integer> moveCosts, Collection<ActiveAbility<GameObject>> activeAbilities, Collection<PassiveAbility> passiveAbilties, Collection<InteractionModifier<Double>> offensiveModifiers, Collection<InteractionModifier<Double>> defensiveModifiers, String unitDescription, String imgPath) {
+    public UnitTemplate(String unitTemplateName, double hitPoints, int movePoints, Faction faction, GridPattern movePattern, Map<Terrain, Integer> moveCosts, Collection<ActiveAbility<GameObject>> activeAbilities, Collection<TriggeredAbility> triggeredAbilities, Collection<InteractionModifier<Double>> offensiveModifiers, Collection<InteractionModifier<Double>> defensiveModifiers, String unitDescription, String imgPath) {
         super(unitTemplateName, unitDescription, imgPath);
         this.faction = faction;
         this.terrainMoveCosts = new HashMap<>(moveCosts);
         this.hitPoints = hitPoints;
         this.movePoints = movePoints;
         this.movePattern = movePattern;
-        this.passiveAbilties = passiveAbilties.parallelStream().collect(Collectors.toMap(PassiveAbility::getName, a -> a));
+        this.triggeredAbilities = triggeredAbilities.parallelStream().collect(Collectors.toMap(TriggeredAbility::getName, a -> a));
         this.activeAbilities = activeAbilities.parallelStream().collect(Collectors.toMap(ActiveAbility::getName, a -> a));
         this.offensiveModifiers = new ArrayList<>(offensiveModifiers);
         this.defensiveModifiers = new ArrayList<>(defensiveModifiers);
     }
 
     public UnitInstance createUnit(String unitName, Player ownerPlayer, Cell startingCell, GameState game) {
-        return new UnitInstance(this, unitName, getHitPoints(), getMovePoints(), getFaction(), getMovePattern(), getTerrainMoveCosts(), getAllActiveAbilities(), getAllPassiveAbilities(), getOffensiveModifiers(), getDefensiveModifiers(), getDescription(), getImgPath(), ownerPlayer, startingCell, game);
+        return new UnitInstance(this, unitName, getHitPoints(), getMovePoints(), getFaction(), getMovePattern(), getTerrainMoveCosts(), getAllActiveAbilities(), getAllTriggeredAbilities(), getOffensiveModifiers(), getDefensiveModifiers(), getDescription(), getImgPath(), ownerPlayer, startingCell, game);
     }
 
     @Override
@@ -107,8 +107,8 @@ public class UnitTemplate extends GameObjectImpl implements Unit {
     }
 
     @Override
-    public Map<String, PassiveAbility> getPassiveAbilities() {
-        return passiveAbilties;
+    public Map<String, TriggeredAbility> getTriggeredAbilities() {
+        return triggeredAbilities;
     }
 
     @Override
