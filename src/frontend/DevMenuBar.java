@@ -1,12 +1,10 @@
 /**
- * 
+ * The DevMenuBar is the menu bar at the top of the development environment. It is meant to allow the user to 
+ * perform all actions that do not involve directly changing the game board, such as placing new Sprites or using any tools.
  */
 package frontend;
 
-import com.sun.prism.paint.Color;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -28,15 +26,14 @@ public class DevMenuBar implements MenuBar {
 		initButtons();
 	}
 	
-	
-	/* (non-Javadoc)
-	 * @see frontend.Displayable#getView()
-	 */
 	@Override
 	public Node getView() {
 		return myGroup;
 	}
 	
+	/**
+	 * Initializes all Buttons in the menu.
+	 */
 	private void initButtons(){
 		Button createUnit = new Button("Create Unit");
 		createUnit.setOnMouseClicked(e -> {

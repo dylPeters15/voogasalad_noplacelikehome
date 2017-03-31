@@ -1,5 +1,7 @@
 /**
- * 
+ * A Terrain object is any landscape piece that can be placed on the grid. These make up the board or ground
+ * that movable pieces can traverse and immovable pieces can be placed on. A Terrain may or may not have attributes
+ * that affect a piece located on it.
  */
 package frontend.sprites;
 

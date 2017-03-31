@@ -1,5 +1,5 @@
 /**
- * 
+ * A Unit object is an movable or immovable character/object that can be placed on top of and move across Terrains.
  */
 package frontend.sprites;
 

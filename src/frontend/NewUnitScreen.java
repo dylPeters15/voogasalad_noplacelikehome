@@ -1,3 +1,7 @@
+/**
+ * Popup window that appears when the user wishes to create a new Unit.
+ * The window allows the user to upload an image, name the unit, and determine any attributes.
+ */
 package frontend;
 
 import frontend.sprites.Sprite;
@@ -10,7 +14,6 @@ import javafx.scene.control.Button;
  * @author Stone Mathers
  * Created 3/30/2017
  */
-
 public class NewUnitScreen implements Displayable {
 
 	private Group myGroup = new Group();
@@ -21,6 +24,7 @@ public class NewUnitScreen implements Displayable {
 		initButtons();
 	}
 	
+
 	private void initButtons(){
 		Button create = new Button("Create");
 		create.setOnMouseClicked(e -> {

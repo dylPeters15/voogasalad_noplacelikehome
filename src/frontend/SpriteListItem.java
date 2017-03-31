@@ -1,3 +1,7 @@
+/**
+ * SpriteListItems are visual items that display a Sprite that is available to build with in the 
+ * development environment.
+ */
 package frontend;
 
 import frontend.sprites.Sprite;
@@ -9,12 +13,26 @@ import frontend.sprites.Sprite;
  */
 public interface SpriteListItem extends ListItem {
 	
+	/**
+	 * @return Sprite contained within the SpriteListItem.
+	 */
 	Sprite getSprite();
 	
+	/**
+	 * Sets the Sprite to be held.
+	 * 
+	 * @param Sprite to be held.
+	 */
 	void setSprite(Sprite sprite);
 	
+	/**
+	 * @return String representing the name of the Sprite.
+	 */
 	String getName();
 	
+	/**
+	 * @param String that holds the name of the Sprite.
+	 */
 	void setName(String name);
 	
 }
