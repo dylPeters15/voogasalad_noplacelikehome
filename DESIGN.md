@@ -198,149 +198,149 @@ front-end and back-end. Here are some of the other classes and some public metho
 
 `GroovyParser(controller)`
 	
-	`parse(user-input);` parse will take user input and use an engine and other appropriate parsing tools to be  
+	parse(user-input); parse will take user input and use an engine and other appropriate parsing tools to be  
 	able to aid in the development of games through writing code on the user-interface. The majority of this 
 	
 `GameEngine[Interface]`
 
-	`public void addObjective(ResultQuadPredicate winCondition);`
+	public void addObjective(ResultQuadPredicate winCondition);
 	
-	`public void addTrigger(BiConsumer<Player, GameState> turnAction, TurnTrigger when);`
+	public void addTrigger(BiConsumer<Player, GameState> turnAction, TurnTrigger when);
 	
-	`public void start();`
+	public void start();
 	
-	`public executeRound()`
+	public executeRound()
 	
-	`public void restart();`
+	public void restart();
 	
-	`public void quit();`
+	public void quit();
 	
-	`public void save();`
+	public void save();
 	
-	`public void load();`
+	public void load();
 	
-	`public void newUnit(UnitInstance newUnit);`
+	public void newUnit(UnitInstance newUnit);
 	
-	`public void newTerrain(Terrain terrain);`
+	public void newTerrain(Terrain terrain);
 	
-	`public enum TurnTrigger;`
+	public enum TurnTrigger;
 	
 ## Back-End Internal API:
 The order of this internal API will be from the most to least abstract components.
 
 `GameObject[Interface]`
 	
-	`String getName();`
-    
-    `String getDescription();`
+	String getName();
+
+    String getDescription();
    
-    `Path getImgPath();`
+    Path getImgPath();
    
-    `boolean isVisible();`
+    boolean isVisible();
     
-    `void setVisible(boolean visible);`
+    void setVisible(boolean visible);
     
 `GameObjectsSet[Interface]`
 	
-	`public GameObjectSet(String name, String description, String imgPath);`
+	public GameObjectSet(String name, String description, String imgPath);
     
-    `public GameObjectSet(String name, Collection<T> gameObjects, String description, String imgPath);`
+    public GameObjectSet(String name, Collection<T> gameObjects, String description, String imgPath);
     
-    `public T get(String name);`
+    public T get(String name);
     
-    `public Collection<T> getAll();`
+    public Collection<T> getAll();
     
-    `public void add(T u);`
+    public void add(T u);
     
-    `public void remove(T u);`
+    public void remove(T u);
     
-    `public void remove(String s);`
+    public void remove(String s);
     
-    `public int size();`
+    public int size();
     
-    `public Iterator<T> iterator();`
+    public Iterator<T> iterator();
 
 `Grid[Interface]`
 	
-	`setGridSize(x, y);`
+	setGridSize(x, y);
 	
-	`getCell(x, y);`
+	getCell(x, y);
 	
-	`filterCells(Player, BiPredicate<Player, Cell>)`
+	filterCells(Player, BiPredicate<Player, Cell>)
 
 `Cell[Interface]`
 	
-	`CoordinateTuple getCoordinates();`
+	CoordinateTuple getCoordinates();
     
-    `Map<CoordinateTuple, Cell> getNeighbors();`
+    Map<CoordinateTuple, Cell> getNeighbors();
     
-    `default int dimension();`
+    default int dimension();
     
-    `Terrain getTerrain();`
+    Terrain getTerrain();
     
-    `default void addOccupant(UnitInstance unit);`
+    default void addOccupant(UnitInstance unit);
     
-    `default void removeOccupant(UnitInstance unit);`
+    default void removeOccupant(UnitInstance unit);
     
-    `default void addAllOccupants(Collection<UnitInstance> units);`
+    default void addAllOccupants(Collection<UnitInstance> units);
     
-    `default void removeAllOccupants(Collection<UnitInstance> units);`
-    
-    `void applyAbilities();`
+    default void removeAllOccupants(Collection<UnitInstance> units);
+
+    void applyAbilities();
 
 `Units[Interface]`
 	
-	`UnitTemplate getUnitType();`
+	UnitTemplate getUnitType();
     
-    `default String getUnitTypeName();`
+    default String getUnitTypeName();
     
-    `HitPoints getHitPoints();`
+    HitPoints getHitPoints();
     
-    `MovePoints getMovePoints();`
+    MovePoints getMovePoints();
     
-    `Faction getFaction();`
+    Faction getFaction();
     
-    `GridPattern getMovePattern();`
+    GridPattern getMovePattern();
     
-    `Map<Terrain, Integer> getMoveCosts();`
+    Map<Terrain, Integer> getMoveCosts();
     
-    `default int getMoveCostByTerrain(Terrain terrain);`
+    default int getMoveCostByTerrain(Terrain terrain);
     
-    `List<InteractionModifier<Double>> getOffensiveModifiers();`
+    List<InteractionModifier<Double>> getOffensiveModifiers();
     
-    `default void addOffensiveModifier(InteractionModifier<Double> OffensiveModifier);`
+    default void addOffensiveModifier(InteractionModifier<Double> OffensiveModifier);
     
-    `default void removeOffensiveModifier(InteractionModifier<Double> OffensiveModifier);`
+    default void removeOffensiveModifier(InteractionModifier<Double> OffensiveModifier);
     
-    `List<InteractionModifier<Double>> getDefensiveModifiers();`
+    List<InteractionModifier<Double>> getDefensiveModifiers();
+
+    default void addDefensiveModifier(InteractionModifier<Double> defensiveModifier);
     
-    `default void addDefensiveModifier(InteractionModifier<Double> defensiveModifier);`
+    default void removeDefensiveModifier(InteractionModifier<Double> defensiveModifier);
     
-    `default void removeDefensiveModifier(InteractionModifier<Double> defensiveModifier);`
+    Map<String, ActiveAbility<GameObject>> getActiveAbilities();
     
-    `Map<String, ActiveAbility<GameObject>> getActiveAbilities();`
+    default Collection<ActiveAbility<GameObject>> getAllActiveAbilities();
     
-    `default Collection<ActiveAbility<GameObject>> getAllActiveAbilities();`
+    default ActiveAbility<GameObject> getActiveAbilityByName(String name);
     
-    `default ActiveAbility<GameObject> getActiveAbilityByName(String name);`
+    default void addActiveAbility(ActiveAbility<GameObject> ability);
     
-    `default void addActiveAbility(ActiveAbility<GameObject> ability);`
+    default void removeActiveAbility(ActiveAbility<GameObject> ability);
     
-    `default void removeActiveAbility(ActiveAbility<GameObject> ability);`
+    default void removeActiveAbility(String abilityName);
     
-    `default void removeActiveAbility(String abilityName);`
+    Map<String, PassiveAbility> getPassiveAbilities();
     
-    `Map<String, PassiveAbility> getPassiveAbilities();`
+    default Collection<PassiveAbility> getAllPassiveAbilities();
     
-    `default Collection<PassiveAbility> getAllPassiveAbilities();`
+    default PassiveAbility getPassiveAbilityByName(String name);
     
-    `default PassiveAbility getPassiveAbilityByName(String name);`
+    default void addPassiveAbility(PassiveAbility ability);
     
-    `default void addPassiveAbility(PassiveAbility ability);`
+    default void removePassiveAbility(PassiveAbility ability);
     
-    `default void removePassiveAbility(PassiveAbility ability);`
-    
-    `default void removePassiveAbility(String abilityName);`
+    default void removePassiveAbility(String abilityName);
     
 `GameState[Interface]`
 	
