@@ -3,16 +3,17 @@
  */
 package backend.grid;
 
-import backend.cell.Cell;
-import backend.game_engine.Player;
-import javafx.util.Pair;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
+
+import javafx.util.Pair;
+import backend.cell.Cell;
+import backend.game_engine.Player;
+import backend.unit.Unit;
 
 /**
  * Andreas
@@ -21,6 +22,8 @@ import java.util.stream.Collectors;
 //TODO
 public interface Grid {
     Cell get(CoordinateTuple coordinateTuple);
+    
+    Collection<Unit> getUnits();
 
     default int dimension() {
         return getCells().values().stream().findAny().orElse(null).dimension();
