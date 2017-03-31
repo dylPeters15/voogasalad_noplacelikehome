@@ -344,13 +344,13 @@ The order of this internal API will be from the most to least abstract component
     
 `GameState[Interface]`
 	
-	`List<Player> getPlayers();`
+	List<Player> getPlayers();
     
-    `Grid getGrid();`
+    Grid getGrid();
     
-    `Player getCurrentPlayer();`
+    Player getCurrentPlayer();
     
-    `int getTurnNumber();`
+    int getTurnNumber();
     
 Most if not all of the other parts of the Back-end internal API are ability/modifier related and are therefore  
 they are extremely specialized- to a point in which implementation details will be further understood during   
