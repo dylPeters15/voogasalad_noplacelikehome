@@ -201,16 +201,27 @@ front-end and back-end. Here are some of the other classes and some public metho
 	able to aid in the development of games through writing code on the user-interface. The majority of this 
 	
 `GameEngine[Interface]`
+
 	`public void addObjective(ResultQuadPredicate winCondition);`
+	
 	`public void addTrigger(BiConsumer<Player, GameState> turnAction, TurnTrigger when);`
+	
 	`public void start();`
+	
 	`public executeRound()`
+	
 	`public void restart();`
+	
 	`public void quit();`
+	
 	`public void save();`
+	
 	`public void load();`
+	
 	`public void newUnit(UnitInstance newUnit);`
+	
 	`public void newTerrain(Terrain terrain);`
+	
 	`public enum TurnTrigger;`
 	
 ## Back-End Internal API:
