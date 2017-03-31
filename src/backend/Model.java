@@ -1,14 +1,15 @@
 package backend;
 
+import backend.game_engine.GameState;
+
 /**
+ * Noah
  * @author Dylan Peters
  */
 public interface Model {
 	
-	Game getGame();
-
-	void editGame(Game gameToEdit);
-
-	void loadGame(Game gameToLoad);
+	GameState getGameState();
+	
+	GameState setGameState();
 	
 }

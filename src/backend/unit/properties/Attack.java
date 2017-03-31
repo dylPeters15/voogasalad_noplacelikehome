@@ -1,42 +1,30 @@
 package backend.unit.properties;
 
-import backend.Game;
-import backend.grid.CoordinateTuple;
-import backend.unit.InteractionModifier;
-import backend.unit.Unit;
+import backend.game_engine.GameState;
+import backend.unit.UnitInstance;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.IntStream;
 
 /**
+ * Timmy
+ *
  * @author Created by th174 on 3/27/2017.
  */
-public final class Attack extends ActiveAbility<Unit> {
-    private final Collection<CoordinateTuple> attackPattern;
+public final class Attack implements ActiveAbility.AbilityEffect<UnitInstance> {
     private final double damage;
     private final int numHits;
     private final List<InteractionModifier<Double>> damageModifiers;
 
-    public Attack(String name, String description, String imgPath, Double damage, int numHits, Game game) {
-        this(name, description, imgPath, damage, numHits, CoordinateTuple.getOrigin(game.getGrid().dimension()).getNeighbors(), game);
+    public Attack(double damage, int numHits) {
+        this(damage, numHits, new ArrayList<>());
     }
 
-    public Attack(String name, String description, String imgPath, Double damage, int numHits, Collection<CoordinateTuple> attackPattern, Game game) {
-        this(name, description, imgPath, damage, numHits, attackPattern, new ArrayList<>(), game);
-    }
-
-    //Uses CoordinateTuple.getNeighbors() as default attack pattern
-    public Attack(String name, String description, String imgPath, Double damage, int numHits, List<InteractionModifier<Double>> damageModifiers, Game game) {
-        this(name, description, imgPath, damage, numHits, CoordinateTuple.getOrigin(game.getGrid().dimension()).getNeighbors(), damageModifiers, game);
-    }
-
-    public Attack(String name, String description, String imgPath, Double damage, int numHits, Collection<CoordinateTuple> attackPattern, List<InteractionModifier<Double>> damageModifiers, Game game) {
-        super(name, description, imgPath, game);
+    public Attack(double damage, int numHits, List<InteractionModifier<Double>> damageModifiers) {
         this.damage = damage;
         this.numHits = numHits;
         this.damageModifiers = damageModifiers;
-        this.attackPattern = attackPattern;
     }
 
     public int getNumHits() {
@@ -47,20 +35,17 @@ public final class Attack extends ActiveAbility<Unit> {
         return damage;
     }
 
-    public double getDamage(Unit user, Unit target) {
-        return InteractionModifier.modifyAll(damageModifiers, getBaseDamage(), user, target, getGame());
-    }
-
-    public Collection<CoordinateTuple> getAttackPattern() {
-        return attackPattern;
+    public double getDamage(UnitInstance user, UnitInstance target, GameState game) {
+        return InteractionModifier.modifyAll(damageModifiers, getBaseDamage(), user, target, game);
     }
 
     @Override
-    public void affect(Unit user, Unit target) {
-        for (int i = 0; i < getNumHits(); i++) {
-            double attackDamage = user.getAttackModifier().modify(getDamage(user, target), user, target, getGame());
-            double totalDamage = target.getDefenseModifier().modify(attackDamage, user, target, getGame());
-            target.getHitPoints().takeDamage(totalDamage);
-        }
+    public void useAbility(UnitInstance user, UnitInstance target, GameState game) {
+        IntStream.range(0, getNumHits()).forEach(i -> {
+            double attackDamage = user.applyAllOffensiveModifiers(getDamage(user, target, game), target);
+            double totalDamage = target.applyAllDefensiveModifiers(attackDamage, user);
+            target.takeDamage(totalDamage);
+        });
     }
 }
+
