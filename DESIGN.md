@@ -284,7 +284,6 @@ The order of this internal API will be from the most to least abstract component
     
     `default void addAllOccupants(Collection<UnitInstance> units);`
     
-    
     `default void removeAllOccupants(Collection<UnitInstance> units);`
     
     `void applyAbilities();`
