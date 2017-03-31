@@ -23,9 +23,9 @@ import java.util.stream.Stream;
  */
 public class GameBoard extends GameObjectImpl implements Grid, XMLsavable, Iterable {
     private final ObservableMap<CoordinateTuple, Cell> gameBoard;
-    private BoundaryConditions currentBoundsMode;
+    private BoundsHandler currentBoundsMode;
 
-    public GameBoard(String name, CellImpl templateCell, int rows, int columns, BoundaryConditions currentBoundsMode, String description, String imgPath, GameState game) {
+    public GameBoard(String name, CellImpl templateCell, int rows, int columns, BoundsHandler currentBoundsMode, String description, String imgPath, GameState game) {
         super(name, description, imgPath, game);
         this.currentBoundsMode = currentBoundsMode;
         gameBoard = FXCollections.observableMap(
@@ -68,7 +68,7 @@ public class GameBoard extends GameObjectImpl implements Grid, XMLsavable, Itera
     }
 
     @Override
-    public void setBoundaryConditions(BoundaryConditions boundaryConditions) {
+    public void setBoundaryConditions(BoundsHandler boundaryConditions) {
         this.currentBoundsMode = boundaryConditions;
     }
 
@@ -91,8 +91,8 @@ public class GameBoard extends GameObjectImpl implements Grid, XMLsavable, Itera
         return null;
     }
 
-	@Override
-	public void setGridSize(int x, int y) {
-		// TODO Implement this
-	}
+    @Override
+    public void setGridSize(int x, int y) {
+        // TODO Implement this
+    }
 }

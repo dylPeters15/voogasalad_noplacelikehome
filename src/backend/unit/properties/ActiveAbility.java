@@ -37,7 +37,7 @@ public class ActiveAbility<T extends GameObject> extends GameObjectImpl {
         effect.useAbility(user, target, game);
     }
 
-    public interface AbilityEffect<T extends GameObject> {
+    interface AbilityEffect<T extends GameObject> {
         void useAbility(UnitInstance user, T target, GameState game);
     }
 }

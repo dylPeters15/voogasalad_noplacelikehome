@@ -3,6 +3,7 @@
  */
 package backend.grid;
 
+import backend.GameObject;
 import backend.cell.Cell;
 import backend.game_engine.Player;
 import javafx.util.Pair;
@@ -16,10 +17,11 @@ import java.util.stream.Collectors;
 
 /**
  * Andreas
+ *
  * @author Dylan Peters
  */
 //TODO
-public interface Grid {
+public interface Grid extends GameObject {
     Cell get(CoordinateTuple coordinateTuple);
 
     default int dimension() {
@@ -36,7 +38,7 @@ public interface Grid {
 
     GridBounds getRectangularBounds();
 
-    void setBoundaryConditions(BoundaryConditions boundaryConditions) throws IllegalAccessException;
+    void setBoundaryConditions(BoundsHandler boundaryConditions) throws IllegalAccessException;
 
     Collection<Cell> filterCells(Player currentPlayer, BiPredicate<Player, Cell> visibilityPredicate);
 
@@ -55,6 +57,6 @@ public interface Grid {
             return bounds.get(i).getValue();
         }
     }
-    
+
     public void setGridSize(int x, int y);
 }
