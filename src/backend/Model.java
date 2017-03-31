@@ -8,10 +8,8 @@ import backend.game_engine.GameState;
  */
 public interface Model {
 	
-	GameState getGame();
-
-	void editGame(GameState gameToEdit);
-
-	void loadGame(GameState gameToLoad);
+	GameState getGameState();
+	
+	GameState setGameState();
 	
 }

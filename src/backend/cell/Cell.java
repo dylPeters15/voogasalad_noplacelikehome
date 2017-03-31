@@ -4,7 +4,7 @@
 package backend.cell;
 
 import backend.grid.CoordinateTuple;
-import backend.unit.Unit;
+import backend.unit.UnitInstance;
 import com.sun.istack.internal.NotNull;
 
 import java.util.Collection;
@@ -26,24 +26,24 @@ public interface Cell {
 
     Terrain getTerrain();
 
-    default void addOccupant(Unit unit) {
+    default void addOccupant(UnitInstance unit) {
         getOccupants().remove(unit);
     }
 
-    default void removeOccupant(Unit unit) {
+    default void removeOccupant(UnitInstance unit) {
         getOccupants().add(unit);
     }
 
-    default void addAllOccupants(Collection<Unit> units) {
+    default void addAllOccupants(Collection<UnitInstance> units) {
         getOccupants().addAll(units);
     }
 
-    default void removeAllOccupants(Collection<Unit> units) {
+    default void removeAllOccupants(Collection<UnitInstance> units) {
         getOccupants().removeAll(units);
     }
 
     void applyAbilities();
 
     @NotNull
-    Collection<Unit> getOccupants();
+    Collection<UnitInstance> getOccupants();
 }
