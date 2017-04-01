@@ -2,7 +2,7 @@ package backend.unit.properties;
 
 import backend.game_engine.GameState;
 import backend.unit.UnitInstance;
-import backend.util.GameObject;
+import backend.util.VoogaInstance;
 
 import java.util.Collection;
 import java.util.stream.Stream;
@@ -12,7 +12,7 @@ import java.util.stream.Stream;
  *
  * @author Created by th174 on 3/29/2017.
  */
-public class ActiveAbility<T extends GameObject> extends Ability {
+public class ActiveAbility<T extends VoogaInstance> extends Ability {
     //All hexagonal and only effects adjacent neighbors
     public static final ActiveAbility<UnitInstance> PUNCH = new ActiveAbility<>("Punch", new Attack(6, 2), GridPattern.getNeighborPattern(3), "The attacker hits 2 times for 6 damage each in any hexagonal direction.", "Fist.png");
     public static final ActiveAbility<UnitInstance> SUICIDE_SQUAD = new ActiveAbility<>("Suicide Squad, Attack!", (user, target, game) -> {
@@ -45,7 +45,7 @@ public class ActiveAbility<T extends GameObject> extends Ability {
     }
 
     @FunctionalInterface
-    public interface AbilityEffect<T extends GameObject> {
+    public interface AbilityEffect<T extends VoogaInstance> {
         void useAbility(UnitInstance user, T target, GameState game);
     }
 

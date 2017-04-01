@@ -1,19 +1,21 @@
-package backend.util;
+package backend.unit.properties;
+
+import backend.util.VoogaObject;
 
 /**
  * Timmy
  *
  * @author Created by th174 on 3/28/2017.
  */
-public class GameQuantity<T extends Number> extends GameObjectImpl {
-    private final T maxValue;
+public abstract class UnitStat<T extends Number> extends VoogaObject {
+    private T maxValue;
     private T currentValue;
 
-    public GameQuantity(String name, T maxValue, String description, String imgPath) {
+    public UnitStat(String name, T maxValue, String description, String imgPath) {
         this(name, maxValue, maxValue, description, imgPath);
     }
 
-    public GameQuantity(String name, T currentValue, T maxValue, String description, String imgPath) {
+    public UnitStat(String name, T currentValue, T maxValue, String description, String imgPath) {
         super(name, description, imgPath);
         this.currentValue = currentValue;
         this.maxValue = maxValue;
@@ -23,16 +25,16 @@ public class GameQuantity<T extends Number> extends GameObjectImpl {
         currentValue = newValue;
     }
 
+    public void resetValue() {
+        set(getMaxValue());
+    }
+
     public T getMaxValue() {
         return maxValue;
     }
 
     public T getCurrentValue() {
         return currentValue;
-    }
-
-    public void resetValue() {
-        set(getMaxValue());
     }
 
     public boolean isFull() {

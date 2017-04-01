@@ -6,7 +6,6 @@ package usecases;
 import java.util.Collection;
 import java.util.Map;
 
-import backend.util.GameObject;
 import backend.game_engine.GameState;
 import backend.unit.Unit;
 import backend.unit.UnitInstance;

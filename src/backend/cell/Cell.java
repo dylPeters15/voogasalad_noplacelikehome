@@ -8,7 +8,6 @@ import backend.unit.UnitInstance;
 import com.sun.istack.internal.NotNull;
 
 import java.util.Collection;
-import java.util.Map;
 
 /**
  * Dylan
@@ -18,10 +17,10 @@ import java.util.Map;
 public interface Cell {
     CoordinateTuple getCoordinates();
 
-    Map<CoordinateTuple, Cell> getNeighbors();
+    Shape getShape();
 
     default int dimension() {
-        return getCoordinates().dimension();
+        return getShape().getDimension();
     }
 
     Terrain getTerrain();
@@ -42,8 +41,22 @@ public interface Cell {
         getOccupants().removeAll(units);
     }
 
-    void applyAbilities();
+    Collection<CellEffect> getAbilities();
 
     @NotNull
     Collection<UnitInstance> getOccupants();
+
+    enum Shape {
+        SQUARE(2), HEXAGONAL(3);
+
+        private final int dimension;
+
+        Shape(int dimension) {
+            this.dimension = dimension;
+        }
+
+        public int getDimension() {
+            return dimension;
+        }
+    }
 }

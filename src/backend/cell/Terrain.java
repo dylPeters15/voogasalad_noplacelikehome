@@ -4,20 +4,17 @@
 package backend.cell;
 
 import backend.unit.properties.InteractionModifier;
-import backend.util.GameObject;
-import backend.util.GameObjectImpl;
+import backend.util.VoogaObject;
 
 import java.util.Collection;
 
 /**
- * Dylan
- *
- * @author Dylan Peters, Timmy Huang
+ * @author Created by th174 on 3/31/2017.
  */
-public class Terrain extends GameObjectImpl implements GameObject {
+public class Terrain extends VoogaObject {
     public static final int IMPASSABLE = Integer.MAX_VALUE;
     //TODO: ResourceBundlify this shit
-    public static final Terrain NONE = new Terrain("None", IMPASSABLE, (InteractionModifier<Double>) InteractionModifier.NO_EFFECT, "Literally nothing", "black_void_of_the_abyss.png");
+    public static final Terrain EMPTY = new Terrain("Empty", IMPASSABLE, (InteractionModifier<Double>) InteractionModifier.NO_EFFECT, "Literally nothing", "black_void_of_the_abyss.png");
     public static final Terrain FLAT = new Terrain("Flat", 1, new InteractionModifier<>("Default Flat Terrain Defense", (originalValue, agent, target, game) -> Math.random() < .7 ? originalValue : 0, "Units have 30% evasion on Flat terrain by default."), "Open, flat, land that offers little defensive cover, but allows for easy movement.", "grassy_plain.png");
     public static final Terrain FOREST = new Terrain("Forest", 2, new InteractionModifier<>("Default Forest Terrain Defense", (originalValue, agent, target, game) -> Math.random() < .4 ? originalValue : 0, "Units have 60% evasion on Forest terrain by default."), "Thick forest that offers plenty of cover, but makes navigating difficult.", "forest.png");
     public static final Terrain WATER = new Terrain("Water", 3, new InteractionModifier<>("Default Water Terrain Defense", (originalValue, agent, target, game) -> Math.random() < .8 ? originalValue : 0, "Units have 20% evasion on Water terrain by default."), "Water that impedes movement for non-aquatic units", "splish_splash.png");

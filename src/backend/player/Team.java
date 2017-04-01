@@ -1,13 +1,13 @@
 package backend.player;
 
-import backend.util.GameCollection;
+import backend.util.VoogaCollection;
 
 import java.util.Collection;
 
 /**
  * @author Created by th174 on 3/30/2017.
  */
-public class Team extends GameCollection<Player> {
+public class Team extends VoogaCollection<Player> {
     public Team(String name, String description, String imgPath) {
         super(name, description, imgPath);
     }
