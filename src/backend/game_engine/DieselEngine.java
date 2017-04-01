@@ -73,4 +73,9 @@ public class DieselEngine implements GameEngine {
         // TODO Auto-generated method stub
 
     }
+
+    @Override
+    public void newTerrain(Terrain terrain) {
+        // TODO Auto-generated method stub
+    }
 }
