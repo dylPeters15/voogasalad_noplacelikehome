@@ -1,12 +1,11 @@
 package backend.cell;
 
-import backend.util.GameState;
 import backend.grid.CoordinateTuple;
 import backend.unit.UnitInstance;
+import backend.util.GameState;
 import backend.util.Template;
 import backend.util.VoogaObject;
 
-import java.nio.file.Path;
 import java.util.*;
 
 /**
@@ -25,7 +24,7 @@ public class CellTemplate extends VoogaObject implements Cell, Template<CellInst
     public static final CellTemplate HEALING_HEXAGONAL_FOREST = new CellTemplate("Healing Hexagonal Forest Cell", Shape.HEXAGONAL, Terrain.FOREST, CellEffect.FULL_HEAL);
     public static final CellTemplate HEALING_HEXAGONAL_WATER = new CellTemplate("Healing Hexagonal Water Cell", Shape.HEXAGONAL, Terrain.WATER, CellEffect.FULL_HEAL);
     public static final CellTemplate HEALING_HEXAGONAL_MOUNTAIN = new CellTemplate("Healing Hexagonal Mountain Cell", Shape.HEXAGONAL, Terrain.MOUNTAIN, CellEffect.FULL_HEAL);
-    public static final CellTemplate HEALING_HEXAGONAL_FORTIFIED = new CellTemplate("Healing Hexagonal FOrtified Cell", Shape.HEXAGONAL, Terrain.FORTIFIED, CellEffect.FULL_HEAL);
+    public static final CellTemplate HEALING_HEXAGONAL_FORTIFIED = new CellTemplate("Healing Hexagonal Fortified Cell", Shape.HEXAGONAL, Terrain.FORTIFIED, CellEffect.FULL_HEAL);
     public static final CellTemplate BASIC_SQUARE_EMPTY = new CellTemplate("Basic Square Empty Cell", Shape.SQUARE, Terrain.EMPTY);
     public static final CellTemplate BASIC_SQUARE_FLAT = new CellTemplate("Basic Square Flat Cell", Shape.SQUARE, Terrain.FLAT);
     public static final CellTemplate BASIC_SQUARE_FOREST = new CellTemplate("Basic Square Forest Cell", Shape.SQUARE, Terrain.FOREST);
@@ -46,15 +45,15 @@ public class CellTemplate extends VoogaObject implements Cell, Template<CellInst
         this(name, shape, terrain, terrain.getImgPath(), abilities);
     }
 
-    public CellTemplate(String name, Shape shape, Terrain terrain, Path imgPath, CellEffect... abilities) {
+    public CellTemplate(String name, Shape shape, Terrain terrain, String imgPath, CellEffect... abilities) {
         this(name, shape, terrain, imgPath, Arrays.asList(abilities));
     }
 
-    public CellTemplate(String name, Shape shape, Terrain terrain, Path imgPath, Collection<CellEffect> abilities) {
+    public CellTemplate(String name, Shape shape, Terrain terrain, String imgPath, Collection<CellEffect> abilities) {
         this(name, shape, terrain, name, imgPath, abilities, Collections.EMPTY_LIST);
     }
 
-    public CellTemplate(String name, Shape shape, Terrain terrain, String description, Path imgPath, Collection<CellEffect> abilities, Collection<UnitInstance> initialOccupants) {
+    public CellTemplate(String name, Shape shape, Terrain terrain, String description, String imgPath, Collection<CellEffect> abilities, Collection<UnitInstance> initialOccupants) {
         super(name, description, imgPath);
         this.shape = shape;
         this.abilities = new ArrayList<>(abilities);
@@ -106,13 +105,13 @@ public class CellTemplate extends VoogaObject implements Cell, Template<CellInst
         this.abilities = new ArrayList<>(abilities);
     }
 
+    public void setAbilities(List<CellEffect> abilities) {
+        this.abilities = abilities;
+    }
+
     @Override
     public Collection<UnitInstance> getOccupants() {
         return initialOccupants;
-    }
-
-    public void setAbilities(List<CellEffect> abilities) {
-        this.abilities = abilities;
     }
 
     public Collection<CellTemplate> getPredefinedCellTemplates() {

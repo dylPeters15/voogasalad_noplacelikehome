@@ -1,6 +1,3 @@
-/**
- *
- */
 package backend.grid;
 
 import backend.cell.CellInstance;
@@ -40,17 +37,25 @@ public interface Grid {
 
     Map<CoordinateTuple, CellInstance> getNeighbors(CoordinateTuple coordinate);
 
+    GridBounds getBounds();
+
     GridBounds getRectangularBounds();
 
     void setBoundaryConditions(BoundsHandler boundaryConditions) throws IllegalAccessException;
 
     Collection<CellInstance> filterCells(Player currentPlayer, BiPredicate<Player, CellInstance> visibilityPredicate);
 
+    void setGridSize(int x, int y);
+
     class GridBounds {
         private final List<Pair<Integer, Integer>> bounds;
 
-        protected GridBounds(int[]... minmax) {
-            bounds = Arrays.stream(minmax).map(e -> new Pair<>(e[0], e[1])).collect(Collectors.toList());
+        protected GridBounds(Pair<Integer, Integer>... minMax) {
+            bounds = Arrays.asList(minMax);
+        }
+
+        protected GridBounds(int[]... minMax) {
+            bounds = Arrays.stream(minMax).map(e -> new Pair<>(e[0], e[1])).collect(Collectors.toList());
         }
 
         public int getMin(int i) {
@@ -61,6 +66,4 @@ public interface Grid {
             return bounds.get(i).getValue();
         }
     }
-
-    public void setGridSize(int x, int y);
 }

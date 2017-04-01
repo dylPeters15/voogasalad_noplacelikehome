@@ -1,8 +1,8 @@
 package backend.cell;
 
-import backend.util.GameState.Event;
 import backend.unit.properties.TriggeredAbility;
 import backend.unit.properties.TriggeredEffect;
+import backend.util.GameState.Event;
 import backend.util.VoogaObject;
 
 import java.util.Collection;

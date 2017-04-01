@@ -15,10 +15,10 @@ import java.util.List;
 public class InteractionModifier<T> extends VoogaObject implements Ability {
     //TODO: ResourceBundlify all this shit
     public static final InteractionModifier<?> DUMMY = new InteractionModifier<>("Dummy", (originalValue, agent, target, game) -> originalValue, "Dummy modifier that doesn't change anything", "Nothing.png");
-    public static final InteractionModifier<Double> NO_EFFECT = new InteractionModifier<Double>("No effect", (originalValue, agent, target, game) -> 0.0, "Literally nothing", "The_abyss_stares_back.png");
+    public static final InteractionModifier<Double> NO_EFFECT = new InteractionModifier<>("No effect", (originalValue, agent, target, game) -> 0.0, "Literally nothing", "The_abyss_stares_back.png");
     //Offensive modifiers, can go on units or attacks
     public static final InteractionModifier<Double> CHAOTIC = new InteractionModifier<>("Chaotic", OffensiveModifier.CHAOTIC, "Attacks do more damage in nighttime, but less damage in daytime.", "Chaotic.png");
-    public static final InteractionModifier<Double> LAWFUL = new InteractionModifier<>("Lawful", OffensiveModifier.LAWFUL, "Attacks do more damage in daytime, but less damage in nightime", "Lawful.png");
+    public static final InteractionModifier<Double> LAWFUL = new InteractionModifier<>("Lawful", OffensiveModifier.LAWFUL, "Attacks do more damage in daytime, but less damage in nighttime", "Lawful.png");
     public static final InteractionModifier<Double> BLINDED = new InteractionModifier<>("Blinded", OffensiveModifier.BLINDED, "Attacks have a high chance to miss", "Helen_Keller.png");
     public static final InteractionModifier<Double> FIRST_BLOOD = new InteractionModifier<>("First Blood", OffensiveModifier.FIRST_BLOOD, "Attacks do extra damage to targets at full HP.", "First_blood.png");
     public static final InteractionModifier<Double> EXECUTIONER = new InteractionModifier<>("Executioner", OffensiveModifier.EXECUTIONER, "Attacks do extra damage to targets at low HP.", "Axe.png");
@@ -49,10 +49,6 @@ public class InteractionModifier<T> extends VoogaObject implements Ability {
         this.modifier = modifier;
     }
 
-    public T modify(T originalValue, UnitInstance agent, UnitInstance target, GameState game) {
-        return modifier.modify(originalValue, agent, target, game);
-    }
-
     public static <T> T modifyAll(List<? extends InteractionModifier<T>> modifiers, T originalValue, UnitInstance agent, UnitInstance target, GameState game) {
         for (InteractionModifier<T> op : modifiers) {
             originalValue = op.modify(originalValue, agent, target, game);
@@ -60,12 +56,16 @@ public class InteractionModifier<T> extends VoogaObject implements Ability {
         return originalValue;
     }
 
+    public static Collection<InteractionModifier> getPredefinedInteractionModifiers() {
+        return getPredefined(InteractionModifier.class);
+    }
+
+    public T modify(T originalValue, UnitInstance agent, UnitInstance target, GameState game) {
+        return modifier.modify(originalValue, agent, target, game);
+    }
+
     @FunctionalInterface
     public interface Modifier<T> {
         T modify(T originalValue, UnitInstance agent, UnitInstance target, GameState game);
-    }
-
-    public static Collection<InteractionModifier> getPredefinedInteractionModifiers() {
-        return getPredefined(InteractionModifier.class);
     }
 }

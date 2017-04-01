@@ -2,9 +2,9 @@ package backend.unit;
 
 import backend.cell.CellInstance;
 import backend.cell.Terrain;
-import backend.util.GameState;
 import backend.player.Player;
 import backend.unit.properties.*;
+import backend.util.GameState;
 import backend.util.VoogaInstance;
 import backend.util.VoogaObject;
 
@@ -44,6 +44,10 @@ public class UnitTemplate extends VoogaObject implements Unit {
         this.activeAbilities = activeAbilities.parallelStream().collect(Collectors.toMap(ActiveAbility::getName, a -> a));
         this.offensiveModifiers = new ArrayList<>(offensiveModifiers);
         this.defensiveModifiers = new ArrayList<>(defensiveModifiers);
+    }
+
+    public static Collection<UnitTemplate> getPredefinedUnitTemplates() {
+        return getPredefined(UnitTemplate.class);
     }
 
     public UnitInstance createInstance(String unitName, Player ownerPlayer, CellInstance startingCell, GameState game) {
@@ -109,9 +113,5 @@ public class UnitTemplate extends VoogaObject implements Unit {
     @Override
     public Map<Terrain, Integer> getTerrainMoveCosts() {
         return terrainMoveCosts;
-    }
-
-    public static Collection<UnitTemplate> getPredefinedUnitTemplates() {
-        return getPredefined(UnitTemplate.class);
     }
 }

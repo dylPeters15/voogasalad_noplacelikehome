@@ -15,14 +15,14 @@ import java.util.stream.Stream;
  */
 public class ActiveAbility<T extends VoogaInstance> extends VoogaObject implements Ability {
     //All hexagonal and only effects adjacent neighbors
-    public static final ActiveAbility<UnitInstance> PUNCH = new ActiveAbility<>("Punch", new Attack(6, 2), GridPattern.getNeighborPattern(3), "The attacker hits 2 times for 6 damage each in any hexagonal direction.", "Fist.png");
+    public static final ActiveAbility<UnitInstance> PUNCH = new ActiveAbility<>("Punch", new Attack(6, 2), GridPattern.HEXAGONAL_ADJACENT, "The attacker hits 2 times for 6 damage each in any hexagonal direction.", "Fist.png");
     public static final ActiveAbility<UnitInstance> SUICIDE_SQUAD = new ActiveAbility<>("Suicide Squad, Attack!", (user, target, game) -> {
         user.getAllNeighboringUnits().stream().filter(e -> e.getTeam() != user.getTeam()).forEach(u -> u.takeDamage(10));
         user.takeDamage(Integer.MAX_VALUE);
-    }, GridPattern.getNeighborPattern(3), "The attacker sacrifices itself to deal massive damage to all neighboring enemy units.", "Allahu_Akbar.png");
-    public static final ActiveAbility<UnitInstance> FULL_HEAL = new ActiveAbility<>("Full Heal", (user, target, game) -> target.getHitPoints().resetValue(), GridPattern.getNeighborPattern(3), "The attacker fully heals any unit", "Red_Cross.png");
-    public static final ActiveAbility<UnitInstance> BLIND = new ActiveAbility<>("Blind", (user, target, game) -> target.addOffensiveModifier(InteractionModifier.BLINDED), GridPattern.getNeighborPattern(3), "The attacker gives a unit the Blinded modifier", "Helen_Keller.png");
-    public static final ActiveAbility<UnitInstance> SILENCE = new ActiveAbility<>("Silence", (user, target, game) -> Stream.of(target.getOffensiveModifiers(), target.getDefensiveModifiers(), target.getAllTriggeredAbilities()).forEach(Collection::clear), GridPattern.getNeighborPattern(3), "Removes all offensive, defensive, and passive modifiers from a unit", "Silencer.png");
+    }, GridPattern.HEXAGONAL_ADJACENT, "The attacker sacrifices itself to deal massive damage to all neighboring enemy units.", "Allahu_Akbar.png");
+    public static final ActiveAbility<UnitInstance> FULL_HEAL = new ActiveAbility<>("Full Heal", (user, target, game) -> target.getHitPoints().resetValue(), GridPattern.HEXAGONAL_ADJACENT, "The attacker fully heals any unit", "Red_Cross.png");
+    public static final ActiveAbility<UnitInstance> BLIND = new ActiveAbility<>("Blind", (user, target, game) -> target.addOffensiveModifier(InteractionModifier.BLINDED), GridPattern.HEXAGONAL_ADJACENT, "The attacker gives a unit the Blinded modifier", "Helen_Keller.png");
+    public static final ActiveAbility<UnitInstance> SILENCE = new ActiveAbility<>("Silence", (user, target, game) -> Stream.of(target.getOffensiveModifiers(), target.getDefensiveModifiers(), target.getAllTriggeredAbilities()).forEach(Collection::clear), GridPattern.HEXAGONAL_ADJACENT, "Removes all offensive, defensive, and passive modifiers from a unit", "Silencer.png");
 
     private final AbilityEffect<T> effect;
     private final GridPattern range;
@@ -31,6 +31,10 @@ public class ActiveAbility<T extends VoogaInstance> extends VoogaObject implemen
         super(name, description, imgPath);
         this.range = range;
         this.effect = effect;
+    }
+
+    public static Collection<ActiveAbility> getPredefinedActiveAbilities() {
+        return getPredefined(ActiveAbility.class);
     }
 
     public AbilityEffect<T> getAbilityEffect() {
@@ -48,9 +52,5 @@ public class ActiveAbility<T extends VoogaInstance> extends VoogaObject implemen
     @FunctionalInterface
     public interface AbilityEffect<T extends VoogaInstance> {
         void useAbility(UnitInstance user, T target, GameState game);
-    }
-
-    public static Collection<ActiveAbility> getPredefinedActiveAbilities() {
-        return getPredefined(ActiveAbility.class);
     }
 }

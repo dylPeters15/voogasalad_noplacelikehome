@@ -25,15 +25,15 @@ public class Resource extends UnitStat<Double> {
         super(name, currentValue, maxValue, description, imgPath);
     }
 
+    public static Collection<Resource> getPredefinedResources() {
+        return getPredefined(Resource.class);
+    }
+
     public void gain(double value) {
         set(getCurrentValue() + value);
     }
 
     public void use(double value) {
         set(getCurrentValue() - value);
-    }
-
-    public static Collection<Resource> getPredefinedResources() {
-        return getPredefined(Resource.class);
     }
 }

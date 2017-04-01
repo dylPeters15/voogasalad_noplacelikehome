@@ -5,7 +5,6 @@ import backend.util.VoogaObject;
 import java.util.Collection;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * Andreas
@@ -13,10 +12,44 @@ import java.util.stream.IntStream;
  * @author Created by th174 on 3/28/2017.
  */
 public class BoundsHandler extends VoogaObject {
-    //TODO Resourcebundlify this
-    public static final BoundsHandler INFINITEBOUNDS = new BoundsHandler("Infinite Bounds", (input, grid) -> input, "Allows grid to expand to accommodate out of bounds coordinates.");
-    public static final BoundsHandler FINITEBOUNDS = new BoundsHandler("Finite Bounds", (input, grid) -> new CoordinateTuple(IntStream.range(0, input.dimension()).map(i -> Math.min(Math.max(input.get(i), grid.getRectangularBounds().getMax(i)), grid.getRectangularBounds().getMin(i))).boxed().collect(Collectors.toList())), "Converts out of bounds coordinates to the closest in bounds coordinate.");
-    public static final BoundsHandler TOROIDALBOUNDS = new BoundsHandler("Toroidal Bounds", (input, grid) -> new CoordinateTuple(IntStream.range(0, input.dimension()).map(i -> Math.floorMod(input.get(i) - grid.getRectangularBounds().getMin(i), grid.getRectangularBounds().getMax(i) - grid.getRectangularBounds().getMin(i)) + grid.getRectangularBounds().getMin(i)).boxed().collect(Collectors.toList())), "Wraps out of bounds coordinates to the opposite side of the grid");
+    //TODO ResourceBundlify this
+    public static final BoundsHandler INFINITE_BOUNDS = new BoundsHandler("Infinite Bounds", (input, grid) -> input, "Allows grid to expand to accommodate out of bounds coordinates.");
+    public static final BoundsHandler FINITE_BOUNDS = new BoundsHandler("Finite Bounds",
+            (input, grid) -> {
+                Grid.GridBounds bounds = grid.getBounds();
+                return new CoordinateTuple(
+                        input.stream()
+                                .map(i -> Math.min(Math.max(input.get(i), bounds.getMax(i)), bounds.getMin(i)))
+                                .collect(Collectors.toList())
+                );
+            }, "Converts out of bounds coordinates to the closest inbounds coordinate on the grid.");
+    public static final BoundsHandler SQUARE_FINITE_BOUNDS = new BoundsHandler("Square Finite Bounds",
+            (input, grid) -> {
+                Grid.GridBounds bounds = grid.getRectangularBounds();
+                return new CoordinateTuple(
+                        input.convertToRectangular().stream()
+                                .map(i -> Math.min(Math.max(input.get(i), bounds.getMax(i)), bounds.getMin(i)))
+                                .collect(Collectors.toList())
+                ).convertToDimension(input.dimension());
+            }, "Converts out of bounds coordinates to the closest inbounds coordinate on a square grid.");
+    public static final BoundsHandler TOROIDAL_BOUNDS = new BoundsHandler("Toroidal Bounds",
+            (input, grid) -> {
+                Grid.GridBounds bounds = grid.getBounds();
+                return new CoordinateTuple(
+                        input.stream()
+                                .map(i -> Math.floorMod(input.get(i) - bounds.getMin(i), bounds.getMax(i) - bounds.getMin(i)) + bounds.getMin(i))
+                                .collect(Collectors.toList())
+                );
+            }, "Wraps out of bounds coordinates to the opposite side of the grid", "Torus.png");
+    public static final BoundsHandler SQUARE_TOROIDAL_BOUNDS = new BoundsHandler("Square Toroidal Bounds",
+            (input, grid) -> {
+                Grid.GridBounds bounds = grid.getRectangularBounds();
+                return new CoordinateTuple(
+                        input.convertToRectangular().stream()
+                                .map(i -> Math.floorMod(input.get(i) - bounds.getMin(i), bounds.getMax(i) - bounds.getMin(i)) + bounds.getMin(i))
+                                .collect(Collectors.toList())
+                ).convertToDimension(input.dimension());
+            }, "Wraps out of bounds coordinates to the opposite side of a square grid.", "Torus.png");
 
     private final BiFunction<CoordinateTuple, Grid, CoordinateTuple> boundsGetter;
 
@@ -29,11 +62,11 @@ public class BoundsHandler extends VoogaObject {
         this.boundsGetter = boundsGetter;
     }
 
-    public CoordinateTuple getMappedCoordinate(Grid grid, CoordinateTuple input) {
-        return boundsGetter.apply(input, grid);
-    }
-
     public static Collection<BoundsHandler> getPredefinedBoundsHandlers() {
         return getPredefined(BoundsHandler.class);
+    }
+
+    public CoordinateTuple getMappedCoordinate(Grid grid, CoordinateTuple input) {
+        return boundsGetter.apply(input, grid);
     }
 }

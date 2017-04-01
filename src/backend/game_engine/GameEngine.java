@@ -1,7 +1,7 @@
 package backend.game_engine;
 
 import backend.cell.Terrain;
-import backend.io.XMLsavable;
+import backend.io.XMLSavable;
 import backend.player.Player;
 import backend.unit.UnitInstance;
 import backend.util.GameState;
@@ -9,11 +9,9 @@ import backend.util.GameState;
 import java.util.function.BiConsumer;
 
 /**
- *
  * @author Alexander Zapata
- * 
  */
-public interface GameEngine extends XMLsavable {
+public interface GameEngine extends XMLSavable {
     void addObjective(ResultQuadPredicate winCondition);
 
     void addTrigger(BiConsumer<Player, GameState> turnAction, GameState.Event when);

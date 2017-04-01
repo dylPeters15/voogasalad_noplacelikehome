@@ -1,6 +1,3 @@
-/**
- *
- */
 package backend.cell;
 
 import backend.unit.properties.InteractionModifier;
@@ -44,6 +41,10 @@ public class Terrain extends VoogaObject {
         this.defaultDefenseModifier = defaultDefenseModifier;
     }
 
+    public static Collection<Terrain> getPredefinedTerrain() {
+        return getPredefined(Terrain.class);
+    }
+
     public boolean equals(Object obj) {
         return (obj instanceof Terrain) && ((Terrain) obj).getName().equals(this.getName());
     }
@@ -58,9 +59,5 @@ public class Terrain extends VoogaObject {
 
     public InteractionModifier getDefaultDefenseModifier() {
         return defaultDefenseModifier;
-    }
-
-    public static Collection<Terrain> getPredefinedTerrain() {
-        return getPredefined(Terrain.class);
     }
 }

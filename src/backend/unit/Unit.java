@@ -28,8 +28,8 @@ public interface Unit {
         return getTerrainMoveCosts().get(terrain);
     }
 
-    default int addMoveCostByTerrain(Terrain terrain, int cost){
-        return getTerrainMoveCosts().put(terrain,cost);
+    default int addMoveCostByTerrain(Terrain terrain, int cost) {
+        return getTerrainMoveCosts().put(terrain, cost);
     }
 
     List<InteractionModifier<Double>> getOffensiveModifiers();
