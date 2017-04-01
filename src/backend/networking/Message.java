@@ -1,7 +1,5 @@
 package backend.networking;
 
-import backend.util.GameState;
-
 import java.io.Serializable;
 
 /**
