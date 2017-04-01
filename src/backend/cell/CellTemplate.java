@@ -1,6 +1,6 @@
 package backend.cell;
 
-import backend.game_engine.GameState;
+import backend.util.GameState;
 import backend.grid.CoordinateTuple;
 import backend.unit.UnitInstance;
 import backend.util.Template;

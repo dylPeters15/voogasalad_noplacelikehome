@@ -1,5 +1,7 @@
 package backend.game_engine;
 
+import backend.util.GameState;
+import backend.util.GameState.Event;
 import backend.player.Player;
 import backend.unit.UnitInstance;
 
@@ -12,7 +14,7 @@ import java.util.function.BiConsumer;
 public class DieselEngine implements GameEngine {
 
     private List<ResultQuadPredicate> currentObjectives;
-    private Map<TurnTrigger, List<BiConsumer<Player, GameState>>> turnActions;
+    private Map<Event, List<BiConsumer<Player, GameState>>> turnActions;
 
     public DieselEngine() {
     }
@@ -29,7 +31,7 @@ public class DieselEngine implements GameEngine {
     }
 
     @Override
-    public void addTrigger(BiConsumer<Player, GameState> turnAction, TurnTrigger when) {
+    public void addTrigger(BiConsumer<Player, GameState> turnAction, Event when) {
         turnActions.merge(when, new ArrayList<>(Collections.singletonList(turnAction)), (list, t) -> {
             list.addAll(t);
             return list;
@@ -71,11 +73,4 @@ public class DieselEngine implements GameEngine {
         // TODO Auto-generated method stub
 
     }
-
-    @Override
-    public void newUnit(UnitInstance newUnit) {
-        // TODO Auto-generated method stub
-
-    }
-
 }

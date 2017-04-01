@@ -1,7 +1,5 @@
 package backend.util;
 
-import backend.game_engine.GameState;
-
 /**
  * Timmy
  *

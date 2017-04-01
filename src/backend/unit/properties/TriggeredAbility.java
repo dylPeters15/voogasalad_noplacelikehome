@@ -1,6 +1,6 @@
 package backend.unit.properties;
 
-import backend.game_engine.GameState.Event;
+import backend.util.GameState.Event;
 
 import java.util.Arrays;
 import java.util.Collection;

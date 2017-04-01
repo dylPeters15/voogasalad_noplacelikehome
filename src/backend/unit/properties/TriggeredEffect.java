@@ -1,7 +1,7 @@
 package backend.unit.properties;
 
-import backend.game_engine.GameState;
-import backend.game_engine.GameState.Event;
+import backend.util.GameState;
+import backend.util.GameState.Event;
 import backend.unit.UnitInstance;
 import backend.util.VoogaObject;
 

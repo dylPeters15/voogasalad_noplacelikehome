@@ -1,7 +1,7 @@
 package backend.player;
 
 import backend.util.VoogaInstance;
-import backend.game_engine.GameState;
+import backend.util.GameState;
 import backend.unit.UnitInstance;
 
 import java.util.Collection;

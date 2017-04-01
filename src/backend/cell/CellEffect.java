@@ -1,6 +1,6 @@
 package backend.cell;
 
-import backend.game_engine.GameState.Event;
+import backend.util.GameState.Event;
 import backend.unit.properties.TriggeredAbility;
 import backend.unit.properties.TriggeredEffect;
 import backend.util.VoogaObject;

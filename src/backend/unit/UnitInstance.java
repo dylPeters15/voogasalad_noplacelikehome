@@ -2,8 +2,8 @@ package backend.unit;
 
 import backend.cell.CellInstance;
 import backend.cell.Terrain;
-import backend.game_engine.GameState;
-import backend.game_engine.GameState.Event;
+import backend.util.GameState;
+import backend.util.GameState.Event;
 import backend.grid.CoordinateTuple;
 import backend.player.Player;
 import backend.player.Team;

@@ -2,7 +2,7 @@ package backend.unit;
 
 import backend.cell.CellInstance;
 import backend.cell.Terrain;
-import backend.game_engine.GameState;
+import backend.util.GameState;
 import backend.player.Player;
 import backend.unit.properties.*;
 import backend.util.VoogaInstance;
