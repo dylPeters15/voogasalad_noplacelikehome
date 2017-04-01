@@ -1,7 +1,8 @@
 package backend.unit.properties;
 
-import backend.util.GameState;
 import backend.unit.UnitInstance;
+import backend.util.GameState;
+import backend.util.VoogaObject;
 
 import java.util.Collection;
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.List;
  *
  * @author Created by th174 on 3/28/2017.
  */
-public class InteractionModifier<T> extends Ability {
+public class InteractionModifier<T> extends VoogaObject implements Ability {
     //TODO: ResourceBundlify all this shit
     public static final InteractionModifier<?> DUMMY = new InteractionModifier<>("Dummy", (originalValue, agent, target, game) -> originalValue, "Dummy modifier that doesn't change anything", "Nothing.png");
     public static final InteractionModifier<Double> NO_EFFECT = new InteractionModifier<Double>("No effect", (originalValue, agent, target, game) -> 0.0, "Literally nothing", "The_abyss_stares_back.png");
