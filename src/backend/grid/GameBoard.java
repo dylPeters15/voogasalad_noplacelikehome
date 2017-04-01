@@ -2,12 +2,10 @@ package backend.grid;
 
 import backend.cell.CellInstance;
 import backend.cell.CellTemplate;
-import backend.util.GameState;
 import backend.player.Player;
 import backend.unit.UnitInstance;
+import backend.util.GameState;
 import backend.util.VoogaObject;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableMap;
 import javafx.util.Pair;
 
 import java.util.*;
@@ -20,7 +18,7 @@ import java.util.stream.Stream;
  * @author Created by th174 on 3/28/2017.
  */
 public class GameBoard extends VoogaObject implements Grid, Iterable {
-    private final ObservableMap<CoordinateTuple, CellInstance> gameBoard;
+    private final Map<CoordinateTuple, CellInstance> gameBoard;
     private CellTemplate templateCell;
     private BoundsHandler currentBoundsMode;
 
@@ -28,13 +26,12 @@ public class GameBoard extends VoogaObject implements Grid, Iterable {
         super(name, description, imgPath);
         this.currentBoundsMode = currentBoundsMode;
         this.templateCell = templateCell;
-        gameBoard = FXCollections.observableMap(
-                IntStream.range(0, rows).boxed()
-                        .flatMap(i -> IntStream.range(0, columns).mapToObj(j -> new CoordinateTuple(i, j)))
-                        .parallel()
-                        .map(e -> (templateCell.dimension() == 3) ? e.convertToHexagonal() : e)
-                        .map(e -> new Pair<>(e, templateCell.createInstance(e, game)))
-                        .collect(Collectors.toMap(Pair::getKey, Pair::getValue)));
+        gameBoard = IntStream.range(0, rows).boxed()
+                .flatMap(i -> IntStream.range(0, columns).mapToObj(j -> new CoordinateTuple(i, j)))
+                .parallel()
+                .map(e -> e.convertToDimension(templateCell.dimension()))
+                .map(e -> new Pair<>(e, templateCell.createInstance(e, game)))
+                .collect(Collectors.toMap(Pair::getKey, Pair::getValue));
     }
 
     @Override
@@ -69,11 +66,24 @@ public class GameBoard extends VoogaObject implements Grid, Iterable {
     }
 
     @Override
+    public GridBounds getBounds() {
+        return new GridBounds(getMinMax(gameBoard.keySet().parallelStream()));
+    }
+
+    @Override
     public GridBounds getRectangularBounds() {
-        List<CoordinateTuple> rectCoordinates = gameBoard.keySet().parallelStream().map(CoordinateTuple::convertToRectangular).collect(Collectors.toList());
-        int[] xBounds = new int[]{rectCoordinates.parallelStream().mapToInt(e -> e.get(0)).min().getAsInt(), rectCoordinates.parallelStream().mapToInt(e -> e.get(1)).max().getAsInt()};
-        int[] yBounds = new int[]{rectCoordinates.parallelStream().mapToInt(e -> e.get(1)).min().getAsInt(), rectCoordinates.parallelStream().mapToInt(e -> e.get(1)).max().getAsInt()};
-        return new GridBounds(xBounds, yBounds);
+        return new GridBounds(getMinMax(gameBoard.keySet().parallelStream().map(CoordinateTuple::convertToRectangular)));
+    }
+
+    private int[][] getMinMax(Stream<CoordinateTuple> coordinateTuples) {
+        int[][] minMax = new int[coordinateTuples.findAny().orElse(CoordinateTuple.EMPTY).dimension()][2];
+        coordinateTuples.forEach(e -> {
+            for (int[] ints : minMax) {
+                ints[0] = Math.min(e.get(0), ints[0]);
+                ints[1] = Math.max(e.get(0), ints[1]);
+            }
+        });
+        return minMax;
     }
 
     @Override

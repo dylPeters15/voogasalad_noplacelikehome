@@ -1,9 +1,9 @@
 package backend.cell;
 
-import backend.util.GameState;
-import backend.util.GameState.Event;
 import backend.grid.CoordinateTuple;
 import backend.unit.UnitInstance;
+import backend.util.GameState;
+import backend.util.GameState.Event;
 import backend.util.VoogaInstance;
 
 import java.util.Collection;

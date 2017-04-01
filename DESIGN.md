@@ -234,7 +234,7 @@ The order of this internal API will be from the most to least abstract component
 
     String getDescription();
    
-    Path getImgPath();
+    String getImgPath();
    
     boolean isVisible();
     

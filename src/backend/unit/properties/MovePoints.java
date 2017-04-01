@@ -7,7 +7,7 @@ package backend.unit.properties;
  */
 public class MovePoints extends UnitStat<Integer> {
     public static final String NAME = "MP";
-    public static final String DESCRIPTION = "Remaining movepoints this turn";
+    public static final String DESCRIPTION = "Remaining move points this turn";
     public static final String IMG_PATH = "boot.png";
 
     public MovePoints(int initialValue) {

@@ -1,8 +1,8 @@
 package backend.unit.properties;
 
+import backend.unit.UnitInstance;
 import backend.util.GameState;
 import backend.util.GameState.Event;
-import backend.unit.UnitInstance;
 import backend.util.VoogaObject;
 
 import java.util.Arrays;

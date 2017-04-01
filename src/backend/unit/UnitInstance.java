@@ -2,12 +2,12 @@ package backend.unit;
 
 import backend.cell.CellInstance;
 import backend.cell.Terrain;
-import backend.util.GameState;
-import backend.util.GameState.Event;
 import backend.grid.CoordinateTuple;
 import backend.player.Player;
 import backend.player.Team;
 import backend.unit.properties.*;
+import backend.util.GameState;
+import backend.util.GameState.Event;
 import backend.util.VoogaInstance;
 import javafx.util.Pair;
 
@@ -81,18 +81,18 @@ public class UnitInstance extends VoogaInstance<UnitTemplate> implements Unit {
     }
 
     public Collection<CellInstance> getLegalMoves() {
-        return movePattern.getLegalMoves().parallelStream()
+        return movePattern.getCoordinates().parallelStream()
                 .map(e -> getGameState().getGrid().get(e.sum(this.getLocation())))
                 .filter(Objects::nonNull)
                 .filter(e -> getMoveCostByTerrain(e.getTerrain()) < movePoints.getCurrentValue()).collect(Collectors.toSet());
     }
 
-    public void setCurrentCell(CellInstance currentCell) {
-        this.currentCell = currentCell;
-    }
-
     public CellInstance getCurrentCell() {
         return currentCell;
+    }
+
+    public void setCurrentCell(CellInstance currentCell) {
+        this.currentCell = currentCell;
     }
 
     public Map<CoordinateTuple, Collection<UnitInstance>> getNeighboringUnits() {
@@ -120,12 +120,12 @@ public class UnitInstance extends VoogaInstance<UnitTemplate> implements Unit {
         return ownerPlayer;
     }
 
-    public Team getTeam() {
-        return ownerPlayer.getTeam();
-    }
-
     public void setOwner(Player p) {
         ownerPlayer = p;
+    }
+
+    public Team getTeam() {
+        return ownerPlayer.getTeam();
     }
 
     @Override
