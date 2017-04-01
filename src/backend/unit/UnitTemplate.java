@@ -1,12 +1,12 @@
 package backend.unit;
 
-import backend.cell.Cell;
+import backend.cell.CellInstance;
 import backend.cell.Terrain;
-import backend.game_engine.GameState;
+import backend.util.GameState;
 import backend.player.Player;
 import backend.unit.properties.*;
-import backend.util.GameObject;
-import backend.util.GameObjectImpl;
+import backend.util.VoogaInstance;
+import backend.util.VoogaObject;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -14,11 +14,11 @@ import java.util.stream.Collectors;
 /**
  * @author Created by th174 on 3/30/2017.
  */
-public class UnitTemplate extends GameObjectImpl implements Unit {
+public class UnitTemplate extends VoogaObject implements Unit {
     private double hitPoints;
     private int movePoints;
     private GridPattern movePattern;
-    private Map<String, ActiveAbility<GameObject>> activeAbilities;
+    private Map<String, ActiveAbility<VoogaInstance>> activeAbilities;
     private Map<String, TriggeredAbility> triggeredAbilities;
     private List<InteractionModifier<Double>> offensiveModifiers;
     private List<InteractionModifier<Double>> defensiveModifiers;
@@ -30,10 +30,10 @@ public class UnitTemplate extends GameObjectImpl implements Unit {
     }
 
     public UnitTemplate(String unitTemplateName, double hitPoints, int movePoints, Faction faction, GridPattern movePattern, Map<Terrain, Integer> moveCosts, String unitTemplateDescription, String imgPath) {
-        this(unitTemplateName, hitPoints, movePoints, faction, movePattern, moveCosts, new HashSet<>(), new HashSet<>(), new HashSet<>(), new HashSet<>(), unitTemplateDescription, imgPath);
+        this(unitTemplateName, hitPoints, movePoints, faction, movePattern, moveCosts, Collections.EMPTY_SET, Collections.EMPTY_SET, Collections.EMPTY_SET, Collections.EMPTY_SET, unitTemplateDescription, imgPath);
     }
 
-    public UnitTemplate(String unitTemplateName, double hitPoints, int movePoints, Faction faction, GridPattern movePattern, Map<Terrain, Integer> moveCosts, Collection<ActiveAbility<GameObject>> activeAbilities, Collection<TriggeredAbility> triggeredAbilities, Collection<InteractionModifier<Double>> offensiveModifiers, Collection<InteractionModifier<Double>> defensiveModifiers, String unitDescription, String imgPath) {
+    public UnitTemplate(String unitTemplateName, double hitPoints, int movePoints, Faction faction, GridPattern movePattern, Map<Terrain, Integer> moveCosts, Collection<ActiveAbility<VoogaInstance>> activeAbilities, Collection<TriggeredAbility> triggeredAbilities, Collection<InteractionModifier<Double>> offensiveModifiers, Collection<InteractionModifier<Double>> defensiveModifiers, String unitDescription, String imgPath) {
         super(unitTemplateName, unitDescription, imgPath);
         this.faction = faction;
         this.terrainMoveCosts = new HashMap<>(moveCosts);
@@ -46,13 +46,8 @@ public class UnitTemplate extends GameObjectImpl implements Unit {
         this.defensiveModifiers = new ArrayList<>(defensiveModifiers);
     }
 
-    public UnitInstance createUnit(String unitName, Player ownerPlayer, Cell startingCell, GameState game) {
-        return new UnitInstance(this, unitName, getHitPoints(), getMovePoints(), getFaction(), getMovePattern(), getTerrainMoveCosts(), getAllActiveAbilities(), getAllTriggeredAbilities(), getOffensiveModifiers(), getDefensiveModifiers(), getDescription(), getImgPath(), ownerPlayer, startingCell, game);
-    }
-
-    @Override
-    public UnitTemplate getUnitType() {
-        return this;
+    public UnitInstance createInstance(String unitName, Player ownerPlayer, CellInstance startingCell, GameState game) {
+        return new UnitInstance(unitName, this, ownerPlayer, startingCell, game);
     }
 
     @Override
@@ -102,7 +97,7 @@ public class UnitTemplate extends GameObjectImpl implements Unit {
     }
 
     @Override
-    public Map<String, ActiveAbility<GameObject>> getActiveAbilities() {
+    public Map<String, ActiveAbility<VoogaInstance>> getActiveAbilities() {
         return activeAbilities;
     }
 

@@ -1,13 +1,13 @@
 package backend.unit.properties;
 
-import backend.util.GameCollection;
+import backend.util.VoogaCollection;
 
 import java.util.Collection;
 
 /**
  * @author Created by th174 on 3/31/2017.
  */
-public class AbilitySet extends GameCollection<Ability> {
+public class AbilitySet extends VoogaCollection<Ability> {
     public AbilitySet(String name, String description, String imgPath, Ability... abilities) {
         super(name, description, imgPath, abilities);
     }

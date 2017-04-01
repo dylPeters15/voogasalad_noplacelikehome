@@ -1,9 +1,11 @@
 package backend.unit.properties;
 
-import backend.game_engine.GameState;
+import backend.util.GameState;
 import backend.unit.UnitInstance;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -18,13 +20,13 @@ public final class Attack implements ActiveAbility.AbilityEffect<UnitInstance> {
     private final List<InteractionModifier<Double>> damageModifiers;
 
     public Attack(double damage, int numHits) {
-        this(damage, numHits, new ArrayList<>());
+        this(damage, numHits, Collections.EMPTY_LIST);
     }
 
-    public Attack(double damage, int numHits, List<InteractionModifier<Double>> damageModifiers) {
+    public Attack(double damage, int numHits, Collection<InteractionModifier<Double>> damageModifiers) {
         this.damage = damage;
         this.numHits = numHits;
-        this.damageModifiers = damageModifiers;
+        this.damageModifiers = new ArrayList<>(damageModifiers);
     }
 
     public int getNumHits() {

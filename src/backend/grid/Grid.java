@@ -3,8 +3,8 @@
  */
 package backend.grid;
 
-import backend.util.GameObject;
-import backend.cell.Cell;
+import backend.cell.CellInstance;
+import backend.cell.CellTemplate;
 import backend.player.Player;
 import backend.unit.UnitInstance;
 import javafx.util.Pair;
@@ -21,29 +21,30 @@ import java.util.stream.Collectors;
  *
  * @author Dylan Peters
  */
-//TODO
-public interface Grid extends GameObject {
-    Cell get(CoordinateTuple coordinateTuple);
+public interface Grid {
+    CellInstance get(CoordinateTuple coordinateTuple);
+
+    CellTemplate getTemplateCell();
 
     default int dimension() {
-        return getCells().values().parallelStream().findAny().orElse(null).dimension();
+        return getTemplateCell().dimension();
     }
 
-    Map<CoordinateTuple, Cell> getCells();
+    Map<CoordinateTuple, CellInstance> getCells();
 
     Collection<UnitInstance> getUnits();
 
-    default Map<CoordinateTuple, Cell> getNeighbors(Cell cell) {
+    default Map<CoordinateTuple, CellInstance> getNeighbors(CellInstance cell) {
         return getNeighbors(cell.getCoordinates());
     }
 
-    Map<CoordinateTuple, Cell> getNeighbors(CoordinateTuple coordinate);
+    Map<CoordinateTuple, CellInstance> getNeighbors(CoordinateTuple coordinate);
 
     GridBounds getRectangularBounds();
 
     void setBoundaryConditions(BoundsHandler boundaryConditions) throws IllegalAccessException;
 
-    Collection<Cell> filterCells(Player currentPlayer, BiPredicate<Player, Cell> visibilityPredicate);
+    Collection<CellInstance> filterCells(Player currentPlayer, BiPredicate<Player, CellInstance> visibilityPredicate);
 
     class GridBounds {
         private final List<Pair<Integer, Integer>> bounds;

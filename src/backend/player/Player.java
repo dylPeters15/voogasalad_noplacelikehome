@@ -1,7 +1,7 @@
 package backend.player;
 
-import backend.util.GameObjectImpl;
-import backend.game_engine.GameState;
+import backend.util.VoogaInstance;
+import backend.util.GameState;
 import backend.unit.UnitInstance;
 
 import java.util.Collection;
@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
  *
  * @author Created by th174 on 3/28/2017.
  */
-public class Player extends GameObjectImpl {
+public class Player extends VoogaInstance {
     private Team team;
 
     public Player(String name, String description, String imgPath, GameState currentGame) {
@@ -33,6 +33,6 @@ public class Player extends GameObjectImpl {
     }
 
     public Collection<UnitInstance> getOwnedUnits() {
-        return getGame().getGrid().getUnits().parallelStream().filter(e -> e.getOwner().equals(this)).collect(Collectors.toSet());
+        return getGameState().getGrid().getUnits().parallelStream().filter(e -> e.getOwner().equals(this)).collect(Collectors.toSet());
     }
 }

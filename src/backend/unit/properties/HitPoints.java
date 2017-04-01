@@ -1,13 +1,11 @@
 package backend.unit.properties;
 
-import backend.util.GameQuantity;
-
 /**
  * Timmy
  *
  * @author Created by th174 on 3/27/2017.
  */
-public class HitPoints extends GameQuantity<Double> {
+public class HitPoints extends UnitStat<Double> {
     public static final String NAME = "HP";
     public static final String DESCRIPTION = "If 0 u ded";
     public static final String IMG_PATH = "<3.png";

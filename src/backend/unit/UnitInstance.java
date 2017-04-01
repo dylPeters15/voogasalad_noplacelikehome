@@ -1,17 +1,16 @@
 package backend.unit;
 
-import backend.util.GameObject;
-import backend.util.GameObjectImpl;
-import backend.cell.Cell;
+import backend.cell.CellInstance;
 import backend.cell.Terrain;
-import backend.game_engine.GameState;
+import backend.util.GameState;
+import backend.util.GameState.Event;
 import backend.grid.CoordinateTuple;
 import backend.player.Player;
 import backend.player.Team;
 import backend.unit.properties.*;
+import backend.util.VoogaInstance;
 import javafx.util.Pair;
 
-import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -20,12 +19,11 @@ import java.util.stream.Collectors;
  *
  * @author Created by th174 on 3/27/2017.
  */
-public class UnitInstance extends GameObjectImpl implements GameObject, Unit {
-    private final UnitTemplate unitType;
+public class UnitInstance extends VoogaInstance<UnitTemplate> implements Unit {
     private final HitPoints hitPoints;
     private final MovePoints movePoints;
     private final GridPattern movePattern;
-    private final Map<String, ActiveAbility<GameObject>> activeAbilities;
+    private final Map<String, ActiveAbility<VoogaInstance>> activeAbilities;
     private final Map<String, TriggeredAbility> triggeredAbilities;
     private final List<InteractionModifier<Double>> offensiveModifiers;
     private final List<InteractionModifier<Double>> defensiveModifiers;
@@ -33,40 +31,35 @@ public class UnitInstance extends GameObjectImpl implements GameObject, Unit {
     private final Faction faction;
 
     private Player ownerPlayer;
-    private Cell currentCell;
+    private CellInstance currentCell;
 
-    public UnitInstance(UnitTemplate unitType, String unitName, double hitPoints, int movePoints, Faction faction, GridPattern movePattern, Map<Terrain, Integer> moveCosts, Collection<ActiveAbility<GameObject>> activeAbilities, Collection<TriggeredAbility> triggeredAbilities, Collection<InteractionModifier<Double>> offensiveModifiers, Collection<InteractionModifier<Double>> defensiveModifiers, String unitDescription, Path imgPath, Player ownerPlayer, Cell startingCell, GameState game) {
-        this(unitType, unitName, new HitPoints(hitPoints), new MovePoints(movePoints), faction, movePattern, moveCosts, activeAbilities, triggeredAbilities, offensiveModifiers, defensiveModifiers, unitDescription, imgPath, ownerPlayer, startingCell, game);
-    }
-
-    public UnitInstance(UnitTemplate unitType, String unitName, HitPoints hitPoints, MovePoints movePoints, Faction faction, GridPattern movePattern, Map<Terrain, Integer> moveCosts, Collection<ActiveAbility<GameObject>> activeAbilities, Collection<TriggeredAbility> triggeredAbilities, Collection<InteractionModifier<Double>> offensiveModifiers, Collection<InteractionModifier<Double>> defensiveModifiers, String unitDescription, Path imgPath, Player ownerPlayer, Cell startingCell, GameState game) {
-        super(unitName, unitDescription, imgPath, game);
-        this.unitType = unitType;
-        this.faction = faction;
-        this.moveCosts = new HashMap<>(moveCosts);
-        this.hitPoints = hitPoints;
-        this.movePoints = movePoints;
-        this.movePattern = movePattern;
-        this.triggeredAbilities = triggeredAbilities.parallelStream().collect(Collectors.toMap(TriggeredAbility::getName, a -> a));
-        this.activeAbilities = activeAbilities.parallelStream().collect(Collectors.toMap(ActiveAbility::getName, a -> a));
-        this.offensiveModifiers = new ArrayList<>(offensiveModifiers);
-        this.defensiveModifiers = new ArrayList<>(defensiveModifiers);
+    protected UnitInstance(String unitName, UnitTemplate unitTemplate, Player ownerPlayer, CellInstance startingCell, GameState game) {
+        super(unitName, unitTemplate, game);
+        this.faction = unitTemplate.getFaction();
+        this.hitPoints = unitTemplate.getHitPoints();
+        this.movePoints = unitTemplate.getMovePoints();
+        this.movePattern = unitTemplate.getMovePattern();
+        this.moveCosts = new HashMap<>(unitTemplate.getTerrainMoveCosts());
+        this.triggeredAbilities = new HashMap<>(unitTemplate.getTriggeredAbilities());
+        this.activeAbilities = new HashMap<>(unitTemplate.getActiveAbilities());
+        this.offensiveModifiers = new ArrayList<>(unitTemplate.getOffensiveModifiers());
+        this.defensiveModifiers = new ArrayList<>(unitTemplate.getDefensiveModifiers());
         setOwner(ownerPlayer);
         setCurrentCell(startingCell);
     }
 
-    public void moveTo(Cell cell) {
+    public void moveTo(CellInstance cell) {
         movePoints.useMovePoints(moveCosts.get(cell.getTerrain()));
         currentCell = cell;
-        trigger(TriggeredAbility.TriggerEvent.ON_MOVE);
+        processTriggers(Event.UNIT_MOVEMENT);
     }
 
     public void startTurn() {
-        trigger(TriggeredAbility.TriggerEvent.ON_TURN_START);
+        processTriggers(Event.TURN_START);
     }
 
     public void endTurn() {
-        trigger(TriggeredAbility.TriggerEvent.ON_TURN_END);
+        processTriggers(Event.TURN_END);
         movePoints.resetValue();
     }
 
@@ -74,31 +67,31 @@ public class UnitInstance extends GameObjectImpl implements GameObject, Unit {
         getHitPoints().takeDamage(damage);
     }
 
-    public void useActiveAbility(String activeAbilityName, GameObject target) {
+    public void useActiveAbility(String activeAbilityName, VoogaInstance target) {
         useActiveAbility(getActiveAbilityByName(activeAbilityName), target);
     }
 
-    public void useActiveAbility(ActiveAbility<GameObject> activeAbility, GameObject target) {
-        activeAbility.affect(this, target, getGame());
-        trigger(TriggeredAbility.TriggerEvent.ON_ACTION);
+    public void useActiveAbility(ActiveAbility<VoogaInstance> activeAbility, VoogaInstance target) {
+        activeAbility.affect(this, target, getGameState());
+        processTriggers(Event.UNIT_ABILITY_USE);
     }
 
-    private void trigger(TriggeredAbility.TriggerEvent event) {
-        triggeredAbilities.values().forEach(e -> e.affect(this, event, getGame()));
+    private void processTriggers(Event event) {
+        triggeredAbilities.values().forEach(e -> e.affect(this, event, getGameState()));
     }
 
-    public Collection<Cell> getMoveOptions() {
+    public Collection<CellInstance> getLegalMoves() {
         return movePattern.getLegalMoves().parallelStream()
-                .map(e -> getGame().getGrid().get(e.sum(this.getLocation())))
+                .map(e -> getGameState().getGrid().get(e.sum(this.getLocation())))
                 .filter(Objects::nonNull)
                 .filter(e -> getMoveCostByTerrain(e.getTerrain()) < movePoints.getCurrentValue()).collect(Collectors.toSet());
     }
 
-    public void setCurrentCell(Cell currentCell) {
+    public void setCurrentCell(CellInstance currentCell) {
         this.currentCell = currentCell;
     }
 
-    public Cell getCurrentCell() {
+    public CellInstance getCurrentCell() {
         return currentCell;
     }
 
@@ -115,7 +108,7 @@ public class UnitInstance extends GameObjectImpl implements GameObject, Unit {
         return getNeighboringUnits().values().parallelStream().flatMap(Collection::stream).parallel().collect(Collectors.toSet());
     }
 
-    public Map<CoordinateTuple, Cell> getNeighboringCells() {
+    public Map<CoordinateTuple, CellInstance> getNeighboringCells() {
         return currentCell.getNeighbors();
     }
 
@@ -135,21 +128,13 @@ public class UnitInstance extends GameObjectImpl implements GameObject, Unit {
         ownerPlayer = p;
     }
 
-    public UnitTemplate getUnitType() {
-        return unitType;
-    }
-
-    public String getUnitTypeName() {
-        return unitType.getName();
-    }
-
     @Override
     public List<InteractionModifier<Double>> getOffensiveModifiers() {
         return offensiveModifiers;
     }
 
     public double applyAllOffensiveModifiers(Double originalValue, UnitInstance target) {
-        return InteractionModifier.modifyAll(getOffensiveModifiers(), originalValue, this, target, getGame());
+        return InteractionModifier.modifyAll(getOffensiveModifiers(), originalValue, this, target, getGameState());
     }
 
     @Override
@@ -158,11 +143,11 @@ public class UnitInstance extends GameObjectImpl implements GameObject, Unit {
     }
 
     public double applyAllDefensiveModifiers(Double originalValue, UnitInstance agent) {
-        return InteractionModifier.modifyAll(getDefensiveModifiers(), originalValue, agent, this, getGame());
+        return InteractionModifier.modifyAll(getDefensiveModifiers(), originalValue, agent, this, getGameState());
     }
 
     @Override
-    public Map<String, ActiveAbility<GameObject>> getActiveAbilities() {
+    public Map<String, ActiveAbility<VoogaInstance>> getActiveAbilities() {
         return activeAbilities;
     }
 

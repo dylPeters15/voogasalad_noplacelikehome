@@ -4,6 +4,7 @@ import backend.cell.Terrain;
 import backend.io.XMLsavable;
 import backend.player.Player;
 import backend.unit.UnitInstance;
+import backend.util.GameState;
 
 import java.util.function.BiConsumer;
 
@@ -15,7 +16,7 @@ import java.util.function.BiConsumer;
 public interface GameEngine extends XMLsavable {
     void addObjective(ResultQuadPredicate winCondition);
 
-    void addTrigger(BiConsumer<Player, GameState> turnAction, TurnTrigger when);
+    void addTrigger(BiConsumer<Player, GameState> turnAction, GameState.Event when);
 
     void start();
 
@@ -30,9 +31,4 @@ public interface GameEngine extends XMLsavable {
     void newUnit(UnitInstance newUnit);
 
     void newTerrain(Terrain terrain);
-
-    public enum TurnTrigger {
-		BEGINNING,
-		END
-	}
 }

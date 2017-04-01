@@ -1,6 +1,6 @@
 package backend;
 
-import backend.game_engine.GameState;
+import backend.util.GameState;
 
 /**
  * Noah

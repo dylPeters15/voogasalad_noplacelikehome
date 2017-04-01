@@ -1,8 +1,7 @@
 package backend.unit.properties;
 
-import backend.game_engine.GameState;
+import backend.util.GameState;
 import backend.unit.UnitInstance;
-import backend.util.GameObjectImpl;
 
 import java.util.Collection;
 import java.util.List;
