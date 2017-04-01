@@ -1,7 +1,5 @@
 package backend.networking;
 
-import backend.util.GameState;
-
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
@@ -9,22 +7,22 @@ import java.net.Socket;
 /**
  * @author Created by th174 on 4/1/2017.
  */
-public class VoogaClient implements VoogaRemote {
-    private final GameState gameState;
+public class VoogaClient<T> implements VoogaRemote<T> {
+    private final T gameState;
     private ObjectOutputStream outputToServer;
 
-    public VoogaClient(String serverName, int port, GameState gameState) throws IOException {
+    public VoogaClient(String serverName, int port, T gameState) throws IOException {
         this.gameState = gameState;
         Socket socket = new Socket(serverName, port);
         this.outputToServer = new ObjectOutputStream(socket.getOutputStream());
-        new Listener(socket, this::handleMessage).start();
+        new Listener<>(socket, this::handleMessage).start();
     }
 
-    private void handleMessage(Message message) {
+    private void handleMessage(Message<T> message) {
         message.execute(gameState);
     }
 
-    public void sendMessage(Message out) {
+    public void sendMessage(Message<T> out) {
         VoogaRemote.sendTo(out, outputToServer);
     }
 }

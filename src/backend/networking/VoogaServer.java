@@ -1,7 +1,5 @@
 package backend.networking;
 
-import backend.util.GameState;
-
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.ArrayList;
@@ -10,12 +8,12 @@ import java.util.Collection;
 /**
  * @author Created by th174 on 4/1/2017.
  */
-public class VoogaServer implements VoogaRemote {
-    private final GameState gameState;
+public class VoogaServer<T> implements VoogaRemote<T> {
+    private final T gameState;
     private boolean isListening;
-    private Collection<VoogaServerThread> childThreads = new ArrayList<>();
+    private Collection<VoogaServerThread<T>> childThreads = new ArrayList<>();
 
-    public VoogaServer(GameState gameState) {
+    public VoogaServer(T gameState) {
         this.gameState = gameState;
     }
 
@@ -23,7 +21,7 @@ public class VoogaServer implements VoogaRemote {
         isListening = true;
         try (ServerSocket serverSocket = new ServerSocket(port)) {
             while (isListening) {
-                VoogaServerThread child = new VoogaServerThread(this, serverSocket.accept());
+                VoogaServerThread<T> child = new VoogaServerThread<>(this, serverSocket.accept());
                 child.start();
                 childThreads.add(child);
             }
@@ -38,13 +36,13 @@ public class VoogaServer implements VoogaRemote {
         return isListening;
     }
 
-    void readMessage(Message message) {
+    void readMessage(Message<T> message) {
         message.execute(gameState);
         sendMessage(message);
     }
 
     @Override
-    public void sendMessage(Message message) {
+    public void sendMessage(Message<T> message) {
         childThreads.forEach(e -> e.sendMessage(message));
     }
 
