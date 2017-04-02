@@ -8,8 +8,9 @@ package util.io;
 @FunctionalInterface
 public interface Unserializer<T> {
     /**
-     * @param serializedObject Serializable form of object
-     * @return Unserialized form of object
+     * @param obj Object to be converted from serializable to unserializable form
+     * @return Unserializable form of object
+     * @throws Exception Thrown if implementation throws exception
      */
-    T unserialize(Object serializedObject) throws Exception;
+    T unserialize(Object obj) throws Exception;
 }

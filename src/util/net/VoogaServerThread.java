@@ -20,9 +20,9 @@ public class VoogaServerThread<T> extends VoogaRemote.Listener<T> implements Voo
      * @param parentServer Parent server creating this thread.
      * @param socket       Socket to listen on for client requests.
      * @param initialState Initialstate to be sent to the client.
-     * @throws IOException Thrown if socket is not open for reading and writing.
+     * @throws Exception Thrown if socket is not open for reading and writing, or if exception thrown in serialization
      */
-    public VoogaServerThread(VoogaServer<T> parentServer, Socket socket, T initialState, Serializer<T> stateSerializer) throws IOException {
+    public VoogaServerThread(VoogaServer<T> parentServer, Socket socket, T initialState, Serializer<T> stateSerializer) throws Exception {
         super(socket, parentServer::readRequest);
         ObjectOutputStream initialStateOutput = new ObjectOutputStream(socket.getOutputStream());
         initialStateOutput.writeObject(stateSerializer.serialize(initialState));
