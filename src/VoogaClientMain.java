@@ -1,5 +1,4 @@
-import util.net.VoogaClient;
-import util.net.VoogaRequest;
+import util.net.Client;
 
 import java.util.Scanner;
 
@@ -8,14 +7,18 @@ import java.util.Scanner;
  */
 public class VoogaClientMain {
     public static void main(String[] args) throws Exception {
-        VoogaClient<NetworkingTest> voogaClient = new VoogaClient<>("localhost", 10023, obj -> (NetworkingTest) Class.forName(obj.toString().split("=")[0]).getConstructor(String.class).newInstance(obj.toString().split("=")[1]));
+        Client<NetworkingTest> voogaClient = new Client<>(
+                "localhost",
+                10023,
+                NetworkingTest::toString,
+                obj -> (NetworkingTest) Class.forName(obj.toString().split("=")[0]).getConstructor(String.class).newInstance(obj.toString().split("=")[1]));
         Scanner stdin = new Scanner(System.in);
         while (voogaClient.isActive()) {
             String input = stdin.nextLine();
-            voogaClient.sendRequest(new VoogaRequest<NetworkingTest>(state -> {
+            voogaClient.send(state -> {
                 state.set(state.get() + input + " ");
                 return state;
-            }));
+            });
             System.out.println(voogaClient.getState());
         }
     }

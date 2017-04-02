@@ -1,11 +1,15 @@
-import util.net.VoogaServer;
+import util.net.Server;
 
 /**
  * @author Created by th174 on 3/30/2017.
  */
 public class VoogaServerMain {
     public static void main(String[] args) throws Exception {
-        VoogaServer<NetworkingTest> voogaServer = new VoogaServer<>(new NetworkingTest(NetworkingTest.INITIAL_STATE), NetworkingTest::toString, 10023);
+        Server<NetworkingTest> voogaServer = new Server<>(
+                new NetworkingTest(NetworkingTest.INITIAL_STATE),
+                10023,
+                NetworkingTest::toString,
+                obj -> (NetworkingTest) Class.forName(obj.toString().split("=")[0]).getConstructor(String.class).newInstance(obj.toString().split("=")[1]));
         voogaServer.beginListening();
         while (!voogaServer.isActive()) {
             Thread.sleep(1000);
@@ -13,9 +17,9 @@ public class VoogaServerMain {
         }
         for (int i = 0; voogaServer.isActive(); i++) {
             System.out.println(voogaServer.getState());
-            if (i % 10 == 0) {
-                voogaServer.sendNewState(new NetworkingTest("State reset"));
-            }
+//            if (i % 10 == 0) {
+//                voogaServer.send(new NetworkingTest("State reset"));
+//            }
             Thread.sleep(2000);
         }
     }
