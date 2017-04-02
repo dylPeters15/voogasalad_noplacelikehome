@@ -2,6 +2,7 @@ package util.net;
 
 import util.io.Serializer;
 
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
@@ -15,6 +16,7 @@ import java.net.Socket;
 public class VoogaServerThread<T> implements VoogaRemote<T> {
     private final ObjectOutputStream outputToClient;
     private final Socket socket;
+    private final VoogaServer<T> parentServer;
 
     /**
      * @param parentServer    Parent server creating this thread.
@@ -25,10 +27,27 @@ public class VoogaServerThread<T> implements VoogaRemote<T> {
      */
     public VoogaServerThread(VoogaServer<T> parentServer, Socket socket, T initialState, Serializer<T> stateSerializer) throws Exception {
         this.socket = socket;
-        Listener<T> clientListener = new Listener<>(socket, parentServer::readRequest);
+        this.parentServer = parentServer;
         this.outputToClient = new ObjectOutputStream(socket.getOutputStream());
+        outputToClient.flush();
+        ObjectInputStream inputFromClient = new ObjectInputStream(socket.getInputStream());
         outputToClient.writeObject(stateSerializer.serialize(initialState));
-        clientListener.start();
+        new Listener<>(inputFromClient, this::handleRequest).start();
+    }
+
+    @Override
+    public T getState() {
+        return parentServer.getState();
+    }
+
+    /**
+     * Sends request to parent server to be handled
+     *
+     * @param request Incoming request from client
+     */
+    @Override
+    public void handleRequest(VoogaRequest<T> request) {
+        parentServer.handleRequest(request);
     }
 
     @Override

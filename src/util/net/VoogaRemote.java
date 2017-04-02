@@ -15,9 +15,21 @@ import java.util.function.Consumer;
  */
 public interface VoogaRemote<T> {
     /**
+     * @return Returns local instance of the network shared state. Should be the same on all clients and servers.
+     */
+    T getState();
+
+    /**
      * @return Returns the socket this Object is operating on
      */
     Socket getSocket();
+
+    /**
+     * Handle incoming request sent over network
+     *
+     * @param request Incoming request to be handled
+     */
+    void handleRequest(VoogaRequest<T> request);
 
     /**
      * Utility method to write request to output stream and handle failures
@@ -55,26 +67,17 @@ public interface VoogaRemote<T> {
      * @param <T> The type of state modified in the request.
      */
     class Listener<T> extends Thread {
-        private final Socket socket;
         private final Consumer<VoogaRequest<T>> requestHandler;
         private ObjectInputStream inputStream;
 
         /**
-         * @param socket         Socket to listen on for requests.
+         * @param inputStream    inputStream to listen to requests on.
          * @param requestHandler Consumer that accepts each incoming request.
          * @throws IOException Thrown if socket input is closed.
          */
-        public Listener(Socket socket, Consumer<VoogaRequest<T>> requestHandler) throws IOException {
-            this.socket = socket;
-            this.inputStream = new ObjectInputStream(socket.getInputStream());
+        public Listener(ObjectInputStream inputStream, Consumer<VoogaRequest<T>> requestHandler) throws IOException {
+            this.inputStream = inputStream;
             this.requestHandler = requestHandler;
-        }
-
-        /**
-         * @return Returns address being listened to
-         */
-        protected Socket getSocket() {
-            return socket;
         }
 
         /**
@@ -83,14 +86,13 @@ public interface VoogaRemote<T> {
         @Override
         public void run() {
             try {
-                while (!socket.isInputShutdown()) {
+                while (true) {
                     requestHandler.accept((VoogaRequest<T>) inputStream.readObject());
                 }
             } catch (IOException | ClassNotFoundException e) {
             } finally {
                 try {
-                    socket.close();
-                    System.out.println("Connection Closed: " + socket);
+                    inputStream.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

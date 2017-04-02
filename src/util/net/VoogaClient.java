@@ -4,6 +4,7 @@ import util.io.Unserializer;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.net.Socket;
 
 /**
@@ -30,11 +31,24 @@ public class VoogaClient<T> implements VoogaRemote<T> {
     public VoogaClient(String host, int port, Unserializer<T> unserializer) throws Exception {
         socket = new Socket(host, port);
         this.outputToServer = new ObjectOutputStream(socket.getOutputStream());
-        this.state = unserializer.unserialize(new ObjectInputStream(socket.getInputStream()).readObject());
-        new Listener<>(socket, this::handleRequest).start();
+        this.outputToServer.flush();
+        ObjectInputStream inputFromServer = new ObjectInputStream(socket.getInputStream());
+        this.state = unserializer.unserialize((Serializable) inputFromServer.readObject());
+        new Listener<>(inputFromServer, this::handleRequest).start();
     }
 
-    private void handleRequest(VoogaRequest<T> request) {
+    @Override
+    public T getState() {
+        return state;
+    }
+
+    /**
+     * Applies request sent from server
+     *
+     * @param request Incoming request from server
+     */
+    @Override
+    public void handleRequest(VoogaRequest<T> request) {
         request.modify(state);
     }
 

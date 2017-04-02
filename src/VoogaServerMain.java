@@ -7,5 +7,9 @@ public class VoogaServerMain {
     public static void main(String[] args) throws Exception {
         VoogaServer<NetworkingTest> voogaServer = new VoogaServer<>(new NetworkingTest(NetworkingTest.INITIAL_STATE), NetworkingTest::toString, 10023);
         voogaServer.listenForClients();
+        while (true) {
+            Thread.sleep(2000);
+            System.out.println(voogaServer.getState());
+        }
     }
 }

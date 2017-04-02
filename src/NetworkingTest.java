@@ -4,27 +4,27 @@
  * @author Created by th174 on 4/1/2017.
  */
 public class NetworkingTest {
-    public static NetworkingTest INITIAL_STATE = new NetworkingTest("5");
-    private int testInt;
+    public static NetworkingTest INITIAL_STATE = new NetworkingTest(" ");
+    private String test;
 
-    public NetworkingTest(String testInt) {
-        this.testInt = Integer.parseInt(testInt);
+    public NetworkingTest(String test) {
+        this.test = test;
     }
 
     public NetworkingTest(NetworkingTest t) {
-        this.testInt = t.testInt;
+        this.test = t.test;
     }
 
-    public void set(int testInt) {
-        this.testInt = testInt;
+    public void set(String test) {
+        this.test = test;
     }
 
-    public int get() {
-        return testInt;
+    public String get() {
+        return test;
     }
 
     @Override
     public String toString() {
-        return getClass().getName() + "=" + testInt;
+        return getClass().getName() + "=" + test;
     }
 }

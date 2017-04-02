@@ -6,7 +6,6 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
-import java.util.function.Consumer;
 
 /**
  * This class provides a way for the client and server to communicate by sending lambda expressions that modifies or creates new game state.
@@ -35,7 +34,11 @@ public class VoogaRequest<T> implements Serializable {
      * @param state State before the action is applied
      */
     public void modify(T state) {
-        modifier.accept(state);
+        try {
+            modifier.accept(state);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -56,10 +59,11 @@ public class VoogaRequest<T> implements Serializable {
      * @param <T> The type of variable used to represent networked shared state
      */
     @FunctionalInterface
-    public interface SerializableStateModifier<T> extends Serializable, Consumer<T> {
+    public interface SerializableStateModifier<T> extends Serializable {
         /**
          * @param state State before modification
+         * @throws Exception Thrown if the implementation throws an exception
          */
-        void accept(T state);
+        void accept(T state) throws Exception;
     }
 }

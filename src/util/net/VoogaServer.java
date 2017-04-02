@@ -7,8 +7,6 @@ import java.net.Socket;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -62,18 +60,22 @@ public class VoogaServer<T> implements VoogaRemote<T> {
      *
      * @throws Exception Thrown if server cannot open socket to connect to client
      */
-    public void listenForClients() throws Exception {
-        while (true) {
-            VoogaServerThread<T> child = new VoogaServerThread<>(this, serverSocket.accept(), state, stateSerializer);
-            childThreads.add(child);
-        }
+    public void listenForClients() {
+        new Thread(() -> {
+            try {
+                while (true) {
+                    VoogaServerThread<T> child = new VoogaServerThread<>(this, serverSocket.accept(), state, stateSerializer);
+                    childThreads.add(child);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 
-    /**
-     * @return Returns all child threads.
-     */
-    public Collection<VoogaServerThread<T>> getChildThreads() {
-        return Collections.unmodifiableCollection(childThreads);
+    @Override
+    public T getState() {
+        return state;
     }
 
     /**
@@ -82,7 +84,8 @@ public class VoogaServer<T> implements VoogaRemote<T> {
      * @param request Request received from client
      * @see this#validateReqeust(VoogaRequest)
      */
-    protected void readRequest(VoogaRequest<T> request) {
+    @Override
+    public void handleRequest(VoogaRequest<T> request) {
         if (validateReqeust(request)) {
             mostRecentTimeStamp = request.getTimeStamp();
             request.modify(state);

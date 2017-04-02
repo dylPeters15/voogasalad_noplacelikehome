@@ -1,5 +1,7 @@
 package util.io;
 
+import java.io.Serializable;
+
 /**
  * This functional interface creates an unserializable object from a serializable one
  *
@@ -12,5 +14,5 @@ public interface Unserializer<T> {
      * @return Unserializable form of object
      * @throws Exception Thrown if implementation throws exception
      */
-    T unserialize(Object obj) throws Exception;
+    T unserialize(Serializable obj) throws Exception;
 }
