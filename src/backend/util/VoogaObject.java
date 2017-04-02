@@ -1,6 +1,6 @@
 package backend.util;
 
-import backend.io.XMLSavable;
+import util.io.XMLSerializable;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 /**
  * @author Created by th174 on 3/31/2017.
  */
-public abstract class VoogaObject implements XMLSavable {
+public abstract class VoogaObject implements XMLSerializable {
     private final String name;
     private final String description;
     private final String imgPath;

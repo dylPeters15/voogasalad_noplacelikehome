@@ -5,7 +5,6 @@ import backend.cell.Terrain;
 import backend.player.Player;
 import backend.unit.properties.*;
 import backend.util.GameState;
-import backend.util.VoogaInstance;
 import backend.util.VoogaObject;
 
 import java.util.*;
@@ -18,7 +17,7 @@ public class UnitTemplate extends VoogaObject implements Unit {
     private double hitPoints;
     private int movePoints;
     private GridPattern movePattern;
-    private Map<String, ActiveAbility<VoogaInstance>> activeAbilities;
+    private Map<String, ActiveAbility<VoogaObject>> activeAbilities;
     private Map<String, TriggeredAbility> triggeredAbilities;
     private List<InteractionModifier<Double>> offensiveModifiers;
     private List<InteractionModifier<Double>> defensiveModifiers;
@@ -33,7 +32,7 @@ public class UnitTemplate extends VoogaObject implements Unit {
         this(unitTemplateName, hitPoints, movePoints, faction, movePattern, moveCosts, Collections.EMPTY_SET, Collections.EMPTY_SET, Collections.EMPTY_SET, Collections.EMPTY_SET, unitTemplateDescription, imgPath);
     }
 
-    public UnitTemplate(String unitTemplateName, double hitPoints, int movePoints, Faction faction, GridPattern movePattern, Map<Terrain, Integer> moveCosts, Collection<ActiveAbility<VoogaInstance>> activeAbilities, Collection<TriggeredAbility> triggeredAbilities, Collection<InteractionModifier<Double>> offensiveModifiers, Collection<InteractionModifier<Double>> defensiveModifiers, String unitDescription, String imgPath) {
+    public UnitTemplate(String unitTemplateName, double hitPoints, int movePoints, Faction faction, GridPattern movePattern, Map<Terrain, Integer> moveCosts, Collection<ActiveAbility<VoogaObject>> activeAbilities, Collection<TriggeredAbility> triggeredAbilities, Collection<InteractionModifier<Double>> offensiveModifiers, Collection<InteractionModifier<Double>> defensiveModifiers, String unitDescription, String imgPath) {
         super(unitTemplateName, unitDescription, imgPath);
         this.faction = faction;
         this.terrainMoveCosts = new HashMap<>(moveCosts);
@@ -101,7 +100,7 @@ public class UnitTemplate extends VoogaObject implements Unit {
     }
 
     @Override
-    public Map<String, ActiveAbility<VoogaInstance>> getActiveAbilities() {
+    public Map<String, ActiveAbility<VoogaObject>> getActiveAbilities() {
         return activeAbilities;
     }
 

@@ -2,7 +2,7 @@ package backend.unit;
 
 import backend.cell.Terrain;
 import backend.unit.properties.*;
-import backend.util.VoogaInstance;
+import backend.util.VoogaObject;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -52,21 +52,21 @@ public interface Unit {
         getDefensiveModifiers().remove(defensiveModifier);
     }
 
-    Map<String, ActiveAbility<VoogaInstance>> getActiveAbilities();
+    Map<String, ActiveAbility<VoogaObject>> getActiveAbilities();
 
-    default Collection<ActiveAbility<VoogaInstance>> getAllActiveAbilities() {
+    default Collection<ActiveAbility<VoogaObject>> getAllActiveAbilities() {
         return Collections.unmodifiableCollection(getActiveAbilities().values());
     }
 
-    default ActiveAbility<VoogaInstance> getActiveAbilityByName(String name) {
+    default ActiveAbility<VoogaObject> getActiveAbilityByName(String name) {
         return getActiveAbilities().get(name);
     }
 
-    default void addActiveAbility(ActiveAbility<VoogaInstance> ability) {
+    default void addActiveAbility(ActiveAbility<VoogaObject> ability) {
         getActiveAbilities().put(ability.getName(), ability);
     }
 
-    default void removeActiveAbility(ActiveAbility<VoogaInstance> ability) {
+    default void removeActiveAbility(ActiveAbility<VoogaObject> ability) {
         getActiveAbilities().remove(ability.getName());
     }
 
