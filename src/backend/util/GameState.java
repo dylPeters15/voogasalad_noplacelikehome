@@ -1,7 +1,7 @@
 package backend.util;
 
 import backend.grid.Grid;
-import backend.io.XMLSavable;
+import util.io.XMLSerializable;
 import backend.player.Player;
 
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.function.BiConsumer;
 /**
  * @author Created by th174 on 3/30/2017.
  */
-public interface GameState extends XMLSavable {
+public interface GameState extends XMLSerializable {
     List<Player> getPlayers();
 
     Grid getGrid();

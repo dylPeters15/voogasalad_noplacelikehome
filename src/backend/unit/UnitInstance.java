@@ -9,6 +9,7 @@ import backend.unit.properties.*;
 import backend.util.GameState;
 import backend.util.GameState.Event;
 import backend.util.VoogaInstance;
+import backend.util.VoogaObject;
 import javafx.util.Pair;
 
 import java.util.*;
@@ -23,7 +24,7 @@ public class UnitInstance extends VoogaInstance<UnitTemplate> implements Unit {
     private final HitPoints hitPoints;
     private final MovePoints movePoints;
     private final GridPattern movePattern;
-    private final Map<String, ActiveAbility<VoogaInstance>> activeAbilities;
+    private final Map<String, ActiveAbility<VoogaObject>> activeAbilities;
     private final Map<String, TriggeredAbility> triggeredAbilities;
     private final List<InteractionModifier<Double>> offensiveModifiers;
     private final List<InteractionModifier<Double>> defensiveModifiers;
@@ -71,7 +72,7 @@ public class UnitInstance extends VoogaInstance<UnitTemplate> implements Unit {
         useActiveAbility(getActiveAbilityByName(activeAbilityName), target);
     }
 
-    public void useActiveAbility(ActiveAbility<VoogaInstance> activeAbility, VoogaInstance target) {
+    public void useActiveAbility(ActiveAbility activeAbility, VoogaInstance target) {
         activeAbility.affect(this, target, getGameState());
         processTriggers(Event.UNIT_ABILITY_USE);
     }
@@ -147,7 +148,7 @@ public class UnitInstance extends VoogaInstance<UnitTemplate> implements Unit {
     }
 
     @Override
-    public Map<String, ActiveAbility<VoogaInstance>> getActiveAbilities() {
+    public Map<String, ActiveAbility<VoogaObject>> getActiveAbilities() {
         return activeAbilities;
     }
 

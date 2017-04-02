@@ -13,7 +13,7 @@ import java.util.stream.Stream;
  *
  * @author Created by th174 on 3/29/2017.
  */
-public class ActiveAbility<T extends VoogaInstance> extends VoogaObject implements Ability {
+public class ActiveAbility<T extends VoogaObject> extends VoogaObject implements Ability {
     //All hexagonal and only effects adjacent neighbors
     public static final ActiveAbility<UnitInstance> PUNCH = new ActiveAbility<>("Punch", new Attack(6, 2), GridPattern.HEXAGONAL_ADJACENT, "The attacker hits 2 times for 6 damage each in any hexagonal direction.", "Fist.png");
     public static final ActiveAbility<UnitInstance> SUICIDE_SQUAD = new ActiveAbility<>("Suicide Squad, Attack!", (user, target, game) -> {
@@ -50,7 +50,7 @@ public class ActiveAbility<T extends VoogaInstance> extends VoogaObject implemen
     }
 
     @FunctionalInterface
-    public interface AbilityEffect<T extends VoogaInstance> {
+    public interface AbilityEffect<T extends VoogaObject> {
         void useAbility(UnitInstance user, T target, GameState game);
     }
 }
