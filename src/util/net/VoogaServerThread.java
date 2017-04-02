@@ -20,7 +20,7 @@ public class VoogaServerThread<T> extends VoogaRemote<T> {
      * @param socket          Socket to listen on for client requests.
      * @param initialState    Initialstate to be sent to the client.
      * @param stateSerializer Converts the initial state to serializable form, so it can be sent to the client
-     * @throws Exception Thrown if socket is not open for reading and writing, or if exception thrown in serialization
+     * @throws Exception Thrown if socket is not open for reading and writing, or if an exception is thrown in serialization
      */
     public VoogaServerThread(VoogaServer<T> parentServer, Socket socket, T initialState, Serializer<T> stateSerializer) throws Exception {
         super(socket);

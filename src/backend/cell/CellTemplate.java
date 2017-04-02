@@ -100,12 +100,12 @@ public class CellTemplate extends VoogaObject implements Cell, Template<CellInst
         return abilities;
     }
 
-    public void setAbilities(Collection<CellEffect> abilities) {
-        this.abilities = new ArrayList<>(abilities);
-    }
-
     public void setAbilities(List<CellEffect> abilities) {
         this.abilities = abilities;
+    }
+
+    public void setAbilities(Collection<CellEffect> abilities) {
+        this.abilities = new ArrayList<>(abilities);
     }
 
     @Override

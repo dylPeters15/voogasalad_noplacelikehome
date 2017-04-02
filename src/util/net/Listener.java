@@ -10,6 +10,7 @@ import java.util.function.Consumer;
  * This class listens to sent over a socket requests in a background thread, and handles each request with a specified Consumer.
  *
  * @author Created by th174 on 4/1/2017.
+ * @see VoogaRemote,Thread
  */
 public class Listener extends Thread {
     private final Consumer<Serializable> requestHandler;
@@ -28,7 +29,7 @@ public class Listener extends Thread {
     }
 
     /**
-     * Continuously listens for requests
+     * Continuously listens for requests, and handles them with a Consumer requestHandler
      */
     @Override
     public void run() {

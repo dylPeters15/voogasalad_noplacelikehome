@@ -6,8 +6,8 @@ import java.io.Serializable;
 import java.net.ServerSocket;
 import java.time.Clock;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.function.Predicate;
 
 /**
@@ -19,12 +19,12 @@ import java.util.function.Predicate;
  * @author Created by th174 on 4/1/2017.
  * @see VoogaRequest,VoogaServer,VoogaServerThread,VoogaClient,VoogaRemote
  */
-public class VoogaServer<T> implements Remote<T>{
+public class VoogaServer<T> implements Remote<T> {
     public static final Predicate ALWAYS_VALID = voogaRequest -> true;
-    private final List<VoogaServerThread<T>> childThreads = new ArrayList<>();
+    private final Collection<VoogaServerThread<T>> childThreads;
     private final Serializer<T> stateSerializer;
     private final ServerSocket serverSocket;
-    private Predicate<VoogaRequest<T>> requestValidator;
+    private final Predicate<VoogaRequest<T>> requestValidator;
     private Instant mostRecentTimeStamp;
     private volatile T state;
 
@@ -51,6 +51,7 @@ public class VoogaServer<T> implements Remote<T>{
         this.stateSerializer = stateSerializer;
         this.mostRecentTimeStamp = Instant.now(Clock.systemUTC());
         this.requestValidator = requestValidator;
+        this.childThreads = new HashSet<>();
         serverSocket = new ServerSocket(port);
     }
 
@@ -104,6 +105,7 @@ public class VoogaServer<T> implements Remote<T>{
         }
     }
 
+    @Override
     public boolean isActive() {
         return serverSocket.isBound() && !serverSocket.isClosed() && !childThreads.isEmpty();
     }
