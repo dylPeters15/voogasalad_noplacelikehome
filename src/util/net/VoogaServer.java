@@ -98,7 +98,9 @@ public class VoogaServer<T> implements VoogaRemote<T> {
     }
 
     /**
-     * Checks the request for validity. The request is valid if it is more recent that the previous received request.
+     * Checks the request for validity.
+     * <p>
+     * The request is valid if it is more recent that the previous received request and the specified requestValidator returns true
      *
      * @param request Reqeust to be validated
      * @return Returns true if the new request is more recent that the most recent valid request.
