@@ -1,46 +1,82 @@
 package util.net;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.net.Socket;
-import java.util.function.Consumer;
 
 /**
- * This interface provides a basic framework for communications between networked.
+ * This class provides a basic implementation for a client or server communicating over TCP/IP.
+ * <p>
+ * It can send and receive requests from a remote host and modifies a network shared state.
  *
- * @param <T> The type of state modified in the request.
- * @author Created by th174 on 4/1/2017.
- * @see VoogaRequest,VoogaServer,VoogaServerThread,VoogaClient,VoogaRemote
+ * @param <T> The type of variable used to represent network shared state.
+ * @author Created by th174 on 4/2/2017.
+ * @see VoogaRequest,VoogaServer,VoogaServerThread,VoogaClient,VoogaRemote,Remote
  */
-public interface VoogaRemote<T> {
-    /**
-     * @return Returns local instance of the network shared state. Should be the same on all clients and servers.
-     */
-    T getState();
+public abstract class VoogaRemote<T> implements Remote<T> {
+    private final Socket socket;
+    private final ObjectOutputStream outputStream;
+    private volatile T state;
 
     /**
-     * @return Returns the socket this Object is operating on
-     */
-    Socket getSocket();
-
-    /**
-     * Handle incoming request sent over network
+     * Creates a new VoogaRemote server or client that listens on a socket for requests.
      *
-     * @param request Incoming request to be handled
+     * @param socket Socket to listen on for client requests.
+     * @throws IOException Thrown if socket is not open for reading and writing
      */
-    void handleRequest(VoogaRequest<T> request);
+    public VoogaRemote(Socket socket) throws IOException {
+        this.socket = socket;
+        this.outputStream = new ObjectOutputStream(socket.getOutputStream());
+        this.outputStream.flush();
+    }
 
     /**
-     * Utility method to write request to output stream and handle failures
+     * Creates a separate thread to being listening to input sent over the network. When input is found, handleRequest is called on it.
      *
-     * @param request Request to be written
-     * @param output  OutputStream to write request to
-     * @return Returns true if the request is written successfully
+     * @throws IOException Thrown in socket is not open for listening
      */
-    default boolean writeRequestTo(VoogaRequest<T> request, ObjectOutputStream output) {
+    protected void beginListening() throws IOException {
+        new Listener(socket, this::handleRequest).start();
+    }
+
+    @Override
+    public T getState() {
+        return state;
+    }
+
+    @Override
+    public boolean isActive() {
+        return getSocket().isConnected() && !getSocket().isClosed() && getSocket().isBound();
+    }
+
+    /**
+     * Sets the local state to match the network shared state.
+     * <p>
+     * On clients, this should only ever be called in response to a request from the server. On servers, this should only be called if the request is approved.
+     *
+     * @param state State on server to be set to new local state
+     */
+    protected void setState(T state) {
+        this.state = state;
+    }
+
+    /**
+     * @return Returns the socket this VoogaRemote is operating on
+     */
+    protected Socket getSocket() {
+        return socket;
+    }
+
+    @Override
+    public abstract void handleRequest(Serializable request);
+
+    public boolean sendRequest(Serializable request) {
+        if (!isActive()) {
+            return false;
+        }
         try {
-            output.writeObject(request);
+            outputStream.writeObject(request);
             return true;
         } catch (IOException e) {
             try {
@@ -50,53 +86,6 @@ public interface VoogaRemote<T> {
                 e1.printStackTrace();
             }
             return false;
-        }
-    }
-
-    /**
-     * Sends a request through a socket's output stream.
-     *
-     * @param request Request to be applied to the networked state if accepted.
-     * @return Returns true if the request was sent successfully
-     */
-    boolean sendRequest(VoogaRequest<T> request);
-
-    /**
-     * This class listens to requests in a background thread, and handles each request with a specified Consumer.
-     *
-     * @param <T> The type of state modified in the request.
-     */
-    class Listener<T> extends Thread {
-        private final Consumer<VoogaRequest<T>> requestHandler;
-        private ObjectInputStream inputStream;
-
-        /**
-         * @param inputStream    inputStream to listen to requests on.
-         * @param requestHandler Consumer that accepts each incoming request.
-         * @throws IOException Thrown if socket input is closed.
-         */
-        public Listener(ObjectInputStream inputStream, Consumer<VoogaRequest<T>> requestHandler) throws IOException {
-            this.inputStream = inputStream;
-            this.requestHandler = requestHandler;
-        }
-
-        /**
-         * Continuously listens for requests
-         */
-        @Override
-        public void run() {
-            try {
-                while (true) {
-                    requestHandler.accept((VoogaRequest<T>) inputStream.readObject());
-                }
-            } catch (IOException | ClassNotFoundException e) {
-            } finally {
-                try {
-                    inputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
         }
     }
 }

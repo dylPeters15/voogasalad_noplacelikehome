@@ -30,7 +30,7 @@ public class GameBoard extends VoogaObject implements Grid, Iterable {
                 .flatMap(i -> IntStream.range(0, columns).mapToObj(j -> new CoordinateTuple(i, j)))
                 .parallel()
                 .map(e -> e.convertToDimension(templateCell.dimension()))
-                .map(e -> new Pair<>(e, templateCell.createInstance(e, game)))
+                .map(e -> new Pair<>(e, templateCell.createInstance(e)))
                 .collect(Collectors.toMap(Pair::getKey, Pair::getValue));
     }
 

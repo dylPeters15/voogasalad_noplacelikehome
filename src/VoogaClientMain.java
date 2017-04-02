@@ -10,9 +10,12 @@ public class VoogaClientMain {
     public static void main(String[] args) throws Exception {
         VoogaClient<NetworkingTest> voogaClient = new VoogaClient<>("localhost", 10023, obj -> (NetworkingTest) Class.forName(obj.toString().split("=")[0]).getConstructor(String.class).newInstance(obj.toString().split("=")[1]));
         Scanner stdin = new Scanner(System.in);
-        while (true) {
+        while (voogaClient.isActive()) {
             String input = stdin.nextLine();
-            voogaClient.sendRequest(new VoogaRequest<>(state -> state.set(state.get() + input + " ")));
+            voogaClient.sendRequest(new VoogaRequest<NetworkingTest>(state -> {
+                state.set(state.get() + input + " ");
+                return state;
+            }));
             System.out.println(voogaClient.getState());
         }
     }

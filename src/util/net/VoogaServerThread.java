@@ -2,8 +2,7 @@ package util.net;
 
 import util.io.Serializer;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.net.Socket;
 
 /**
@@ -13,9 +12,7 @@ import java.net.Socket;
  * @author Created by th174 on 4/1/2017.
  * @see VoogaRequest,VoogaServer,VoogaServerThread,VoogaClient,VoogaRemote
  */
-public class VoogaServerThread<T> implements VoogaRemote<T> {
-    private final ObjectOutputStream outputToClient;
-    private final Socket socket;
+public class VoogaServerThread<T> extends VoogaRemote<T> {
     private final VoogaServer<T> parentServer;
 
     /**
@@ -26,18 +23,10 @@ public class VoogaServerThread<T> implements VoogaRemote<T> {
      * @throws Exception Thrown if socket is not open for reading and writing, or if exception thrown in serialization
      */
     public VoogaServerThread(VoogaServer<T> parentServer, Socket socket, T initialState, Serializer<T> stateSerializer) throws Exception {
-        this.socket = socket;
+        super(socket);
         this.parentServer = parentServer;
-        this.outputToClient = new ObjectOutputStream(socket.getOutputStream());
-        outputToClient.flush();
-        ObjectInputStream inputFromClient = new ObjectInputStream(socket.getInputStream());
-        outputToClient.writeObject(stateSerializer.serialize(initialState));
-        new Listener<>(inputFromClient, this::handleRequest).start();
-    }
-
-    @Override
-    public T getState() {
-        return parentServer.getState();
+        sendRequest(stateSerializer.serialize(initialState));
+        beginListening();
     }
 
     /**
@@ -46,23 +35,8 @@ public class VoogaServerThread<T> implements VoogaRemote<T> {
      * @param request Incoming request from client
      */
     @Override
-    public void handleRequest(VoogaRequest<T> request) {
+    public void handleRequest(Serializable request) {
         parentServer.handleRequest(request);
-    }
-
-    @Override
-    public Socket getSocket() {
-        return socket;
-    }
-
-    /**
-     * Sends request to a client server through a socket.
-     *
-     * @param request Request sent to client to be applied.
-     * @return Returns true if the request was sent successfully
-     */
-    @Override
-    public boolean sendRequest(VoogaRequest<T> request) {
-        return writeRequestTo(request, outputToClient);
+        setState(parentServer.getState());
     }
 }

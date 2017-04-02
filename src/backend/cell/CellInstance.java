@@ -1,6 +1,7 @@
 package backend.cell;
 
 import backend.grid.CoordinateTuple;
+import backend.grid.Grid;
 import backend.unit.UnitInstance;
 import backend.util.GameState;
 import backend.util.GameState.Event;
@@ -19,19 +20,19 @@ public class CellInstance extends VoogaInstance<CellTemplate> implements Cell {
     private final Collection<UnitInstance> currentOccupants;
     private final Collection<CellEffect> abilities;
 
-    protected CellInstance(CoordinateTuple coordinateTuple, CellTemplate templateCell, Collection<CellEffect> cellAbilities, Collection<UnitInstance> initialOccupants, GameState game) {
-        super(templateCell.getName() + "@" + coordinateTuple.toString(), templateCell, game);
+    protected CellInstance(CoordinateTuple coordinateTuple, CellTemplate templateCell, Collection<CellEffect> cellAbilities, Collection<UnitInstance> initialOccupants) {
+        super(templateCell.getName() + "@" + coordinateTuple.toString(), templateCell);
         this.coordinates = coordinateTuple;
         this.abilities = new HashSet<>(cellAbilities);
         currentOccupants = new HashSet<>(initialOccupants);
     }
 
-    public void startTurn() {
-        applyAbilities(Event.TURN_START);
+    public void startTurn(GameState gameState) {
+        applyAbilities(Event.TURN_START, gameState);
     }
 
-    public void endTurn() {
-        applyAbilities(Event.TURN_END);
+    public void endTurn(GameState gameState) {
+        applyAbilities(Event.TURN_END, gameState);
     }
 
     @Override
@@ -44,8 +45,8 @@ public class CellInstance extends VoogaInstance<CellTemplate> implements Cell {
         return getTemplate().getShape();
     }
 
-    public Map<CoordinateTuple, CellInstance> getNeighbors() {
-        return getGameState().getGrid().getNeighbors(this);
+    public Map<CoordinateTuple, CellInstance> getNeighbors(Grid grid) {
+        return grid.getNeighbors(this);
     }
 
     @Override
@@ -53,8 +54,8 @@ public class CellInstance extends VoogaInstance<CellTemplate> implements Cell {
         return getTemplate().getTerrain();
     }
 
-    public void applyAbilities(Event event) {
-        currentOccupants.forEach(unit -> abilities.forEach(ability -> ability.affect(unit, event, getGameState())));
+    public void applyAbilities(Event event, GameState gameState) {
+        currentOccupants.forEach(unit -> abilities.forEach(ability -> ability.affect(unit, event, gameState)));
     }
 
     @Override

@@ -2,8 +2,8 @@ package util.net;
 
 import util.io.Serializer;
 
+import java.io.Serializable;
 import java.net.ServerSocket;
-import java.net.Socket;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -19,14 +19,15 @@ import java.util.function.Predicate;
  * @author Created by th174 on 4/1/2017.
  * @see VoogaRequest,VoogaServer,VoogaServerThread,VoogaClient,VoogaRemote
  */
-public class VoogaServer<T> implements VoogaRemote<T> {
+public class VoogaServer<T> implements Remote<T>{
     public static final Predicate ALWAYS_VALID = voogaRequest -> true;
-    private final T state;
     private final List<VoogaServerThread<T>> childThreads = new ArrayList<>();
     private final Serializer<T> stateSerializer;
     private final ServerSocket serverSocket;
     private Predicate<VoogaRequest<T>> requestValidator;
     private Instant mostRecentTimeStamp;
+    private volatile T state;
+
 
     /**
      * @param initialState    The initial networked shared state
@@ -60,10 +61,10 @@ public class VoogaServer<T> implements VoogaRemote<T> {
      *
      * @throws Exception Thrown if server cannot open socket to connect to client
      */
-    public void listenForClients() {
+    public void beginListening() {
         new Thread(() -> {
             try {
-                while (true) {
+                while (serverSocket.isBound() && !serverSocket.isClosed()) {
                     VoogaServerThread<T> child = new VoogaServerThread<>(this, serverSocket.accept(), state, stateSerializer);
                     childThreads.add(child);
                 }
@@ -71,6 +72,16 @@ public class VoogaServer<T> implements VoogaRemote<T> {
                 e.printStackTrace();
             }
         }).start();
+    }
+
+    /**
+     * @param state New state object to be serialized and propagated across all servers and clients
+     * @throws Exception Thrown if new state object cannot be serialized
+     */
+    public void sendNewState(T state) throws Exception {
+        Serializable serializedState = stateSerializer.serialize(state);
+        this.state = state;
+        childThreads.forEach(e -> e.sendRequest(serializedState));
     }
 
     @Override
@@ -85,12 +96,16 @@ public class VoogaServer<T> implements VoogaRemote<T> {
      * @see this#validateReqeust(VoogaRequest)
      */
     @Override
-    public void handleRequest(VoogaRequest<T> request) {
-        if (validateReqeust(request)) {
-            mostRecentTimeStamp = request.getTimeStamp();
-            request.modify(state);
+    public synchronized void handleRequest(Serializable request) {
+        if (request instanceof VoogaRequest && validateReqeust((VoogaRequest<T>) request)) {
+            state = ((VoogaRequest<T>) request).modify(state);
+            mostRecentTimeStamp = ((VoogaRequest<T>) request).getTimeStamp();
             sendRequest(request);
         }
+    }
+
+    public boolean isActive() {
+        return serverSocket.isBound() && !serverSocket.isClosed() && !childThreads.isEmpty();
     }
 
     /**
@@ -113,22 +128,14 @@ public class VoogaServer<T> implements VoogaRemote<T> {
     }
 
     /**
-     * @return Returns socket of first child thread
-     */
-    @Override
-    public Socket getSocket() {
-        return childThreads.get(0).getSocket();
-    }
-
-    /**
      * Sends a request to all clients to be applied.
      *
      * @param request Request to be applied to the networked state on all clients.
      * @return Returns true if the requests were sent successfully
      */
     @Override
-    public boolean sendRequest(VoogaRequest<T> request) {
+    public boolean sendRequest(Serializable request) {
         childThreads.removeIf(e -> !e.sendRequest(request));
-        return !childThreads.isEmpty();
+        return isActive();
     }
 }

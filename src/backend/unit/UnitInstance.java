@@ -3,6 +3,7 @@ package backend.unit;
 import backend.cell.CellInstance;
 import backend.cell.Terrain;
 import backend.grid.CoordinateTuple;
+import backend.grid.Grid;
 import backend.player.Player;
 import backend.player.Team;
 import backend.unit.properties.*;
@@ -34,8 +35,8 @@ public class UnitInstance extends VoogaInstance<UnitTemplate> implements Unit {
     private Player ownerPlayer;
     private CellInstance currentCell;
 
-    protected UnitInstance(String unitName, UnitTemplate unitTemplate, Player ownerPlayer, CellInstance startingCell, GameState game) {
-        super(unitName, unitTemplate, game);
+    protected UnitInstance(String unitName, UnitTemplate unitTemplate, Player ownerPlayer, CellInstance startingCell) {
+        super(unitName, unitTemplate);
         this.faction = unitTemplate.getFaction();
         this.hitPoints = unitTemplate.getHitPoints();
         this.movePoints = unitTemplate.getMovePoints();
@@ -49,18 +50,18 @@ public class UnitInstance extends VoogaInstance<UnitTemplate> implements Unit {
         setCurrentCell(startingCell);
     }
 
-    public void moveTo(CellInstance cell) {
+    public void moveTo(CellInstance cell, GameState gameState) {
         movePoints.useMovePoints(moveCosts.get(cell.getTerrain()));
         currentCell = cell;
-        processTriggers(Event.UNIT_MOVEMENT);
+        processTriggers(Event.UNIT_MOVEMENT, gameState);
     }
 
-    public void startTurn() {
-        processTriggers(Event.TURN_START);
+    public void startTurn(GameState gameState) {
+        processTriggers(Event.TURN_START, gameState);
     }
 
-    public void endTurn() {
-        processTriggers(Event.TURN_END);
+    public void endTurn(GameState gameState) {
+        processTriggers(Event.TURN_END, gameState);
         movePoints.resetValue();
     }
 
@@ -68,22 +69,22 @@ public class UnitInstance extends VoogaInstance<UnitTemplate> implements Unit {
         getHitPoints().takeDamage(damage);
     }
 
-    public void useActiveAbility(String activeAbilityName, VoogaInstance target) {
-        useActiveAbility(getActiveAbilityByName(activeAbilityName), target);
+    public void useActiveAbility(String activeAbilityName, VoogaInstance target, GameState gameState) {
+        useActiveAbility(getActiveAbilityByName(activeAbilityName), target, gameState);
     }
 
-    public void useActiveAbility(ActiveAbility activeAbility, VoogaInstance target) {
-        activeAbility.affect(this, target, getGameState());
-        processTriggers(Event.UNIT_ABILITY_USE);
+    public void useActiveAbility(ActiveAbility activeAbility, VoogaInstance target, GameState gameState) {
+        activeAbility.affect(this, target, gameState);
+        processTriggers(Event.UNIT_ABILITY_USE, gameState);
     }
 
-    private void processTriggers(Event event) {
-        triggeredAbilities.values().forEach(e -> e.affect(this, event, getGameState()));
+    private void processTriggers(Event event, GameState gameState) {
+        triggeredAbilities.values().forEach(e -> e.affect(this, event, gameState));
     }
 
-    public Collection<CellInstance> getLegalMoves() {
+    public Collection<CellInstance> getLegalMoves(Grid grid) {
         return movePattern.getCoordinates().parallelStream()
-                .map(e -> getGameState().getGrid().get(e.sum(this.getLocation())))
+                .map(e -> grid.get(e.sum(this.getLocation())))
                 .filter(Objects::nonNull)
                 .filter(e -> getMoveCostByTerrain(e.getTerrain()) < movePoints.getCurrentValue()).collect(Collectors.toSet());
     }
@@ -96,8 +97,8 @@ public class UnitInstance extends VoogaInstance<UnitTemplate> implements Unit {
         this.currentCell = currentCell;
     }
 
-    public Map<CoordinateTuple, Collection<UnitInstance>> getNeighboringUnits() {
-        Map<CoordinateTuple, Collection<UnitInstance>> neighbors = currentCell.getNeighbors().entrySet().parallelStream()
+    public Map<CoordinateTuple, Collection<UnitInstance>> getNeighboringUnits(Grid grid) {
+        Map<CoordinateTuple, Collection<UnitInstance>> neighbors = currentCell.getNeighbors(grid).entrySet().parallelStream()
                 .map(e -> new Pair<>(e.getKey(), e.getValue().getOccupants()))
                 .filter(e -> !e.getValue().isEmpty())
                 .collect(Collectors.toMap(Pair::getKey, Pair::getValue));
@@ -105,12 +106,12 @@ public class UnitInstance extends VoogaInstance<UnitTemplate> implements Unit {
         return neighbors;
     }
 
-    public Collection<UnitInstance> getAllNeighboringUnits() {
-        return getNeighboringUnits().values().parallelStream().flatMap(Collection::stream).parallel().collect(Collectors.toSet());
+    public Collection<UnitInstance> getAllNeighboringUnits(Grid grid) {
+        return getNeighboringUnits(grid).values().parallelStream().flatMap(Collection::stream).parallel().collect(Collectors.toSet());
     }
 
-    public Map<CoordinateTuple, CellInstance> getNeighboringCells() {
-        return currentCell.getNeighbors();
+    public Map<CoordinateTuple, CellInstance> getNeighboringCells(Grid grid) {
+        return currentCell.getNeighbors(grid);
     }
 
     public CoordinateTuple getLocation() {
@@ -134,8 +135,8 @@ public class UnitInstance extends VoogaInstance<UnitTemplate> implements Unit {
         return offensiveModifiers;
     }
 
-    public double applyAllOffensiveModifiers(Double originalValue, UnitInstance target) {
-        return InteractionModifier.modifyAll(getOffensiveModifiers(), originalValue, this, target, getGameState());
+    public double applyAllOffensiveModifiers(Double originalValue, UnitInstance target, GameState gameState) {
+        return InteractionModifier.modifyAll(getOffensiveModifiers(), originalValue, this, target, gameState);
     }
 
     @Override
@@ -143,8 +144,8 @@ public class UnitInstance extends VoogaInstance<UnitTemplate> implements Unit {
         return defensiveModifiers;
     }
 
-    public double applyAllDefensiveModifiers(Double originalValue, UnitInstance agent) {
-        return InteractionModifier.modifyAll(getDefensiveModifiers(), originalValue, agent, this, getGameState());
+    public double applyAllDefensiveModifiers(Double originalValue, UnitInstance agent, GameState gameState) {
+        return InteractionModifier.modifyAll(getDefensiveModifiers(), originalValue, agent, this, gameState);
     }
 
     @Override

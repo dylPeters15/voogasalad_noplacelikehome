@@ -50,7 +50,7 @@ public class UnitTemplate extends VoogaObject implements Unit {
     }
 
     public UnitInstance createInstance(String unitName, Player ownerPlayer, CellInstance startingCell, GameState game) {
-        return new UnitInstance(unitName, this, ownerPlayer, startingCell, game);
+        return new UnitInstance(unitName, this, ownerPlayer, startingCell);
     }
 
     @Override

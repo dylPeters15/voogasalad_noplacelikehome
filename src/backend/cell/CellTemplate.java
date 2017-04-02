@@ -2,7 +2,6 @@ package backend.cell;
 
 import backend.grid.CoordinateTuple;
 import backend.unit.UnitInstance;
-import backend.util.GameState;
 import backend.util.Template;
 import backend.util.VoogaObject;
 
@@ -61,16 +60,16 @@ public class CellTemplate extends VoogaObject implements Cell, Template<CellInst
         this.terrain = terrain;
     }
 
-    public CellInstance createInstance(CoordinateTuple coordinateTuple, GameState game) {
-        return createInstance(coordinateTuple, Collections.EMPTY_LIST, game);
+    public CellInstance createInstance(CoordinateTuple coordinateTuple) {
+        return createInstance(coordinateTuple, Collections.EMPTY_LIST);
     }
 
-    public CellInstance createInstance(CoordinateTuple coordinateTuple, Collection<CellEffect> cellAbilities, GameState gameState) {
-        return createInstance(coordinateTuple, cellAbilities, Collections.EMPTY_LIST, gameState);
+    public CellInstance createInstance(CoordinateTuple coordinateTuple, Collection<CellEffect> cellAbilities) {
+        return createInstance(coordinateTuple, cellAbilities, Collections.EMPTY_LIST);
     }
 
-    public CellInstance createInstance(CoordinateTuple coordinateTuple, Collection<CellEffect> cellAbilities, Collection<UnitInstance> initialOccupants, GameState gameState) {
-        return new CellInstance(coordinateTuple, this, cellAbilities, initialOccupants, gameState);
+    public CellInstance createInstance(CoordinateTuple coordinateTuple, Collection<CellEffect> cellAbilities, Collection<UnitInstance> initialOccupants) {
+        return new CellInstance(coordinateTuple, this, cellAbilities, initialOccupants);
     }
 
     @Override

@@ -44,8 +44,8 @@ public final class Attack implements ActiveAbility.AbilityEffect<UnitInstance> {
     @Override
     public void useAbility(UnitInstance user, UnitInstance target, GameState game) {
         IntStream.range(0, getNumHits()).forEach(i -> {
-            double attackDamage = user.applyAllOffensiveModifiers(getDamage(user, target, game), target);
-            double totalDamage = target.applyAllDefensiveModifiers(attackDamage, user);
+            double attackDamage = user.applyAllOffensiveModifiers(getDamage(user, target, game), target, game);
+            double totalDamage = target.applyAllDefensiveModifiers(attackDamage, user, game);
             target.takeDamage(totalDamage);
         });
     }

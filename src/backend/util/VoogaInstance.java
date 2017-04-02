@@ -7,17 +7,12 @@ package backend.util;
  */
 public abstract class VoogaInstance<T extends VoogaObject> extends VoogaObject {
     private final T template;
-    private final GameState gameState;
     private boolean isVisible;
 
-    protected VoogaInstance(String unitName, T template, GameState gameState) {
+    protected VoogaInstance(String unitName, T template) {
         super(unitName, template.getDescription(), template.getImgPath());
         this.template = template;
-        this.gameState = gameState;
-    }
-
-    protected GameState getGameState() {
-        return gameState;
+        isVisible = true;
     }
 
     public T getTemplate() {

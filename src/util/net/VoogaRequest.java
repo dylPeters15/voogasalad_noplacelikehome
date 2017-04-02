@@ -32,10 +32,11 @@ public class VoogaRequest<T> implements Serializable {
 
     /**
      * @param state State before the action is applied
+     * @return Returns the new state after the action is applied
      */
-    public void modify(T state) {
+    public T modify(T state) {
         try {
-            modifier.accept(state);
+            return modifier.apply(state);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -61,9 +62,10 @@ public class VoogaRequest<T> implements Serializable {
     @FunctionalInterface
     public interface SerializableStateModifier<T> extends Serializable {
         /**
-         * @param state State before modification
+         * @param state State before the action is applied.
+         * @return Returns the new state after the action is applied.
          * @throws Exception Thrown if the implementation throws an exception
          */
-        void accept(T state) throws Exception;
+        T apply(T state) throws Exception;
     }
 }

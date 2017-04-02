@@ -16,7 +16,7 @@ interface OffensiveModifier extends InteractionModifier.Modifier<Double> {
     OffensiveModifier FIRST_BLOOD = (outgoingDamage, agent, target, game) -> outgoingDamage * (agent.getHitPoints().isFull() ? 1.5 : 1);
     OffensiveModifier EXECUTIONER = (outgoingDamage, agent, target, game) -> outgoingDamage * (agent.getHitPoints().getCurrentValue() / agent.getHitPoints().getMaxValue() < .25 ? 2 : 1);
     OffensiveModifier BRAVERY = (outgoingDamage, agent, target, game) -> outgoingDamage * (target.getHitPoints().getCurrentValue() > agent.getHitPoints().getCurrentValue() ? 1.5 : 1);
-    OffensiveModifier ASSASSIN = (outgoingDamage, agent, target, game) -> outgoingDamage * (target.getNeighboringUnits().values().parallelStream().flatMap(Collection::stream).parallel().anyMatch(e -> e.getTeam().equals(target.getTeam())) ? 1 : 1.5);
+    OffensiveModifier ASSASSIN = (outgoingDamage, agent, target, game) -> outgoingDamage * (target.getNeighboringUnits(game.getGrid()).values().parallelStream().flatMap(Collection::stream).parallel().anyMatch(e -> e.getTeam().equals(target.getTeam())) ? 1 : 1.5);
     OffensiveModifier CRITICAL_STRIKE = (outgoingDamage, agent, target, game) -> Math.random() < .25 ? outgoingDamage * 2 : outgoingDamage;
 
     @Override

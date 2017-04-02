@@ -2,7 +2,6 @@ package backend.unit.properties;
 
 import backend.unit.UnitInstance;
 import backend.util.GameState;
-import backend.util.VoogaInstance;
 import backend.util.VoogaObject;
 
 import java.util.Collection;
@@ -17,7 +16,7 @@ public class ActiveAbility<T extends VoogaObject> extends VoogaObject implements
     //All hexagonal and only effects adjacent neighbors
     public static final ActiveAbility<UnitInstance> PUNCH = new ActiveAbility<>("Punch", new Attack(6, 2), GridPattern.HEXAGONAL_ADJACENT, "The attacker hits 2 times for 6 damage each in any hexagonal direction.", "Fist.png");
     public static final ActiveAbility<UnitInstance> SUICIDE_SQUAD = new ActiveAbility<>("Suicide Squad, Attack!", (user, target, game) -> {
-        user.getAllNeighboringUnits().stream().filter(e -> e.getTeam() != user.getTeam()).forEach(u -> u.takeDamage(10));
+        user.getAllNeighboringUnits(game.getGrid()).stream().filter(e -> e.getTeam() != user.getTeam()).forEach(u -> u.takeDamage(10));
         user.takeDamage(Integer.MAX_VALUE);
     }, GridPattern.HEXAGONAL_ADJACENT, "The attacker sacrifices itself to deal massive damage to all neighboring enemy units.", "Allahu_Akbar.png");
     public static final ActiveAbility<UnitInstance> FULL_HEAL = new ActiveAbility<>("Full Heal", (user, target, game) -> target.getHitPoints().resetValue(), GridPattern.HEXAGONAL_ADJACENT, "The attacker fully heals any unit", "Red_Cross.png");
