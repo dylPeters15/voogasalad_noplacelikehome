@@ -1,7 +1,5 @@
 package util.net;
 
-import util.io.XMLSerializable;
-
 import java.io.Serializable;
 import java.time.Clock;
 import java.time.Instant;
@@ -21,7 +19,7 @@ import java.util.function.Consumer;
  * @author Created by th174 on 4/1/2017.
  * @see VoogaRequest,VoogaServer,VoogaServerThread,VoogaClient,VoogaRemote
  */
-public class VoogaRequest<T extends XMLSerializable> implements Serializable {
+public class VoogaRequest<T> implements Serializable {
     private final SerializableStateModifier<T> modifier;
     private final Instant timeStamp;
 
@@ -58,7 +56,7 @@ public class VoogaRequest<T extends XMLSerializable> implements Serializable {
      * @param <T> The type of variable used to represent networked shared state
      */
     @FunctionalInterface
-    public interface SerializableStateModifier<T extends XMLSerializable> extends Serializable, Consumer<T> {
+    public interface SerializableStateModifier<T> extends Serializable, Consumer<T> {
         /**
          * @param state State before modification
          */

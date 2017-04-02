@@ -1,7 +1,7 @@
 package backend.util;
 
 import backend.grid.Grid;
-import util.io.XMLSerializable;
+import backend.io.XMLSerializable;
 import backend.player.Player;
 
 import java.util.List;
