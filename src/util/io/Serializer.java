@@ -10,6 +10,7 @@ public interface Serializer<T> {
     /**
      * @param obj Object to be converted to Serializable form
      * @return Serializable form of obj
+     * @throws Exception Thrown if implementation throws exception
      */
-    Object serialize(T obj);
+    Object serialize(T obj) throws Exception;
 }
