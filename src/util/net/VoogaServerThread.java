@@ -1,8 +1,7 @@
 package util.net;
 
-import util.io.XMLSerializable;
+import util.io.Serializer;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
@@ -14,7 +13,7 @@ import java.net.Socket;
  * @author Created by th174 on 4/1/2017.
  * @see VoogaRequest,VoogaServer,VoogaServerThread,VoogaClient,VoogaRemote
  */
-public class VoogaServerThread<T extends XMLSerializable> extends VoogaRemote.Listener<T> implements VoogaRemote<T> {
+public class VoogaServerThread<T> extends VoogaRemote.Listener<T> implements VoogaRemote<T> {
     private final ObjectOutputStream outputToClient;
 
     /**
@@ -23,10 +22,10 @@ public class VoogaServerThread<T extends XMLSerializable> extends VoogaRemote.Li
      * @param initialState Initialstate to be sent to the client.
      * @throws IOException Thrown if socket is not open for reading and writing.
      */
-    public VoogaServerThread(VoogaServer<T> parentServer, Socket socket, T initialState) throws IOException {
+    public VoogaServerThread(VoogaServer<T> parentServer, Socket socket, T initialState, Serializer<T> stateSerializer) throws IOException {
         super(socket, parentServer::readRequest);
-        DataOutputStream initialStateOutput = new DataOutputStream(socket.getOutputStream());
-        initialStateOutput.writeUTF(initialState.toXml());
+        ObjectOutputStream initialStateOutput = new ObjectOutputStream(socket.getOutputStream());
+        initialStateOutput.writeObject(stateSerializer.serialize(initialState));
         this.outputToClient = new ObjectOutputStream(socket.getOutputStream());
         start();
     }
@@ -45,6 +44,7 @@ public class VoogaServerThread<T extends XMLSerializable> extends VoogaRemote.Li
         } catch (IOException e) {
             try {
                 getSocket().close();
+                System.out.println("Connection Closed: " + getSocket());
             } catch (IOException e1) {
                 e1.printStackTrace();
             }

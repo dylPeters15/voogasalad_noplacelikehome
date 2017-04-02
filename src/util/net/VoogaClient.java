@@ -1,11 +1,10 @@
 package util.net;
 
-import util.io.XMLSerializable;
+import util.io.Unserializer;
 
-import java.io.DataInputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.InetAddress;
 import java.net.Socket;
 
 /**
@@ -16,7 +15,7 @@ import java.net.Socket;
  * @author Created by th174 on 4/1/2017.
  * @see VoogaRequest,VoogaServer,VoogaServerThread,VoogaClient,VoogaRemote
  */
-public class VoogaClient<T extends XMLSerializable> implements VoogaRemote<T> {
+public class VoogaClient<T> implements VoogaRemote<T> {
     private final T state;
     private final ObjectOutputStream outputToServer;
     private final Socket socket;
@@ -24,23 +23,16 @@ public class VoogaClient<T extends XMLSerializable> implements VoogaRemote<T> {
     /**
      * Creates a client connected to a server located at host:port
      *
-     * @param host Hostname of the server
-     * @param port Port on the server to connect to
-     * @throws IOException                  Thrown if server is not found, or if socket is not open for writing.
-     * @throws XMLSerializable.XMLException Thrown if the client was unable to parse the initial state sent by the server
+     * @param host         Hostname of the server
+     * @param port         Port on the server to connect to
+     * @param unserializer Unserializes state
+     * @throws Exception Thrown if server is not found, or if socket is not open for writing, or if data received from server cannot be unserialized.
      */
-    public VoogaClient(String host, int port) throws IOException, XMLSerializable.XMLException {
+    public VoogaClient(String host, int port, Unserializer<T> unserializer) throws Exception {
         socket = new Socket(host, port);
         this.outputToServer = new ObjectOutputStream(socket.getOutputStream());
-        this.state = (T) XMLSerializable.createFromXML(new DataInputStream(socket.getInputStream()).readUTF());
+        this.state = unserializer.unserialize(new ObjectInputStream(socket.getInputStream()).readObject());
         new Listener<>(socket, this::handleRequest).start();
-    }
-
-    /**
-     * @return Address of server that this client is bound to
-     */
-    public InetAddress getAddress() {
-        return socket.getInetAddress();
     }
 
 
@@ -62,6 +54,7 @@ public class VoogaClient<T extends XMLSerializable> implements VoogaRemote<T> {
         } catch (IOException e) {
             try {
                 socket.close();
+                System.out.println("Connection Closed: " + socket);
             } catch (IOException e1) {
                 e1.printStackTrace();
             }

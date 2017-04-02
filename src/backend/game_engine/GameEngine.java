@@ -1,7 +1,7 @@
 package backend.game_engine;
 
 import backend.cell.Terrain;
-import util.io.XMLSerializable;
+import backend.io.XMLSerializable;
 import backend.player.Player;
 import backend.unit.UnitInstance;
 import backend.util.GameState;

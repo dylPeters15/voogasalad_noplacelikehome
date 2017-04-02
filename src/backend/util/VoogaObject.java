@@ -1,6 +1,6 @@
 package backend.util;
 
-import util.io.XMLSerializable;
+import backend.io.XMLSerializable;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -48,7 +48,7 @@ public abstract class VoogaObject implements XMLSerializable {
     }
 
     @Override
-    public String toXml() {
+    public String toXML() {
         //TODO: Tavo pls
         throw new RuntimeException("Not implemented yet");
     }

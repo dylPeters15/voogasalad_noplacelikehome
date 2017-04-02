@@ -1,6 +1,6 @@
 package util.net;
 
-import util.io.XMLSerializable;
+import util.io.Serializer;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -18,17 +18,19 @@ import java.util.HashSet;
  * @author Created by th174 on 4/1/2017.
  * @see VoogaRequest,VoogaServer,VoogaServerThread,VoogaClient,VoogaRemote
  */
-public class VoogaServer<T extends XMLSerializable> implements VoogaRemote<T> {
+public class VoogaServer<T> implements VoogaRemote<T> {
     private final T state;
     private final Collection<VoogaServerThread<T>> childThreads = new HashSet<>();
+    private final Serializer<T> stateSerializer;
     private Instant mostRecentTimeStamp;
 
     /**
      * @param initialState Initial starting state. Should be identical to the initial state on all clients.
      */
-    public VoogaServer(T initialState) {
+    public VoogaServer(T initialState, Serializer<T> stateSerializer) {
         this.state = initialState;
-        mostRecentTimeStamp = Instant.now(Clock.systemUTC());
+        this.stateSerializer = stateSerializer;
+        this.mostRecentTimeStamp = Instant.now(Clock.systemUTC());
     }
 
     /**
@@ -38,7 +40,7 @@ public class VoogaServer<T extends XMLSerializable> implements VoogaRemote<T> {
     public void listenForClients(int port) throws IOException {
         ServerSocket serverSocket = new ServerSocket(port);
         while (true) {
-            VoogaServerThread<T> child = new VoogaServerThread<>(this, serverSocket.accept(), state);
+            VoogaServerThread<T> child = new VoogaServerThread<>(this, serverSocket.accept(), state, stateSerializer);
             childThreads.add(child);
         }
     }

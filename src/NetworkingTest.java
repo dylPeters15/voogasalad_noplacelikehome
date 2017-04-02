@@ -1,11 +1,9 @@
-import util.io.XMLSerializable;
-
 /**
  * JUST FOR TESTING
  *
  * @author Created by th174 on 4/1/2017.
  */
-public class NetworkingTest implements XMLSerializable {
+public class NetworkingTest {
     public static NetworkingTest INITIAL_STATE = new NetworkingTest("5");
     private int testInt;
 
@@ -26,12 +24,7 @@ public class NetworkingTest implements XMLSerializable {
     }
 
     @Override
-    public String toXml() {
-        return getClass().getName() + "=" + testInt;
-    }
-
-    @Override
     public String toString() {
-        return toXml();
+        return getClass().getName() + "=" + testInt;
     }
 }
