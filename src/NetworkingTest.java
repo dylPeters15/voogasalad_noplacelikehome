@@ -1,5 +1,5 @@
 /**
- * JUST FOR TESTING
+ * Class used for testing client-server networking
  *
  * @author Created by th174 on 4/1/2017.
  */

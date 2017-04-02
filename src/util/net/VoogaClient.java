@@ -2,7 +2,6 @@ package util.net;
 
 import util.io.Unserializer;
 
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
@@ -35,9 +34,13 @@ public class VoogaClient<T> implements VoogaRemote<T> {
         new Listener<>(socket, this::handleRequest).start();
     }
 
-
     private void handleRequest(VoogaRequest<T> request) {
         request.modify(state);
+    }
+
+    @Override
+    public Socket getSocket() {
+        return socket;
     }
 
     /**
@@ -48,17 +51,6 @@ public class VoogaClient<T> implements VoogaRemote<T> {
      */
     @Override
     public boolean sendRequest(VoogaRequest<T> request) {
-        try {
-            outputToServer.writeObject(request);
-            return true;
-        } catch (IOException e) {
-            try {
-                socket.close();
-                System.out.println("Connection Closed: " + socket);
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
-            return false;
-        }
+        return writeRequestTo(request, outputToServer);
     }
 }

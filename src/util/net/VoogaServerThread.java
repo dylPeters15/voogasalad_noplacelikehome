@@ -2,7 +2,6 @@ package util.net;
 
 import util.io.Serializer;
 
-import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
@@ -13,21 +12,28 @@ import java.net.Socket;
  * @author Created by th174 on 4/1/2017.
  * @see VoogaRequest,VoogaServer,VoogaServerThread,VoogaClient,VoogaRemote
  */
-public class VoogaServerThread<T> extends VoogaRemote.Listener<T> implements VoogaRemote<T> {
+public class VoogaServerThread<T> implements VoogaRemote<T> {
     private final ObjectOutputStream outputToClient;
+    private final Socket socket;
 
     /**
-     * @param parentServer Parent server creating this thread.
-     * @param socket       Socket to listen on for client requests.
-     * @param initialState Initialstate to be sent to the client.
+     * @param parentServer    Parent server creating this thread.
+     * @param socket          Socket to listen on for client requests.
+     * @param initialState    Initialstate to be sent to the client.
+     * @param stateSerializer Converts the initial state to serializable form, so it can be sent to the client
      * @throws Exception Thrown if socket is not open for reading and writing, or if exception thrown in serialization
      */
     public VoogaServerThread(VoogaServer<T> parentServer, Socket socket, T initialState, Serializer<T> stateSerializer) throws Exception {
-        super(socket, parentServer::readRequest);
-        ObjectOutputStream initialStateOutput = new ObjectOutputStream(socket.getOutputStream());
-        initialStateOutput.writeObject(stateSerializer.serialize(initialState));
+        this.socket = socket;
+        Listener<T> clientListener = new Listener<>(socket, parentServer::readRequest);
         this.outputToClient = new ObjectOutputStream(socket.getOutputStream());
-        start();
+        outputToClient.writeObject(stateSerializer.serialize(initialState));
+        clientListener.start();
+    }
+
+    @Override
+    public Socket getSocket() {
+        return socket;
     }
 
     /**
@@ -38,17 +44,6 @@ public class VoogaServerThread<T> extends VoogaRemote.Listener<T> implements Voo
      */
     @Override
     public boolean sendRequest(VoogaRequest<T> request) {
-        try {
-            outputToClient.writeObject(request);
-            return true;
-        } catch (IOException e) {
-            try {
-                getSocket().close();
-                System.out.println("Connection Closed: " + getSocket());
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
-            return false;
-        }
+        return writeRequestTo(request, outputToClient);
     }
 }

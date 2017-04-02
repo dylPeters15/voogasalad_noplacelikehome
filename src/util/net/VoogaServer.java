@@ -2,12 +2,15 @@ package util.net;
 
 import util.io.Serializer;
 
-import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.Socket;
 import java.time.Clock;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * This class provides a general server that allows multiple simultaneous client connections.
@@ -19,30 +22,58 @@ import java.util.HashSet;
  * @see VoogaRequest,VoogaServer,VoogaServerThread,VoogaClient,VoogaRemote
  */
 public class VoogaServer<T> implements VoogaRemote<T> {
+    public static final Predicate ALWAYS_VALID = voogaRequest -> true;
     private final T state;
-    private final Collection<VoogaServerThread<T>> childThreads = new HashSet<>();
+    private final List<VoogaServerThread<T>> childThreads = new ArrayList<>();
     private final Serializer<T> stateSerializer;
+    private final ServerSocket serverSocket;
+    private Predicate<VoogaRequest<T>> requestValidator;
     private Instant mostRecentTimeStamp;
 
     /**
-     * @param initialState Initial starting state. Should be identical to the initial state on all clients.
+     * @param initialState    The initial networked shared state
+     * @param stateSerializer Converts the initial state to a Serializable form, so that it can be sent to the client
+     * @param port            Port to listen on for new client connections
+     * @throws Exception Thrown if ServerSocket could not be created, or if exception is thrown in serialization
      */
-    public VoogaServer(T initialState, Serializer<T> stateSerializer) {
-        this.state = initialState;
-        this.stateSerializer = stateSerializer;
-        this.mostRecentTimeStamp = Instant.now(Clock.systemUTC());
+    public VoogaServer(T initialState, Serializer<T> stateSerializer, int port) throws Exception {
+        this(initialState, stateSerializer, port, (Predicate<VoogaRequest<T>>) ALWAYS_VALID);
     }
 
     /**
-     * @param port Port to listen to client connections on
-     * @throws IOException Thrown if server cannot open socket to connect to client
+     * @param initialState     The initial networked shared state
+     * @param stateSerializer  Converts the initial state to a Serializable form, so that it can be sent to the client
+     * @param port             Port to listen on for new client connections
+     * @param requestValidator Predicate that checks whether requests are valid, default always valid
+     * @throws Exception Thrown if ServerSocket could not be created, or if exception is thrown in serialization
      */
-    public void listenForClients(int port) throws IOException {
-        ServerSocket serverSocket = new ServerSocket(port);
+    public VoogaServer(T initialState, Serializer<T> stateSerializer, int port, Predicate<VoogaRequest<T>> requestValidator) throws Exception {
+        this.state = initialState;
+        this.stateSerializer = stateSerializer;
+        this.mostRecentTimeStamp = Instant.now(Clock.systemUTC());
+        this.requestValidator = requestValidator;
+        serverSocket = new ServerSocket(port);
+    }
+
+    /**
+     * Listens for connections from clients.
+     * <p>
+     * For each client, this method creates a child thread that listens to the client in the background, and the child thread is added to a child thread pool.
+     *
+     * @throws Exception Thrown if server cannot open socket to connect to client
+     */
+    public void listenForClients() throws Exception {
         while (true) {
             VoogaServerThread<T> child = new VoogaServerThread<>(this, serverSocket.accept(), state, stateSerializer);
             childThreads.add(child);
         }
+    }
+
+    /**
+     * @return Returns all child threads.
+     */
+    public Collection<VoogaServerThread<T>> getChildThreads() {
+        return Collections.unmodifiableCollection(childThreads);
     }
 
     /**
@@ -68,13 +99,20 @@ public class VoogaServer<T> implements VoogaRemote<T> {
 
     /**
      * Checks the request for validity. The request is valid if it is more recent that the previous received request.
-     * Extend this method to do additional checks for validity.
      *
-     * @param request Reqeust to be v
-     * @return Returns true if the new request is more recent that the most recent request.
+     * @param request Reqeust to be validated
+     * @return Returns true if the new request is more recent that the most recent valid request.
      */
     protected boolean validateReqeust(VoogaRequest<T> request) {
-        return request.getTimeStamp().isAfter(getMostRecentTimeStamp());
+        return request.getTimeStamp().isAfter(getMostRecentTimeStamp()) && requestValidator.test(request);
+    }
+
+    /**
+     * @return Returns socket of first child thread
+     */
+    @Override
+    public Socket getSocket() {
+        return childThreads.get(0).getSocket();
     }
 
     /**

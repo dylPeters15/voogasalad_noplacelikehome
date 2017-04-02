@@ -2,6 +2,7 @@ package util.net;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.function.Consumer;
 
@@ -13,6 +14,32 @@ import java.util.function.Consumer;
  * @see VoogaRequest,VoogaServer,VoogaServerThread,VoogaClient,VoogaRemote
  */
 public interface VoogaRemote<T> {
+    /**
+     * @return Returns the socket this Object is operating on
+     */
+    Socket getSocket();
+
+    /**
+     * Utility method to write request to output stream and handle failures
+     *
+     * @param request Request to be written
+     * @param output  OutputStream to write request to
+     * @return Returns true if the request is written successfully
+     */
+    default boolean writeRequestTo(VoogaRequest<T> request, ObjectOutputStream output) {
+        try {
+            output.writeObject(request);
+            return true;
+        } catch (IOException e) {
+            try {
+                getSocket().close();
+                System.out.println("Connection Closed: " + getSocket());
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+            return false;
+        }
+    }
 
     /**
      * Sends a request through a socket's output stream.
