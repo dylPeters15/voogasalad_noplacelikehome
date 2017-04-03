@@ -6,6 +6,9 @@ import util.io.Unserializer;
 import java.io.IOException;
 import java.net.Socket;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.function.Consumer;
 
 /**
  * This class provides a simple implementation of a client that connects to a server with a given server name and port.
@@ -14,9 +17,11 @@ import java.time.Instant;
  *
  * @param <T> The type of variable used to represent network shared state.
  * @author Created by th174 on 4/1/2017.
- * @see Request,Modifier,Server,ServerThread,Client,Host,AbstractHost,Listener
+ * @see Request,Modifier,Server, Server.ServerThread ,Client,Host,AbstractHost,Listener
  */
 public class Client<T> extends AbstractHost<T> {
+    private final Collection<Consumer<T>> stateUpdateListeners;
+    private volatile T state;
 
     /**
      * Creates a client connected to a server located at host:port, and starts listening for requests sent from the server
@@ -51,7 +56,51 @@ public class Client<T> extends AbstractHost<T> {
      */
     public Client(String host, int port, Serializer<T> serializer, Unserializer<T> unserializer) throws IOException {
         super(new Socket(host, port), serializer, unserializer);
-        beginListening();
+        stateUpdateListeners = new ArrayList<>();
+    }
+
+    @Override
+    public T getState() {
+        return state;
+    }
+
+    /**
+     * Sets the local state to match the network shared state.
+     * <p>
+     * On clients, this should only ever be called in response to a request from the server. On servers, this should only be called if the request is approved.
+     * <p>
+     * All observers registered observers are notified when this method is invoked.
+     *
+     * @param state State on server to be set to new local state
+     */
+    protected void setState(T state) {
+        this.state = state;
+        fireStateUpdatedEvent();
+    }
+
+    /**
+     * Notifies all currently registered observers of a value change.
+     */
+    protected void fireStateUpdatedEvent() {
+        stateUpdateListeners.forEach(e -> e.accept(getState()));
+    }
+
+    /**
+     * Adds a listener which will be notified whenever the local state is updated.
+     *
+     * @param stateUpdateListener The listener to register
+     */
+    public void addListener(Consumer<T> stateUpdateListener) {
+        stateUpdateListeners.add(stateUpdateListener);
+    }
+
+    /**
+     * Removes the given listener from the list of listeners, that are notified whenever the local state is updated.
+     *
+     * @param stateUpdateListener The listener to remove
+     */
+    public void removeListener(Consumer<T> stateUpdateListener) {
+        stateUpdateListeners.remove(stateUpdateListener);
     }
 
     /**

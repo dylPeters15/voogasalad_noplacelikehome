@@ -5,12 +5,12 @@ import util.net.Server;
  */
 public class VoogaServerMain {
     public static void main(String[] args) throws Exception {
-        Server<NetworkingTest> voogaServer = new Server<>(
-                new NetworkingTest(NetworkingTest.INITIAL_STATE),
+        Server<SimpleChatLogTest> voogaServer = new Server<>(
+                new SimpleChatLogTest(),
                 10023,
-                NetworkingTest::toString,
-                obj -> (NetworkingTest) Class.forName(obj.toString().split("=")[0]).getConstructor(String.class).newInstance(obj.toString().split("=")[1]));
-        voogaServer.beginListening();
+                SimpleChatLogTest::toString,
+                obj -> (SimpleChatLogTest) Class.forName(obj.toString().split("=")[0]).getConstructor(String.class).newInstance(obj.toString().split("=")[1]));
+        voogaServer.start();
         while (!voogaServer.isActive()) {
             Thread.sleep(1000);
             System.out.println("No clients yet.");

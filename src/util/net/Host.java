@@ -1,29 +1,53 @@
 package util.net;
 
+import javafx.beans.Observable;
 import util.io.Serializer;
 import util.io.Unserializer;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.time.Instant;
 
 /**
- * This interface provides a unified API for a server or client communicating over TCP/IP.
+ * This interface provides a general API for a host communicating over TCP/IP with another remote host.
  * <p>
- * It can send and receive requests from a remote host.
+ * It can send and receive requests that modify networked state from a remote host.
+ * <p>
+ * State modifications can be seen with an Observable
  *
  * @param <T> The type of variable used to represent network shared state.
  * @author Created by th174 on 4/2/2017.
- * @see Request,Modifier,Server,ServerThread,Client,AbstractHost,Host,Listener
+ * @see Request,Modifier,Server, Server.ServerThread ,Client,AbstractHost,Host,Listener,Observable
  */
-public interface Host<T> {
-    String LOCALHOST = "127.0.0.1";
-    Serializer NO_SERIALIZER = obj -> (Serializable) obj;
-    Unserializer NO_UNSERIALIZER = obj -> obj;
+public abstract class Host<T> {
+    public static final String LOCALHOST = "127.0.0.1";
+    public static final Serializer NO_SERIALIZER = obj -> (Serializable) obj;
+    public static final Unserializer NO_UNSERIALIZER = obj -> obj;
+    private final Serializer<T> serializer;
+    private final Unserializer<T> unserializer;
+
+    protected Host() {
+        this(NO_SERIALIZER, NO_UNSERIALIZER);
+    }
+
+    /**
+     * @param serializer   Converts the state to a Serializable form, so that it can be sent to the client
+     * @param unserializer Converts the Serializable form of the state back into its original form of type T
+     */
+    protected Host(Serializer<T> serializer, Unserializer<T> unserializer) {
+        this.serializer = serializer;
+        this.unserializer = unserializer;
+    }
+
+    /**
+     * Starts communicating with the remote host
+     */
+    public abstract void start() throws IOException;
 
     /**
      * @return Returns the local state, which should match network shared state
      */
-    T getState();
+    public abstract T getState();
 
     /**
      * This method is invoked when a new state is received from the remote host.
@@ -32,7 +56,7 @@ public interface Host<T> {
      * @param timeStamp Request creation timestamp
      * @throws Exception Thrown when an error occurs while processing the request the new state.
      */
-    void handle(T newState, Instant timeStamp) throws Exception;
+    protected abstract void handle(T newState, Instant timeStamp) throws Exception;
 
     /**
      * This method is invoked when a state modifier is received from the remote host.
@@ -41,7 +65,7 @@ public interface Host<T> {
      * @param timeStamp     Request creation timestamp
      * @throws Exception Thrown when an error occurs while processing the state modifier.
      */
-    void handle(Modifier<T> stateModifier, Instant timeStamp) throws Exception;
+    protected abstract void handle(Modifier<T> stateModifier, Instant timeStamp) throws Exception;
 
     /**
      * Sends a state modifier to the remote host
@@ -50,7 +74,7 @@ public interface Host<T> {
      * @return Returns true if request was sent successfully
      * @throws Exception Thrown when error occurs in serializing or sending the modifier.
      */
-    boolean send(Modifier<T> modifier) throws Exception;
+    public abstract boolean send(Modifier<T> modifier) throws Exception;
 
     /**
      * Sends a full new state to the remote host
@@ -59,20 +83,24 @@ public interface Host<T> {
      * @return Returns true if request was sent successfully
      * @throws Exception Thrown when error occurs in serializing or sending the modifier.
      */
-    boolean send(T newState) throws Exception;
+    public abstract boolean send(T newState) throws Exception;
 
     /**
      * @return Returns true while the connection associated with this object is active
      */
-    boolean isActive();
+    public abstract boolean isActive();
 
     /**
      * @return Returns the serializer currently used by this host
      */
-    Serializer<T> getSerializer();
+    protected Serializer<T> getSerializer() {
+        return serializer;
+    }
 
     /**
      * @return Returns the serializer currently usd by this host
      */
-    Unserializer<T> getUnserializer();
+    protected Unserializer<T> getUnserializer() {
+        return unserializer;
+    }
 }

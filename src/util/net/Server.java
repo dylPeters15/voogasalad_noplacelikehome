@@ -3,7 +3,9 @@ package util.net;
 import util.io.Serializer;
 import util.io.Unserializer;
 
+import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.Socket;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.Collection;
@@ -18,10 +20,8 @@ import java.util.HashSet;
  * @author Created by th174 on 4/1/2017.
  * @see Request,Modifier,Server,ServerThread,Client,AbstractHost,Host,Listener
  */
-public class Server<T> implements Host<T> {
-    private final Collection<ServerThread<T>> childThreads;
-    private final Serializer<T> serializer;
-    private final Unserializer<T> unserializer;
+public class Server<T> extends Host<T> {
+    private final Collection<ServerThread> childThreads;
     private final ServerSocket serverSocket;
     private Instant mostRecentTimeStamp;
     private volatile T state;
@@ -29,7 +29,7 @@ public class Server<T> implements Host<T> {
     /**
      * Constructs an instance of VoogaServer without serialization
      *
-     * @param initialState The initial networked shared state
+     * @param initialState The initial networked shared state.
      * @param port         Port to listen on for new client connections
      * @throws Exception Thrown if ServerSocket could not be created, or if exception is thrown in serialization
      */
@@ -40,17 +40,16 @@ public class Server<T> implements Host<T> {
     /**
      * Constructs an instance of VoogaServer
      *
-     * @param initialState The initial networked shared state
+     * @param initialState The initial networked shared state.
      * @param port         Port to listen on for new client connections
      * @param serializer   Converts the state to a Serializable form, so that it can be sent to the client
      * @param unserializer Converts the Serializable form of the state back into its original form of type T
      * @throws Exception Thrown if ServerSocket could not be created, or if exception is thrown in serialization
      */
     public Server(T initialState, int port, Serializer<T> serializer, Unserializer<T> unserializer) throws Exception {
+        super(serializer, unserializer);
         this.state = initialState;
-        this.serializer = serializer;
         this.mostRecentTimeStamp = Instant.now(Clock.systemUTC());
-        this.unserializer = unserializer;
         this.childThreads = new HashSet<>();
         serverSocket = new ServerSocket(port);
     }
@@ -60,15 +59,21 @@ public class Server<T> implements Host<T> {
      * <p>
      * For each client, this method creates a child thread that listens to the client in the background, and the child thread is added to a child thread pool.
      */
-    public void beginListening() {
+    @Override
+    public void start() {
         new Thread(() -> {
             try {
                 while (serverSocket.isBound() && !serverSocket.isClosed()) {
-                    ServerThread<T> child = new ServerThread<>(this, serverSocket.accept());
+                    ServerThread child = new ServerThread(serverSocket.accept());
+                    child.start();
                     childThreads.add(child);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                try {
+                    serverSocket.close();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
             }
         }).start();
     }
@@ -86,7 +91,7 @@ public class Server<T> implements Host<T> {
      */
     @Override
     public synchronized boolean send(T state) throws Exception {
-        for (ServerThread<T> e : childThreads) {
+        for (ServerThread e : childThreads) {
             e.send(state);
         }
         return isActive();
@@ -100,7 +105,7 @@ public class Server<T> implements Host<T> {
      */
     @Override
     public synchronized boolean send(Modifier<T> modifier) throws Exception {
-        for (ServerThread<T> e : childThreads) {
+        for (ServerThread e : childThreads) {
             e.send(modifier);
         }
         return isActive();
@@ -127,20 +132,43 @@ public class Server<T> implements Host<T> {
         return serverSocket.isBound() && !serverSocket.isClosed() && !childThreads.isEmpty();
     }
 
-    @Override
-    public Serializer<T> getSerializer() {
-        return serializer;
-    }
-
-    @Override
-    public Unserializer<T> getUnserializer() {
-        return unserializer;
-    }
-
     private boolean checkTimeStamp(Instant timestamp) {
         if (timestamp.isAfter(mostRecentTimeStamp)) {
             mostRecentTimeStamp = timestamp;
         }
         return true;
+    }
+
+    /**
+     * This class listens to a client on a single socket and relays information between the main server and the client.
+     *
+     * @author Created by th174 on 4/1/2017.
+     * @see Request,Modifier,Server, util.net.ServerThread ,Client,AbstractHost,Host,Listener
+     */
+    private class ServerThread extends AbstractHost<T> {
+        /**
+         * @param parentServer Parent server creating this thread.
+         * @param socket       Socket to listen on for client requests.
+         * @throws Exception Thrown if socket is not open for reading and writing, or if an exception is thrown in serialization
+         */
+        private ServerThread(Socket socket) throws Exception {
+            super(socket, Server.this.getSerializer(), Server.this.getUnserializer());
+            send(getState());
+        }
+
+        @Override
+        public T getState() {
+            return Server.this.getState();
+        }
+
+        @Override
+        public void handle(Modifier<T> modifier, Instant timeStamp) throws Exception {
+            Server.this.handle(modifier, timeStamp);
+        }
+
+        @Override
+        public void handle(T state, Instant timeStamp) throws Exception {
+            Server.this.handle(state, timeStamp);
+        }
     }
 }

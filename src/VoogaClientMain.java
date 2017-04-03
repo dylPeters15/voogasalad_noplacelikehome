@@ -6,20 +6,24 @@ import java.util.Scanner;
  * @author Created by th174 on 4/1/2017.
  */
 public class VoogaClientMain {
+    //    public static final String HOSTNAME = "25.13.30.96";
+    public static final String HOSTNAME = Client.LOCALHOST;
+    public static final String USERNAME = System.getProperty("user.name");
+
     public static void main(String[] args) throws Exception {
-        Client<NetworkingTest> voogaClient = new Client<>(
-                "10.190.53.132",
+        Client<SimpleChatLogTest> voogaClient = new Client<>(
+                HOSTNAME,
                 10023,
-                NetworkingTest::toString,
-                obj -> (NetworkingTest) Class.forName(obj.toString().split("=")[0]).getConstructor(String.class).newInstance(obj.toString().split("=")[1]));
+                SimpleChatLogTest::toString,
+                obj -> (SimpleChatLogTest) Class.forName(obj.toString().split("=")[0]).getConstructor(String.class).newInstance(obj.toString().split("=")[1]));
         Scanner stdin = new Scanner(System.in);
+        voogaClient.addListener(state -> System.out.println(state.getLast()));
+        voogaClient.start();
         while (voogaClient.isActive()) {
+            Thread.sleep(100);
+            System.out.print(">>  ");
             String input = stdin.nextLine();
-            voogaClient.send(state -> {
-                state.set(state.get() + input + " ");
-                return state;
-            });
-            System.out.println(voogaClient.getState());
+            voogaClient.send(state -> state.appendMessage(input, USERNAME));
         }
     }
 }

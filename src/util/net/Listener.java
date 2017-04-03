@@ -9,7 +9,7 @@ import java.util.function.Consumer;
  * This class listens to sent over a socket requests in a background thread, and handles each request with a specified Consumer.
  *
  * @author Created by th174 on 4/1/2017.
- * @see AbstractHost,Thread,Listener,Client,ServerThread
+ * @see AbstractHost,Thread,Listener,Client, Server.ServerThread
  */
 public class Listener extends Thread {
     private final Consumer<Request> requestHandler;
@@ -37,7 +37,6 @@ public class Listener extends Thread {
                 requestHandler.accept((Request) inputStream.readObject());
             }
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
         } finally {
             try {
                 socket.close();

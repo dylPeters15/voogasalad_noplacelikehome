@@ -10,7 +10,7 @@ import backend.player.Player;
 /**
  * @author Created by th174 on 3/30/2017.
  */
-public class GameState implements XMLSerializable, MutableGameState {
+public abstract class GameState implements XMLSerializable, MutableGameState {
 
 	@Override
 	public List<Player> getPlayers() {

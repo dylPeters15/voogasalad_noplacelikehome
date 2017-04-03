@@ -16,14 +16,11 @@ import java.time.Instant;
  *
  * @param <T> The type of variable used to represent network shared state.
  * @author Created by th174 on 4/2/2017.
- * @see Request,Modifier,Server,ServerThread,Client,AbstractHost,Host,Listener
+ * @see Request,Modifier,Server, Server.ServerThread ,Client,AbstractHost,Host,Listener
  */
-public abstract class AbstractHost<T> implements Host<T> {
+public abstract class AbstractHost<T> extends Host<T> {
     private final Socket socket;
     private final ObjectOutputStream outputStream;
-    private final Serializer<T> serializer;
-    private final Unserializer<T> unserializer;
-    private volatile T state;
 
     /**
      * Creates a new VoogaRemote server or client that listens on a socket for requests.
@@ -44,10 +41,9 @@ public abstract class AbstractHost<T> implements Host<T> {
      * @throws IOException Thrown if socket is not open for reading and writing.
      */
     public AbstractHost(Socket socket, Serializer<T> serializer, Unserializer<T> unserializer) throws IOException {
+        super(serializer, unserializer);
         this.socket = socket;
         this.outputStream = new ObjectOutputStream(socket.getOutputStream());
-        this.serializer = serializer;
-        this.unserializer = unserializer;
         this.outputStream.flush();
     }
 
@@ -56,7 +52,7 @@ public abstract class AbstractHost<T> implements Host<T> {
      *
      * @throws IOException Thrown in socket is not open for listening
      */
-    protected void beginListening() throws IOException {
+    public void start() throws IOException {
         new Listener(socket, this::handleRequest).start();
     }
 
@@ -73,27 +69,11 @@ public abstract class AbstractHost<T> implements Host<T> {
             if (Modifier.class.isAssignableFrom(request.getContentType())) {
                 handle((Modifier<T>) request.get(), request.getTimeStamp());
             } else {
-                handle(unserializer.unserialize(request.get()), request.getTimeStamp());
+                handle(getUnserializer().unserialize(request.get()), request.getTimeStamp());
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
-
-    @Override
-    public T getState() {
-        return state;
-    }
-
-    /**
-     * Sets the local state to match the network shared state.
-     * <p>
-     * On clients, this should only ever be called in response to a request from the server. On servers, this should only be called if the request is approved.
-     *
-     * @param state State on server to be set to new local state
-     */
-    protected void setState(T state) {
-        this.state = state;
     }
 
     @Override
@@ -139,14 +119,6 @@ public abstract class AbstractHost<T> implements Host<T> {
 
     @Override
     public boolean send(T state) throws Exception {
-        return sendRequest(new Request<>(serializer.serialize(state)));
-    }
-
-    public Serializer<T> getSerializer() {
-        return serializer;
-    }
-
-    public Unserializer<T> getUnserializer() {
-        return unserializer;
+        return sendRequest(new Request<>(getSerializer().serialize(state)));
     }
 }
