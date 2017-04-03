@@ -30,6 +30,8 @@ public class CellTemplate extends VoogaObject implements Cell, Template<CellInst
     public static final CellTemplate BASIC_SQUARE_WATER = new CellTemplate("Basic Square Water Cell", Shape.SQUARE, Terrain.WATER);
     public static final CellTemplate BASIC_SQUARE_MOUNTAIN = new CellTemplate("Basic Square Mountain Cell", Shape.SQUARE, Terrain.MOUNTAIN);
     public static final CellTemplate BASIC_SQUARE_FORTIFIED = new CellTemplate("Basic Square Fortified Cell", Shape.SQUARE, Terrain.FORTIFIED);
+    public static final CellTemplate STRONG_ATTACK_SQUARE_MOUNTAIN = new CellTemplate("Strong Attack Square Cell", Shape.SQUARE, Terrain.MOUNTAIN, CellEffect.STRONG_ATTACK);
+    public static final CellTemplate STRONG_ATTACK_HEXAGON_MOUNTAIN = new CellTemplate("Strong Attack Square Cell", Shape.HEXAGONAL, Terrain.MOUNTAIN, CellEffect.STRONG_ATTACK);
 
     private Shape shape;
     private Terrain terrain;
@@ -61,11 +63,11 @@ public class CellTemplate extends VoogaObject implements Cell, Template<CellInst
     }
 
     public CellInstance createInstance(CoordinateTuple coordinateTuple) {
-        return createInstance(coordinateTuple, Collections.EMPTY_LIST);
+        return createInstance(coordinateTuple, Collections.emptyList());
     }
 
     public CellInstance createInstance(CoordinateTuple coordinateTuple, Collection<CellEffect> cellAbilities) {
-        return createInstance(coordinateTuple, cellAbilities, Collections.EMPTY_LIST);
+        return createInstance(coordinateTuple, cellAbilities, Collections.emptyList());
     }
 
     public CellInstance createInstance(CoordinateTuple coordinateTuple, Collection<CellEffect> cellAbilities, Collection<UnitInstance> initialOccupants) {
