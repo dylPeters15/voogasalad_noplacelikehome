@@ -4,7 +4,7 @@ import backend.cell.Terrain;
 import backend.player.Player;
 import backend.unit.UnitInstance;
 import backend.util.GameState;
-import backend.util.GameState.Event;
+import backend.util.ImmutableGameState.Event;
 
 import java.util.ArrayList;
 import java.util.Collections;

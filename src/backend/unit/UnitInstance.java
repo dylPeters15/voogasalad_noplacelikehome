@@ -3,12 +3,12 @@ package backend.unit;
 import backend.cell.CellInstance;
 import backend.cell.Terrain;
 import backend.grid.CoordinateTuple;
-import backend.grid.Grid;
+import backend.grid.MutableGrid;
 import backend.player.Player;
 import backend.player.Team;
 import backend.unit.properties.*;
 import backend.util.GameState;
-import backend.util.GameState.Event;
+import backend.util.ImmutableGameState.Event;
 import backend.util.VoogaInstance;
 import backend.util.VoogaObject;
 import javafx.util.Pair;
@@ -82,7 +82,7 @@ public class UnitInstance extends VoogaInstance<UnitTemplate> implements Unit {
         triggeredAbilities.values().forEach(e -> e.affect(this, event, gameState));
     }
 
-    public Collection<CellInstance> getLegalMoves(Grid grid) {
+    public Collection<CellInstance> getLegalMoves(MutableGrid grid) {
         return movePattern.getCoordinates().parallelStream()
                 .map(e -> grid.get(e.sum(this.getLocation())))
                 .filter(Objects::nonNull)
@@ -97,7 +97,7 @@ public class UnitInstance extends VoogaInstance<UnitTemplate> implements Unit {
         this.currentCell = currentCell;
     }
 
-    public Map<CoordinateTuple, Collection<UnitInstance>> getNeighboringUnits(Grid grid) {
+    public Map<CoordinateTuple, Collection<UnitInstance>> getNeighboringUnits(MutableGrid grid) {
         Map<CoordinateTuple, Collection<UnitInstance>> neighbors = currentCell.getNeighbors(grid).entrySet().parallelStream()
                 .map(e -> new Pair<>(e.getKey(), e.getValue().getOccupants()))
                 .filter(e -> !e.getValue().isEmpty())
@@ -106,11 +106,11 @@ public class UnitInstance extends VoogaInstance<UnitTemplate> implements Unit {
         return neighbors;
     }
 
-    public Collection<UnitInstance> getAllNeighboringUnits(Grid grid) {
+    public Collection<UnitInstance> getAllNeighboringUnits(MutableGrid grid) {
         return getNeighboringUnits(grid).values().parallelStream().flatMap(Collection::stream).parallel().collect(Collectors.toSet());
     }
 
-    public Map<CoordinateTuple, CellInstance> getNeighboringCells(Grid grid) {
+    public Map<CoordinateTuple, CellInstance> getNeighboringCells(MutableGrid grid) {
         return currentCell.getNeighbors(grid);
     }
 
