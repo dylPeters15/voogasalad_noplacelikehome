@@ -16,10 +16,9 @@ public class VoogaClientMain {
                 SimpleChatLogTest::toString,
                 obj -> (SimpleChatLogTest) Class.forName(obj.toString().split("=")[0]).getConstructor(String.class).newInstance(obj.toString().split("=")[1]));
         Scanner stdin = new Scanner(System.in);
-        voogaClient.addListener(state -> System.out.println(state.getLast() + "\n\n>>  "));
+        voogaClient.addListener(state -> System.out.print(state.getLast() + "\n\n>>  "));
         voogaClient.start();
         while (voogaClient.isActive()) {
-            Thread.sleep(100);
             String input = stdin.nextLine();
             voogaClient.send(state -> state.appendMessage(input, System.getProperty("user.name")));
         }
