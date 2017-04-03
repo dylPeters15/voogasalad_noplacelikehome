@@ -1,13 +1,13 @@
 package backend.cell;
 
-import backend.util.GameCollection;
+import backend.util.VoogaCollection;
 
 import java.util.Collection;
 
 /**
  * @author Created by th174 on 3/30/2017.
  */
-public class Region extends GameCollection<Terrain> {
+public class Region extends VoogaCollection<Terrain> {
     //TODO ResourceBundlify this
     public Region DEFAULT_REGION = new Region("Default Region", "The default region contains all the pre-defined terrains", "default_region.png", Terrain.getPredefinedTerrain());
 

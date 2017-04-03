@@ -1,7 +1,7 @@
 package backend.unit.properties;
 
 import backend.unit.UnitTemplate;
-import backend.util.GameCollection;
+import backend.util.VoogaCollection;
 
 import java.util.Collection;
 
@@ -10,7 +10,7 @@ import java.util.Collection;
  *
  * @author Created by th174 on 3/29/2017.
  */
-public class Faction extends GameCollection<UnitTemplate> {
+public class Faction extends VoogaCollection<UnitTemplate> {
     public Faction(String name, String description, String imgPath) {
         super(name, description, imgPath);
     }

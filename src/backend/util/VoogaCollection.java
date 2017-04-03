@@ -8,14 +8,14 @@ import java.util.stream.Collectors;
 /**
  * @author Created by th174 on 3/30/2017.
  */
-public class GameCollection<T extends GameObjectImpl> extends GameObjectImpl implements Iterable<T> {
-    private Map<String, T> gameObjects;
+public class VoogaCollection<T extends VoogaObject> extends VoogaObject implements Iterable<T> {
+    private final Map<String, T> gameObjects;
 
-    public GameCollection(String name, String description, String imgPath, T... gameObjects) {
+    public VoogaCollection(String name, String description, String imgPath, T... gameObjects) {
         this(name, description, imgPath, Arrays.asList(gameObjects));
     }
 
-    public GameCollection(String name, String description, String imgPath, Collection<T> gameObjects) {
+    public VoogaCollection(String name, String description, String imgPath, Collection<T> gameObjects) {
         super(name, description, imgPath);
         this.gameObjects = gameObjects.stream().map(e -> new Pair<>(e.getName(), e)).collect(Collectors.toMap(Pair::getKey, Pair::getValue));
     }

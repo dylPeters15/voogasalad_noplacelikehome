@@ -9,7 +9,7 @@ public class InitGrid {
 	
 	public InitGrid(int x, int y){
 		//game board will be initialized from GameBoard.java and Grid.java classes/interfaces
-		this.gameBoard = new GameBoard(x, y);
+//		this.gameBoard = new GameBoard(x, y);
 	}
 	
 }

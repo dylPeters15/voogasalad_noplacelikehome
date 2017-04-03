@@ -1,8 +1,8 @@
 package backend.unit;
 
-import backend.util.GameObject;
 import backend.cell.Terrain;
 import backend.unit.properties.*;
+import backend.util.VoogaObject;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -12,13 +12,7 @@ import java.util.Map;
 /**
  * @author Created by th174 on 3/30/2017.
  */
-public interface Unit extends GameObject {
-
-    UnitTemplate getUnitType();
-
-    default String getUnitTypeName() {
-        return getUnitType().getName();
-    }
+public interface Unit {
 
     HitPoints getHitPoints();
 
@@ -32,6 +26,10 @@ public interface Unit extends GameObject {
 
     default int getMoveCostByTerrain(Terrain terrain) {
         return getTerrainMoveCosts().get(terrain);
+    }
+
+    default int addMoveCostByTerrain(Terrain terrain, int cost) {
+        return getTerrainMoveCosts().put(terrain, cost);
     }
 
     List<InteractionModifier<Double>> getOffensiveModifiers();
@@ -54,21 +52,21 @@ public interface Unit extends GameObject {
         getDefensiveModifiers().remove(defensiveModifier);
     }
 
-    Map<String, ActiveAbility<GameObject>> getActiveAbilities();
+    Map<String, ActiveAbility<VoogaObject>> getActiveAbilities();
 
-    default Collection<ActiveAbility<GameObject>> getAllActiveAbilities() {
+    default Collection<ActiveAbility<VoogaObject>> getAllActiveAbilities() {
         return Collections.unmodifiableCollection(getActiveAbilities().values());
     }
 
-    default ActiveAbility<GameObject> getActiveAbilityByName(String name) {
+    default ActiveAbility<VoogaObject> getActiveAbilityByName(String name) {
         return getActiveAbilities().get(name);
     }
 
-    default void addActiveAbility(ActiveAbility<GameObject> ability) {
+    default void addActiveAbility(ActiveAbility<VoogaObject> ability) {
         getActiveAbilities().put(ability.getName(), ability);
     }
 
-    default void removeActiveAbility(ActiveAbility<GameObject> ability) {
+    default void removeActiveAbility(ActiveAbility<VoogaObject> ability) {
         getActiveAbilities().remove(ability.getName());
     }
 

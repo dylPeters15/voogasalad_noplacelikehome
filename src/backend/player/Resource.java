@@ -1,13 +1,13 @@
 package backend.player;
 
-import backend.util.GameQuantity;
+import backend.unit.properties.UnitStat;
 
 import java.util.Collection;
 
 /**
  * @author Created by th174 on 3/31/2017.
  */
-public class Resource extends GameQuantity<Double> {
+public class Resource extends UnitStat<Double> {
     //TODO ResourceBundlify this
     public static final Resource GOLD = new Resource("Gold", "Gold allows you to purchase and upgrade units. Earn gold by capturing mines.", "ooo_shiny.png");
 
@@ -25,15 +25,15 @@ public class Resource extends GameQuantity<Double> {
         super(name, currentValue, maxValue, description, imgPath);
     }
 
+    public static Collection<Resource> getPredefinedResources() {
+        return getPredefined(Resource.class);
+    }
+
     public void gain(double value) {
         set(getCurrentValue() + value);
     }
 
     public void use(double value) {
         set(getCurrentValue() - value);
-    }
-
-    public static Collection<Resource> getPredefinedResources() {
-        return getPredefined(Resource.class);
     }
 }

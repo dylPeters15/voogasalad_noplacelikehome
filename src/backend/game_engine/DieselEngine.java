@@ -1,5 +1,12 @@
 package backend.game_engine;
 
+import backend.cell.Terrain;
+import backend.player.Player;
+import backend.unit.UnitInstance;
+import backend.util.Event;
+import backend.util.GameState;
+import backend.util.ImmutableGameState;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
