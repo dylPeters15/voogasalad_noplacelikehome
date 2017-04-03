@@ -25,6 +25,7 @@ public class InteractionModifier<T> extends VoogaObject implements Ability {
     public static final InteractionModifier<Double> CRITICAL_STRIKE = new InteractionModifier<>("Critical Strike", OffensiveModifier.CRITICAL_STRIKE, "Attacks have a chance to critical strike, hitting for extra damage.", "RNGesus.png");
     public static final InteractionModifier<Double> BRAVERY = new InteractionModifier<>("Weakened", OffensiveModifier.BRAVERY, "Attacks do extra damage if the defender has more HP than the attacker.", "David&Goliath.png");
     public static final InteractionModifier<Double> ASSASSIN = new InteractionModifier<>("Assassin", OffensiveModifier.ASSASSIN, "Attacks do extra damage to isolated units with no nearby allies", "Zabaniya.png");
+    public static final InteractionModifier<Double> STRONG_ATTACK = new InteractionModifier<>("Strong Attack", OffensiveModifier.STRONG_ATTACK, "All attacks do extra damage.");
     //Defensive modifiers, can go on units only
     public static final InteractionModifier<Double> INVULNERABILITY = new InteractionModifier<>("Invulnerability", DefensiveModifier.INVULNERABILITY, "This unit does not take damage.", "God.png");
     public static final InteractionModifier<Double> FORMATION = new InteractionModifier<>("Formation", DefensiveModifier.FORMATION, "This unit takes less damage when near an allied unit of the same type.", "Phalanx.png");
