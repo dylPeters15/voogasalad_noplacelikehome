@@ -16,7 +16,9 @@ public interface GameEngine extends XMLsavable {
     void addObjective(ResultQuadPredicate winCondition);
 
     void addTrigger(BiConsumer<Player, GameState> turnAction, TurnTrigger when);
-
+    
+    void canEndTurn();
+    
     void start();
 
     void restart();
