@@ -18,9 +18,9 @@ import java.util.HashSet;
  *
  * @param <T> The type of variable used to represent networked shared state.
  * @author Created by th174 on 4/1/2017.
- * @see Request,Modifier,Server,ServerThread,Client,AbstractHost,Host,Listener
+ * @see Request,Modifier,Server,ServerThread,Client, Host , AbstractHost ,Listener
  */
-public class Server<T> extends Host<T> {
+public class Server<T> extends AbstractHost<T> {
     private final Collection<ServerThread> childThreads;
     private final ServerSocket serverSocket;
     private Instant mostRecentTimeStamp;
@@ -145,7 +145,7 @@ public class Server<T> extends Host<T> {
      * @author Created by th174 on 4/1/2017.
      * @see Request,Modifier,Server, util.net.ServerThread ,Client,AbstractHost,Host,Listener
      */
-    private class ServerThread extends AbstractHost<T> {
+    private class ServerThread extends Host<T> {
         /**
          * @param parentServer Parent server creating this thread.
          * @param socket       Socket to listen on for client requests.

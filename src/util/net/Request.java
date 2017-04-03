@@ -14,7 +14,7 @@ import java.time.format.FormatStyle;
  *
  * @param <T> The type of the content contained in the request.
  * @author Created by th174 on 4/2/2017.
- * @see Request,Modifier,Server,Server.ServerThread,Client,AbstractHost,Host,Listener
+ * @see Request,Modifier,Server,Server.ServerThread,Client, Host , AbstractHost ,Listener
  */
 public final class Request<T extends Serializable> implements Serializable {
     private final T content;

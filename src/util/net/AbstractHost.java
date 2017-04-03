@@ -1,124 +1,108 @@
 package util.net;
 
+import javafx.beans.Observable;
 import util.io.Serializer;
 import util.io.Unserializer;
 
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.net.Socket;
+import java.time.Duration;
 import java.time.Instant;
 
 /**
- * This class provides a basic implementation for a host client or server communicating over TCP/IP.
+ * This interface provides a general API for a host communicating over TCP/IP with another remote host.
  * <p>
- * It can send and receive requests from a remote host and modifies a network shared state.
+ * It can send and receive requests that modify networked state from a remote host.
+ * <p>
+ * State modifications can be seen with an Observable
  *
  * @param <T> The type of variable used to represent network shared state.
  * @author Created by th174 on 4/2/2017.
- * @see Request,Modifier,Server, Server.ServerThread ,Client,AbstractHost,Host,Listener
+ * @see Request,Modifier,Server, Server.ServerThread ,Client, Host , AbstractHost ,Listener,Observable
  */
-public abstract class AbstractHost<T> extends Host<T> {
-    private final Socket socket;
-    private final ObjectOutputStream outputStream;
+public abstract class AbstractHost<T> {
+    public static final int DEFAULT_CONNECTION_TIMEOUT = (int) Duration.ofMinutes(5).toMillis();
+    public static final String LOCALHOST = "127.0.0.1";
+    public static final Serializer NO_SERIALIZER = obj -> (Serializable) obj;
+    public static final Unserializer NO_UNSERIALIZER = obj -> obj;
+    private final Serializer<T> serializer;
+    private final Unserializer<T> unserializer;
+
+    protected AbstractHost() {
+        this(NO_SERIALIZER, NO_UNSERIALIZER);
+    }
 
     /**
-     * Creates a new VoogaRemote server or client that listens on a socket for requests.
+     * @param serializer   Converts the state to a Serializable form, so that it can be sent to the client
+     * @param unserializer Converts the Serializable form of the state back into its original form of type T
+     */
+    protected AbstractHost(Serializer<T> serializer, Unserializer<T> unserializer) {
+        this.serializer = serializer;
+        this.unserializer = unserializer;
+    }
+
+    /**
+     * Starts communicating with the remote host
+     */
+    public abstract void start() throws IOException;
+
+    /**
+     * @return Returns the local state, which should match network shared state
+     */
+    public abstract T getState();
+
+    /**
+     * This method is invoked when a new state is received from the remote host.
      *
-     * @param socket Socket to listen on for client requests.
-     * @throws IOException Thrown if socket is not open for reading and writing.
+     * @param newState  The new state sent from the remote host.
+     * @param timeStamp Request creation timestamp
+     * @throws Exception Thrown when an error occurs while processing the request the new state.
      */
-    public AbstractHost(Socket socket) throws Exception {
-        this(socket, NO_SERIALIZER, NO_UNSERIALIZER);
-    }
+    protected abstract void handle(T newState, Instant timeStamp) throws Exception;
 
     /**
-     * Creates a new VoogaRemote server or client that listens on a socket for requests.
+     * This method is invoked when a state modifier is received from the remote host.
      *
-     * @param socket       Socket to listen on for client requests.
-     * @param serializer   Converts a state of type T into a Serializable form to be sent over the network.
-     * @param unserializer Converts a Serializable form of a state into type T.
-     * @throws IOException Thrown if socket is not open for reading and writing.
+     * @param stateModifier The state modifier received from the remote host.
+     * @param timeStamp     Request creation timestamp
+     * @throws Exception Thrown when an error occurs while processing the state modifier.
      */
-    public AbstractHost(Socket socket, Serializer<T> serializer, Unserializer<T> unserializer) throws IOException {
-        super(serializer, unserializer);
-        this.socket = socket;
-        this.outputStream = new ObjectOutputStream(socket.getOutputStream());
-        this.outputStream.flush();
-    }
+    protected abstract void handle(Modifier<T> stateModifier, Instant timeStamp) throws Exception;
 
     /**
-     * Creates a separate thread to being listening to input sent over the network. When a request is found, handle is called on the content of the request.
+     * Sends a state modifier to the remote host
      *
-     * @throws IOException Thrown in socket is not open for listening
+     * @param modifier Modifier to be sent over network.
+     * @return Returns true if request was sent successfully
+     * @throws Exception Thrown when error occurs in serializing or sending the modifier.
      */
-    public void start() throws IOException {
-        new Listener(socket, this::handleRequest).start();
-    }
+    public abstract boolean send(Modifier<T> modifier) throws Exception;
 
     /**
-     * This method is called when a new request is received from the remote host.
-     * <p>
-     * It delegates handling of the new request to other handle methods.
+     * Sends a full new state to the remote host
      *
-     * @param request Request received from remote host.
-     * @throws RuntimeException Thrown when an error occurs while unserializing the request, or when an error occurs in processing the request.
+     * @param newState New state to be serialized and sent over network
+     * @return Returns true if request was sent successfully
+     * @throws Exception Thrown when error occurs in serializing or sending the modifier.
      */
-    protected synchronized void handleRequest(Request<? extends Serializable> request) {
-        try {
-            if (Modifier.class.isAssignableFrom(request.getContentType())) {
-                handle((Modifier<T>) request.get(), request.getTimeStamp());
-            } else {
-                handle(getUnserializer().unserialize(request.get()), request.getTimeStamp());
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+    public abstract boolean send(T newState) throws Exception;
 
-    @Override
-    public boolean isActive() {
-        return getSocket().isConnected() && !getSocket().isClosed() && getSocket().isBound();
+    /**
+     * @return Returns true while the connection associated with this object is active
+     */
+    public abstract boolean isActive();
+
+    /**
+     * @return Returns the serializer currently used by this host
+     */
+    protected Serializer<T> getSerializer() {
+        return serializer;
     }
 
     /**
-     * @return Returns the socket this VoogaRemote is operating on
+     * @return Returns the serializer currently usd by this host
      */
-    protected Socket getSocket() {
-        return socket;
-    }
-
-    protected boolean sendRequest(Request<? extends Serializable> request) {
-        if (!isActive()) {
-            return false;
-        }
-        try {
-            outputStream.writeObject(request);
-            return true;
-        } catch (IOException e) {
-            try {
-                getSocket().close();
-                System.out.println("Connection Closed:\t" + getSocket());
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
-            return false;
-        }
-    }
-
-    @Override
-    public abstract void handle(Modifier<T> modifier, Instant timeStamp) throws Exception;
-
-    @Override
-    public abstract void handle(T state, Instant timeStamp) throws Exception;
-
-    @Override
-    public boolean send(Modifier<T> modifier) throws Exception {
-        return sendRequest(new Request<>(modifier));
-    }
-
-    @Override
-    public boolean send(T state) throws Exception {
-        return sendRequest(new Request<>(getSerializer().serialize(state)));
+    protected Unserializer<T> getUnserializer() {
+        return unserializer;
     }
 }

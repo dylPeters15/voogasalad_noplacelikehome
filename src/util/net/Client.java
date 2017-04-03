@@ -17,9 +17,9 @@ import java.util.function.Consumer;
  *
  * @param <T> The type of variable used to represent network shared state.
  * @author Created by th174 on 4/1/2017.
- * @see Request,Modifier,Server, Server.ServerThread ,Client,Host,AbstractHost,Listener
+ * @see Request,Modifier,Server, Server.ServerThread ,Client, AbstractHost , Host ,Listener
  */
-public class Client<T> extends AbstractHost<T> {
+public class Client<T> extends Host<T> {
     private final Collection<Consumer<T>> stateUpdateListeners;
     private volatile T state;
 

@@ -9,7 +9,7 @@ import java.io.Serializable;
  *
  * @param <T> The type of variable used to represent networked shared state.
  * @author Created by th174 on 4/1/2017.
- * @see Request,Modifier,Server, Server.ServerThread ,Client,AbstractHost,Listener,Host
+ * @see Request,Modifier,Server, Server.ServerThread ,Client, Host ,Listener, AbstractHost
  */
 @FunctionalInterface
 public interface Modifier<T> extends Serializable {
