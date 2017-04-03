@@ -1,13 +1,13 @@
 package backend.unit.properties;
 
-import backend.unit.UnitInstance;
-import backend.util.GameState;
-import backend.util.GameState.Event;
-import backend.util.VoogaObject;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+
+import backend.unit.UnitInstance;
+import backend.util.GameState;
+import backend.util.ImmutableGameState.Event;
+import backend.util.VoogaObject;
 
 /**
  * @author Created by th174 on 3/31/2017.

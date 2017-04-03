@@ -1,5 +1,15 @@
 package backend.grid;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.BiPredicate;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
 import backend.cell.CellInstance;
 import backend.cell.CellTemplate;
 import backend.player.Player;
@@ -8,16 +18,10 @@ import backend.util.GameState;
 import backend.util.VoogaObject;
 import javafx.util.Pair;
 
-import java.util.*;
-import java.util.function.BiPredicate;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
-
 /**
  * @author Created by th174 on 3/28/2017.
  */
-public class GameBoard extends VoogaObject implements Grid, Iterable {
+public class GameBoard extends VoogaObject implements MutableGrid, Iterable {
     private final Map<CoordinateTuple, CellInstance> gameBoard;
     private CellTemplate templateCell;
     private BoundsHandler currentBoundsMode;

@@ -1,27 +1,51 @@
 package backend.util;
 
-import backend.grid.Grid;
-import backend.io.XMLSerializable;
-import backend.player.Player;
-
 import java.util.List;
 import java.util.function.BiConsumer;
+
+import backend.grid.MutableGrid;
+import backend.io.XMLSerializable;
+import backend.player.Player;
 
 /**
  * @author Created by th174 on 3/30/2017.
  */
-public interface GameState extends XMLSerializable {
-    List<Player> getPlayers();
+public class GameState implements XMLSerializable, MutableGameState {
 
-    Grid getGrid();
+	@Override
+	public List<Player> getPlayers() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-    Player getCurrentPlayer();
+	@Override
+	public MutableGrid getGrid() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-    int getTurnNumber();
+	@Override
+	public Player getCurrentPlayer() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-    void addEventHandler(BiConsumer<Player, GameState> eventListener, Event event);
+	@Override
+	public int getTurnNumber() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 
-    enum Event {
-        TURN_START, TURN_END, UNIT_MOVEMENT, UNIT_ABILITY_USE,
-    }
+	@Override
+	public void addEventHandler(BiConsumer<Player, GameState> eventListener, Event event) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String toXML() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

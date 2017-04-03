@@ -1,9 +1,9 @@
 package backend.unit.properties;
 
+import java.util.Collection;
+
 import backend.unit.UnitInstance;
 import backend.util.GameState;
-
-import java.util.Collection;
 
 /**
  * @author Created by th174 on 3/30/2017.

@@ -1,10 +1,10 @@
 package backend.cell;
 
 import backend.grid.CoordinateTuple;
-import backend.grid.Grid;
+import backend.grid.MutableGrid;
 import backend.unit.UnitInstance;
 import backend.util.GameState;
-import backend.util.GameState.Event;
+import backend.util.ImmutableGameState.Event;
 import backend.util.VoogaInstance;
 
 import java.util.Collection;
@@ -45,7 +45,7 @@ public class CellInstance extends VoogaInstance<CellTemplate> implements Cell {
         return getTemplate().getShape();
     }
 
-    public Map<CoordinateTuple, CellInstance> getNeighbors(Grid grid) {
+    public Map<CoordinateTuple, CellInstance> getNeighbors(MutableGrid grid) {
         return grid.getNeighbors(this);
     }
 
