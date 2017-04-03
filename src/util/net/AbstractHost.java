@@ -118,7 +118,7 @@ public abstract class AbstractHost<T> implements Host<T> {
         } catch (IOException e) {
             try {
                 getSocket().close();
-                System.out.println("Connection Closed: " + getSocket());
+                System.out.println("Connection Closed:\t" + getSocket());
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
@@ -133,17 +133,13 @@ public abstract class AbstractHost<T> implements Host<T> {
     public abstract void handle(T state, Instant timeStamp) throws Exception;
 
     @Override
-    public boolean send(Modifier<T> modifier) {
+    public boolean send(Modifier<T> modifier) throws Exception {
         return sendRequest(new Request<>(modifier));
     }
 
     @Override
-    public boolean send(T state) {
-        try {
-            return sendRequest(new Request<>(serializer.serialize(state)));
-        } catch (Exception e) {
-            return false;
-        }
+    public boolean send(T state) throws Exception {
+        return sendRequest(new Request<>(serializer.serialize(state)));
     }
 
     public Serializer<T> getSerializer() {

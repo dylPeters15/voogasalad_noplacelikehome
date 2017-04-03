@@ -3,7 +3,7 @@ package backend.cell;
 import backend.unit.properties.InteractionModifier;
 import backend.unit.properties.TriggeredAbility;
 import backend.unit.properties.TriggeredEffect;
-import backend.util.ImmutableGameState.Event;
+import backend.util.Event;
 import backend.util.VoogaObject;
 
 import java.util.Collection;

@@ -37,7 +37,7 @@ public class GameState implements XMLSerializable, MutableGameState {
 	}
 
 	@Override
-	public void addEventHandler(BiConsumer<Player, GameState> eventListener, Event event) {
+	public void addEventHandler(BiConsumer<Player, ImmutableGameState> eventListener, Event event) {
 		// TODO Auto-generated method stub
 		
 	}

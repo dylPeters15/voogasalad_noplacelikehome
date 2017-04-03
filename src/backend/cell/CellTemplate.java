@@ -33,10 +33,10 @@ public class CellTemplate extends VoogaObject implements Cell, Template<CellInst
     public static final CellTemplate STRONG_ATTACK_SQUARE_MOUNTAIN = new CellTemplate("Strong Attack Square Cell", Shape.SQUARE, Terrain.MOUNTAIN, CellEffect.STRONG_ATTACK);
     public static final CellTemplate STRONG_ATTACK_HEXAGON_MOUNTAIN = new CellTemplate("Strong Attack Square Cell", Shape.HEXAGONAL, Terrain.MOUNTAIN, CellEffect.STRONG_ATTACK);
 
+    private final Collection<UnitInstance> initialOccupants;
+    private final List<CellEffect> abilities;
     private Shape shape;
     private Terrain terrain;
-    private Collection<UnitInstance> initialOccupants;
-    private List<CellEffect> abilities;
 
     public CellTemplate(String name, Shape shape, Terrain terrain, CellEffect... abilities) {
         this(name, shape, terrain, terrain.getImgPath(), abilities);
@@ -51,15 +51,15 @@ public class CellTemplate extends VoogaObject implements Cell, Template<CellInst
     }
 
     public CellTemplate(String name, Shape shape, Terrain terrain, String imgPath, Collection<CellEffect> abilities) {
-        this(name, shape, terrain, name, imgPath, abilities, Collections.EMPTY_LIST);
+        this(name, shape, terrain, name, imgPath, abilities, Collections.emptyList());
     }
 
     public CellTemplate(String name, Shape shape, Terrain terrain, String description, String imgPath, Collection<CellEffect> abilities, Collection<UnitInstance> initialOccupants) {
         super(name, description, imgPath);
         this.shape = shape;
-        this.abilities = new ArrayList<>(abilities);
-        this.initialOccupants = initialOccupants;
         this.terrain = terrain;
+        this.abilities = new ArrayList<>(abilities);
+        this.initialOccupants = new HashSet<>(initialOccupants);
     }
 
     public CellInstance createInstance(CoordinateTuple coordinateTuple) {
@@ -100,14 +100,6 @@ public class CellTemplate extends VoogaObject implements Cell, Template<CellInst
     @Override
     public List<CellEffect> getAbilities() {
         return abilities;
-    }
-
-    public void setAbilities(List<CellEffect> abilities) {
-        this.abilities = abilities;
-    }
-
-    public void setAbilities(Collection<CellEffect> abilities) {
-        this.abilities = new ArrayList<>(abilities);
     }
 
     @Override

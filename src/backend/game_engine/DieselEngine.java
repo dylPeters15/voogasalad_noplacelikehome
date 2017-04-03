@@ -3,8 +3,9 @@ package backend.game_engine;
 import backend.cell.Terrain;
 import backend.player.Player;
 import backend.unit.UnitInstance;
+import backend.util.Event;
 import backend.util.GameState;
-import backend.util.ImmutableGameState.Event;
+import backend.util.ImmutableGameState;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,7 +16,7 @@ import java.util.function.BiConsumer;
 public class DieselEngine implements GameEngine {
 
     private List<ResultQuadPredicate> currentObjectives;
-    private Map<Event, List<BiConsumer<Player, GameState>>> turnActions;
+    private Map<Event, List<BiConsumer<Player, ImmutableGameState>>> turnActions;
 
     public DieselEngine() {
     }
@@ -32,7 +33,7 @@ public class DieselEngine implements GameEngine {
     }
 
     @Override
-    public void addTrigger(BiConsumer<Player, GameState> turnAction, Event when) {
+    public void addTrigger(BiConsumer<Player, ImmutableGameState> turnAction, Event when) {
         turnActions.merge(when, new ArrayList<>(Collections.singletonList(turnAction)), (list, t) -> {
             list.addAll(t);
             return list;

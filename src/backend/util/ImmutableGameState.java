@@ -15,9 +15,5 @@ public interface ImmutableGameState {
 
     int getTurnNumber();
 
-    void addEventHandler(BiConsumer<Player, GameState> eventListener, Event event);
-
-    enum Event {
-        TURN_START, TURN_END, UNIT_MOVEMENT, UNIT_ABILITY_USE,
-    }
+    void addEventHandler(BiConsumer<Player, ImmutableGameState> eventListener, Event event);
 }

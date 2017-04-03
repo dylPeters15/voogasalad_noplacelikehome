@@ -23,7 +23,7 @@ import javafx.util.Pair;
  */
 public class GameBoard extends VoogaObject implements MutableGrid, Iterable {
     private final Map<CoordinateTuple, CellInstance> gameBoard;
-    private CellTemplate templateCell;
+    private final CellTemplate templateCell;
     private BoundsHandler currentBoundsMode;
 
     public GameBoard(String name, CellTemplate templateCell, int rows, int columns, BoundsHandler currentBoundsMode, String description, String imgPath, GameState game) {
@@ -113,8 +113,4 @@ public class GameBoard extends VoogaObject implements MutableGrid, Iterable {
         return gameBoard.values().parallelStream();
     }
 
-    @Override
-    public void setGridSize(int x, int y) {
-        // TODO Implement this
-    }
 }

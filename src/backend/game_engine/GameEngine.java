@@ -4,7 +4,8 @@ import backend.cell.Terrain;
 import backend.io.XMLSerializable;
 import backend.player.Player;
 import backend.unit.UnitInstance;
-import backend.util.GameState;
+import backend.util.Event;
+import backend.util.ImmutableGameState;
 
 import java.util.function.BiConsumer;
 
@@ -14,7 +15,7 @@ import java.util.function.BiConsumer;
 public interface GameEngine extends XMLSerializable {
     void addObjective(ResultQuadPredicate winCondition);
 
-    void addTrigger(BiConsumer<Player, GameState> turnAction, GameState.Event when);
+    void addTrigger(BiConsumer<Player, ImmutableGameState> turnAction, Event when);
 
     void start();
 

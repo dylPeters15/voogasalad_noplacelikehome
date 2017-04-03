@@ -19,7 +19,6 @@ public class Terrain extends VoogaObject {
     public static final Terrain FORTIFIED = new Terrain("Fortified", 1, new InteractionModifier<>("Default Fortified Terrain Defense", (originalValue, agent, target, game) -> Math.random() < .3 ? originalValue : 0, "Units have 70% evasion on Fortified terrain by default."), "A fortified defensive position", "castle.png");
 
     private static final int DEFAULT_DEFAULT_MOVE_COST = 1;
-    private static final InteractionModifier<Double> DEFAULT_DEFAULT_DEFENSE_MODIFIER = (InteractionModifier<Double>) InteractionModifier.DUMMY;
     private final int defaultMoveCost; //overridden by unit specific costs
     private final InteractionModifier defaultDefenseModifier; //overridden by unit specific modifiers
 
@@ -28,7 +27,7 @@ public class Terrain extends VoogaObject {
     }
 
     public Terrain(String name, int defaultMoveCost, String description, String defaultImgPath) {
-        this(name, defaultMoveCost, DEFAULT_DEFAULT_DEFENSE_MODIFIER, description, defaultImgPath);
+        this(name, defaultMoveCost, (InteractionModifier<Double>) InteractionModifier.DUMMY, description, defaultImgPath);
     }
 
     public Terrain(String name, InteractionModifier<Double> defaultDefenseModifier, String description, String defaultImgPath) {

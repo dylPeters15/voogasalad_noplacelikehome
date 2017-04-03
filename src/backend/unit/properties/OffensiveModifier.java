@@ -1,7 +1,7 @@
 package backend.unit.properties;
 
 import backend.unit.UnitInstance;
-import backend.util.GameState;
+import backend.util.ImmutableGameState;
 
 import java.util.Collection;
 
@@ -21,5 +21,5 @@ interface OffensiveModifier extends InteractionModifier.Modifier<Double> {
 	OffensiveModifier STRONG_ATTACK = (outgoingDamage, agent, target, game) -> outgoingDamage * 1.5;
 
     @Override
-    Double modify(Double outgoingDamage, UnitInstance agent, UnitInstance target, GameState game);
+    Double modify(Double outgoingDamage, UnitInstance agent, UnitInstance target, ImmutableGameState game);
 }

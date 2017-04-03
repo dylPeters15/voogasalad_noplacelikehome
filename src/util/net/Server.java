@@ -85,8 +85,10 @@ public class Server<T> implements Host<T> {
      * @return Returns true if state is sent successfully
      */
     @Override
-    public synchronized boolean send(T state) {
-        childThreads.forEach(e -> e.send(state));
+    public synchronized boolean send(T state) throws Exception {
+        for (ServerThread<T> e : childThreads) {
+            e.send(state);
+        }
         return isActive();
     }
 
@@ -98,7 +100,9 @@ public class Server<T> implements Host<T> {
      */
     @Override
     public synchronized boolean send(Modifier<T> modifier) throws Exception {
-        childThreads.forEach(e -> e.send(modifier));
+        for (ServerThread<T> e : childThreads) {
+            e.send(modifier);
+        }
         return isActive();
     }
 

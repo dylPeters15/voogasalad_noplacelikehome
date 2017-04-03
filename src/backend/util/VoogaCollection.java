@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
  * @author Created by th174 on 3/30/2017.
  */
 public class VoogaCollection<T extends VoogaObject> extends VoogaObject implements Iterable<T> {
-    private Map<String, T> gameObjects;
+    private final Map<String, T> gameObjects;
 
     public VoogaCollection(String name, String description, String imgPath, T... gameObjects) {
         this(name, description, imgPath, Arrays.asList(gameObjects));

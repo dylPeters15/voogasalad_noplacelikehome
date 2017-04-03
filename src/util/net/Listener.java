@@ -37,9 +37,11 @@ public class Listener extends Thread {
                 requestHandler.accept((Request) inputStream.readObject());
             }
         } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
         } finally {
             try {
                 socket.close();
+                System.out.println("Connection closed:\t" + socket);
             } catch (IOException e) {
                 e.printStackTrace();
             }

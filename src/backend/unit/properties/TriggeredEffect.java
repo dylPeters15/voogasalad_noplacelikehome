@@ -1,13 +1,13 @@
 package backend.unit.properties;
 
+import backend.unit.UnitInstance;
+import backend.util.Event;
+import backend.util.ImmutableGameState;
+import backend.util.VoogaObject;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-
-import backend.unit.UnitInstance;
-import backend.util.GameState;
-import backend.util.ImmutableGameState.Event;
-import backend.util.VoogaObject;
 
 /**
  * @author Created by th174 on 3/31/2017.
@@ -26,7 +26,7 @@ public abstract class TriggeredEffect extends VoogaObject {
         this.activationTriggers = activationTriggers;
     }
 
-    public void affect(UnitInstance unit, Event event, GameState game) {
+    public void affect(UnitInstance unit, Event event, ImmutableGameState game) {
         if (getActivationTriggers().contains(event)) {
             effect.affect(unit, event, game);
         }
@@ -37,7 +37,7 @@ public abstract class TriggeredEffect extends VoogaObject {
     }
 
     protected interface Effect {
-        void affect(UnitInstance unit, Event event, GameState game);
+        void affect(UnitInstance unit, Event event, ImmutableGameState game);
     }
 }
 

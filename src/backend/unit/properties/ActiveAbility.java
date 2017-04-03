@@ -1,7 +1,7 @@
 package backend.unit.properties;
 
 import backend.unit.UnitInstance;
-import backend.util.GameState;
+import backend.util.ImmutableGameState;
 import backend.util.VoogaObject;
 
 import java.util.Collection;
@@ -44,12 +44,12 @@ public class ActiveAbility<T extends VoogaObject> extends VoogaObject implements
         return range;
     }
 
-    public void affect(UnitInstance user, T target, GameState game) {
+    public void affect(UnitInstance user, T target, ImmutableGameState game) {
         effect.useAbility(user, target, game);
     }
 
     @FunctionalInterface
     public interface AbilityEffect<T extends VoogaObject> {
-        void useAbility(UnitInstance user, T target, GameState game);
+        void useAbility(UnitInstance user, T target, ImmutableGameState game);
     }
 }

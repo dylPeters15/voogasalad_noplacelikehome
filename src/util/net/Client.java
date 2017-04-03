@@ -25,6 +25,17 @@ public class Client<T> extends AbstractHost<T> {
      * @param port {@inheritDoc}
      * @throws IOException {@inheritDoc}
      */
+    public Client(int port) throws IOException {
+        this(LOCALHOST, port, NO_SERIALIZER, NO_UNSERIALIZER);
+    }
+
+    /**
+     * Creates a client connected to a server located at host:port, and starts listening for requests sent from the server
+     *
+     * @param host {@inheritDoc}
+     * @param port {@inheritDoc}
+     * @throws IOException {@inheritDoc}
+     */
     public Client(String host, int port) throws IOException {
         this(host, port, NO_SERIALIZER, NO_UNSERIALIZER);
     }

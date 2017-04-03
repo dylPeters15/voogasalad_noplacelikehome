@@ -1,7 +1,7 @@
 package backend.unit.properties;
 
 import backend.unit.UnitInstance;
-import backend.util.GameState;
+import backend.util.ImmutableGameState;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,7 +20,7 @@ public final class Attack implements ActiveAbility.AbilityEffect<UnitInstance> {
     private final List<InteractionModifier<Double>> damageModifiers;
 
     public Attack(double damage, int numHits) {
-        this(damage, numHits, Collections.EMPTY_LIST);
+        this(damage, numHits, Collections.emptyList());
     }
 
     public Attack(double damage, int numHits, Collection<InteractionModifier<Double>> damageModifiers) {
@@ -37,12 +37,12 @@ public final class Attack implements ActiveAbility.AbilityEffect<UnitInstance> {
         return damage;
     }
 
-    public double getDamage(UnitInstance user, UnitInstance target, GameState game) {
+    public double getDamage(UnitInstance user, UnitInstance target, ImmutableGameState game) {
         return InteractionModifier.modifyAll(damageModifiers, getBaseDamage(), user, target, game);
     }
 
     @Override
-    public void useAbility(UnitInstance user, UnitInstance target, GameState game) {
+    public void useAbility(UnitInstance user, UnitInstance target, ImmutableGameState game) {
         IntStream.range(0, getNumHits()).forEach(i -> {
             double attackDamage = user.applyAllOffensiveModifiers(getDamage(user, target, game), target, game);
             double totalDamage = target.applyAllDefensiveModifiers(attackDamage, user, game);

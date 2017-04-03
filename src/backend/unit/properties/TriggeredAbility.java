@@ -1,9 +1,9 @@
 package backend.unit.properties;
 
+import backend.util.Event;
+
 import java.util.Arrays;
 import java.util.Collection;
-
-import backend.util.ImmutableGameState.Event;
 
 /**
  * Timmy

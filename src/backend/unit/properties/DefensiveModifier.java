@@ -3,7 +3,7 @@ package backend.unit.properties;
 import java.util.Collection;
 
 import backend.unit.UnitInstance;
-import backend.util.GameState;
+import backend.util.ImmutableGameState;
 
 /**
  * @author Created by th174 on 3/30/2017.
@@ -22,5 +22,5 @@ interface DefensiveModifier extends InteractionModifier.Modifier<Double> {
     };
 
     @Override
-    Double modify(Double incomingDamage, UnitInstance agent, UnitInstance target, GameState game);
+    Double modify(Double incomingDamage, UnitInstance agent, UnitInstance target, ImmutableGameState game);
 }

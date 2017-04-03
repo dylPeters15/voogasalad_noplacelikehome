@@ -16,6 +16,7 @@ import java.time.Instant;
  * @see Request,Modifier,Server,ServerThread,Client,AbstractHost,Host,Listener
  */
 public interface Host<T> {
+    String LOCALHOST = "127.0.0.1";
     Serializer NO_SERIALIZER = obj -> (Serializable) obj;
     Unserializer NO_UNSERIALIZER = obj -> obj;
 
@@ -47,6 +48,7 @@ public interface Host<T> {
      *
      * @param modifier Modifier to be sent over network.
      * @return Returns true if request was sent successfully
+     * @throws Exception Thrown when error occurs in serializing or sending the modifier.
      */
     boolean send(Modifier<T> modifier) throws Exception;
 
@@ -55,6 +57,7 @@ public interface Host<T> {
      *
      * @param newState New state to be serialized and sent over network
      * @return Returns true if request was sent successfully
+     * @throws Exception Thrown when error occurs in serializing or sending the modifier.
      */
     boolean send(T newState) throws Exception;
 

@@ -40,8 +40,8 @@ public final class Request<T extends Serializable> implements Serializable {
     /**
      * @return Returns the type of content contained inside this Request
      */
-    public Class<T> getContentType() {
-        return (Class<T>) content.getClass();
+    public Class<?> getContentType() {
+        return content.getClass();
     }
 
     /**

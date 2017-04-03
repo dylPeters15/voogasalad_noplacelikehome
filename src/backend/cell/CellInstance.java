@@ -3,8 +3,8 @@ package backend.cell;
 import backend.grid.CoordinateTuple;
 import backend.grid.MutableGrid;
 import backend.unit.UnitInstance;
-import backend.util.GameState;
-import backend.util.ImmutableGameState.Event;
+import backend.util.Event;
+import backend.util.ImmutableGameState;
 import backend.util.VoogaInstance;
 
 import java.util.Collection;
@@ -27,11 +27,11 @@ public class CellInstance extends VoogaInstance<CellTemplate> implements Cell {
         currentOccupants = new HashSet<>(initialOccupants);
     }
 
-    public void startTurn(GameState gameState) {
+    public void startTurn(ImmutableGameState gameState) {
         applyAbilities(Event.TURN_START, gameState);
     }
 
-    public void endTurn(GameState gameState) {
+    public void endTurn(ImmutableGameState gameState) {
         applyAbilities(Event.TURN_END, gameState);
     }
 
@@ -54,7 +54,7 @@ public class CellInstance extends VoogaInstance<CellTemplate> implements Cell {
         return getTemplate().getTerrain();
     }
 
-    public void applyAbilities(Event event, GameState gameState) {
+    public void applyAbilities(Event event, ImmutableGameState gameState) {
         currentOccupants.forEach(unit -> abilities.forEach(ability -> ability.affect(unit, event, gameState)));
     }
 

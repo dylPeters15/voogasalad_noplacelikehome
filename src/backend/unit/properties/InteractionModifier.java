@@ -1,7 +1,7 @@
 package backend.unit.properties;
 
 import backend.unit.UnitInstance;
-import backend.util.GameState;
+import backend.util.ImmutableGameState;
 import backend.util.VoogaObject;
 
 import java.util.Collection;
@@ -35,7 +35,7 @@ public class InteractionModifier<T> extends VoogaObject implements Ability {
     public static final InteractionModifier<Double> FEARFUL = new InteractionModifier<>("Fearful", DefensiveModifier.FEARFUL, "This unit take extra damage in night time", "Scarecrow.png");
     public static final InteractionModifier<Double> THORNS = new InteractionModifier<>("Thorns", DefensiveModifier.THORNS, "This unit reflects half the damage it takes back to the attacker", "Blademail.png");
 
-    private Modifier<T> modifier;
+    private final Modifier<T> modifier;
 
     public InteractionModifier(String name, Modifier<T> modifier) {
         this(name, modifier, "");
@@ -50,7 +50,7 @@ public class InteractionModifier<T> extends VoogaObject implements Ability {
         this.modifier = modifier;
     }
 
-    public static <T> T modifyAll(List<? extends InteractionModifier<T>> modifiers, T originalValue, UnitInstance agent, UnitInstance target, GameState game) {
+    public static <T> T modifyAll(List<? extends InteractionModifier<T>> modifiers, T originalValue, UnitInstance agent, UnitInstance target, ImmutableGameState game) {
         for (InteractionModifier<T> op : modifiers) {
             originalValue = op.modify(originalValue, agent, target, game);
         }
@@ -61,12 +61,12 @@ public class InteractionModifier<T> extends VoogaObject implements Ability {
         return getPredefined(InteractionModifier.class);
     }
 
-    public T modify(T originalValue, UnitInstance agent, UnitInstance target, GameState game) {
+    public T modify(T originalValue, UnitInstance agent, UnitInstance target, ImmutableGameState game) {
         return modifier.modify(originalValue, agent, target, game);
     }
 
     @FunctionalInterface
     public interface Modifier<T> {
-        T modify(T originalValue, UnitInstance agent, UnitInstance target, GameState game);
+        T modify(T originalValue, UnitInstance agent, UnitInstance target, ImmutableGameState game);
     }
 }

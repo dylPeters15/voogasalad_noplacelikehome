@@ -8,7 +8,7 @@ import backend.util.VoogaObject;
  * @author Created by th174 on 3/28/2017.
  */
 public abstract class UnitStat<T extends Number> extends VoogaObject {
-    private T maxValue;
+    private final T maxValue;
     private T currentValue;
 
     public UnitStat(String name, T maxValue, String description, String imgPath) {

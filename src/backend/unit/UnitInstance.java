@@ -7,10 +7,7 @@ import backend.grid.MutableGrid;
 import backend.player.Player;
 import backend.player.Team;
 import backend.unit.properties.*;
-import backend.util.GameState;
-import backend.util.ImmutableGameState.Event;
-import backend.util.VoogaInstance;
-import backend.util.VoogaObject;
+import backend.util.*;
 import javafx.util.Pair;
 
 import java.util.*;
@@ -50,7 +47,7 @@ public class UnitInstance extends VoogaInstance<UnitTemplate> implements Unit {
         setCurrentCell(startingCell);
     }
 
-    public void moveTo(CellInstance cell, GameState gameState) {
+    public void moveTo(CellInstance cell, ImmutableGameState gameState) {
         movePoints.useMovePoints(moveCosts.get(cell.getTerrain()));
         currentCell = cell;
         processTriggers(Event.UNIT_MOVEMENT, gameState);
@@ -69,16 +66,16 @@ public class UnitInstance extends VoogaInstance<UnitTemplate> implements Unit {
         getHitPoints().takeDamage(damage);
     }
 
-    public void useActiveAbility(String activeAbilityName, VoogaInstance target, GameState gameState) {
+    public void useActiveAbility(String activeAbilityName, VoogaInstance target, ImmutableGameState gameState) {
         useActiveAbility(getActiveAbilityByName(activeAbilityName), target, gameState);
     }
 
-    public void useActiveAbility(ActiveAbility activeAbility, VoogaInstance target, GameState gameState) {
+    public void useActiveAbility(ActiveAbility<VoogaObject> activeAbility, VoogaInstance target, ImmutableGameState gameState) {
         activeAbility.affect(this, target, gameState);
         processTriggers(Event.UNIT_ABILITY_USE, gameState);
     }
 
-    private void processTriggers(Event event, GameState gameState) {
+    private void processTriggers(Event event, ImmutableGameState gameState) {
         triggeredAbilities.values().forEach(e -> e.affect(this, event, gameState));
     }
 
@@ -135,7 +132,7 @@ public class UnitInstance extends VoogaInstance<UnitTemplate> implements Unit {
         return offensiveModifiers;
     }
 
-    public double applyAllOffensiveModifiers(Double originalValue, UnitInstance target, GameState gameState) {
+    public double applyAllOffensiveModifiers(Double originalValue, UnitInstance target, final ImmutableGameState gameState) {
         return InteractionModifier.modifyAll(getOffensiveModifiers(), originalValue, this, target, gameState);
     }
 
@@ -144,7 +141,7 @@ public class UnitInstance extends VoogaInstance<UnitTemplate> implements Unit {
         return defensiveModifiers;
     }
 
-    public double applyAllDefensiveModifiers(Double originalValue, UnitInstance agent, GameState gameState) {
+    public double applyAllDefensiveModifiers(Double originalValue, UnitInstance agent, final ImmutableGameState gameState) {
         return InteractionModifier.modifyAll(getDefensiveModifiers(), originalValue, agent, this, gameState);
     }
 

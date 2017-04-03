@@ -4,7 +4,7 @@
  * @author Created by th174 on 4/1/2017.
  */
 public class NetworkingTest {
-    public static NetworkingTest INITIAL_STATE = new NetworkingTest(" ");
+    public static final NetworkingTest INITIAL_STATE = new NetworkingTest(" ");
     private String test;
 
     public NetworkingTest(String test) {

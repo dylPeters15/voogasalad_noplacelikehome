@@ -4,7 +4,6 @@ import backend.cell.CellInstance;
 import backend.cell.Terrain;
 import backend.player.Player;
 import backend.unit.properties.*;
-import backend.util.GameState;
 import backend.util.VoogaObject;
 
 import java.util.*;
@@ -14,14 +13,14 @@ import java.util.stream.Collectors;
  * @author Created by th174 on 3/30/2017.
  */
 public class UnitTemplate extends VoogaObject implements Unit {
+    private final Map<String, ActiveAbility<VoogaObject>> activeAbilities;
+    private final Map<String, TriggeredAbility> triggeredAbilities;
+    private final List<InteractionModifier<Double>> offensiveModifiers;
+    private final List<InteractionModifier<Double>> defensiveModifiers;
+    private final Map<Terrain, Integer> terrainMoveCosts;
     private double hitPoints;
     private int movePoints;
     private GridPattern movePattern;
-    private Map<String, ActiveAbility<VoogaObject>> activeAbilities;
-    private Map<String, TriggeredAbility> triggeredAbilities;
-    private List<InteractionModifier<Double>> offensiveModifiers;
-    private List<InteractionModifier<Double>> defensiveModifiers;
-    private Map<Terrain, Integer> terrainMoveCosts;
     private Faction faction;
 
     public UnitTemplate(String unitTemplateName, double hitPoints, int movePoints, Faction faction, GridPattern movePattern, String unitTemplateDescription, String imgPath) {
@@ -49,7 +48,7 @@ public class UnitTemplate extends VoogaObject implements Unit {
         return getPredefined(UnitTemplate.class);
     }
 
-    public UnitInstance createInstance(String unitName, Player ownerPlayer, CellInstance startingCell, GameState game) {
+    public UnitInstance createInstance(String unitName, Player ownerPlayer, CellInstance startingCell) {
         return new UnitInstance(unitName, this, ownerPlayer, startingCell);
     }
 
