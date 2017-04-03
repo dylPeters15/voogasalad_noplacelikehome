@@ -1,6 +1,5 @@
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 /**
  * Class used for testing client-server networking
@@ -8,22 +7,22 @@ import java.util.List;
  * @author Created by th174 on 4/1/2017.
  */
 public class SimpleChatLogTest {
-    private List<String> log;
+    private String log;
 
     public SimpleChatLogTest() {
         this("");
     }
 
     public SimpleChatLogTest(String log) {
-        this.log = new ArrayList<>(Collections.singletonList(log));
+        this.log = log;
     }
 
     public void add(String test) {
-        log.add(test);
+        log = test;
     }
 
     public String getLast() {
-        return log.get(log.size() - 1);
+        return log;
     }
 
     public SimpleChatLogTest appendMessage(String message, String user) {
@@ -33,6 +32,6 @@ public class SimpleChatLogTest {
 
     @Override
     public String toString() {
-        return getClass().getName() + "= " + log.toString().replaceAll("[\\[,\\]]", "");
+        return getClass().getName() + "= " + log;
     }
 }
