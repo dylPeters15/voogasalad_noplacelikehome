@@ -7,15 +7,16 @@ import java.util.Scanner;
  */
 public class VoogaClientMain {
     public static final String HOSTNAME = "25.4.129.184";
+//  public static final String HOSTNAME = Client.LOCALHOST;
+    public static final int PORT = 10023;
     public static final String CLEARSCREEN = "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
-    //    public static final String HOSTNAME = Client.LOCALHOST;
 
     public static void main(String[] args) throws Exception {
         Client<SimpleChatLogTest> voogaClient = new Client<>(
                 HOSTNAME,
-                10023,
-                SimpleChatLogTest::toString,
-                obj -> (SimpleChatLogTest) Class.forName(obj.toString().split("=")[0]).getConstructor(String.class).newInstance(obj.toString().split("=")[1]));
+                PORT,
+                SimpleChatLogTest.CHAT_LOG_TEST_SERIALIZER,
+                SimpleChatLogTest.CHAT_LOG_TEST_UNSERIALIZER);
         Scanner stdin = new Scanner(System.in);
         voogaClient.addListener(state -> System.out.print(CLEARSCREEN + state.getLast() + "\n\n>>  "));
         voogaClient.start();

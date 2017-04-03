@@ -1,5 +1,5 @@
-import java.util.ArrayList;
-import java.util.Collections;
+import util.io.Serializer;
+import util.io.Unserializer;
 
 /**
  * Class used for testing client-server networking
@@ -7,6 +7,9 @@ import java.util.Collections;
  * @author Created by th174 on 4/1/2017.
  */
 public class SimpleChatLogTest {
+    public static final Serializer<SimpleChatLogTest> CHAT_LOG_TEST_SERIALIZER = SimpleChatLogTest::toString;
+    public static final Unserializer<SimpleChatLogTest> CHAT_LOG_TEST_UNSERIALIZER = obj -> (SimpleChatLogTest) Class.forName(obj.toString().split("=")[0]).getConstructor(String.class).newInstance(obj.toString().split("=")[1]);
+
     private String log;
 
     public SimpleChatLogTest() {

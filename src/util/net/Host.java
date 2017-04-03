@@ -99,7 +99,7 @@ public abstract class Host<T> extends AbstractHost<T> {
         } catch (IOException e) {
             try {
                 getSocket().close();
-                System.out.println("Connection Closed:\t" + getSocket());
+                System.out.println("\nConnection Closed:\t" + getSocket());
             } catch (IOException e1) {
                 e1.printStackTrace();
             }

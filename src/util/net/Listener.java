@@ -40,7 +40,7 @@ public class Listener extends Thread {
         } finally {
             try {
                 socket.close();
-                System.out.println("Connection closed:\t" + socket);
+                System.out.println("\nConnection closed:\t" + socket);
             } catch (IOException e) {
                 e.printStackTrace();
             }
