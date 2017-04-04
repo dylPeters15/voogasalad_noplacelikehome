@@ -2,7 +2,7 @@
  * SpriteListItems are visual items that display a Sprite that is available to build with in the 
  * development environment.
  */
-package frontend;
+package frontend.templatepane;
 
 import frontend.sprites.Sprite;
 

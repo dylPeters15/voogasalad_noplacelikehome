@@ -5,6 +5,7 @@
 package frontend;
 
 
+import frontend.templatepane.SpriteMenu;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
