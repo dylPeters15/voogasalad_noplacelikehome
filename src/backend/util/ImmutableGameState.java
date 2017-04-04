@@ -8,7 +8,7 @@ import backend.player.Team;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.BiConsumer;
-import java.util.function.Predicate;
+import java.util.function.BiPredicate;
 
 public interface ImmutableGameState {
     List<Player> getPlayers();
@@ -16,10 +16,12 @@ public interface ImmutableGameState {
     MutableGrid getGrid();
 
     Player getCurrentPlayer();
-    
+
     Collection<Team> getTeams();
 
     void messagePlayer(Player from, Player to, String message);
+
+    void endTurn();
 
     default void messageAll(Player from, String message) {
         getPlayers().forEach(player -> messagePlayer(from, player, message));
@@ -33,7 +35,15 @@ public interface ImmutableGameState {
 
     void addEventHandler(BiConsumer<Player, ImmutableGameState> eventListener, Event event);
 
-	void addObjective(ResultQuadPredicate winCondition);
+    Collection<ResultQuadPredicate> getObjectives();
 
-	void addTurnRequirements(Predicate<Player> requirement);
+    void addObjective(ResultQuadPredicate winCondition);
+
+    Collection<BiPredicate<Player, ImmutableGameState>> getTurnRequirements();
+
+    void addTurnRequirement(BiPredicate<Player, ImmutableGameState> requirement);
+
+    default boolean canEndTurn() {
+        return getTurnRequirements().stream().anyMatch(e -> !e.test(getCurrentPlayer(), this));
+    }
 }

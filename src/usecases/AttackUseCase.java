@@ -1,6 +1,3 @@
-/**
- *
- */
 package usecases;
 
 import backend.unit.UnitInstance;

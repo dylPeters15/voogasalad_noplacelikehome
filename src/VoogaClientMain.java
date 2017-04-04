@@ -1,29 +1,27 @@
-import util.net.ObservableClient;
-
-import java.util.Scanner;
-
 /**
- * @author Created by th174 on 4/1/2017.
+ * @author Created by th174 on 4/4/2017.
  */
-public class VoogaClientMain {
-    public static final String HOSTNAME = "25.4.129.184";
-//  public static final String HOSTNAME = Client.LOCALHOST;
-    public static final int PORT = 10023;
-    public static final String CLEARSCREEN = "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
 
-    public static void main(String[] args) throws Exception {
-        ObservableClient<SimpleChatLogTest> voogaClient = new ObservableClient<>(
-                HOSTNAME,
-                PORT,
-                SimpleChatLogTest.CHAT_LOG_TEST_SERIALIZER,
-                SimpleChatLogTest.CHAT_LOG_TEST_UNSERIALIZER);
-        Scanner stdin = new Scanner(System.in);
-        voogaClient.addListener(client -> System.out.print(CLEARSCREEN + client.getLast() + "\n\n>>  "));
-        voogaClient.start();
-        while (voogaClient.isActive()) {
-            String input = stdin.nextLine();
-            String user = System.getProperty("user.name");
-            voogaClient.send(state -> state.appendMessage(input, user));
-        }
+import frontend.UI;
+import javafx.application.Application;
+import javafx.stage.Stage;
+
+import java.util.Locale;
+import java.util.ResourceBundle;
+
+public class VoogaClientMain extends Application {
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+
+    @Override
+    public void start(Stage primaryStage) {
+        ResourceBundle bundle = ResourceBundle.getBundle("resources/Selections", Locale.getDefault());
+        primaryStage.setTitle(bundle.getString("Title"));
+        UI userInterface = new UI();
+        primaryStage.setScene(userInterface.getPrimaryScene());
+        primaryStage.setResizable(true);
+        primaryStage.show();
     }
 }

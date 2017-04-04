@@ -1,3 +1,5 @@
+package chat_client;
+
 import util.io.Serializer;
 import util.io.Unserializer;
 
@@ -6,17 +8,17 @@ import util.io.Unserializer;
  *
  * @author Created by th174 on 4/1/2017.
  */
-public class SimpleChatLogTest {
-    public static final Serializer<SimpleChatLogTest> CHAT_LOG_TEST_SERIALIZER = SimpleChatLogTest::toString;
-    public static final Unserializer<SimpleChatLogTest> CHAT_LOG_TEST_UNSERIALIZER = obj -> (SimpleChatLogTest) Class.forName(obj.toString().split("=")[0]).getConstructor(String.class).newInstance(obj.toString().split("=")[1]);
+public class ChatLog {
+    public static final Serializer<ChatLog> CHAT_LOG_TEST_SERIALIZER = ChatLog::toString;
+    public static final Unserializer<ChatLog> CHAT_LOG_TEST_UNSERIALIZER = obj -> (ChatLog) Class.forName(obj.toString().split("=")[0]).getConstructor(String.class).newInstance(obj.toString().split("=")[1]);
 
     private String log;
 
-    public SimpleChatLogTest() {
+    public ChatLog() {
         this(" ");
     }
 
-    public SimpleChatLogTest(String log) {
+    public ChatLog(String log) {
         this.log = log;
     }
 
@@ -28,7 +30,7 @@ public class SimpleChatLogTest {
         return log;
     }
 
-    public SimpleChatLogTest appendMessage(String message, String user) {
+    public ChatLog appendMessage(String message, String user) {
         add(String.format("%s\n<%s>:  %s", getLast(), user, message));
         return this;
     }

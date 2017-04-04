@@ -1,23 +1,23 @@
 package backend.game_engine;
 
 import backend.player.Player;
-import backend.util.GameState;
+import backend.util.MutableGameState;
 import util.net.ObservableServer;
 
 import java.util.function.Consumer;
 
 public class DieselEngine implements GameEngine {
 
-    private ObservableServer<GameState> server;
-    private Consumer<GameState> stateUpdateListener = this::checkRules;
+    private ObservableServer<MutableGameState> server;
+    private Consumer<MutableGameState> stateUpdateListener = this::checkRules;
 
-    public DieselEngine(ObservableServer<GameState> s) {
+    public DieselEngine(ObservableServer<MutableGameState> s) {
         server = s;
         //server.addListener(stateUpdateListener);
         server.start();
     }
 
-    private void checkRules(GameState state) {
+    private void checkRules(MutableGameState state) {
 
         return;
     }
@@ -37,13 +37,6 @@ public class DieselEngine implements GameEngine {
     @Override
     public void load() {
         // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void messagePlayer(Player from, Player to, String message) {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
@@ -51,5 +44,4 @@ public class DieselEngine implements GameEngine {
         // TODO Auto-generated method stub
         return null;
     }
-
 }
