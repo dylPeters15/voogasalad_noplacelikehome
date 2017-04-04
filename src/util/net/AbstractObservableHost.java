@@ -22,15 +22,18 @@ import java.util.function.Consumer;
  * @see Request,Modifier,ObservableServer,ObservableServer.ServerThread,ObservableClient,ObservableHost,AbstractObservableHost,Listener
  */
 public abstract class AbstractObservableHost<T> {
-    public static final int DEFAULT_CONNECTION_TIMEOUT = (int) Duration.ofMinutes(5).toMillis();
+    public static final Duration NEVER_TIMEOUT = Duration.ZERO;
     public static final String LOCALHOST = "127.0.0.1";
     public static final Serializer NO_SERIALIZER = obj -> (Serializable) obj;
     public static final Unserializer NO_UNSERIALIZER = obj -> obj;
     private final Serializer<T> serializer;
     private final Unserializer<T> unserializer;
     private final Collection<Consumer<T>> stateUpdateListeners;
+    private final Duration timeout;
 
-
+    /**
+     * Creates an instance of an AbstractObservableHost
+     */
     protected AbstractObservableHost() {
         this(NO_SERIALIZER, NO_UNSERIALIZER);
     }
@@ -40,13 +43,25 @@ public abstract class AbstractObservableHost<T> {
      * @param unserializer Converts the Serializable form of the state back into its original form of type T
      */
     protected AbstractObservableHost(Serializer<T> serializer, Unserializer<T> unserializer) {
+        this(serializer, unserializer, NEVER_TIMEOUT);
+    }
+
+    /**
+     * @param serializer   Converts the state to a Serializable form, so that it can be sent to the client
+     * @param unserializer Converts the Serializable form of the state back into its original form of type T
+     * @param timeout      Timeout duration for the socket connection
+     */
+    protected AbstractObservableHost(Serializer<T> serializer, Unserializer<T> unserializer, Duration timeout) {
         this.serializer = serializer;
         this.unserializer = unserializer;
-        stateUpdateListeners = new ArrayList<>();
+        this.stateUpdateListeners = new ArrayList<>();
+        this.timeout = timeout;
     }
 
     /**
      * Starts communicating with the remote host
+     *
+     * @throws Exception Thrown if exception occurs in starting the host
      */
     public abstract void start() throws Exception;
 
@@ -95,6 +110,13 @@ public abstract class AbstractObservableHost<T> {
      * @return Returns true while the connection associated with this object is active
      */
     public abstract boolean isActive();
+
+    /**
+     * @return Returns the amount time until the socket times out, in milliseconds
+     */
+    protected Duration getTimeout() {
+        return timeout;
+    }
 
     /**
      * @return Returns the serializer currently used by this host

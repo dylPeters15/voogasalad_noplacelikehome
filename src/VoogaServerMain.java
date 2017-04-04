@@ -1,6 +1,7 @@
 import util.net.ObservableServer;
 
 import java.time.Clock;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -17,7 +18,8 @@ public class VoogaServerMain {
                 new SimpleChatLogTest(),
                 PORT,
                 SimpleChatLogTest.CHAT_LOG_TEST_SERIALIZER,
-                SimpleChatLogTest.CHAT_LOG_TEST_UNSERIALIZER);
+                SimpleChatLogTest.CHAT_LOG_TEST_UNSERIALIZER,
+                Duration.ofMinutes(5));
         voogaServer.addListener(VoogaServerMain::printNewRequest);
 //        voogaServer.addListener(e -> voogaServer.sendAndApply(simpleChatLogTest -> simpleChatLogTest.appendMessage("Server says hello! ", "SERVER")));
         voogaServer.start();

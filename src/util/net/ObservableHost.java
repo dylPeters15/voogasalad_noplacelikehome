@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.Socket;
+import java.time.Duration;
 import java.time.Instant;
 
 /**
@@ -41,11 +42,24 @@ public abstract class ObservableHost<T> extends AbstractObservableHost<T> {
      * @throws IOException Thrown if socket is not open for reading and writing.
      */
     public ObservableHost(Socket socket, Serializer<T> serializer, Unserializer<T> unserializer) throws IOException {
-        super(serializer, unserializer);
+        this(socket, serializer, unserializer, NEVER_TIMEOUT);
+    }
+
+    /**
+     * Creates a new VoogaRemote server or client that listens on a socket for requests.
+     *
+     * @param socket       Socket to listen on for client requests.
+     * @param serializer   Converts a state of type T into a Serializable form to be sent over the network.
+     * @param unserializer Converts a Serializable form of a state into type T.
+     * @param timeout      {@inheritDoc}
+     * @throws IOException Thrown if socket is not open for reading and writing.
+     */
+    public ObservableHost(Socket socket, Serializer<T> serializer, Unserializer<T> unserializer, Duration timeout) throws IOException {
+        super(serializer, unserializer, timeout);
         this.socket = socket;
         this.outputStream = new ObjectOutputStream(socket.getOutputStream());
         this.outputStream.flush();
-        getSocket().setSoTimeout(DEFAULT_CONNECTION_TIMEOUT);
+        getSocket().setSoTimeout((int) getTimeout().toMillis());
     }
 
     /**
@@ -65,7 +79,7 @@ public abstract class ObservableHost<T> extends AbstractObservableHost<T> {
      * @param request Request received from remote host.
      * @throws RuntimeException Thrown when an error occurs while unserializing the request, or when an error occurs in processing the request.
      */
-    protected synchronized void handleRequest(Request<? extends Serializable> request) {
+    private synchronized void handleRequest(Request<? extends Serializable> request) {
         try {
             if (Modifier.class.isAssignableFrom(request.getContentType())) {
                 handle((Modifier<T>) request.get(), request.getTimeStamp());
