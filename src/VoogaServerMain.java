@@ -19,7 +19,7 @@ public class VoogaServerMain {
                 SimpleChatLogTest.CHAT_LOG_TEST_SERIALIZER,
                 SimpleChatLogTest.CHAT_LOG_TEST_UNSERIALIZER);
         voogaServer.addListener(VoogaServerMain::printNewRequest);
-        voogaServer.addListener(e -> voogaServer.sendAndApply(simpleChatLogTest -> simpleChatLogTest.appendMessage("Server says hello! ", "SERVER")));
+//        voogaServer.addListener(e -> voogaServer.sendAndApply(simpleChatLogTest -> simpleChatLogTest.appendMessage("Server says hello! ", "SERVER")));
         voogaServer.start();
     }
 
