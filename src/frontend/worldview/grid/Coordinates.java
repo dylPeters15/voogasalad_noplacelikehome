@@ -1,7 +1,7 @@
 /**
  * Data structure holding the coordinates of an object on a Grid.
  */
-package frontend.grid;
+package frontend.worldview.grid;
 
 import java.util.List;
 

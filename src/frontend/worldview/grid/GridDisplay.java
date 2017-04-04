@@ -2,7 +2,7 @@
  * Holds a grid to be displayed in the development and player GUI. It can have Sprites added to a particular cell or 
  * have all cells updated after something occurs in the game.
  */
-package frontend.grid;
+package frontend.worldview.grid;
 
 import frontend.Displayable;
 import frontend.sprites.Sprite;
