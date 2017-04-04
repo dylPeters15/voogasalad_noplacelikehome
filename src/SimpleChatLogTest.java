@@ -13,7 +13,7 @@ public class SimpleChatLogTest {
     private String log;
 
     public SimpleChatLogTest() {
-        this("");
+        this(" ");
     }
 
     public SimpleChatLogTest(String log) {
@@ -35,6 +35,6 @@ public class SimpleChatLogTest {
 
     @Override
     public String toString() {
-        return getClass().getName() + "= " + log;
+        return getClass().getName() + "=" + log;
     }
 }

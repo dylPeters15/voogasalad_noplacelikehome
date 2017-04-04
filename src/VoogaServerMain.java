@@ -15,7 +15,7 @@ public class VoogaServerMain {
 
     public static void main(String[] args) throws Exception {
         ObservableServer<SimpleChatLogTest> voogaServer = new ObservableServer<>(
-                new SimpleChatLogTest("Welcome to team No_place_like_~/'s chat room!\nPlease make sure you have pulled the latest commit from origin/master.\n"),
+                new SimpleChatLogTest("********Welcome to team No_place_like_~/'s chat room!********\nPlease make sure you have pulled the latest commit from origin/master.\n"),
                 PORT,
                 SimpleChatLogTest.CHAT_LOG_TEST_SERIALIZER,
                 SimpleChatLogTest.CHAT_LOG_TEST_UNSERIALIZER,
