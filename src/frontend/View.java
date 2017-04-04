@@ -17,30 +17,37 @@ import frontend.worldview.WorldView;
  */
 public class View extends BaseUIManager {
 
-    private VoogaMenuBar menuBar;
-    private WorldView worldView;
-    private ToolsPane toolsPane;
-    private DetailPane infoPane;
-    private TemplatePane tempPane;
+	private VoogaMenuBar menuBar;
+	private WorldView worldView;
+	private ToolsPane toolsPane;
+	private DetailPane infoPane;
+	private TemplatePane tempPane;
+	
+	
+	public View(ImmutableGameState gameState, ClientController controller){
+		
+	}
+	
+	
+	
+	/**
+	 * Notifies when GameState changes and displays the new GameState.
+	 */
+	public void update(){
+		
+	}
+	
+	/**
+	 * Sends requests to ClientController when the user makes any changes.
+	 */
+	private void instantiateListeners(){
+		
+	}
 
-
-    public View(ImmutableGameState gameState, Controller controller) {
-
-    }
-
-
-    public void update() {
-
-    }
-
-    private void instantiateListeners() {
-
-    }
-
-    @Override
-    public Object getObject() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+	@Override
+	public Object getObject() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }
