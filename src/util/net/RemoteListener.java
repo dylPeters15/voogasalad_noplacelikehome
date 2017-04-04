@@ -9,9 +9,9 @@ import java.util.function.Consumer;
  * This class listens to sent over a socket requests in a background thread, and handles each request with a specified Consumer.
  *
  * @author Created by th174 on 4/1/2017.
- * @see Request,Modifier,ObservableServer,ObservableServer.ServerThread,ObservableClient,ObservableHost,AbstractObservableHost,Listener
+ * @see Request,Modifier,ObservableServer,ObservableServer.ServerThread,ObservableClient,ObservableHost,AbstractObservableHost, RemoteListenerThread
  */
-public class Listener extends Thread {
+public class RemoteListener extends Thread {
     private final Consumer<Request> requestHandler;
     private final Socket socket;
     private final ObjectInputStream inputStream;
@@ -21,7 +21,7 @@ public class Listener extends Thread {
      * @param requestHandler Consumer that accepts each incoming request.
      * @throws IOException Thrown if socket input is closed.
      */
-    public Listener(Socket socket, Consumer<Request> requestHandler) throws IOException {
+    public RemoteListener(Socket socket, Consumer<Request> requestHandler) throws IOException {
         this.socket = socket;
         this.inputStream = new ObjectInputStream(socket.getInputStream());
         this.requestHandler = requestHandler;

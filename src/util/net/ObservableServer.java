@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.time.Clock;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.HashSet;
@@ -18,7 +19,7 @@ import java.util.HashSet;
  *
  * @param <T> The type of variable used to represent networked shared state.
  * @author Created by th174 on 4/1/2017.
- * @see Request,Modifier,ObservableServer,ObservableServer.ServerThread,ObservableClient,ObservableHost,AbstractObservableHost,Listener
+ * @see Request,Modifier,ObservableServer,ObservableServer.ServerThread,ObservableClient,ObservableHost,AbstractObservableHost, RemoteListener
  */
 public class ObservableServer<T> extends AbstractObservableHost<T> {
     private final Collection<ServerThread> childThreads;
@@ -47,7 +48,21 @@ public class ObservableServer<T> extends AbstractObservableHost<T> {
      * @throws Exception Thrown if ServerSocket could not be created, or if exception is thrown in serialization
      */
     public ObservableServer(T initialState, int port, Serializer<T> serializer, Unserializer<T> unserializer) throws Exception {
-        super(serializer, unserializer);
+        this(initialState, port, serializer, unserializer, NEVER_TIMEOUT);
+    }
+
+    /**
+     * Constructs an instance of VoogaServer
+     *
+     * @param initialState The initial networked shared state.
+     * @param port         Port to listen on for new client connections
+     * @param serializer   Converts the state to a Serializable form, so that it can be sent to the client
+     * @param unserializer Converts the Serializable form of the state back into its original form of type T
+     * @param timeout      Timeout duration for all connections to the client
+     * @throws Exception Thrown if ServerSocket could not be created, or if exception is thrown in serialization
+     */
+    public ObservableServer(T initialState, int port, Serializer<T> serializer, Unserializer<T> unserializer, Duration timeout) throws Exception {
+        super(serializer, unserializer, timeout);
         this.state = initialState;
         this.mostRecentTimeStamp = Instant.now(Clock.systemUTC());
         this.childThreads = new HashSet<>();
@@ -178,7 +193,7 @@ public class ObservableServer<T> extends AbstractObservableHost<T> {
          * @throws Exception Thrown if socket is not open for reading and writing, or if an exception is thrown in serialization
          */
         private ServerThread(Socket socket) throws Exception {
-            super(socket, ObservableServer.this.getSerializer(), ObservableServer.this.getUnserializer());
+            super(socket, ObservableServer.this.getSerializer(), ObservableServer.this.getUnserializer(), ObservableServer.super.getTimeout());
         }
 
         @Override

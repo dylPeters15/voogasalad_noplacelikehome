@@ -4,7 +4,7 @@
 package frontend;
 
 import backend.util.ImmutableGameState;
-import controller.Controller;
+import controller.ClientController;
 import frontend.detailpane.DetailPane;
 import frontend.templatepane.TemplatePane;
 import frontend.toolspane.ToolsPane;

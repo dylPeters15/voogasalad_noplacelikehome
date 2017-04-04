@@ -1,29 +1,28 @@
+import backend.game_engine.DieselEngine;
+import backend.game_engine.GameEngine;
+import backend.util.MutableGameState;
+import util.io.Serializer;
+import util.io.Unserializer;
 import util.net.ObservableServer;
 
-import java.time.Clock;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
-
 /**
- * @author Created by th174 on 3/30/2017.
+ * @author Created by th174 on 4/4/2017.
  */
 public class VoogaServerMain {
     public static final int PORT = 10023;
 
     public static void main(String[] args) throws Exception {
-        ObservableServer<SimpleChatLogTest> voogaServer = new ObservableServer<>(
-                new SimpleChatLogTest(),
+        //TODO
+        MutableGameState gameState = null;
+        Serializer<MutableGameState> xstreamSerializer = null;
+        Unserializer<MutableGameState> xstreamUnserializer = null;
+        ObservableServer<MutableGameState> voogaServer = new ObservableServer<>(
+                gameState,
                 PORT,
-                SimpleChatLogTest.CHAT_LOG_TEST_SERIALIZER,
-                SimpleChatLogTest.CHAT_LOG_TEST_UNSERIALIZER);
-        voogaServer.addListener(VoogaServerMain::printNewRequest);
-//        voogaServer.addListener(e -> voogaServer.sendAndApply(simpleChatLogTest -> simpleChatLogTest.appendMessage("Server says hello! ", "SERVER")));
+                xstreamSerializer,
+                xstreamUnserializer);
+        GameEngine gameEngine = new DieselEngine(voogaServer);
         voogaServer.start();
-    }
-
-    private static void printNewRequest(SimpleChatLogTest simpleChatLogTest) {
-        System.out.println("Request received from client:\n\t@" + Instant.now(Clock.systemUTC()).atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)));
+        System.out.println("Server started successfully...");
     }
 }
