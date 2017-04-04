@@ -4,6 +4,7 @@ import util.io.Serializer;
 import util.io.Unserializer;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -38,15 +39,7 @@ public abstract class AbstractObservableHost<T> {
      * Creates an instance of an AbstractObservableHost
      */
     protected AbstractObservableHost() {
-        this(Serializer.NONE, Unserializer.NONE);
-    }
-
-    /**
-     * @param serializer   Converts the state to a Serializable form, so that it can be sent to the client
-     * @param unserializer Converts the Serializable form of the state back into its original form of type T
-     */
-    protected AbstractObservableHost(Serializer<T> serializer, Unserializer<T> unserializer) {
-        this(serializer, unserializer, NEVER_TIMEOUT);
+        this(Serializer.NONE, Unserializer.NONE, NEVER_TIMEOUT);
     }
 
     /**
@@ -69,12 +62,23 @@ public abstract class AbstractObservableHost<T> {
      */
     public abstract void start() throws Exception;
 
-    protected void submitTask(Runnable task) {
+    /**
+     * Submits a runnable task to be run concurrently
+     *
+     * @param task Task to be run concurrently
+     */
+    protected final void submitTask(Runnable task) {
         executor.submit(task);
     }
 
-    protected void scheduleTask(Runnable task, long initialDelay, long period, TimeUnit time) {
-        executor.scheduleAtFixedRate(task, initialDelay, period, time);
+    /**
+     * Submits a runnable task to be run and repeated concurrently
+     *
+     * @param task       Repeated task to be run concurrently
+     * @param repeatTime Time interval to repeat task at
+     */
+    protected final void submitRepeatedTask(Runnable task, Duration repeatTime) {
+        executor.scheduleAtFixedRate(task, 0, repeatTime.toMillis(), TimeUnit.MILLISECONDS);
     }
 
     /**
@@ -87,7 +91,6 @@ public abstract class AbstractObservableHost<T> {
      *
      * @param newState  The new state sent from the remote host.
      * @param timeStamp Request creation timestamp
-     * @throws Exception Thrown when an error occurs while processing the request the new state.
      */
     protected abstract void handle(T newState, Instant timeStamp);
 
@@ -96,7 +99,6 @@ public abstract class AbstractObservableHost<T> {
      *
      * @param stateModifier The state modifier received from the remote host.
      * @param timeStamp     Request creation timestamp
-     * @throws Exception Thrown when an error occurs while processing the state modifier.
      */
     protected abstract void handle(Modifier<T> stateModifier, Instant timeStamp);
 
@@ -105,7 +107,6 @@ public abstract class AbstractObservableHost<T> {
      *
      * @param modifier Modifier to be sent over network.
      * @return Returns true if request was sent successfully
-     * @throws Exception Thrown when error occurs in serializing or sending the modifier.
      */
     protected abstract boolean send(Modifier<T> modifier);
 
@@ -114,7 +115,6 @@ public abstract class AbstractObservableHost<T> {
      *
      * @param newState New state to be serialized and sent over network
      * @return Returns true if request was sent successfully
-     * @throws Exception Thrown when error occurs in serializing or sending the modifier.
      */
     protected abstract boolean send(T newState);
 
@@ -142,21 +142,21 @@ public abstract class AbstractObservableHost<T> {
     /**
      * @return Returns the serializer currently used by this host
      */
-    protected Serializer<T> getSerializer() {
+    protected final Serializer<T> getSerializer() {
         return serializer;
     }
 
     /**
      * @return Returns the serializer currently usd by this host
      */
-    protected Unserializer<T> getUnserializer() {
+    protected final Unserializer<T> getUnserializer() {
         return unserializer;
     }
 
     /**
      * Notifies all currently registered observers of a value change.
      */
-    protected void fireStateUpdatedEvent() {
+    protected final void fireStateUpdatedEvent() {
         stateUpdateListeners.forEach(e -> e.accept(getState()));
     }
 
@@ -165,7 +165,7 @@ public abstract class AbstractObservableHost<T> {
      *
      * @param stateUpdateListener The listener to register
      */
-    public void addListener(Consumer<T> stateUpdateListener) {
+    public final void addListener(Consumer<T> stateUpdateListener) {
         stateUpdateListeners.add(stateUpdateListener);
     }
 
@@ -174,7 +174,7 @@ public abstract class AbstractObservableHost<T> {
      *
      * @param stateUpdateListener The listener to remove
      */
-    public void removeListener(Consumer<T> stateUpdateListener) {
+    public final void removeListener(Consumer<T> stateUpdateListener) {
         stateUpdateListeners.remove(stateUpdateListener);
     }
 

@@ -17,7 +17,7 @@ import java.time.format.FormatStyle;
  * @see Request,Modifier,ObservableServer,ObservableServer.ServerThread,ObservableClient,ObservableHost,AbstractObservableHost,RemoteListener
  */
 public final class Request<T extends Serializable> implements Serializable {
-    private static final Serializable HEARTBEAT = null;
+    public static final Serializable HEARTBEAT = null;
     private final T content;
     private final Instant timeStamp;
     private final int commitIndex;

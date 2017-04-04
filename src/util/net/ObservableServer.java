@@ -24,9 +24,9 @@ import java.util.HashSet;
 public class ObservableServer<T> extends AbstractObservableHost<T> {
     private final Collection<ServerThread> childThreads;
     private final ServerSocket serverSocket;
-    private Instant mostRecentTimeStamp;
+    private volatile Instant mostRecentTimeStamp;
     private volatile T state;
-    private int commitIndex;
+    private volatile int commitIndex;
 
     /**
      * Constructs an instance of VoogaServer without serialization
@@ -78,21 +78,24 @@ public class ObservableServer<T> extends AbstractObservableHost<T> {
     @Override
     public void start() {
         commitIndex = 0;
-        submitTask(new Thread(() -> {
-            try {
-                while (serverSocket.isBound() && !serverSocket.isClosed()) {
-                    ServerThread child = new ServerThread(serverSocket.accept());
-                    child.start();
-                    childThreads.add(child);
-                }
-            } catch (Exception e) {
-                try {
-                    serverSocket.close();
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
+        submitTask(this::listenForClients);
+    }
+
+    private void listenForClients(){
+        try {
+            while (serverSocket.isBound() && !serverSocket.isClosed()) {
+                ServerThread child = new ServerThread(serverSocket.accept());
+                child.start();
+                childThreads.add(child);
             }
-        }));
+        } catch (Exception e) {
+        } finally {
+            try {
+                shutDown();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -107,7 +110,7 @@ public class ObservableServer<T> extends AbstractObservableHost<T> {
      * @return Returns true if state is sent successfully
      */
     @Override
-    protected synchronized boolean send(T state) {
+    protected boolean send(T state) {
         for (ServerThread e : childThreads) {
             e.send(state);
         }
@@ -120,7 +123,7 @@ public class ObservableServer<T> extends AbstractObservableHost<T> {
      * @param state New state object to be serialized and propagated across all servers and clients
      * @return Returns true if state is sent successfully
      */
-    public final synchronized boolean sendAndApply(T state) {
+    public synchronized final boolean sendAndApply(T state) {
         this.state = state;
         incrementCommitIndex();
         return send(state);
@@ -133,7 +136,7 @@ public class ObservableServer<T> extends AbstractObservableHost<T> {
      * @return Returns true if the requests were sent successfully
      */
     @Override
-    protected synchronized boolean send(Modifier<T> modifier) {
+    protected boolean send(Modifier<T> modifier) {
         for (ServerThread e : childThreads) {
             e.send(modifier);
         }
@@ -163,13 +166,11 @@ public class ObservableServer<T> extends AbstractObservableHost<T> {
     @Override
     public synchronized void handle(T newState, Instant timeStamp) {
         sendAndApply(newState);
-        fireStateUpdatedEvent();
     }
 
     @Override
     public synchronized void handle(Modifier<T> stateModifier, Instant timeStamp) {
         sendAndApply(stateModifier);
-        fireStateUpdatedEvent();
     }
 
     @Override
@@ -208,8 +209,9 @@ public class ObservableServer<T> extends AbstractObservableHost<T> {
 
         @Override
         public void start() throws IOException {
-            System.out.println("\nClient Connected:  " + getSocket());
+            submitRepeatedTask(this::sendHeartBeat, getTimeout().equals(NEVER_TIMEOUT) ? Duration.ofSeconds(30) : Duration.ofMillis(getTimeout().toMillis() / 2));
             send(getState());
+            System.out.println("\nClient Connected:  " + getSocket());
             super.start();
         }
 
@@ -221,6 +223,10 @@ public class ObservableServer<T> extends AbstractObservableHost<T> {
         @Override
         public void handle(Modifier<T> modifier, Instant timeStamp) {
             ObservableServer.this.handle(modifier, timeStamp);
+        }
+
+        @Override
+        protected void handleHeartBeat() {
         }
 
         @Override

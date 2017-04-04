@@ -21,7 +21,7 @@ public class ChatServerMain {
                 PORT,
                 ChatLog.CHAT_LOG_TEST_SERIALIZER,
                 ChatLog.CHAT_LOG_TEST_UNSERIALIZER,
-                Duration.ofMinutes(5));
+                Duration.ofSeconds(20));
         voogaServer.addListener(ChatServerMain::printNewRequest);
 //        voogaServer.addListener(e -> voogaServer.sendAndApply(simpleChatLogTest -> simpleChatLogTest.appendMessage("Server says hello! ", "SERVER")));
         voogaServer.start();

@@ -5,6 +5,7 @@ import util.io.Unserializer;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.time.Duration;
 import java.time.Instant;
 
 /**
@@ -22,7 +23,6 @@ public class ObservableClient<T> extends ObservableHost<T> {
     /**
      * Creates a client connected to a server located at host:port, and starts listening for requests sent from the server
      *
-     * @param host {@inheritDoc}
      * @param port {@inheritDoc}
      * @throws IOException {@inheritDoc}
      */
@@ -51,7 +51,20 @@ public class ObservableClient<T> extends ObservableHost<T> {
      * @throws IOException {@inheritDoc}
      */
     public ObservableClient(String host, int port, Serializer<T> serializer, Unserializer<T> unserializer) throws IOException {
-        super(new Socket(host, port), serializer, unserializer);
+        this(host, port, serializer, unserializer, NEVER_TIMEOUT);
+    }
+
+    /**
+     * Creates a client connected to a server located at host:port, and starts listening for requests sent from the server
+     *
+     * @param host         {@inheritDoc}
+     * @param port         {@inheritDoc}
+     * @param serializer   {@inheritDoc}
+     * @param unserializer {@inheritDoc}
+     * @throws IOException {@inheritDoc}
+     */
+    public ObservableClient(String host, int port, Serializer<T> serializer, Unserializer<T> unserializer, Duration timeout) throws IOException {
+        super(new Socket(host, port), serializer, unserializer, timeout);
     }
 
     @Override
@@ -92,6 +105,11 @@ public class ObservableClient<T> extends ObservableHost<T> {
         } catch (Exception e) {
             throw new Error(e);
         }
+    }
+
+    @Override
+    protected void handleHeartBeat() {
+        sendHeartBeat();
     }
 }
 

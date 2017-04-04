@@ -2,6 +2,7 @@ package chat_client;
 
 import util.net.ObservableClient;
 
+import java.time.Duration;
 import java.util.Scanner;
 
 /**
@@ -18,7 +19,8 @@ public class ChatClientMain {
                 HOSTNAME,
                 PORT,
                 ChatLog.CHAT_LOG_TEST_SERIALIZER,
-                ChatLog.CHAT_LOG_TEST_UNSERIALIZER);
+                ChatLog.CHAT_LOG_TEST_UNSERIALIZER,
+                Duration.ofSeconds(20));
         Scanner stdin = new Scanner(System.in);
         voogaClient.addListener(client -> System.out.print(CLEARSCREEN + client.getLast() + "\n\n>>  "));
         voogaClient.start();
