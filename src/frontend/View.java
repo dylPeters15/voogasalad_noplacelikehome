@@ -25,10 +25,16 @@ public class View extends BaseUIManager {
 	
 	
 	
+	/**
+	 * Notifies when GameState changes and displays the new GameState.
+	 */
 	public void update(){
 		
 	}
 	
+	/**
+	 * Sends requests to ClientController when the user makes any changes.
+	 */
 	private void instantiateListeners(){
 		
 	}
