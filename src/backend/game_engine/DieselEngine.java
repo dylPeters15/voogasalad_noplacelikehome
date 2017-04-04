@@ -4,16 +4,16 @@ import java.util.function.Consumer;
 
 import backend.player.Player;
 import backend.util.GameState;
-import util.net.Server;
+import util.net.ObservableServer;
 
 public class DieselEngine implements GameEngine{
 
-	private Server server;
+	private ObservableServer<GameState> server;
 	private Consumer<GameState> stateUpdateListener = this::checkRules;
 	
-	public DieselEngine(Server s){
+	public DieselEngine(ObservableServer<GameState> s){
 		server = s;
-		//server.addListener(stateUpdateListener);
+		server.addListener(stateUpdateListener);
 		server.start();
 	}
 	
