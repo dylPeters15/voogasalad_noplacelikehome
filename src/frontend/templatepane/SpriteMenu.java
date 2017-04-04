@@ -1,11 +1,12 @@
 /**
  * Visual unit that contains all CollapsibleLists and ListItems representing the Sprites available to build with.
  */
-package frontend;
+package frontend.templatepane;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import frontend.Displayable;
 import frontend.sprites.Sprite;
 import javafx.scene.Group;
 import javafx.scene.Node;

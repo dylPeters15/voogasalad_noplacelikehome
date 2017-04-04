@@ -6,6 +6,8 @@ package frontend;
 
 import frontend.sprites.Sprite;
 import frontend.sprites.Unit;
+import frontend.templatepane.SpriteMenu;
+import frontend.templatepane.UnitListItem;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
