@@ -1,8 +1,9 @@
-package frontend;
+package frontend.templatepane;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import frontend.Displayable;
 import frontend.sprites.Sprite;
 import frontend.sprites.SpriteCell;
 import frontend.sprites.Unit;
@@ -17,6 +18,11 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
+
+/**
+ * @author Faith Rodriguez
+ * Created 4/3/2017
+ */
 
 public class SpriteAddPane implements Displayable {
 

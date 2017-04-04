@@ -1,14 +1,19 @@
 /**
- * 
+ *
  */
 package frontend;
 
-import javafx.scene.Node;
 import backend.util.ImmutableGameState;
+import controller.Controller;
+import frontend.detailpane.DetailPane;
+import frontend.templatepane.TemplatePane;
+import frontend.toolspane.ToolsPane;
+import frontend.voogamenubar.VoogaMenuBar;
+import frontend.worldview.WorldView;
 
 /**
  * @author Stone Mathers, Dylan Peters
- * Created 4/3/2017
+ *         Created 4/3/2017
  */
 public class View extends BaseUIManager {
 

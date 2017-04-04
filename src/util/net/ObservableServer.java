@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.time.Clock;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.HashSet;
@@ -18,9 +19,9 @@ import java.util.HashSet;
  *
  * @param <T> The type of variable used to represent networked shared state.
  * @author Created by th174 on 4/1/2017.
- * @see Request,Modifier,Server,ServerThread,Client, Host , AbstractHost ,Listener
+ * @see Request,Modifier,ObservableServer,ObservableServer.ServerThread,ObservableClient,ObservableHost,AbstractObservableHost,Listener
  */
-public class Server<T> extends AbstractHost<T> {
+public class ObservableServer<T> extends AbstractObservableHost<T> {
     private final Collection<ServerThread> childThreads;
     private final ServerSocket serverSocket;
     private Instant mostRecentTimeStamp;
@@ -33,7 +34,7 @@ public class Server<T> extends AbstractHost<T> {
      * @param port         Port to listen on for new client connections
      * @throws Exception Thrown if ServerSocket could not be created, or if exception is thrown in serialization
      */
-    public Server(T initialState, int port) throws Exception {
+    public ObservableServer(T initialState, int port) throws Exception {
         this(initialState, port, NO_SERIALIZER, NO_UNSERIALIZER);
     }
 
@@ -46,8 +47,22 @@ public class Server<T> extends AbstractHost<T> {
      * @param unserializer Converts the Serializable form of the state back into its original form of type T
      * @throws Exception Thrown if ServerSocket could not be created, or if exception is thrown in serialization
      */
-    public Server(T initialState, int port, Serializer<T> serializer, Unserializer<T> unserializer) throws Exception {
-        super(serializer, unserializer);
+    public ObservableServer(T initialState, int port, Serializer<T> serializer, Unserializer<T> unserializer) throws Exception {
+        this(initialState, port, serializer, unserializer, NEVER_TIMEOUT);
+    }
+
+    /**
+     * Constructs an instance of VoogaServer
+     *
+     * @param initialState The initial networked shared state.
+     * @param port         Port to listen on for new client connections
+     * @param serializer   Converts the state to a Serializable form, so that it can be sent to the client
+     * @param unserializer Converts the Serializable form of the state back into its original form of type T
+     * @param timeout      Timeout duration for all connections to the client
+     * @throws Exception Thrown if ServerSocket could not be created, or if exception is thrown in serialization
+     */
+    public ObservableServer(T initialState, int port, Serializer<T> serializer, Unserializer<T> unserializer, Duration timeout) throws Exception {
+        super(serializer, unserializer, timeout);
         this.state = initialState;
         this.mostRecentTimeStamp = Instant.now(Clock.systemUTC());
         this.childThreads = new HashSet<>();
@@ -90,11 +105,22 @@ public class Server<T> extends AbstractHost<T> {
      * @return Returns true if state is sent successfully
      */
     @Override
-    public synchronized boolean send(T state) throws Exception {
+    protected synchronized boolean send(T state) {
         for (ServerThread e : childThreads) {
             e.send(state);
         }
         return isActive();
+    }
+
+    /**
+     * Sets the server's local state, then sends serialized version of the state to all clients.
+     *
+     * @param state New state object to be serialized and propagated across all servers and clients
+     * @return Returns true if state is sent successfully
+     */
+    public synchronized boolean sendAndApply(T state) {
+        this.state = state;
+        return send(state);
     }
 
     /**
@@ -104,27 +130,42 @@ public class Server<T> extends AbstractHost<T> {
      * @return Returns true if the requests were sent successfully
      */
     @Override
-    public synchronized boolean send(Modifier<T> modifier) throws Exception {
+    protected synchronized boolean send(Modifier<T> modifier) {
         for (ServerThread e : childThreads) {
             e.send(modifier);
         }
         return isActive();
     }
 
-    @Override
-    public synchronized void handle(T newState, Instant timeStamp) throws Exception {
-        if (checkTimeStamp(timeStamp)) {
-            state = newState;
-            send(newState);
+    /**
+     * Applies a modifier to the server's local state, then sends the modifier to all clients to be applied.
+     *
+     * @param modifier Request to be applied to the networked state on all clients.
+     * @return Returns true if the requests were sent successfully
+     */
+    public synchronized boolean sendAndApply(Modifier<T> modifier) {
+        try {
+            this.state = modifier.modify(state);
+            return send(modifier);
+        } catch (Exception e) {
+            throw new Error(e);
         }
     }
 
     @Override
-    public synchronized void handle(Modifier<T> stateModifier, Instant timeStamp) throws Exception {
+    public synchronized void handle(T newState, Instant timeStamp) {
         if (checkTimeStamp(timeStamp)) {
-            state = stateModifier.modify(getState());
-            send(stateModifier);
+            sendAndApply(newState);
         }
+        fireStateUpdatedEvent();
+    }
+
+    @Override
+    public synchronized void handle(Modifier<T> stateModifier, Instant timeStamp) {
+        if (checkTimeStamp(timeStamp)) {
+            sendAndApply(stateModifier);
+        }
+        fireStateUpdatedEvent();
     }
 
     @Override
@@ -143,32 +184,38 @@ public class Server<T> extends AbstractHost<T> {
      * This class listens to a client on a single socket and relays information between the main server and the client.
      *
      * @author Created by th174 on 4/1/2017.
-     * @see Request,Modifier,Server, util.net.ServerThread ,Client,AbstractHost,Host,Listener
+     * @see Request,Modifier, ObservableServer , util.net.ServerThread ,Client,AbstractHost,Host,Listener
      */
-    private class ServerThread extends Host<T> {
+    protected class ServerThread extends ObservableHost<T> {
         /**
          * @param parentServer Parent server creating this thread.
          * @param socket       Socket to listen on for client requests.
          * @throws Exception Thrown if socket is not open for reading and writing, or if an exception is thrown in serialization
          */
         private ServerThread(Socket socket) throws Exception {
-            super(socket, Server.this.getSerializer(), Server.this.getUnserializer());
+            super(socket, ObservableServer.this.getSerializer(), ObservableServer.this.getUnserializer(), ObservableServer.super.getTimeout());
+        }
+
+        @Override
+        public void start() throws IOException {
+            System.out.println("\nClient Connected:  " + getSocket());
             send(getState());
+            super.start();
         }
 
         @Override
         public T getState() {
-            return Server.this.getState();
+            return ObservableServer.this.getState();
         }
 
         @Override
-        public void handle(Modifier<T> modifier, Instant timeStamp) throws Exception {
-            Server.this.handle(modifier, timeStamp);
+        public void handle(Modifier<T> modifier, Instant timeStamp) {
+            ObservableServer.this.handle(modifier, timeStamp);
         }
 
         @Override
-        public void handle(T state, Instant timeStamp) throws Exception {
-            Server.this.handle(state, timeStamp);
+        public void handle(T state, Instant timeStamp) {
+            ObservableServer.this.handle(state, timeStamp);
         }
     }
 }

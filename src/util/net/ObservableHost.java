@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.Socket;
+import java.time.Duration;
 import java.time.Instant;
 
 /**
@@ -16,9 +17,9 @@ import java.time.Instant;
  *
  * @param <T> The type of variable used to represent network shared state.
  * @author Created by th174 on 4/2/2017.
- * @see Request,Modifier,Server, Server.ServerThread ,Client, Host , AbstractHost ,Listener
+ * @see Request,Modifier,ObservableServer,ObservableServer.ServerThread,ObservableClient,ObservableHost,AbstractObservableHost,Listener
  */
-public abstract class Host<T> extends AbstractHost<T> {
+public abstract class ObservableHost<T> extends AbstractObservableHost<T> {
     private final Socket socket;
     private final ObjectOutputStream outputStream;
 
@@ -28,7 +29,7 @@ public abstract class Host<T> extends AbstractHost<T> {
      * @param socket Socket to listen on for client requests.
      * @throws IOException Thrown if socket is not open for reading and writing.
      */
-    public Host(Socket socket) throws Exception {
+    public ObservableHost(Socket socket) throws Exception {
         this(socket, NO_SERIALIZER, NO_UNSERIALIZER);
     }
 
@@ -40,12 +41,25 @@ public abstract class Host<T> extends AbstractHost<T> {
      * @param unserializer Converts a Serializable form of a state into type T.
      * @throws IOException Thrown if socket is not open for reading and writing.
      */
-    public Host(Socket socket, Serializer<T> serializer, Unserializer<T> unserializer) throws IOException {
-        super(serializer, unserializer);
+    public ObservableHost(Socket socket, Serializer<T> serializer, Unserializer<T> unserializer) throws IOException {
+        this(socket, serializer, unserializer, NEVER_TIMEOUT);
+    }
+
+    /**
+     * Creates a new VoogaRemote server or client that listens on a socket for requests.
+     *
+     * @param socket       Socket to listen on for client requests.
+     * @param serializer   Converts a state of type T into a Serializable form to be sent over the network.
+     * @param unserializer Converts a Serializable form of a state into type T.
+     * @param timeout      {@inheritDoc}
+     * @throws IOException Thrown if socket is not open for reading and writing.
+     */
+    public ObservableHost(Socket socket, Serializer<T> serializer, Unserializer<T> unserializer, Duration timeout) throws IOException {
+        super(serializer, unserializer, timeout);
         this.socket = socket;
         this.outputStream = new ObjectOutputStream(socket.getOutputStream());
         this.outputStream.flush();
-        getSocket().setSoTimeout(DEFAULT_CONNECTION_TIMEOUT);
+        getSocket().setSoTimeout((int) getTimeout().toMillis());
     }
 
     /**
@@ -65,15 +79,16 @@ public abstract class Host<T> extends AbstractHost<T> {
      * @param request Request received from remote host.
      * @throws RuntimeException Thrown when an error occurs while unserializing the request, or when an error occurs in processing the request.
      */
-    protected synchronized void handleRequest(Request<? extends Serializable> request) {
+    private synchronized void handleRequest(Request<? extends Serializable> request) {
         try {
             if (Modifier.class.isAssignableFrom(request.getContentType())) {
                 handle((Modifier<T>) request.get(), request.getTimeStamp());
             } else {
                 handle(getUnserializer().unserialize(request.get()), request.getTimeStamp());
             }
+            fireStateUpdatedEvent();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new Error(e);
         }
     }
 
@@ -89,6 +104,12 @@ public abstract class Host<T> extends AbstractHost<T> {
         return socket;
     }
 
+    /**
+     * Sends a request to the remote host through the socket
+     *
+     * @param request Request to be send to remote host
+     * @return Returns true if request was sent successfully
+     */
     private boolean sendRequest(Request<? extends Serializable> request) {
         if (!isActive()) {
             return false;
@@ -108,18 +129,23 @@ public abstract class Host<T> extends AbstractHost<T> {
     }
 
     @Override
-    public abstract void handle(Modifier<T> modifier, Instant timeStamp) throws Exception;
+    protected abstract void handle(Modifier<T> modifier, Instant timeStamp);
 
     @Override
-    public abstract void handle(T state, Instant timeStamp) throws Exception;
+    protected abstract void handle(T state, Instant timeStamp);
 
     @Override
-    public boolean send(Modifier<T> modifier) throws Exception {
+    public boolean send(Modifier<T> modifier) {
         return sendRequest(new Request<>(modifier));
     }
 
     @Override
-    public boolean send(T state) throws Exception {
-        return sendRequest(new Request<>(getSerializer().serialize(state)));
+    public boolean send(T state) {
+        try {
+            return sendRequest(new Request<>(getSerializer().serialize(state)));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

@@ -6,9 +6,6 @@ import util.io.Unserializer;
 import java.io.IOException;
 import java.net.Socket;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.function.Consumer;
 
 /**
  * This class provides a simple implementation of a client that connects to a server with a given server name and port.
@@ -17,10 +14,9 @@ import java.util.function.Consumer;
  *
  * @param <T> The type of variable used to represent network shared state.
  * @author Created by th174 on 4/1/2017.
- * @see Request,Modifier,Server, Server.ServerThread ,Client, AbstractHost , Host ,Listener
+ * @see Request,Modifier,ObservableServer,ObservableServer.ServerThread,ObservableClient,ObservableHost,AbstractObservableHost,Listener
  */
-public class Client<T> extends Host<T> {
-    private final Collection<Consumer<T>> stateUpdateListeners;
+public class ObservableClient<T> extends ObservableHost<T> {
     private volatile T state;
 
     /**
@@ -30,7 +26,7 @@ public class Client<T> extends Host<T> {
      * @param port {@inheritDoc}
      * @throws IOException {@inheritDoc}
      */
-    public Client(int port) throws IOException {
+    public ObservableClient(int port) throws IOException {
         this(LOCALHOST, port, NO_SERIALIZER, NO_UNSERIALIZER);
     }
 
@@ -41,7 +37,7 @@ public class Client<T> extends Host<T> {
      * @param port {@inheritDoc}
      * @throws IOException {@inheritDoc}
      */
-    public Client(String host, int port) throws IOException {
+    public ObservableClient(String host, int port) throws IOException {
         this(host, port, NO_SERIALIZER, NO_UNSERIALIZER);
     }
 
@@ -54,9 +50,8 @@ public class Client<T> extends Host<T> {
      * @param unserializer {@inheritDoc}
      * @throws IOException {@inheritDoc}
      */
-    public Client(String host, int port, Serializer<T> serializer, Unserializer<T> unserializer) throws IOException {
+    public ObservableClient(String host, int port, Serializer<T> serializer, Unserializer<T> unserializer) throws IOException {
         super(new Socket(host, port), serializer, unserializer);
-        stateUpdateListeners = new ArrayList<>();
     }
 
     @Override
@@ -79,36 +74,11 @@ public class Client<T> extends Host<T> {
     }
 
     /**
-     * Notifies all currently registered observers of a value change.
-     */
-    protected void fireStateUpdatedEvent() {
-        stateUpdateListeners.forEach(e -> e.accept(getState()));
-    }
-
-    /**
-     * Adds a listener which will be notified whenever the local state is updated.
-     *
-     * @param stateUpdateListener The listener to register
-     */
-    public void addListener(Consumer<T> stateUpdateListener) {
-        stateUpdateListeners.add(stateUpdateListener);
-    }
-
-    /**
-     * Removes the given listener from the list of listeners, that are notified whenever the local state is updated.
-     *
-     * @param stateUpdateListener The listener to remove
-     */
-    public void removeListener(Consumer<T> stateUpdateListener) {
-        stateUpdateListeners.remove(stateUpdateListener);
-    }
-
-    /**
      * Sets the local state to be equal to the new network state.
      *
      * @param newState New state received from remote server.
      */
-    public void handle(T newState, Instant timeStamp) throws Exception {
+    public void handle(T newState, Instant timeStamp) {
         setState(newState);
     }
 
@@ -118,8 +88,12 @@ public class Client<T> extends Host<T> {
      * @param stateModifier State modifier received from remote server.
      * @throws Exception
      */
-    public void handle(Modifier<T> stateModifier, Instant timeStamp) throws Exception {
-        setState(stateModifier.modify(getState()));
+    public void handle(Modifier<T> stateModifier, Instant timeStamp) {
+        try {
+            setState(stateModifier.modify(getState()));
+        } catch (Exception e) {
+            throw new Error(e);
+        }
     }
 }
 
