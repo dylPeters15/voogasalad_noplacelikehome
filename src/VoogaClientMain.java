@@ -1,7 +1,3 @@
-/**
- * @author Created by th174 on 4/4/2017.
- */
-
 import frontend.UI;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -9,6 +5,9 @@ import javafx.stage.Stage;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+/**
+ * @author Created by th174 on 4/4/2017.
+ */
 public class VoogaClientMain extends Application {
 
     public static void main(String[] args) {
