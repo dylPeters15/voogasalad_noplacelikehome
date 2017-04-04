@@ -1,7 +1,7 @@
 /**
  * A cell within the frontend GridDisplay.
  */
-package frontend.grid;
+package frontend.worldview.grid;
 
 /**
  * @author Stone Mathers
