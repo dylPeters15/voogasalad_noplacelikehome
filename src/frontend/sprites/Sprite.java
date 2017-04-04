@@ -10,6 +10,7 @@ import frontend.Displayable;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
 
 /**
  * @author Stone Mathers
@@ -25,7 +26,7 @@ public interface Sprite extends Displayable {
 	/**
 	 * Determines what is done when a Sprite is clicked and dragged.
 	 */
-	void setOnDrag(EventHandler<ActionEvent> event);
+	void setOnDragDetected(EventHandler<MouseEvent> event);
 	
 	/**
 	 * @return List of SpriteCells composing the Sprite.
