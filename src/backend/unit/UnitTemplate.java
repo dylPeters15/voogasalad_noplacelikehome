@@ -28,7 +28,7 @@ public class UnitTemplate extends VoogaObject implements Unit {
     }
 
     public UnitTemplate(String unitTemplateName, double hitPoints, int movePoints, Faction faction, GridPattern movePattern, Map<Terrain, Integer> moveCosts, String unitTemplateDescription, String imgPath) {
-        this(unitTemplateName, hitPoints, movePoints, faction, movePattern, moveCosts, Collections.EMPTY_SET, Collections.EMPTY_SET, Collections.EMPTY_SET, Collections.EMPTY_SET, unitTemplateDescription, imgPath);
+        this(unitTemplateName, hitPoints, movePoints, faction, movePattern, moveCosts, Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), unitTemplateDescription, imgPath);
     }
 
     public UnitTemplate(String unitTemplateName, double hitPoints, int movePoints, Faction faction, GridPattern movePattern, Map<Terrain, Integer> moveCosts, Collection<ActiveAbility<VoogaObject>> activeAbilities, Collection<TriggeredAbility> triggeredAbilities, Collection<InteractionModifier<Double>> offensiveModifiers, Collection<InteractionModifier<Double>> defensiveModifiers, String unitDescription, String imgPath) {

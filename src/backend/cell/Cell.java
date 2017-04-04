@@ -40,7 +40,15 @@ public interface Cell {
         getOccupants().removeAll(units);
     }
 
-    Collection<CellEffect> getAbilities();
+    Collection<CellAbility> getAbilities();
+
+    default void addAbility(CellAbility cellEffect) {
+        getAbilities().add(cellEffect);
+    }
+
+    default void removeAbility(CellAbility cellEffect) {
+        getAbilities().remove(cellEffect);
+    }
 
     @NotNull
     Collection<UnitInstance> getOccupants();

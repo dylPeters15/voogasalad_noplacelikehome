@@ -3,11 +3,14 @@ package util.net;
 import util.io.Serializer;
 import util.io.Unserializer;
 
-import java.io.Serializable;
+import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 /**
@@ -19,13 +22,13 @@ import java.util.function.Consumer;
  *
  * @param <T> The type of variable used to represent network shared state.
  * @author Created by th174 on 4/2/2017.
- * @see Request,Modifier,ObservableServer,ObservableServer.ServerThread,ObservableClient,ObservableHost,AbstractObservableHost, RemoteListener
+ * @see Request,Modifier,ObservableServer,ObservableServer.ServerThread,ObservableClient,ObservableHost,AbstractObservableHost,RemoteListener
  */
 public abstract class AbstractObservableHost<T> {
     public static final Duration NEVER_TIMEOUT = Duration.ZERO;
     public static final String LOCALHOST = "127.0.0.1";
-    public static final Serializer NO_SERIALIZER = obj -> (Serializable) obj;
-    public static final Unserializer NO_UNSERIALIZER = obj -> obj;
+    private static final int THREAD_POOL_SIZE = 8;
+    private final ScheduledExecutorService executor;
     private final Serializer<T> serializer;
     private final Unserializer<T> unserializer;
     private final Collection<Consumer<T>> stateUpdateListeners;
@@ -35,7 +38,7 @@ public abstract class AbstractObservableHost<T> {
      * Creates an instance of an AbstractObservableHost
      */
     protected AbstractObservableHost() {
-        this(NO_SERIALIZER, NO_UNSERIALIZER);
+        this(Serializer.NONE, Unserializer.NONE);
     }
 
     /**
@@ -56,6 +59,7 @@ public abstract class AbstractObservableHost<T> {
         this.unserializer = unserializer;
         this.stateUpdateListeners = new ArrayList<>();
         this.timeout = timeout;
+        this.executor = Executors.newScheduledThreadPool(THREAD_POOL_SIZE);
     }
 
     /**
@@ -64,6 +68,14 @@ public abstract class AbstractObservableHost<T> {
      * @throws Exception Thrown if exception occurs in starting the host
      */
     public abstract void start() throws Exception;
+
+    protected void submitTask(Runnable task) {
+        executor.submit(task);
+    }
+
+    protected void scheduleTask(Runnable task, long initialDelay, long period, TimeUnit time) {
+        executor.scheduleAtFixedRate(task, initialDelay, period, time);
+    }
 
     /**
      * @return Returns the local state, which should match network shared state
@@ -112,6 +124,15 @@ public abstract class AbstractObservableHost<T> {
     public abstract boolean isActive();
 
     /**
+     * Gets the commitIndex of the most recently received message
+     *
+     * @return Returns current commitIndex
+     */
+    protected abstract int getCommitIndex();
+
+    protected abstract boolean validateRequest(Request<?> incomingRequest);
+
+    /**
      * @return Returns the amount time until the socket times out, in milliseconds
      */
     protected Duration getTimeout() {
@@ -155,5 +176,14 @@ public abstract class AbstractObservableHost<T> {
      */
     public void removeListener(Consumer<T> stateUpdateListener) {
         stateUpdateListeners.remove(stateUpdateListener);
+    }
+
+    /**
+     * Shuts down all activity on this host
+     *
+     * @throws IOException Thrown if I/O errors while shutting down this host
+     */
+    public void shutDown() throws IOException {
+        executor.shutdown();
     }
 }

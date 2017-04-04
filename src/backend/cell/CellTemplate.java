@@ -18,43 +18,43 @@ public class CellTemplate extends VoogaObject implements Cell, Template<CellInst
     public static final CellTemplate BASIC_HEXAGONAL_WATER = new CellTemplate("Basic Hexagonal Water Cell", Shape.HEXAGONAL, Terrain.WATER);
     public static final CellTemplate BASIC_HEXAGONAL_MOUNTAIN = new CellTemplate("Basic Hexagonal Mountain Cell", Shape.HEXAGONAL, Terrain.MOUNTAIN);
     public static final CellTemplate BASIC_HEXAGONAL_FORTIFIED = new CellTemplate("Basic Hexagonal Fortified Cell", Shape.HEXAGONAL, Terrain.FORTIFIED);
-    public static final CellTemplate HEALING_HEXAGONAL_EMPTY = new CellTemplate("Healing Hexagonal Empty Cell", Shape.HEXAGONAL, Terrain.EMPTY, CellEffect.FULL_HEAL);
-    public static final CellTemplate HEALING_HEXAGONAL_FLAT = new CellTemplate("Healing Hexagonal Flat Cell", Shape.HEXAGONAL, Terrain.FLAT, CellEffect.FULL_HEAL);
-    public static final CellTemplate HEALING_HEXAGONAL_FOREST = new CellTemplate("Healing Hexagonal Forest Cell", Shape.HEXAGONAL, Terrain.FOREST, CellEffect.FULL_HEAL);
-    public static final CellTemplate HEALING_HEXAGONAL_WATER = new CellTemplate("Healing Hexagonal Water Cell", Shape.HEXAGONAL, Terrain.WATER, CellEffect.FULL_HEAL);
-    public static final CellTemplate HEALING_HEXAGONAL_MOUNTAIN = new CellTemplate("Healing Hexagonal Mountain Cell", Shape.HEXAGONAL, Terrain.MOUNTAIN, CellEffect.FULL_HEAL);
-    public static final CellTemplate HEALING_HEXAGONAL_FORTIFIED = new CellTemplate("Healing Hexagonal Fortified Cell", Shape.HEXAGONAL, Terrain.FORTIFIED, CellEffect.FULL_HEAL);
+    public static final CellTemplate HEALING_HEXAGONAL_EMPTY = new CellTemplate("Healing Hexagonal Empty Cell", Shape.HEXAGONAL, Terrain.EMPTY, CellAbility.FULL_HEAL);
+    public static final CellTemplate HEALING_HEXAGONAL_FLAT = new CellTemplate("Healing Hexagonal Flat Cell", Shape.HEXAGONAL, Terrain.FLAT, CellAbility.FULL_HEAL);
+    public static final CellTemplate HEALING_HEXAGONAL_FOREST = new CellTemplate("Healing Hexagonal Forest Cell", Shape.HEXAGONAL, Terrain.FOREST, CellAbility.FULL_HEAL);
+    public static final CellTemplate HEALING_HEXAGONAL_WATER = new CellTemplate("Healing Hexagonal Water Cell", Shape.HEXAGONAL, Terrain.WATER, CellAbility.FULL_HEAL);
+    public static final CellTemplate HEALING_HEXAGONAL_MOUNTAIN = new CellTemplate("Healing Hexagonal Mountain Cell", Shape.HEXAGONAL, Terrain.MOUNTAIN, CellAbility.FULL_HEAL);
+    public static final CellTemplate HEALING_HEXAGONAL_FORTIFIED = new CellTemplate("Healing Hexagonal Fortified Cell", Shape.HEXAGONAL, Terrain.FORTIFIED, CellAbility.FULL_HEAL);
     public static final CellTemplate BASIC_SQUARE_EMPTY = new CellTemplate("Basic Square Empty Cell", Shape.SQUARE, Terrain.EMPTY);
     public static final CellTemplate BASIC_SQUARE_FLAT = new CellTemplate("Basic Square Flat Cell", Shape.SQUARE, Terrain.FLAT);
     public static final CellTemplate BASIC_SQUARE_FOREST = new CellTemplate("Basic Square Forest Cell", Shape.SQUARE, Terrain.FOREST);
     public static final CellTemplate BASIC_SQUARE_WATER = new CellTemplate("Basic Square Water Cell", Shape.SQUARE, Terrain.WATER);
     public static final CellTemplate BASIC_SQUARE_MOUNTAIN = new CellTemplate("Basic Square Mountain Cell", Shape.SQUARE, Terrain.MOUNTAIN);
     public static final CellTemplate BASIC_SQUARE_FORTIFIED = new CellTemplate("Basic Square Fortified Cell", Shape.SQUARE, Terrain.FORTIFIED);
-    public static final CellTemplate STRONG_ATTACK_SQUARE_MOUNTAIN = new CellTemplate("Strong Attack Square Cell", Shape.SQUARE, Terrain.MOUNTAIN, CellEffect.STRONG_ATTACK);
-    public static final CellTemplate STRONG_ATTACK_HEXAGON_MOUNTAIN = new CellTemplate("Strong Attack Square Cell", Shape.HEXAGONAL, Terrain.MOUNTAIN, CellEffect.STRONG_ATTACK);
+    public static final CellTemplate STRONG_ATTACK_SQUARE_MOUNTAIN = new CellTemplate("Strong Attack Square Cell", Shape.SQUARE, Terrain.MOUNTAIN, CellAbility.STRONG_ATTACK);
+    public static final CellTemplate STRONG_ATTACK_HEXAGON_MOUNTAIN = new CellTemplate("Strong Attack Square Cell", Shape.HEXAGONAL, Terrain.MOUNTAIN, CellAbility.STRONG_ATTACK);
 
     private final Collection<UnitInstance> initialOccupants;
-    private final List<CellEffect> abilities;
+    private final List<CellAbility> abilities;
     private Shape shape;
     private Terrain terrain;
 
-    public CellTemplate(String name, Shape shape, Terrain terrain, CellEffect... abilities) {
+    public CellTemplate(String name, Shape shape, Terrain terrain, CellAbility... abilities) {
         this(name, shape, terrain, terrain.getImgPath(), abilities);
     }
 
-    public CellTemplate(String name, Shape shape, Terrain terrain, Collection<CellEffect> abilities) {
+    public CellTemplate(String name, Shape shape, Terrain terrain, Collection<CellAbility> abilities) {
         this(name, shape, terrain, terrain.getImgPath(), abilities);
     }
 
-    public CellTemplate(String name, Shape shape, Terrain terrain, String imgPath, CellEffect... abilities) {
+    public CellTemplate(String name, Shape shape, Terrain terrain, String imgPath, CellAbility... abilities) {
         this(name, shape, terrain, imgPath, Arrays.asList(abilities));
     }
 
-    public CellTemplate(String name, Shape shape, Terrain terrain, String imgPath, Collection<CellEffect> abilities) {
+    public CellTemplate(String name, Shape shape, Terrain terrain, String imgPath, Collection<CellAbility> abilities) {
         this(name, shape, terrain, name, imgPath, abilities, Collections.emptyList());
     }
 
-    public CellTemplate(String name, Shape shape, Terrain terrain, String description, String imgPath, Collection<CellEffect> abilities, Collection<UnitInstance> initialOccupants) {
+    public CellTemplate(String name, Shape shape, Terrain terrain, String description, String imgPath, Collection<CellAbility> abilities, Collection<UnitInstance> initialOccupants) {
         super(name, description, imgPath);
         this.shape = shape;
         this.terrain = terrain;
@@ -66,11 +66,11 @@ public class CellTemplate extends VoogaObject implements Cell, Template<CellInst
         return createInstance(coordinateTuple, Collections.emptyList());
     }
 
-    public CellInstance createInstance(CoordinateTuple coordinateTuple, Collection<CellEffect> cellAbilities) {
+    public CellInstance createInstance(CoordinateTuple coordinateTuple, Collection<CellAbility> cellAbilities) {
         return createInstance(coordinateTuple, cellAbilities, Collections.emptyList());
     }
 
-    public CellInstance createInstance(CoordinateTuple coordinateTuple, Collection<CellEffect> cellAbilities, Collection<UnitInstance> initialOccupants) {
+    public CellInstance createInstance(CoordinateTuple coordinateTuple, Collection<CellAbility> cellAbilities, Collection<UnitInstance> initialOccupants) {
         return new CellInstance(coordinateTuple, this, cellAbilities, initialOccupants);
     }
 
@@ -98,7 +98,7 @@ public class CellTemplate extends VoogaObject implements Cell, Template<CellInst
     }
 
     @Override
-    public List<CellEffect> getAbilities() {
+    public List<CellAbility> getAbilities() {
         return abilities;
     }
 

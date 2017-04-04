@@ -1,6 +1,6 @@
 package backend.unit.properties;
 
-import backend.cell.CellEffect;
+import backend.cell.CellAbility;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 public interface Ability {
     static Collection<Ability> getPredefinedAbilities() {
         return Stream.of(
-                CellEffect.getPredefinedCellEffects(),
+                CellAbility.getPredefinedCellEffects(),
                 ActiveAbility.getPredefinedActiveAbilities(),
                 InteractionModifier.getPredefinedInteractionModifiers(),
                 TriggeredAbility.getPredefinedTriggeredAbilities())

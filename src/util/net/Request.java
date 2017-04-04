@@ -14,11 +14,13 @@ import java.time.format.FormatStyle;
  *
  * @param <T> The type of the content contained in the request.
  * @author Created by th174 on 4/2/2017.
- * @see Request,Modifier,ObservableServer,ObservableServer.ServerThread,ObservableClient,ObservableHost,AbstractObservableHost, RemoteListener
+ * @see Request,Modifier,ObservableServer,ObservableServer.ServerThread,ObservableClient,ObservableHost,AbstractObservableHost,RemoteListener
  */
 public final class Request<T extends Serializable> implements Serializable {
+    private static final Serializable HEARTBEAT = null;
     private final T content;
     private final Instant timeStamp;
+    private final int commitIndex;
 
     /**
      * Creates a new request with content and a timestamp of the creation time.
@@ -26,8 +28,23 @@ public final class Request<T extends Serializable> implements Serializable {
      * @param content Content of request
      */
     public Request(T content) {
+        this(content, 0);
+    }
+
+    /**
+     * Creates a new request with content and a timestamp of the creation time.
+     *
+     * @param content     Content of request
+     * @param commitIndex commitIndex of the sender of this request
+     */
+    public Request(T content, int commitIndex) {
         this.content = content;
         this.timeStamp = Instant.now(Clock.systemUTC());
+        this.commitIndex = commitIndex;
+    }
+
+    public static Request<?> heartbeatRequest(int commitIndex) {
+        return new Request<>(HEARTBEAT, commitIndex);
     }
 
     /**
@@ -49,6 +66,13 @@ public final class Request<T extends Serializable> implements Serializable {
      */
     public Instant getTimeStamp() {
         return timeStamp;
+    }
+
+    /**
+     * @return Returns the commitIndex that this Request was sent with
+     */
+    public int getCommitIndex() {
+        return commitIndex;
     }
 
     @Override

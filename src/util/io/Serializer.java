@@ -9,6 +9,7 @@ import java.io.Serializable;
  */
 @FunctionalInterface
 public interface Serializer<T> {
+    Serializer NONE = obj -> (Serializable) obj;
     /**
      * @param obj Object to be converted to Serializable form
      * @return Serializable form of obj

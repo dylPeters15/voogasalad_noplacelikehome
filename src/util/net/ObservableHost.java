@@ -17,11 +17,12 @@ import java.time.Instant;
  *
  * @param <T> The type of variable used to represent network shared state.
  * @author Created by th174 on 4/2/2017.
- * @see Request,Modifier,ObservableServer,ObservableServer.ServerThread,ObservableClient,ObservableHost,AbstractObservableHost, RemoteListener
+ * @see Request,Modifier,ObservableServer,ObservableServer.ServerThread,ObservableClient,ObservableHost,AbstractObservableHost,RemoteListener
  */
 public abstract class ObservableHost<T> extends AbstractObservableHost<T> {
     private final Socket socket;
     private final ObjectOutputStream outputStream;
+    private volatile int commitIndex;
 
     /**
      * Creates a new VoogaRemote server or client that listens on a socket for requests.
@@ -30,7 +31,7 @@ public abstract class ObservableHost<T> extends AbstractObservableHost<T> {
      * @throws IOException Thrown if socket is not open for reading and writing.
      */
     public ObservableHost(Socket socket) throws Exception {
-        this(socket, NO_SERIALIZER, NO_UNSERIALIZER);
+        this(socket, Serializer.NONE, Unserializer.NONE);
     }
 
     /**
@@ -68,7 +69,7 @@ public abstract class ObservableHost<T> extends AbstractObservableHost<T> {
      * @throws IOException Thrown in socket is not open for listening
      */
     public void start() throws IOException {
-        new RemoteListener(socket, this::handleRequest).start();
+        submitTask(new RemoteListener(socket, this::handleRequest));
     }
 
     /**
@@ -80,16 +81,33 @@ public abstract class ObservableHost<T> extends AbstractObservableHost<T> {
      * @throws RuntimeException Thrown when an error occurs while unserializing the request, or when an error occurs in processing the request.
      */
     private synchronized void handleRequest(Request<? extends Serializable> request) {
-        try {
-            if (Modifier.class.isAssignableFrom(request.getContentType())) {
-                handle((Modifier<T>) request.get(), request.getTimeStamp());
-            } else {
-                handle(getUnserializer().unserialize(request.get()), request.getTimeStamp());
+        if (validateRequest(request)) {
+            try {
+                if (Modifier.class.isAssignableFrom(request.getContentType())) {
+                    handle((Modifier<T>) request.get(), request.getTimeStamp());
+                } else {
+                    handle(getUnserializer().unserialize(request.get()), request.getTimeStamp());
+                }
+                fireStateUpdatedEvent();
+            } catch (Exception e) {
+                throw new Error(e);
             }
-            fireStateUpdatedEvent();
-        } catch (Exception e) {
-            throw new Error(e);
         }
+    }
+
+    @Override
+    protected boolean validateRequest(Request<?> incomingRequest) {
+        if (incomingRequest.getCommitIndex() >= this.commitIndex) {
+            commitIndex = incomingRequest.getCommitIndex();
+            System.out.println(commitIndex);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    protected int getCommitIndex() {
+        return commitIndex;
     }
 
     @Override
@@ -136,16 +154,22 @@ public abstract class ObservableHost<T> extends AbstractObservableHost<T> {
 
     @Override
     public boolean send(Modifier<T> modifier) {
-        return sendRequest(new Request<>(modifier));
+        return sendRequest(new Request<>(modifier, getCommitIndex()));
     }
 
     @Override
     public boolean send(T state) {
         try {
-            return sendRequest(new Request<>(getSerializer().serialize(state)));
+            return sendRequest(new Request<>(getSerializer().serialize(state), getCommitIndex()));
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
+    }
+
+    @Override
+    public void shutDown() throws IOException {
+        super.shutDown();
+        socket.close();
     }
 }

@@ -27,7 +27,7 @@ public class ObservableClient<T> extends ObservableHost<T> {
      * @throws IOException {@inheritDoc}
      */
     public ObservableClient(int port) throws IOException {
-        this(LOCALHOST, port, NO_SERIALIZER, NO_UNSERIALIZER);
+        this(LOCALHOST, port, Serializer.NONE, Unserializer.NONE);
     }
 
     /**
@@ -38,7 +38,7 @@ public class ObservableClient<T> extends ObservableHost<T> {
      * @throws IOException {@inheritDoc}
      */
     public ObservableClient(String host, int port) throws IOException {
-        this(host, port, NO_SERIALIZER, NO_UNSERIALIZER);
+        this(host, port, Serializer.NONE, Unserializer.NONE);
     }
 
     /**
@@ -70,7 +70,6 @@ public class ObservableClient<T> extends ObservableHost<T> {
      */
     protected void setState(T state) {
         this.state = state;
-        fireStateUpdatedEvent();
     }
 
     /**
@@ -86,7 +85,6 @@ public class ObservableClient<T> extends ObservableHost<T> {
      * Applies the state modifier to the local state in order to stay in sync with the network state.
      *
      * @param stateModifier State modifier received from remote server.
-     * @throws Exception
      */
     public void handle(Modifier<T> stateModifier, Instant timeStamp) {
         try {

@@ -5,7 +5,7 @@ import javafx.beans.Observable;
 
 import java.util.*;
 
-//TODO Just replace this with ModifiableObservableListBase?
+//TODO Just replace this with ModifiableObservableListBase? It supports ListChangeListeners instead of just InvalidationListeners, and has all the list methods too
 public class ObservableQueue<E> implements Queue<E>, Observable {
 
 	Collection<InvalidationListener> listeners;

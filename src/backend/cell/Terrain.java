@@ -10,7 +10,7 @@ import java.util.Collection;
  */
 public class Terrain extends VoogaObject {
     public static final int IMPASSABLE = Integer.MAX_VALUE;
-    //TODO: ResourceBundlify this shit
+    //TODO: ResourceBundlify this
     public static final Terrain EMPTY = new Terrain("Empty", IMPASSABLE, (InteractionModifier<Double>) InteractionModifier.NO_EFFECT, "Literally nothing", "black_void_of_the_abyss.png");
     public static final Terrain FLAT = new Terrain("Flat", 1, new InteractionModifier<>("Default Flat Terrain Defense", (originalValue, agent, target, game) -> Math.random() < .7 ? originalValue : 0, "Units have 30% evasion on Flat terrain by default."), "Open, flat, land that offers little defensive cover, but allows for easy movement.", "grassy_plain.png");
     public static final Terrain FOREST = new Terrain("Forest", 2, new InteractionModifier<>("Default Forest Terrain Defense", (originalValue, agent, target, game) -> Math.random() < .4 ? originalValue : 0, "Units have 60% evasion on Forest terrain by default."), "Thick forest that offers plenty of cover, but makes navigating difficult.", "forest.png");

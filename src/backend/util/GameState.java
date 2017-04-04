@@ -16,7 +16,6 @@ import java.util.function.Predicate;
  */
 
 public abstract class GameState implements XMLSerializable, MutableGameState {
-
     private Collection<ResultQuadPredicate> currentObjectives;
     private Map<Event, List<BiConsumer<Player, ImmutableGameState>>> turnActions;
     private Optional<List<Predicate<Player>>> turnRequirements;
