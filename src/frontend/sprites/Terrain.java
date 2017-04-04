@@ -11,6 +11,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
 
 /**
  * @author Stone Mathers
@@ -31,7 +32,7 @@ public class Terrain implements Sprite {
 	}
 
 	@Override
-	public void setOnDrag(EventHandler<ActionEvent> event) {
+	public void setOnDragDetected(EventHandler<MouseEvent> event) {
 		// TODO Auto-generated method stub
 		
 	}

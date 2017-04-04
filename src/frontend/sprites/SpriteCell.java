@@ -3,7 +3,7 @@
  */
 package frontend.sprites;
 
-import frontend.grid.Coordinates;
+import frontend.worldview.grid.Coordinates;
 
 /**
  * @author Stone Mathers

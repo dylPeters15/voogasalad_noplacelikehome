@@ -9,6 +9,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
 
 /**
  * @author Stone Mathers
@@ -38,7 +39,7 @@ public class Unit implements Sprite {
 	 * @see frontend.sprites.Sprite#setOnDrag()
 	 */
 	@Override
-	public void setOnDrag(EventHandler<ActionEvent> event) {
+	public void setOnDragDetected(EventHandler<MouseEvent> event) {
 		// TODO Auto-generated method stub
 
 	}
