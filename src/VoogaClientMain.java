@@ -1,4 +1,4 @@
-import util.net.Client;
+import util.net.ObservableClient;
 
 import java.util.Scanner;
 
@@ -12,13 +12,13 @@ public class VoogaClientMain {
     public static final String CLEARSCREEN = "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
 
     public static void main(String[] args) throws Exception {
-        Client<SimpleChatLogTest> voogaClient = new Client<>(
+        ObservableClient<SimpleChatLogTest> voogaClient = new ObservableClient<>(
                 HOSTNAME,
                 PORT,
                 SimpleChatLogTest.CHAT_LOG_TEST_SERIALIZER,
                 SimpleChatLogTest.CHAT_LOG_TEST_UNSERIALIZER);
         Scanner stdin = new Scanner(System.in);
-        voogaClient.addListener(state -> System.out.print(CLEARSCREEN + state.getLast() + "\n\n>>  "));
+        voogaClient.addListener(client -> System.out.print(CLEARSCREEN + client.getLast() + "\n\n>>  "));
         voogaClient.start();
         while (voogaClient.isActive()) {
             String input = stdin.nextLine();

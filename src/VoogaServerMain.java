@@ -1,4 +1,10 @@
-import util.net.Server;
+import util.net.ObservableServer;
+
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 
 /**
  * @author Created by th174 on 3/30/2017.
@@ -6,21 +12,18 @@ import util.net.Server;
 public class VoogaServerMain {
     public static final int PORT = 10023;
 
-
     public static void main(String[] args) throws Exception {
-        Server<SimpleChatLogTest> voogaServer = new Server<>(
+        ObservableServer<SimpleChatLogTest> voogaServer = new ObservableServer<>(
                 new SimpleChatLogTest(),
                 PORT,
                 SimpleChatLogTest.CHAT_LOG_TEST_SERIALIZER,
                 SimpleChatLogTest.CHAT_LOG_TEST_UNSERIALIZER);
+        voogaServer.addListener(VoogaServerMain::printNewRequest);
+//        voogaServer.addListener(e -> voogaServer.sendAndApply(simpleChatLogTest -> simpleChatLogTest.appendMessage("Server says hello! ", "SERVER")));
         voogaServer.start();
-        while (!voogaServer.isActive()) {
-            Thread.sleep(2000);
-            System.out.println("No clients yet.");
-        }
-        for (int i = 0; voogaServer.isActive(); i++) {
-            System.out.println(voogaServer.getState());
-            Thread.sleep(5000);
-        }
+    }
+
+    private static void printNewRequest(SimpleChatLogTest simpleChatLogTest) {
+        System.out.println("Request received from client:\n\t@" + Instant.now(Clock.systemUTC()).atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)));
     }
 }
