@@ -55,7 +55,7 @@ public class ObservableQueue<E> implements Queue<E>, Observable {
 
 	@Override
 	public boolean remove(Object o) {
-		if (elements.remove(o)){
+		if (elements.remove(o)) {
 			notifyListeners();
 			return true;
 		}
@@ -69,7 +69,7 @@ public class ObservableQueue<E> implements Queue<E>, Observable {
 
 	@Override
 	public boolean addAll(Collection<? extends E> c) {
-		if (elements.addAll(c)){
+		if (elements.addAll(c)) {
 			notifyListeners();
 			return true;
 		}
@@ -78,7 +78,7 @@ public class ObservableQueue<E> implements Queue<E>, Observable {
 
 	@Override
 	public boolean removeAll(Collection<?> c) {
-		if (elements.removeAll(c)){
+		if (elements.removeAll(c)) {
 			notifyListeners();
 			return true;
 		}
@@ -87,7 +87,7 @@ public class ObservableQueue<E> implements Queue<E>, Observable {
 
 	@Override
 	public boolean retainAll(Collection<?> c) {
-		if (elements.retainAll(c)){
+		if (elements.retainAll(c)) {
 			notifyListeners();
 			return true;
 		}
@@ -98,14 +98,14 @@ public class ObservableQueue<E> implements Queue<E>, Observable {
 	public void clear() {
 		int sizeBeforeClear = elements.size();
 		elements.clear();
-		if (sizeBeforeClear > 0){
+		if (sizeBeforeClear > 0) {
 			notifyListeners();
 		}
 	}
 
 	@Override
 	public boolean add(E e) {
-		if (elements.add(e)){
+		if (elements.add(e)) {
 			notifyListeners();
 			return true;
 		}
@@ -114,7 +114,7 @@ public class ObservableQueue<E> implements Queue<E>, Observable {
 
 	@Override
 	public boolean offer(E e) {
-		if (elements.add(e)){
+		if (elements.add(e)) {
 			notifyListeners();
 			return true;
 		}
@@ -123,7 +123,7 @@ public class ObservableQueue<E> implements Queue<E>, Observable {
 
 	@Override
 	public E remove() {
-		if (size() == 0){
+		if (size() == 0) {
 			throw new NoSuchElementException();
 		}
 		return elements.remove(0);
@@ -131,7 +131,7 @@ public class ObservableQueue<E> implements Queue<E>, Observable {
 
 	@Override
 	public E poll() {
-		if (size() == 0){
+		if (size() == 0) {
 			return null;
 		}
 		return elements.remove(0);
@@ -139,7 +139,7 @@ public class ObservableQueue<E> implements Queue<E>, Observable {
 
 	@Override
 	public E element() {
-		if (size() == 0){
+		if (size() == 0) {
 			throw new NoSuchElementException();
 		}
 		return elements.get(0);
@@ -147,7 +147,7 @@ public class ObservableQueue<E> implements Queue<E>, Observable {
 
 	@Override
 	public E peek() {
-		if (size() == 0){
+		if (size() == 0) {
 			return null;
 		}
 		return elements.get(0);
@@ -162,9 +162,20 @@ public class ObservableQueue<E> implements Queue<E>, Observable {
 	public void removeListener(InvalidationListener listener) {
 		listeners.remove(listener);
 	}
-	
-	private void notifyListeners(){
-		for (InvalidationListener listener : listeners){
+
+	public void passTo(ObservableQueue<E> other) {
+		addListener(new InvalidationListener() {
+			@Override
+			public void invalidated(Observable observable) {
+				while (size() > 0) {
+					other.add(poll());
+				}
+			}
+		});
+	}
+
+	private void notifyListeners() {
+		for (InvalidationListener listener : listeners) {
 			listener.invalidated(this);
 		}
 	}
