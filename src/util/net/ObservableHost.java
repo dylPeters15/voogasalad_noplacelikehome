@@ -17,7 +17,7 @@ import java.time.Instant;
  *
  * @param <T> The type of variable used to represent network shared state.
  * @author Created by th174 on 4/2/2017.
- * @see Request,Modifier,ObservableServer,ObservableServer.ServerThread,ObservableClient,ObservableHost,AbstractObservableHost,Listener
+ * @see Request,Modifier,ObservableServer,ObservableServer.ServerThread,ObservableClient,ObservableHost,AbstractObservableHost, RemoteListener
  */
 public abstract class ObservableHost<T> extends AbstractObservableHost<T> {
     private final Socket socket;
@@ -68,7 +68,7 @@ public abstract class ObservableHost<T> extends AbstractObservableHost<T> {
      * @throws IOException Thrown in socket is not open for listening
      */
     public void start() throws IOException {
-        new Listener(socket, this::handleRequest).start();
+        new RemoteListener(socket, this::handleRequest).start();
     }
 
     /**

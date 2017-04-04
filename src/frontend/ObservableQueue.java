@@ -1,15 +1,11 @@
 package frontend;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Queue;
-
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 
+import java.util.*;
+
+//TODO Just replace this with ModifiableObservableListBase?
 public class ObservableQueue<E> implements Queue<E>, Observable {
 
 	Collection<InvalidationListener> listeners;

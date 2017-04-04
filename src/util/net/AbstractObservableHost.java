@@ -19,7 +19,7 @@ import java.util.function.Consumer;
  *
  * @param <T> The type of variable used to represent network shared state.
  * @author Created by th174 on 4/2/2017.
- * @see Request,Modifier,ObservableServer,ObservableServer.ServerThread,ObservableClient,ObservableHost,AbstractObservableHost,Listener
+ * @see Request,Modifier,ObservableServer,ObservableServer.ServerThread,ObservableClient,ObservableHost,AbstractObservableHost, RemoteListener
  */
 public abstract class AbstractObservableHost<T> {
     public static final Duration NEVER_TIMEOUT = Duration.ZERO;
