@@ -1,7 +1,9 @@
 /**
  * ListItems are visual items that are to be displayed in a list.
  */
-package frontend;
+package frontend.templatepane;
+
+import frontend.Displayable;
 
 /**
  * @author Stone Mathers
