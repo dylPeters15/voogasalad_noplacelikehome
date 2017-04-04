@@ -1,10 +1,14 @@
 package backend.util;
 
+import backend.game_engine.ResultQuadPredicate;
 import backend.grid.MutableGrid;
 import backend.player.Player;
+import backend.player.Team;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.function.Predicate;
 
 public interface ImmutableGameState {
     List<Player> getPlayers();
@@ -12,6 +16,8 @@ public interface ImmutableGameState {
     MutableGrid getGrid();
 
     Player getCurrentPlayer();
+    
+    Collection<Team> getTeams();
 
     void messagePlayer(Player from, Player to, String message);
 
@@ -26,4 +32,8 @@ public interface ImmutableGameState {
     int getTurnNumber();
 
     void addEventHandler(BiConsumer<Player, ImmutableGameState> eventListener, Event event);
+
+	void addObjective(ResultQuadPredicate winCondition);
+
+	void addTurnRequirements(Predicate<Player> requirement);
 }
