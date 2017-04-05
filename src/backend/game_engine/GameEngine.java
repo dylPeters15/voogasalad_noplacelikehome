@@ -1,12 +1,14 @@
 package backend.game_engine;
 
+import backend.player.Player;
+
 /**
  * @author Alexander Zapata
  */
 public interface GameEngine {
 
-    //All the checkers.
-
+	void messagePlayer(Player from, Player to, String message);
+	
     void restart();
 
     void save();

@@ -4,14 +4,15 @@
  */
 package frontend.worldview.grid;
 
-import frontend.Displayable;
+import backend.grid.ImmutableGrid;
+import frontend.BaseUIManager;
 import frontend.sprites.Sprite;
 
 /**
  * @author Stone Mathers
  * Created 3/29/2017
  */
-public interface GridDisplay extends Displayable {
+public abstract class GridDisplay extends BaseUIManager {
 	
 	/**
 	 * Place a Sprite in the cell that contains the given coordinates.
@@ -19,11 +20,10 @@ public interface GridDisplay extends Displayable {
 	 * @param Sprite to be placed in the cell.
 	 * @param Coordinates that the mouse is located at.
 	 */
-	void placeInCell(Sprite sprite, Coordinates mouseCoord);
+	public abstract void placeInCell(Sprite sprite, Coordinates mouseCoord);
 	
 	/**
-	 * Updates all cells in the grid. This method will generally access the grid in the game engine's model
-	 * and make any changes that have resulted from an action within the game.
+	 * Updates all cells in the grid using the given ImmutableGrid, which is obtained from a GameState.
 	 */
-	void updateCells();
+	public abstract void updateCells(ImmutableGrid grid);
 }
