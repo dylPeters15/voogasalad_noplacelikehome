@@ -15,7 +15,7 @@ import java.util.function.Consumer;
  * It can listen to a socket's input stream and send requests to a socket's output stream.
  *
  * @author Created by th174 on 4/5/2017.
- * @see Request,Modifier,ObservableServer,ObservableClient,ObservableHostBase,SocketConnection
+ * @see Request,Modifier,ObservableServer,ObservableClient, ObservableHost,SocketConnection
  */
 public class SocketConnection {
     private final Socket socket;
@@ -34,7 +34,7 @@ public class SocketConnection {
             this.outputStream = new ObjectOutputStream(socket.getOutputStream());
             this.outputStream.flush();
         } catch (Exception e) {
-            throw new ObservableHostBase.RemoteConnectionException(e);
+            throw new ObservableHost.RemoteConnectionException(e);
         }
     }
 
@@ -49,9 +49,9 @@ public class SocketConnection {
                 Request request = (Request<? extends Serializable>) inputStream.readObject();
                 requestHandler.accept(request);
             }
-        } catch (SocketException e) {
+        } catch (IOException e) {
         } catch (Exception e) {
-            throw new ObservableHostBase.RemoteConnectionException(e);
+            throw new ObservableHost.RemoteConnectionException(e);
         } finally {
             shutDown();
         }
@@ -80,7 +80,7 @@ public class SocketConnection {
             socket.close();
             System.out.println("Connection closed: " + socket);
         } catch (IOException e) {
-            throw new ObservableHostBase.RemoteConnectionException(e);
+            throw new ObservableHost.RemoteConnectionException(e);
         }
     }
 

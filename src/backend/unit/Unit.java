@@ -2,6 +2,7 @@ package backend.unit;
 
 import backend.cell.Terrain;
 import backend.unit.properties.*;
+import backend.util.TriggeredEffectInstance;
 import backend.util.VoogaObject;
 
 import java.util.Collection;
@@ -74,21 +75,21 @@ public interface Unit {
         getActiveAbilities().remove(abilityName);
     }
 
-    Map<String, TriggeredAbility> getTriggeredAbilities();
+    Map<String, TriggeredEffectInstance> getTriggeredAbilities();
 
-    default Collection<TriggeredAbility> getAllTriggeredAbilities() {
+    default Collection<TriggeredAbilityTemplate> getAllTriggeredAbilities() {
         return Collections.unmodifiableCollection(getTriggeredAbilities().values());
     }
 
-    default TriggeredAbility getTriggeredAbilityByName(String name) {
+    default TriggeredAbilityTemplate getTriggeredAbilityByName(String name) {
         return getTriggeredAbilities().get(name);
     }
 
-    default void addTriggeredAbility(TriggeredAbility ability) {
+    default void addTriggeredAbility(TriggeredEffectInstance ability) {
         getTriggeredAbilities().put(ability.getName(), ability);
     }
 
-    default void removeTriggeredAbility(TriggeredAbility ability) {
+    default void removeTriggeredAbility(TriggeredAbilityTemplate ability) {
         getTriggeredAbilities().remove(ability.getName());
     }
 

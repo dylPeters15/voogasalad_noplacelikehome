@@ -1,7 +1,7 @@
 package chat_client;
 
 import util.net.ObservableClient;
-import util.net.ObservableHostBase;
+import util.net.ObservableHost;
 
 import java.time.Duration;
 import java.util.Scanner;
@@ -11,7 +11,7 @@ import java.util.Scanner;
  */
 public class ChatClientMain {
     //    public static final String HOSTNAME = "25.4.129.184";
-    public static final String HOSTNAME = ObservableHostBase.LOCALHOST;
+    public static final String HOSTNAME = ObservableHost.LOCALHOST;
     public static final int PORT = 10023;
     public static final String CLEARSCREEN = "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
 

@@ -23,7 +23,7 @@ public class UnitInstance extends VoogaInstance<UnitTemplate> implements Unit {
     private final MovePoints movePoints;
     private final GridPattern movePattern;
     private final Map<String, ActiveAbility<VoogaObject>> activeAbilities;
-    private final Map<String, TriggeredAbility> triggeredAbilities;
+    private final Map<String, TriggeredEffectInstance> triggeredAbilities;
     private final List<InteractionModifier<Double>> offensiveModifiers;
     private final List<InteractionModifier<Double>> defensiveModifiers;
     private final Map<Terrain, Integer> moveCosts;
@@ -31,6 +31,7 @@ public class UnitInstance extends VoogaInstance<UnitTemplate> implements Unit {
 
     private Player ownerPlayer;
     private CellInstance currentCell;
+    private boolean isVisible;
 
     protected UnitInstance(String unitName, UnitTemplate unitTemplate, Player ownerPlayer, CellInstance startingCell) {
         super(unitName, unitTemplate);
@@ -45,12 +46,16 @@ public class UnitInstance extends VoogaInstance<UnitTemplate> implements Unit {
         this.defensiveModifiers = new ArrayList<>(unitTemplate.getDefensiveModifiers());
         setOwner(ownerPlayer);
         setCurrentCell(startingCell);
+        setVisible(true);
     }
 
     public void moveTo(CellInstance cell, ImmutableGameState gameState) {
+        processTriggers(Event.UNIT_PRE_MOVEMENT, gameState);
+        currentCell.leave(this, gameState);
         movePoints.useMovePoints(moveCosts.get(cell.getTerrain()));
         currentCell = cell;
-        processTriggers(Event.UNIT_MOVEMENT, gameState);
+        currentCell.arrive(this, gameState);
+        processTriggers(Event.UNIT_POST_MOVEMENT, gameState);
     }
 
     public void startTurn(GameState gameState) {
@@ -71,12 +76,14 @@ public class UnitInstance extends VoogaInstance<UnitTemplate> implements Unit {
     }
 
     public void useActiveAbility(ActiveAbility<VoogaObject> activeAbility, VoogaInstance target, ImmutableGameState gameState) {
+        processTriggers(Event.UNIT_PRE_ABILITY_USE, gameState);
         activeAbility.affect(this, target, gameState);
-        processTriggers(Event.UNIT_ABILITY_USE, gameState);
+        processTriggers(Event.UNIT_POST_ABILITY_USE, gameState);
     }
 
     private void processTriggers(Event event, ImmutableGameState gameState) {
         triggeredAbilities.values().forEach(e -> e.affect(this, event, gameState));
+        triggeredAbilities.values().removeIf(TriggeredEffectInstance::isExpired);
     }
 
     public Collection<CellInstance> getLegalMoves(MutableGrid grid) {
@@ -151,7 +158,7 @@ public class UnitInstance extends VoogaInstance<UnitTemplate> implements Unit {
     }
 
     @Override
-    public Map<String, TriggeredAbility> getTriggeredAbilities() {
+    public Map<String, TriggeredEffectInstance> getTriggeredAbilities() {
         return triggeredAbilities;
     }
 
@@ -178,6 +185,14 @@ public class UnitInstance extends VoogaInstance<UnitTemplate> implements Unit {
     @Override
     public Map<Terrain, Integer> getTerrainMoveCosts() {
         return moveCosts;
+    }
+
+    public void setVisible(boolean isVisible) {
+        this.isVisible = isVisible;
+    }
+
+    public boolean isVisible() {
+        return isVisible;
     }
 
     public int movePointsTo(CoordinateTuple other) {

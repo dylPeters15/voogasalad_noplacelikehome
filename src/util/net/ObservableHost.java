@@ -16,9 +16,9 @@ import java.util.function.Consumer;
  *
  * @param <T> The type of variable used to represent network shared state.
  * @author Created by th174 on 4/1/2017.
- * @see Request,Modifier,ObservableServer,ObservableClient,ObservableHostBase,SocketConnection
+ * @see Request,Modifier,ObservableServer,ObservableClient, ObservableHost ,SocketConnection
  */
-public abstract class ObservableHostBase<T> implements Runnable {
+public abstract class ObservableHost<T> implements Runnable {
     public static final Duration NEVER_TIMEOUT = Duration.ZERO;
     public static final String LOCALHOST = "127.0.0.1";
     private final Serializer<T> serializer;
@@ -33,7 +33,7 @@ public abstract class ObservableHostBase<T> implements Runnable {
      * @param unserializer Converts the Serializable form of the state back into its original form of type T
      * @param timeout
      */
-    protected ObservableHostBase(Serializer<T> serializer, Unserializer<T> unserializer, Duration timeout) {
+    protected ObservableHost(Serializer<T> serializer, Unserializer<T> unserializer, Duration timeout) {
         this.serializer = serializer;
         this.unserializer = unserializer;
         this.stateUpdateListeners = new ArrayList<>();

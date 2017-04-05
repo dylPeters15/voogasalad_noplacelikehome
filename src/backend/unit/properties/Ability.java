@@ -1,7 +1,5 @@
 package backend.unit.properties;
 
-import backend.cell.CellAbility;
-
 import java.util.Collection;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -12,10 +10,10 @@ import java.util.stream.Stream;
 public interface Ability {
     static Collection<Ability> getPredefinedAbilities() {
         return Stream.of(
-                CellAbility.getPredefinedCellEffects(),
+                TriggeredCellAbilityTemplate.getPredefinedCellEffects(),
                 ActiveAbility.getPredefinedActiveAbilities(),
                 InteractionModifier.getPredefinedInteractionModifiers(),
-                TriggeredAbility.getPredefinedTriggeredAbilities())
+                TriggeredAbilityTemplate.getPredefinedTriggeredAbilities())
                 .flatMap(Collection::stream).map(Ability.class::cast).collect(Collectors.toSet());
     }
 }

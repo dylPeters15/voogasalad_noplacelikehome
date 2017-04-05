@@ -4,6 +4,7 @@ import backend.cell.CellInstance;
 import backend.cell.Terrain;
 import backend.player.Player;
 import backend.unit.properties.*;
+import backend.util.TriggeredEffectInstance;
 import backend.util.VoogaObject;
 
 import java.util.*;
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
  */
 public class UnitTemplate extends VoogaObject implements Unit {
     private final Map<String, ActiveAbility<VoogaObject>> activeAbilities;
-    private final Map<String, TriggeredAbility> triggeredAbilities;
+    private final Map<String, TriggeredAbilityTemplate> triggeredAbilities;
     private final List<InteractionModifier<Double>> offensiveModifiers;
     private final List<InteractionModifier<Double>> defensiveModifiers;
     private final Map<Terrain, Integer> terrainMoveCosts;
@@ -31,14 +32,14 @@ public class UnitTemplate extends VoogaObject implements Unit {
         this(unitTemplateName, hitPoints, movePoints, faction, movePattern, moveCosts, Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), unitTemplateDescription, imgPath);
     }
 
-    public UnitTemplate(String unitTemplateName, double hitPoints, int movePoints, Faction faction, GridPattern movePattern, Map<Terrain, Integer> moveCosts, Collection<ActiveAbility<VoogaObject>> activeAbilities, Collection<TriggeredAbility> triggeredAbilities, Collection<InteractionModifier<Double>> offensiveModifiers, Collection<InteractionModifier<Double>> defensiveModifiers, String unitDescription, String imgPath) {
+    public UnitTemplate(String unitTemplateName, double hitPoints, int movePoints, Faction faction, GridPattern movePattern, Map<Terrain, Integer> moveCosts, Collection<ActiveAbility<VoogaObject>> activeAbilities, Collection<TriggeredAbilityTemplate> triggeredAbilities, Collection<InteractionModifier<Double>> offensiveModifiers, Collection<InteractionModifier<Double>> defensiveModifiers, String unitDescription, String imgPath) {
         super(unitTemplateName, unitDescription, imgPath);
         this.faction = faction;
         this.terrainMoveCosts = new HashMap<>(moveCosts);
         this.hitPoints = hitPoints;
         this.movePoints = movePoints;
         this.movePattern = movePattern;
-        this.triggeredAbilities = triggeredAbilities.parallelStream().collect(Collectors.toMap(TriggeredAbility::getName, a -> a));
+        this.triggeredAbilities = triggeredAbilities.parallelStream().collect(Collectors.toMap(TriggeredAbilityTemplate::getName, a -> a));
         this.activeAbilities = activeAbilities.parallelStream().collect(Collectors.toMap(ActiveAbility::getName, a -> a));
         this.offensiveModifiers = new ArrayList<>(offensiveModifiers);
         this.defensiveModifiers = new ArrayList<>(defensiveModifiers);
@@ -104,7 +105,7 @@ public class UnitTemplate extends VoogaObject implements Unit {
     }
 
     @Override
-    public Map<String, TriggeredAbility> getTriggeredAbilities() {
+    public Map<String, TriggeredEffectInstance> getTriggeredAbilities() {
         return triggeredAbilities;
     }
 

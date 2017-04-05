@@ -4,7 +4,6 @@ import util.io.Serializer;
 import util.io.Unserializer;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.net.Socket;
 import java.time.Duration;
 
@@ -15,9 +14,9 @@ import java.time.Duration;
  *
  * @param <T> The type of variable used to represent network shared state.
  * @author Created by th174 on 4/1/2017.
- * @see Request,Modifier,ObservableServer,ObservableClient,ObservableHostBase,SocketConnection
+ * @see Request,Modifier,ObservableServer,ObservableClient, ObservableHost ,SocketConnection
  */
-public class ObservableClient<T> extends ObservableHostBase<T> {
+public class ObservableClient<T> extends ObservableHost<T> {
     private final SocketConnection connection;
 
     /**

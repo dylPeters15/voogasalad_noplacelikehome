@@ -22,9 +22,9 @@ import java.util.concurrent.TimeUnit;
  *
  * @param <T> The type of variable used to represent networked shared state.
  * @author Created by th174 on 4/1/2017.
- * @see Request,Modifier,ObservableServer,ObservableClient,ObservableHostBase,SocketConnection
+ * @see Request,Modifier,ObservableServer,ObservableClient, ObservableHost ,SocketConnection
  */
-public class ObservableServer<T> extends ObservableHostBase<T> {
+public class ObservableServer<T> extends ObservableHost<T> {
     private static final int DEFAULT_THREAD_POOL_SIZE = 12;
     private final long heartBeatIntervalMillis;
     private final Collection<ServerDelegate> connections;
@@ -159,14 +159,14 @@ public class ObservableServer<T> extends ObservableHostBase<T> {
 
     @Override
     protected boolean validateRequest(Request request) {
-        return request.getCommitIndex() == getCommitIndex();
+        return request.getCommitIndex() == getCommitIndex() && !Request.isError(request);
     }
 
     /**
      * This class is delegated to be the server to listen to a client on a single socket and relays information between the main server and the client.
      *
      * @author Created by th174 on 4/1/2017.
-     * @see Request,Modifier,ObservableServer,ObservableClient,ObservableHostBase,SocketConnection
+     * @see Request,Modifier,ObservableServer,ObservableClient, ObservableHost ,SocketConnection
      */
     protected class ServerDelegate implements Runnable {
         private final SocketConnection connection;
@@ -190,7 +190,7 @@ public class ObservableServer<T> extends ObservableHostBase<T> {
             if (Request.isHeartbeat(request)) {
                 System.out.println("Heartbeat Received: " + request);
                 return true;
-            } else if (Request.isError(request)) {
+            } else if (!validateRequest(request)) {
                 return send(getRequest(getState()));
             } else return ObservableServer.this.handleRequest(request);
         }

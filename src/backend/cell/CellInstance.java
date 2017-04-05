@@ -3,9 +3,7 @@ package backend.cell;
 import backend.grid.CoordinateTuple;
 import backend.grid.MutableGrid;
 import backend.unit.UnitInstance;
-import backend.util.Event;
-import backend.util.ImmutableGameState;
-import backend.util.VoogaInstance;
+import backend.util.*;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -18,21 +16,21 @@ import java.util.Map;
 public class CellInstance extends VoogaInstance<CellTemplate> implements Cell {
     private final CoordinateTuple coordinates;
     private final Collection<UnitInstance> currentOccupants;
-    private final Collection<CellAbility> abilities;
+    private final Collection<TriggeredEffectInstance> triggeredAbilities;
 
-    protected CellInstance(CoordinateTuple coordinateTuple, CellTemplate templateCell, Collection<CellAbility> cellAbilities, Collection<UnitInstance> initialOccupants) {
+    protected CellInstance(CoordinateTuple coordinateTuple, CellTemplate templateCell, Collection<TriggeredEffectInstance> cellAbilities, Collection<UnitInstance> initialOccupants) {
         super(templateCell.getName() + "@" + coordinateTuple.toString(), templateCell);
         this.coordinates = coordinateTuple;
-        this.abilities = new HashSet<>(cellAbilities);
+        this.triggeredAbilities = new HashSet<>(cellAbilities);
         currentOccupants = new HashSet<>(initialOccupants);
     }
 
     public void startTurn(ImmutableGameState gameState) {
-        applyAbilities(Event.TURN_START, gameState);
+        processTriggers(Event.TURN_START, gameState);
     }
 
     public void endTurn(ImmutableGameState gameState) {
-        applyAbilities(Event.TURN_END, gameState);
+        processTriggers(Event.TURN_END, gameState);
     }
 
     @Override
@@ -54,17 +52,42 @@ public class CellInstance extends VoogaInstance<CellTemplate> implements Cell {
         return getTemplate().getTerrain();
     }
 
-    public void applyAbilities(Event event, ImmutableGameState gameState) {
-        currentOccupants.forEach(unit -> abilities.forEach(ability -> ability.affect(unit, event, gameState)));
+    public void processTriggers(Event event, ImmutableGameState gameState) {
+        currentOccupants.forEach(unit -> triggeredAbilities.forEach(ability -> ability.affect(unit, event, gameState)));
+        triggeredAbilities.removeIf(TriggeredEffectInstance::isExpired);
     }
 
-    @Override
-    public Collection<CellAbility> getAbilities() {
-        return Collections.unmodifiableCollection(abilities);
+    public Collection<TriggeredEffectInstance> getTriggeredAbilities() {
+        return Collections.unmodifiableCollection(triggeredAbilities);
     }
 
-    @Override
     public Collection<UnitInstance> getOccupants() {
-        return currentOccupants;
+        return Collections.unmodifiableCollection(currentOccupants);
+    }
+
+    public void addOccupant(UnitInstance unit) {
+        currentOccupants.remove(unit);
+    }
+
+    public void removeOccupant(UnitInstance unit) {
+        currentOccupants.add(unit);
+    }
+
+    public void addAllOccupants(Collection<UnitInstance> units) {
+        currentOccupants.addAll(units);
+    }
+
+    public void removeAllOccupants(Collection<UnitInstance> units) {
+        currentOccupants.removeAll(units);
+    }
+
+    public void leave(UnitInstance unitInstance, ImmutableGameState gamestate) {
+        triggeredAbilities.forEach(ability -> ability.affect(unitInstance, Event.UNIT_PRE_MOVEMENT, gamestate));
+        this.removeOccupant(unitInstance);
+    }
+
+    public void arrive(UnitInstance unitInstance, ImmutableGameState gamestate) {
+        this.addOccupant(unitInstance);
+        triggeredAbilities.forEach(ability -> ability.affect(unitInstance, Event.UNIT_POST_MOVEMENT, gamestate));
     }
 }

@@ -6,11 +6,9 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
- * Andreas
- *
- * @author Dylan Peters, Timmy Huang
+ * @author Created by th174 on 3/28/2017.
  */
-public class CoordinateTuple implements Iterable<Integer> {
+public final class CoordinateTuple implements Iterable<Integer> {
     public static final CoordinateTuple EMPTY = new CoordinateTuple();
 
     private final List<Integer> coordinates;

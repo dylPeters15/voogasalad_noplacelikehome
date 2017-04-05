@@ -1,6 +1,5 @@
 package backend.unit.properties;
 
-import backend.cell.CellAbility;
 import backend.cell.CellInstance;
 import backend.unit.UnitInstance;
 import backend.util.ImmutableGameState;
@@ -25,7 +24,7 @@ public class ActiveAbility<T extends VoogaObject> extends VoogaObject implements
     public static final ActiveAbility<UnitInstance> FULL_HEAL = new ActiveAbility<>("Full Heal", (user, target, game) -> target.getHitPoints().resetValue(), GridPattern.HEXAGONAL_ADJACENT, "The attacker fully heals any neighboring unit", "Red_Cross.png");
     public static final ActiveAbility<UnitInstance> BLIND = new ActiveAbility<>("Blind", (user, target, game) -> target.addOffensiveModifier(InteractionModifier.BLINDED), GridPattern.HEXAGONAL_ADJACENT, "The attacker gives any neighboring unit the Blinded modifier", "Helen_Keller.png");
     public static final ActiveAbility<UnitInstance> SILENCE = new ActiveAbility<>("Silence", (user, target, game) -> Stream.of(target.getOffensiveModifiers(), target.getDefensiveModifiers(), target.getAllTriggeredAbilities()).forEach(Collection::clear), GridPattern.HEXAGONAL_ADJACENT, "Removes all offensive, defensive, and passive modifiers from any neighboring unit", "Silencer.png");
-    public static final ActiveAbility<CellInstance> DROP_MIXTAPE = new ActiveAbility<>("Set Fire to Cell", (user, target, game) -> target.addAbility(CellAbility.ON_FIRE), GridPattern.HEXAGONAL_SINGLE_CELL, "The attacker sets fire to the cell they are occupying.", "My_mixtape.png");
+    public static final ActiveAbility<CellInstance> DROP_MIXTAPE = new ActiveAbility<>("Set Fire to Cell", (user, target, game) -> target.addAbility(TriggeredCellAbilityTemplate.ON_FIRE), GridPattern.HEXAGONAL_SINGLE_CELL, "The attacker sets fire to the cell they are occupying.", "My_mixtape.png");
 
     private final AbilityEffect<T> effect;
     private final GridPattern range;

@@ -9,7 +9,7 @@ import java.io.Serializable;
  *
  * @param <T> The type of the content contained in the request.
  * @author Created by th174 on 4/2/2017.
- * @see Request,Modifier,ObservableServer,ObservableClient,ObservableHostBase,SocketConnection
+ * @see Request,Modifier,ObservableServer,ObservableClient, ObservableHost ,SocketConnection
  */
 public final class Request<T extends Serializable> implements Serializable {
     public static final Serializable ERROR = "ERROR";

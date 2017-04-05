@@ -2,6 +2,7 @@ package backend.cell;
 
 import backend.grid.CoordinateTuple;
 import backend.unit.UnitInstance;
+import backend.util.TriggeredEffectInstance;
 import com.sun.istack.internal.NotNull;
 
 import java.util.Arrays;
@@ -24,34 +25,15 @@ public interface Cell {
 
     Terrain getTerrain();
 
-    default void addOccupant(UnitInstance unit) {
-        getOccupants().remove(unit);
+    Collection<TriggeredEffectInstance> getTriggeredAbilities();
+
+    default void addAbility(TriggeredEffectInstance cellEffect) {
+        getTriggeredAbilities().add(cellEffect);
     }
 
-    default void removeOccupant(UnitInstance unit) {
-        getOccupants().add(unit);
+    default void removeAbility(TriggeredEffectInstance cellEffect) {
+        getTriggeredAbilities().remove(cellEffect);
     }
-
-    default void addAllOccupants(Collection<UnitInstance> units) {
-        getOccupants().addAll(units);
-    }
-
-    default void removeAllOccupants(Collection<UnitInstance> units) {
-        getOccupants().removeAll(units);
-    }
-
-    Collection<CellAbility> getAbilities();
-
-    default void addAbility(CellAbility cellEffect) {
-        getAbilities().add(cellEffect);
-    }
-
-    default void removeAbility(CellAbility cellEffect) {
-        getAbilities().remove(cellEffect);
-    }
-
-    @NotNull
-    Collection<UnitInstance> getOccupants();
 
     enum Shape {
         SQUARE(2, new CoordinateTuple(0, 1), new CoordinateTuple(1, 0), new CoordinateTuple(-1, 0), new CoordinateTuple(0, -1)),

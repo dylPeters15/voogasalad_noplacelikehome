@@ -7,8 +7,6 @@ import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 /**
- * Andreas
- *
  * @author Created by th174 on 3/28/2017.
  */
 public class BoundsHandler extends VoogaObject {
