@@ -14,10 +14,10 @@ import java.time.format.FormatStyle;
  *
  * @param <T> The type of the content contained in the request.
  * @author Created by th174 on 4/2/2017.
- * @see Request,Modifier,ObservableServer,ObservableServer.ServerThread,ObservableClient,ObservableHost,AbstractObservableHost,RemoteListener
+ * @see Request,Modifier,ObservableServer, ObservableServer.ClientConnection ,ObservableClient,ObservableHost,AbstractObservableHost,RemoteListener
  */
 public final class Request<T extends Serializable> implements Serializable {
-    public static final Serializable HEARTBEAT = null;
+    public static final Serializable HEARTBEAT = "heartbeat";
     private final T content;
     private final Instant timeStamp;
     private final int commitIndex;
@@ -77,6 +77,6 @@ public final class Request<T extends Serializable> implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("Request @ %s:\n\t%s", timeStamp.atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)), content);
+        return String.format("Request:\n\tContent:\t%s\n\tTimestamp:\t%s,CommitIndex:\t%d", content, timeStamp.atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)), commitIndex);
     }
 }

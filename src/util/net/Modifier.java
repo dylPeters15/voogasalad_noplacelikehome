@@ -9,14 +9,40 @@ import java.io.Serializable;
  *
  * @param <T> The type of variable used to represent networked shared state.
  * @author Created by th174 on 4/1/2017.
- * @see Request,Modifier,ObservableServer,ObservableServer.ServerThread,ObservableClient,ObservableHost,AbstractObservableHost,RemoteListener
+ * @see Request,Modifier,ObservableServer, ObservableServer.ClientConnection ,ObservableClient,ObservableHost,AbstractObservableHost,RemoteListener
  */
 @FunctionalInterface
 public interface Modifier<T> extends Serializable {
     /**
+     * Modifies and returns either a new state or the modified state
+     *
+     * @param state State before the action is applied.
+     * @return Returns the new state after the action is applied.
+     * @throws ModifierException Thrown if the implementation throws an exception
+     */
+    default T modify(T state) throws ModifierException {
+        try {
+            return doModify(state);
+        } catch (Exception e) {
+            throw new ModifierException(e);
+        }
+    }
+
+    /**
+     * Modifies and returns either a new state or the modified state
+     *
      * @param state State before the action is applied.
      * @return Returns the new state after the action is applied.
      * @throws Exception Thrown if the implementation throws an exception
      */
-    T modify(T state) throws Exception;
+    T doModify(T state) throws Exception;
+
+    /**
+     * Wraps exceptions thrown by doModify
+     */
+    class ModifierException extends RuntimeException {
+        private ModifierException(Exception e) {
+            super("Error occurred processing incoming request: " + e.getMessage(), e);
+        }
+    }
 }

@@ -4,7 +4,6 @@ import util.io.Serializer;
 import util.io.Unserializer;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -23,9 +22,9 @@ import java.util.function.Consumer;
  *
  * @param <T> The type of variable used to represent network shared state.
  * @author Created by th174 on 4/2/2017.
- * @see Request,Modifier,ObservableServer,ObservableServer.ServerThread,ObservableClient,ObservableHost,AbstractObservableHost,RemoteListener
+ * @see Request,Modifier,ObservableServer, ObservableServer.ClientConnection ,ObservableClient,ObservableHost,AbstractObservableHost,RemoteListener
  */
-public abstract class AbstractObservableHost<T> {
+public abstract class AbstractObservableHost<T> implements Runnable {
     public static final Duration NEVER_TIMEOUT = Duration.ZERO;
     public static final String LOCALHOST = "127.0.0.1";
     private static final int THREAD_POOL_SIZE = 8;
@@ -57,10 +56,8 @@ public abstract class AbstractObservableHost<T> {
 
     /**
      * Starts communicating with the remote host
-     *
-     * @throws Exception Thrown if exception occurs in starting the host
      */
-    public abstract void start() throws Exception;
+    public abstract void run();
 
     /**
      * Submits a runnable task to be run concurrently
@@ -88,11 +85,37 @@ public abstract class AbstractObservableHost<T> {
 
     /**
      * This method is invoked when a new state is received from the remote host.
+     * <p>
+     * All observers are notified of the change.
+     *
+     * @param newState  The new state sent from the remote host.
+     * @param timeStamp Request creation timestamp
+     */
+    protected final void handleAndNotify(T state, Instant timeStamp) {
+        handle(state, timeStamp);
+        fireStateUpdatedEvent();
+    }
+
+    /**
+     * This method is invoked when a new state is received from the remote host.
      *
      * @param newState  The new state sent from the remote host.
      * @param timeStamp Request creation timestamp
      */
     protected abstract void handle(T newState, Instant timeStamp);
+
+    /**
+     * This method is invoked when a state modifier is received from the remote host.
+     * <p>
+     * All observers are notified of the change.
+     *
+     * @param stateModifier The state modifier received from the remote host.
+     * @param timeStamp     Request creation timestamp
+     */
+    protected final void handleAndNotify(Modifier<T> modifier, Instant timeStamp) {
+        handle(modifier, timeStamp);
+        fireStateUpdatedEvent();
+    }
 
     /**
      * This method is invoked when a state modifier is received from the remote host.
@@ -153,11 +176,10 @@ public abstract class AbstractObservableHost<T> {
         return unserializer;
     }
 
-    /**
-     * Notifies all currently registered observers of a value change.
-     */
-    protected final void fireStateUpdatedEvent() {
-        stateUpdateListeners.forEach(e -> e.accept(getState()));
+    private final void fireStateUpdatedEvent() {
+        stateUpdateListeners.forEach(e -> {
+            e.accept(getState());
+        });
     }
 
     /**
@@ -183,7 +205,25 @@ public abstract class AbstractObservableHost<T> {
      *
      * @throws IOException Thrown if I/O errors while shutting down this host
      */
-    public void shutDown() throws IOException {
+    public void shutDown() {
         executor.shutdown();
+    }
+
+    /**
+     * Wraps exceptions thrown from in socket I/O
+     */
+    public static class RemoteConnectionException extends RuntimeException {
+        protected RemoteConnectionException(Exception e) {
+            super("Error connecting to remote host: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Thrown when an invalid request is received by this host
+     */
+    public static class InvalidRequestException extends RuntimeException {
+        protected InvalidRequestException(String s) {
+            super("Invalid request received: " + s);
+        }
     }
 }

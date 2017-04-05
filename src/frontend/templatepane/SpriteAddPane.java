@@ -46,7 +46,7 @@ public class SpriteAddPane implements Displayable {
 			parent.getChildren().add(spriteImage);
 			 sprite.setOnDragDetected(new EventHandler <MouseEvent>() {
 		            public void handle(MouseEvent event) {
-		                /* drag was detected, start drag-and-drop gesture*/
+		                /* drag was detected, run drag-and-drop gesture*/
 		                System.out.println("onDragDetected");
 		                
 		                /* create dragboard */

@@ -3,7 +3,6 @@ package util.net;
 import util.io.Serializer;
 import util.io.Unserializer;
 
-import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.time.Clock;
@@ -19,10 +18,10 @@ import java.util.HashSet;
  *
  * @param <T> The type of variable used to represent networked shared state.
  * @author Created by th174 on 4/1/2017.
- * @see Request,Modifier,ObservableServer,ObservableServer.ServerThread,ObservableClient,ObservableHost,AbstractObservableHost,RemoteListener
+ * @see Request,Modifier,ObservableServer, ServerConnection ,ObservableClient,ObservableHost,AbstractObservableHost,RemoteListener
  */
 public class ObservableServer<T> extends AbstractObservableHost<T> {
-    private final Collection<ServerThread> childThreads;
+    private final Collection<ClientConnection> connections;
     private final ServerSocket serverSocket;
     private volatile Instant mostRecentTimeStamp;
     private volatile T state;
@@ -66,7 +65,7 @@ public class ObservableServer<T> extends AbstractObservableHost<T> {
         super(serializer, unserializer, timeout);
         this.state = initialState;
         this.mostRecentTimeStamp = Instant.now(Clock.systemUTC());
-        this.childThreads = new HashSet<>();
+        this.connections = new HashSet<>();
         this.serverSocket = new ServerSocket(port);
     }
 
@@ -76,25 +75,18 @@ public class ObservableServer<T> extends AbstractObservableHost<T> {
      * For each client, this method creates a child thread that listens to the client in the background, and the child thread is added to a child thread pool.
      */
     @Override
-    public void start() {
+    public void run() {
         commitIndex = 0;
-        submitTask(this::listenForClients);
-    }
-
-    private void listenForClients(){
         try {
             while (serverSocket.isBound() && !serverSocket.isClosed()) {
-                ServerThread child = new ServerThread(serverSocket.accept());
-                child.start();
-                childThreads.add(child);
+                ClientConnection child = new ClientConnection(serverSocket.accept());
+                submitTask(child);
+                connections.add(child);
             }
         } catch (Exception e) {
+            throw new RemoteConnectionException(e);
         } finally {
-            try {
-                shutDown();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            shutDown();
         }
     }
 
@@ -111,7 +103,7 @@ public class ObservableServer<T> extends AbstractObservableHost<T> {
      */
     @Override
     protected boolean send(T state) {
-        for (ServerThread e : childThreads) {
+        for (ClientConnection e : connections) {
             e.send(state);
         }
         return isActive();
@@ -137,9 +129,7 @@ public class ObservableServer<T> extends AbstractObservableHost<T> {
      */
     @Override
     protected boolean send(Modifier<T> modifier) {
-        for (ServerThread e : childThreads) {
-            e.send(modifier);
-        }
+        connections.removeIf(e -> !e.send(modifier));
         return isActive();
     }
 
@@ -150,13 +140,9 @@ public class ObservableServer<T> extends AbstractObservableHost<T> {
      * @return Returns true if the requests were sent successfully
      */
     public final synchronized boolean sendAndApply(Modifier<T> modifier) {
-        try {
-            this.state = modifier.modify(state);
-            incrementCommitIndex();
-            return send(modifier);
-        } catch (Exception e) {
-            throw new Error(e);
-        }
+        this.state = modifier.modify(state);
+        incrementCommitIndex();
+        return send(modifier);
     }
 
     private void incrementCommitIndex() {
@@ -175,7 +161,7 @@ public class ObservableServer<T> extends AbstractObservableHost<T> {
 
     @Override
     public boolean isActive() {
-        return serverSocket.isBound() && !serverSocket.isClosed() && !childThreads.isEmpty();
+        return serverSocket.isBound() && !serverSocket.isClosed() && !connections.isEmpty();
     }
 
     @Override
@@ -198,21 +184,21 @@ public class ObservableServer<T> extends AbstractObservableHost<T> {
      * @author Created by th174 on 4/1/2017.
      * @see Request,Modifier, ObservableServer , util.net.ServerThread ,Client,AbstractHost,Host,Listener
      */
-    protected class ServerThread extends ObservableHost<T> {
+    protected class ClientConnection extends ObservableHost<T> {
         /**
          * @param socket Socket to listen on for client requests.
          * @throws Exception Thrown if socket is not open for reading and writing, or if an exception is thrown in serialization
          */
-        private ServerThread(Socket socket) throws Exception {
+        private ClientConnection(Socket socket) throws Exception {
             super(socket, ObservableServer.this.getSerializer(), ObservableServer.this.getUnserializer(), ObservableServer.this.getTimeout());
         }
 
         @Override
-        public void start() throws IOException {
-            submitRepeatedTask(this::sendHeartBeat, getTimeout().equals(NEVER_TIMEOUT) ? Duration.ofSeconds(30) : Duration.ofMillis(getTimeout().toMillis() / 2));
+        public void run() {
             send(getState());
-            System.out.println("\nClient Connected:  " + getSocket());
-            super.start();
+            submitRepeatedTask(this::sendHeartBeat, getTimeout().equals(NEVER_TIMEOUT) ? Duration.ofSeconds(30) : Duration.ofMillis(getTimeout().toMillis() / 2));
+            super.run();
+            System.out.println("Client Connected @ " + getSocket());
         }
 
         @Override
@@ -222,7 +208,7 @@ public class ObservableServer<T> extends AbstractObservableHost<T> {
 
         @Override
         public void handle(Modifier<T> modifier, Instant timeStamp) {
-            ObservableServer.this.handle(modifier, timeStamp);
+            ObservableServer.this.handleAndNotify(modifier, timeStamp);
         }
 
         @Override
@@ -236,7 +222,7 @@ public class ObservableServer<T> extends AbstractObservableHost<T> {
 
         @Override
         public void handle(T state, Instant timeStamp) {
-            ObservableServer.this.handle(state, timeStamp);
+            ObservableServer.this.handleAndNotify(state, timeStamp);
         }
     }
 }

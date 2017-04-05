@@ -64,9 +64,8 @@ public class DieselEngine implements GameEngine{
 	public void messagePlayer(Player from, Player to, String message) {}
 
     @Override
-    public String toXML() {
+    public void load() {
         // TODO Auto-generated method stub
-        return null;
     }
    
 }
