@@ -37,10 +37,4 @@ public class DieselEngine implements GameEngine {
     public void load() {
         // TODO Auto-generated method stub
     }
-
-    @Override
-    public String toXML() {
-        // TODO Auto-generated method stub
-        return null;
-    }
 }

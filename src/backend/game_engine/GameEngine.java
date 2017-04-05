@@ -1,15 +1,12 @@
 package backend.game_engine;
 
-import backend.io.XMLSerializable;
-import backend.player.Player;
-
 /**
  * @author Alexander Zapata
  */
-public interface GameEngine extends XMLSerializable {
+public interface GameEngine {
 
     //All the checkers.
-    
+
     void restart();
 
     void save();
