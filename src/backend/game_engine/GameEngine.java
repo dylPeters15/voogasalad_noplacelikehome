@@ -5,8 +5,8 @@ package backend.game_engine;
  */
 public interface GameEngine {
 
-    //All the checkers.
-
+	void messagePlayer(Player from, Player to, String message);
+	
     void restart();
 
     void save();
