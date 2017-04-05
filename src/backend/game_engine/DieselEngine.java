@@ -16,7 +16,7 @@ public class DieselEngine implements GameEngine{
 	public DieselEngine(ObservableServer<MutableGameState> s){
 		server = s;
 		server.addListener(stateUpdateListener);
-		server.start();
+		server.run();
 	}
 	
 	private void checkGame(MutableGameState state){
@@ -62,10 +62,5 @@ public class DieselEngine implements GameEngine{
 	}
 	
 	public void messagePlayer(Player from, Player to, String message) {}
-
-    @Override
-    public void load() {
-        // TODO Auto-generated method stub
-    }
    
 }
