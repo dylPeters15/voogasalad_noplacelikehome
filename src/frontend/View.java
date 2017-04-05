@@ -36,7 +36,9 @@ public class View extends BaseUIManager<Region> {
 		initBorderPane();
 	}
 	
-	
+	//TODO: Somewhere the View needs to call something like "controller.sendRequests(this.getRequests());" whenever one of its
+	//panes needs to send its new request(s). Whether this is in "update()" or a new method will be figured out once listening
+	//is figured out
 	
 	/**
 	 * Updates the display of the GameState. This method is to be called by the GameState whenever changes are made.
