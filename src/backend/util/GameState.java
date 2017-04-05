@@ -5,71 +5,95 @@ import backend.grid.MutableGrid;
 import backend.io.XMLSerializable;
 import backend.player.Player;
 import backend.player.Team;
+import backend.unit.UnitTemplate;
 
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
-import java.util.function.Predicate;
 
 /**
  * @author Created by th174 on 3/30/2017.
  */
 
 public abstract class GameState implements XMLSerializable, MutableGameState {
-    private Collection<ResultQuadPredicate> currentObjectives;
-    private Map<Event, List<BiConsumer<Player, ImmutableGameState>>> turnActions;
-    private Optional<List<Predicate<Player>>> turnRequirements;
+	private List<Player> playerList;
+	private Player currentPlayer;
+	private Collection<Team> teams;
+	private MutableGrid gameGrid;
+	private Collection<UnitTemplate> unitTemplates;
 
-    @Override
-    public List<Player> getPlayers() {
-        return null;
-    }
+	private Collection<ResultQuadPredicate> currentObjectives;
+	private Map<Event, List<BiConsumer<Player, ImmutableGameState>>> turnActions;
+	private List<BiPredicate<Player, ImmutableGameState>> turnRequirements;
 
-    @Override
-    public Player getCurrentPlayer() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+	@Override
+	public List<Player> getPlayers() {
+		return playerList;
+	}
 
-    @Override
-    public Collection<Team> getTeams() {
-        return null;
-    }
+	@Override
+	public Player getCurrentPlayer() {
+		return currentPlayer;
+	}
 
+	public Map<Event, List<BiConsumer<Player, ImmutableGameState>>> getTurnEvents() {
+		return turnActions;
+	}
 
-    @Override
-    public MutableGrid getGrid() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+	@Override
+	public Collection<Team> getTeams() {
+		return teams;
+	}
 
-    @Override
-    public int getTurnNumber() {
-        // TODO Auto-generated method stub
-        return 0;
-    }
+	@Override
+	public MutableGrid getGrid() {
+		return gameGrid;
+	}
+	
+	public Collection<UnitTemplate> getUnitTemplates(){
+		return unitTemplates;
+	}
 
-    @Override
-    public void addObjective(ResultQuadPredicate winCondition) {
-        currentObjectives.add(winCondition);
-    }
+	@Override
+	public int getTurnNumber() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 
-    @Override
-    public void addTurnRequirement(BiPredicate<Player, ImmutableGameState> requirement) {
-    }
+	@Override
+	public void addObjective(ResultQuadPredicate winCondition) {
+		currentObjectives.add(winCondition);
+	}
 
-    @Override
-    public void addEventHandler(BiConsumer<Player, ImmutableGameState> eventListener, Event event) {
-        turnActions.merge(event, new ArrayList<>(Collections.singletonList(eventListener)), (list, t) -> {
-            list.addAll(t);
-            return list;
-        });
-    }
+	@Override
+	public void addTurnRequirement(BiPredicate<Player, ImmutableGameState> requirement) {
+		turnRequirements.add(requirement);
+	}
 
-    @Override
-    public String toXML() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+	public void endTurn(Player player) {
+		if (playerList.indexOf(player) == playerList.size()) {
+			setCurrentPlayer(playerList.get(0));
+			return;
+		}
+		setCurrentPlayer(playerList.get(playerList.indexOf(player) + 1));
+	}
+
+	@Override
+	public void addEventHandler(BiConsumer<Player, ImmutableGameState> eventListener, Event event) {
+		turnActions.merge(event, new ArrayList<>(Collections.singletonList(eventListener)), (list, t) -> {
+			list.addAll(t);
+			return list;
+		});
+	}
+
+	private void setCurrentPlayer(Player player) {
+		currentPlayer = player;
+	}
+
+	@Override
+	public String toXML() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

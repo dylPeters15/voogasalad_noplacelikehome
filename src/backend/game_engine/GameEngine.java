@@ -8,8 +8,8 @@ import backend.player.Player;
  */
 public interface GameEngine extends XMLSerializable {
 
-    //All the checkers.
-    
+	void messagePlayer(Player from, Player to, String message);
+	
     void restart();
 
     void save();
