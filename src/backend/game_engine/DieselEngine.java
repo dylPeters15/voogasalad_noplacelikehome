@@ -5,6 +5,7 @@ import backend.player.Player;
 import backend.util.MutableGameState;
 import util.net.ObservableServer;
 
+import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -16,7 +17,7 @@ public class DieselEngine implements GameEngine{
 	public DieselEngine(ObservableServer<MutableGameState> s){
 		server = s;
 		server.addListener(stateUpdateListener);
-		server.run();
+		Executors.newSingleThreadExecutor().submit(server);
 	}
 	
 	private void checkGame(MutableGameState state){
@@ -62,5 +63,5 @@ public class DieselEngine implements GameEngine{
 	}
 	
 	public void messagePlayer(Player from, Player to, String message) {}
-   
+	
 }
