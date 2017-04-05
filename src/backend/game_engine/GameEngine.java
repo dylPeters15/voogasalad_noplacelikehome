@@ -16,6 +16,4 @@ public interface GameEngine extends XMLSerializable {
 
     void load();
     
-    void messagePlayer(Player from, Player to, String message);
-
 }

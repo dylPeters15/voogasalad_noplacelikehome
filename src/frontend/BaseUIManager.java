@@ -3,9 +3,12 @@
  */
 package frontend;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
+
+import com.sun.javafx.collections.UnmodifiableObservableMap;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -14,8 +17,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.scene.Parent;
 import util.net.Request;
-
-import com.sun.javafx.collections.UnmodifiableObservableMap;
 
 /**
  * SlogoBaseUIManager is the base class for every front end class in the Slogo
@@ -51,7 +52,7 @@ public abstract class BaseUIManager<T extends Parent> implements
 
 	private ObjectProperty<ResourceBundle> language;
 	private ObjectProperty<String> styleSheet;
-	private ObservableQueue<Request> requests;
+	private ObservableQueue<Request<Serializable>> requests;
 	
 	/**
 	 * Creates a new SlogoBaseUIManager. Sets all values for the language and
@@ -71,8 +72,12 @@ public abstract class BaseUIManager<T extends Parent> implements
 		});
 	}
 	
-	public ObservableQueue<Request> getRequests(){
+	public ObservableQueue<Request<Serializable>> getRequests(){
 		return requests;
+	}
+	
+	public void addRequest(Request<Serializable> request){
+		requests.add(request);
 	}
 
 	/**

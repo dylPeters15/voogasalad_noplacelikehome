@@ -18,9 +18,9 @@ import java.util.Map;
 public class CellInstance extends VoogaInstance<CellTemplate> implements Cell {
     private final CoordinateTuple coordinates;
     private final Collection<UnitInstance> currentOccupants;
-    private final Collection<CellEffect> abilities;
+    private final Collection<CellAbility> abilities;
 
-    protected CellInstance(CoordinateTuple coordinateTuple, CellTemplate templateCell, Collection<CellEffect> cellAbilities, Collection<UnitInstance> initialOccupants) {
+    protected CellInstance(CoordinateTuple coordinateTuple, CellTemplate templateCell, Collection<CellAbility> cellAbilities, Collection<UnitInstance> initialOccupants) {
         super(templateCell.getName() + "@" + coordinateTuple.toString(), templateCell);
         this.coordinates = coordinateTuple;
         this.abilities = new HashSet<>(cellAbilities);
@@ -59,7 +59,7 @@ public class CellInstance extends VoogaInstance<CellTemplate> implements Cell {
     }
 
     @Override
-    public Collection<CellEffect> getAbilities() {
+    public Collection<CellAbility> getAbilities() {
         return Collections.unmodifiableCollection(abilities);
     }
 

@@ -2,10 +2,11 @@
  * A CollapsibleList is a GUI component that holds a list of ListItems. This list should be collapsible and expandable,
  * meaning that, visually, the ListItems can disappear and reappear.
  */
-package frontend;
+package frontend.templatepane;
 
 import java.util.List;
 
+import frontend.Displayable;
 import javafx.scene.Group;
 import javafx.scene.Node;
 

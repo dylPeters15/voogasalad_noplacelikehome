@@ -5,6 +5,7 @@ import util.io.Unserializer;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.time.Duration;
 import java.time.Instant;
 
 /**
@@ -14,7 +15,7 @@ import java.time.Instant;
  *
  * @param <T> The type of variable used to represent network shared state.
  * @author Created by th174 on 4/1/2017.
- * @see Request,Modifier,ObservableServer,ObservableServer.ServerThread,ObservableClient,ObservableHost,AbstractObservableHost,Listener
+ * @see Request,Modifier,ObservableServer,ObservableServer.ServerThread,ObservableClient,ObservableHost,AbstractObservableHost, RemoteListener
  */
 public class ObservableClient<T> extends ObservableHost<T> {
     private volatile T state;
@@ -22,12 +23,11 @@ public class ObservableClient<T> extends ObservableHost<T> {
     /**
      * Creates a client connected to a server located at host:port, and starts listening for requests sent from the server
      *
-     * @param host {@inheritDoc}
      * @param port {@inheritDoc}
      * @throws IOException {@inheritDoc}
      */
     public ObservableClient(int port) throws IOException {
-        this(LOCALHOST, port, NO_SERIALIZER, NO_UNSERIALIZER);
+        this(LOCALHOST, port, Serializer.NONE, Unserializer.NONE);
     }
 
     /**
@@ -38,7 +38,7 @@ public class ObservableClient<T> extends ObservableHost<T> {
      * @throws IOException {@inheritDoc}
      */
     public ObservableClient(String host, int port) throws IOException {
-        this(host, port, NO_SERIALIZER, NO_UNSERIALIZER);
+        this(host, port, Serializer.NONE, Unserializer.NONE);
     }
 
     /**
@@ -51,7 +51,20 @@ public class ObservableClient<T> extends ObservableHost<T> {
      * @throws IOException {@inheritDoc}
      */
     public ObservableClient(String host, int port, Serializer<T> serializer, Unserializer<T> unserializer) throws IOException {
-        super(new Socket(host, port), serializer, unserializer);
+        this(host, port, serializer, unserializer, NEVER_TIMEOUT);
+    }
+
+    /**
+     * Creates a client connected to a server located at host:port, and starts listening for requests sent from the server
+     *
+     * @param host         {@inheritDoc}
+     * @param port         {@inheritDoc}
+     * @param serializer   {@inheritDoc}
+     * @param unserializer {@inheritDoc}
+     * @throws IOException {@inheritDoc}
+     */
+    public ObservableClient(String host, int port, Serializer<T> serializer, Unserializer<T> unserializer, Duration timeout) throws IOException {
+        super(new Socket(host, port), serializer, unserializer, timeout);
     }
 
     @Override
@@ -70,7 +83,6 @@ public class ObservableClient<T> extends ObservableHost<T> {
      */
     protected void setState(T state) {
         this.state = state;
-        fireStateUpdatedEvent();
     }
 
     /**
@@ -86,7 +98,6 @@ public class ObservableClient<T> extends ObservableHost<T> {
      * Applies the state modifier to the local state in order to stay in sync with the network state.
      *
      * @param stateModifier State modifier received from remote server.
-     * @throws Exception
      */
     public void handle(Modifier<T> stateModifier, Instant timeStamp) {
         try {
@@ -94,6 +105,11 @@ public class ObservableClient<T> extends ObservableHost<T> {
         } catch (Exception e) {
             throw new Error(e);
         }
+    }
+
+    @Override
+    protected void handleHeartBeat() {
+        sendHeartBeat();
     }
 }
 

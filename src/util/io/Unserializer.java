@@ -9,6 +9,7 @@ import java.io.Serializable;
  */
 @FunctionalInterface
 public interface Unserializer<T> {
+    Unserializer NONE = obj -> obj;
     /**
      * @param obj Object to be converted from serializable to unserializable form
      * @return Unserializable form of object

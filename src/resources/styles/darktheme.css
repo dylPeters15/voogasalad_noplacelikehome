@@ -1,0 +1,53 @@
+.root {
+    -fx-base: #333333; 
+    -fx-background: #111111;
+    -fx-accent: #0096c9 ;
+    -fx-default-button: #abd8ed ;
+    -fx-focus-color: #039ed3;
+    -fx-faint-focus-color: #039ed322;
+    -fx-focused-text-base-color : ladder(
+            -fx-selection-bar,
+            -fx-light-text-color 45%,
+            -fx-dark-text-color 46%,
+            -fx-dark-text-color 59%,
+            -fx-mid-text-color 60%
+        );
+    -fx-focused-mark-color : -fx-focused-text-base-color ;  
+
+    -fx-font-family: verdana;  
+}
+
+.button {
+-fx-background-color: #555555;
+-fx-border-color: #9fe7df;
+-fx-background-radius: 7;
+-fx-border-radius: 7;
+}
+
+.button:hover {
+    -fx-background-color: #888888;
+}
+
+.text-area   {
+    -fx-text-fill: #ffffff;
+}
+
+#text {
+    -fx-fill: #ffffff;
+    -fx-stroke: #ffffff;
+}
+
+.pane {
+-fx-background-color: #000000;
+}
+
+.combo-box {
+-fx-background-color: #555555;
+-fx-border-color: #9fe7df;
+-fx-background-radius: 7;
+-fx-border-radius: 7;
+}
+
+.combo-box:hover {
+    -fx-background-color: #888888;
+}
