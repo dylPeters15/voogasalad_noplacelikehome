@@ -1,5 +1,7 @@
 package backend.game_engine;
 
+import backend.player.Player;
+
 /**
  * @author Alexander Zapata
  */
