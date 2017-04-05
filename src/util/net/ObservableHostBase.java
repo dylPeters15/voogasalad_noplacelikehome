@@ -10,7 +10,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 /**
- * @author Created by th174 on 4/4/2017.
+ * This class provides a basic implementation of a host process that connects to and communicates with a remote host.
+ * <p>
+ * It modifies a state of type T, and notifies listeners of changes to the state.
+ *
+ * @param <T> The type of variable used to represent network shared state.
+ * @author Created by th174 on 4/1/2017.
+ * @see Request,Modifier,ObservableServer,ObservableClient,ObservableHostBase,SocketConnection
  */
 public abstract class ObservableHostBase<T> implements Runnable {
     public static final Duration NEVER_TIMEOUT = Duration.ZERO;
@@ -19,7 +25,7 @@ public abstract class ObservableHostBase<T> implements Runnable {
     private final Unserializer<T> unserializer;
     private final Collection<Consumer<T>> stateUpdateListeners;
     private final Duration timeout;
-    private volatile AtomicInteger commitIndex;
+    private AtomicInteger commitIndex;
     private volatile T state;
 
     /**
@@ -50,7 +56,7 @@ public abstract class ObservableHostBase<T> implements Runnable {
      *
      * @param state State on local host, should match networked state
      */
-    protected void setState(T state) {
+    protected synchronized void setState(T state) {
         this.state = state;
     }
 
@@ -176,7 +182,7 @@ public abstract class ObservableHostBase<T> implements Runnable {
      * @return Returns a heartbeat request notifying the remote host that the local host is in a normal operation state.
      */
     protected final Request getHeartBeatRequest() {
-        return Request.heartbeatRequest(getCommitIndex());
+        return new Request<>(Request.HEARTBEAT, (getCommitIndex()));
     }
 
     /**

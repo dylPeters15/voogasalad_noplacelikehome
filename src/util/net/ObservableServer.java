@@ -10,6 +10,7 @@ import java.net.Socket;
 import java.time.Duration;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -140,8 +141,14 @@ public class ObservableServer<T> extends ObservableHostBase<T> {
     }
 
     @Override
-    protected synchronized boolean send(Request request) {
-        connections.removeIf(e -> !e.send(request));
+    protected boolean send(Request request) {
+        for (Iterator<ServerDelegate> iterator = connections.iterator(); iterator.hasNext(); ) {
+            ServerDelegate e = iterator.next();
+            if (!e.send(request)) {
+                e.shutDown();
+                iterator.remove();
+            }
+        }
         return isActive();
     }
 
@@ -156,10 +163,10 @@ public class ObservableServer<T> extends ObservableHostBase<T> {
     }
 
     /**
-     * This class listens to a client on a single socket and relays information between the main server and the client.
+     * This class is delegated to be the server to listen to a client on a single socket and relays information between the main server and the client.
      *
      * @author Created by th174 on 4/1/2017.
-     * @see Request,Modifier,ObservableServer , util.net.ServerThread ,Client,AbstractHost,Host,Listener
+     * @see Request,Modifier,ObservableServer,ObservableClient,ObservableHostBase,SocketConnection
      */
     protected class ServerDelegate implements Runnable {
         private final SocketConnection connection;
@@ -190,6 +197,10 @@ public class ObservableServer<T> extends ObservableHostBase<T> {
 
         protected boolean send(Request request) {
             return connection.send(request);
+        }
+
+        private void shutDown() {
+            connection.shutDown();
         }
     }
 }

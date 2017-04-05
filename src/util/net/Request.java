@@ -9,11 +9,11 @@ import java.io.Serializable;
  *
  * @param <T> The type of the content contained in the request.
  * @author Created by th174 on 4/2/2017.
- * @see Request,Modifier,ObservableServer, ObservableServer.ServerDelegate ,ObservableClient,ObservableHost,AbstractObservableHost,RemoteListener
+ * @see Request,Modifier,ObservableServer,ObservableClient,ObservableHostBase,SocketConnection
  */
 public final class Request<T extends Serializable> implements Serializable {
     public static final Serializable ERROR = "ERROR";
-    private static final Serializable HEARTBEAT = "HEARTBEAT";
+    public static final Serializable HEARTBEAT = "HEARTBEAT";
     private final T content;
     private final int commitIndex;
 
@@ -37,16 +37,24 @@ public final class Request<T extends Serializable> implements Serializable {
         this.commitIndex = commitIndex;
     }
 
-    public static Request heartbeatRequest(int commitIndex) {
-        return new Request<>(HEARTBEAT, commitIndex);
-    }
-
+    /**
+     * Tests if the specified request is a heartbeat request
+     *
+     * @param request request to test
+     * @return Returns true if request is a heartbeat
+     */
     public static boolean isHeartbeat(Request request) {
         return request.get().equals(HEARTBEAT);
     }
 
+    /**
+     * Tests is the specified request is an error request
+     *
+     * @param request request to test
+     * @return Returns true if request is an error request
+     */
     public static boolean isError(Request request) {
-        return request.get().equals("ERROR");
+        return request.get().equals(ERROR);
     }
 
     /**
@@ -54,13 +62,6 @@ public final class Request<T extends Serializable> implements Serializable {
      */
     public T get() {
         return content;
-    }
-
-    /**
-     * @return Returns the type of content contained inside this Request
-     */
-    public Class<?> getContentType() {
-        return content.getClass();
     }
 
     /**
