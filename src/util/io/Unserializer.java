@@ -10,10 +10,25 @@ import java.io.Serializable;
 @FunctionalInterface
 public interface Unserializer<T> {
     Unserializer NONE = obj -> obj;
+
     /**
      * @param obj Object to be converted from serializable to unserializable form
      * @return Unserializable form of object
-     * @throws Exception Thrown if implementation throws exception
+     * @throws UnserializationException Thrown if implementation throws exception
      */
-    T unserialize(Serializable obj) throws Exception;
+    default T unserialize(Serializable obj) throws UnserializationException {
+        try {
+            return doUnserialize(obj);
+        } catch (Exception e) {
+            throw new UnserializationException(e);
+        }
+    }
+
+    T doUnserialize(Serializable obj) throws Exception;
+
+    class UnserializationException extends RuntimeException {
+        private UnserializationException(Exception e) {
+            super("Error occurred in unserialization: " + e.getMessage(), e);
+        }
+    }
 }

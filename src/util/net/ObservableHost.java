@@ -17,7 +17,7 @@ import java.time.Instant;
  *
  * @param <T> The type of variable used to represent network shared state.
  * @author Created by th174 on 4/2/2017.
- * @see Request,Modifier,ObservableServer,ObservableServer.ServerThread,ObservableClient,ObservableHost,AbstractObservableHost,RemoteListener
+ * @see Request,Modifier,ObservableServer, ObservableServer.ClientConnection ,ObservableClient,ObservableHost,AbstractObservableHost,RemoteListener
  */
 public abstract class ObservableHost<T> extends AbstractObservableHost<T> {
     private final Socket socket;
@@ -53,10 +53,9 @@ public abstract class ObservableHost<T> extends AbstractObservableHost<T> {
 
     /**
      * Creates a separate thread to being listening to input sent over the network. When a request is found, handle is called on the content of the request.
-     *
-     * @throws IOException Thrown in socket is not open for listening
      */
-    public void start() throws IOException {
+    @Override
+    public void run() {
         submitTask(new RemoteListener(socket, this::handleRequest));
     }
 
@@ -64,7 +63,6 @@ public abstract class ObservableHost<T> extends AbstractObservableHost<T> {
     protected boolean validateRequest(Request<?> incomingRequest) {
         if (incomingRequest.getCommitIndex() >= this.commitIndex) {
             commitIndex = incomingRequest.getCommitIndex();
-            System.out.println(commitIndex);
             return true;
         }
         return false;
@@ -87,7 +85,6 @@ public abstract class ObservableHost<T> extends AbstractObservableHost<T> {
         return socket;
     }
 
-
     /**
      * This method is called when a new request is received from the remote host.
      * <p>
@@ -98,19 +95,15 @@ public abstract class ObservableHost<T> extends AbstractObservableHost<T> {
      */
     protected final synchronized void handleRequest(Request<? extends Serializable> request) {
         if (validateRequest(request)) {
-            try {
-                if (request.get().equals(Request.HEARTBEAT)) {
-                    handleHeartBeat();
-                } else if (Modifier.class.isAssignableFrom(request.getContentType())) {
-                    handle((Modifier<T>) request.get(), request.getTimeStamp());
-                    fireStateUpdatedEvent();
-                } else {
-                    handle(getUnserializer().unserialize(request.get()), request.getTimeStamp());
-                    fireStateUpdatedEvent();
-                }
-            } catch (Exception e) {
-                throw new Error(e);
+            if (request.get().equals(Request.HEARTBEAT)) {
+                handleHeartBeat();
+            } else if (Modifier.class.isAssignableFrom(request.getContentType())) {
+                handleAndNotify((Modifier<T>) request.get(), request.getTimeStamp());
+            } else {
+                handleAndNotify(getUnserializer().unserialize(request.get()), request.getTimeStamp());
             }
+        } else {
+            throw new InvalidRequestException(request.toString());
         }
     }
 
@@ -131,47 +124,51 @@ public abstract class ObservableHost<T> extends AbstractObservableHost<T> {
      * @param request Request to be send to remote host
      * @return Returns true if request was sent successfully
      */
-    protected boolean sendRequest(Request<? extends Serializable> request) {
+    protected synchronized boolean sendRequest(Request<? extends Serializable> request) {
         if (!isActive()) {
+            shutDown();
             return false;
         }
         try {
             outputStream.writeObject(request);
             return true;
         } catch (IOException e) {
-            try {
-                getSocket().close();
-                System.out.println("\nConnection Closed:\t" + getSocket());
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
-            return false;
+            throw new RemoteConnectionException(e);
         }
     }
 
     @Override
     public boolean send(Modifier<T> modifier) {
-        return sendRequest(new Request<>(modifier, getCommitIndex()));
-    }
-
-    @Override
-    public boolean send(T state) {
         try {
-            return sendRequest(new Request<>(getSerializer().serialize(state), getCommitIndex()));
-        } catch (Exception e) {
-            e.printStackTrace();
+            return sendRequest(new Request<>(modifier, getCommitIndex()));
+        } catch (RemoteConnectionException e) {
+            shutDown();
             return false;
         }
     }
 
-    protected final boolean sendHeartBeat(){
-        sendRequest(new Request<>(Request.HEARTBEAT,commitIndex));
-        return true;
+    @Override
+    public boolean send(T state) {
+        return sendRequest(new Request<>(getSerializer().serialize(state), getCommitIndex()));
+    }
+
+    protected final boolean sendHeartBeat() {
+        try {
+            return sendRequest(Request.heartbeatRequest(getCommitIndex()));
+        } catch (RemoteConnectionException e) {
+            shutDown();
+            return false;
+        }
     }
 
     @Override
-    public void shutDown() throws IOException {
+    public void shutDown() {
+        try {
+            socket.close();
+            System.out.println("Connection closed @ " + getSocket());
+        } catch (IOException e) {
+            throw new RemoteConnectionException(e);
+        }
         super.shutDown();
-        socket.close();
     }
 }

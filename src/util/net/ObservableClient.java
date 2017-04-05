@@ -15,7 +15,7 @@ import java.time.Instant;
  *
  * @param <T> The type of variable used to represent network shared state.
  * @author Created by th174 on 4/1/2017.
- * @see Request,Modifier,ObservableServer,ObservableServer.ServerThread,ObservableClient,ObservableHost,AbstractObservableHost, RemoteListener
+ * @see Request,Modifier,ObservableServer, ObservableServer.ClientConnection ,ObservableClient,ObservableHost,AbstractObservableHost, RemoteListener
  */
 public class ObservableClient<T> extends ObservableHost<T> {
     private volatile T state;
@@ -90,6 +90,7 @@ public class ObservableClient<T> extends ObservableHost<T> {
      *
      * @param newState New state received from remote server.
      */
+    @Override
     public void handle(T newState, Instant timeStamp) {
         setState(newState);
     }
@@ -99,12 +100,9 @@ public class ObservableClient<T> extends ObservableHost<T> {
      *
      * @param stateModifier State modifier received from remote server.
      */
+    @Override
     public void handle(Modifier<T> stateModifier, Instant timeStamp) {
-        try {
-            setState(stateModifier.modify(getState()));
-        } catch (Exception e) {
-            throw new Error(e);
-        }
+        setState(stateModifier.modify(getState()));
     }
 
     @Override

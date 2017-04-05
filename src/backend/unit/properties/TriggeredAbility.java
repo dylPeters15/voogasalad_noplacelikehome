@@ -12,10 +12,10 @@ import java.util.Collection;
  */
 public class TriggeredAbility extends TriggeredEffect implements Ability {
     //TODO: ResourceBundlify this shit
-    public static final TriggeredAbility REGENERATION = new TriggeredAbility("Regeneration", (unit, event, game) -> unit.takeDamage(-6), "This unit regenerates 6 HP at the start of each turn.", "Regenerate.png", Event.TURN_START);
-    public static final TriggeredAbility HEALER = new TriggeredAbility("Healer", (unit, event, game) -> unit.getNeighboringUnits(game.getGrid()).values().forEach(c -> c.forEach(u -> u.takeDamage(-6))), "This unit heals nearby units for 6 HP at the start of each turn.", "Red_Cross.png", Event.TURN_START);
+    public static final TriggeredAbility REGENERATION = new TriggeredAbility("Regeneration", (unit, event, game) -> unit.takeDamage(-6), "This unit regenerates 6 HP at the run of each turn.", "Regenerate.png", Event.TURN_START);
+    public static final TriggeredAbility HEALER = new TriggeredAbility("Healer", (unit, event, game) -> unit.getNeighboringUnits(game.getGrid()).values().forEach(c -> c.forEach(u -> u.takeDamage(-6))), "This unit heals nearby units for 6 HP at the run of each turn.", "Red_Cross.png", Event.TURN_START);
     public static final TriggeredAbility SHADOWSTALKER = new TriggeredAbility("Shadowstalker", (unit, event, game) -> unit.setVisible(event.equals(Event.UNIT_ABILITY_USE) || game.getTurnNumber() % 6 == 4 || game.getTurnNumber() % 6 == 5), "This unit hides in the shadows, rendering it invisible in nighttime", "Ninja.png", Event.TURN_START, Event.TURN_END, Event.UNIT_MOVEMENT, Event.UNIT_ABILITY_USE);
-    public static final TriggeredAbility POISONED = new TriggeredAbility("Poisoned", (unit, event, game) -> unit.getHitPoints().set(Math.min(1, unit.getHitPoints().getCurrentValue() - 4)), "This unit is poisoned, and will lose 4 damage at the start and end of each turn, to a minimum of 1 HP", "Drink_bleach.png", Event.TURN_START, Event.TURN_END);
+    public static final TriggeredAbility POISONED = new TriggeredAbility("Poisoned", (unit, event, game) -> unit.getHitPoints().set(Math.min(1, unit.getHitPoints().getCurrentValue() - 4)), "This unit is poisoned, and will lose 4 damage at the run and end of each turn, to a minimum of 1 HP", "Drink_bleach.png", Event.TURN_START, Event.TURN_END);
 
     public TriggeredAbility(String name, Effect effect, String description, String imgPath, Event... activationTriggers) {
         super(name, effect, description, imgPath, Arrays.asList(activationTriggers));

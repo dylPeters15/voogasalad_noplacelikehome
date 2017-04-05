@@ -1,6 +1,5 @@
 package backend.game_engine;
 
-import backend.player.Player;
 import backend.util.MutableGameState;
 import util.net.ObservableServer;
 
@@ -14,7 +13,7 @@ public class DieselEngine implements GameEngine {
     public DieselEngine(ObservableServer<MutableGameState> s) {
         server = s;
         //server.addListener(stateUpdateListener);
-        server.start();
+        server.run();
     }
 
     private void checkRules(MutableGameState state) {
