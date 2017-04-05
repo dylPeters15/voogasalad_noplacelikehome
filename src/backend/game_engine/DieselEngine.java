@@ -6,38 +6,44 @@ import util.net.ObservableServer;
 
 import java.util.function.Consumer;
 
-public class DieselEngine implements GameEngine {
+public class DieselEngine implements GameEngine{
 
-    private ObservableServer<MutableGameState> server;
-    private Consumer<MutableGameState> stateUpdateListener = this::checkRules;
+	private ObservableServer<MutableGameState> server;
+	private Consumer<MutableGameState> stateUpdateListener = this::checkRules;
+	
+	public DieselEngine(ObservableServer<MutableGameState> s){
+		server = s;
+		server.addListener(stateUpdateListener);
+		server.start();
+	}
+	
+	private void checkRules(MutableGameState state){
+		
+		return;
+	}
 
-    public DieselEngine(ObservableServer<MutableGameState> s) {
-        server = s;
-        //server.addListener(stateUpdateListener);
-        server.start();
-    }
+	@Override
+	public void restart() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public void save() {
+		// TODO Auto-generated method stub
+		
+	}
 
-    private void checkRules(MutableGameState state) {
-
-        return;
-    }
-
-    @Override
-    public void restart() {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void save() {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void load() {
-        // TODO Auto-generated method stub
-    }
+	@Override
+	public void load() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	public void messagePlayer(Player from, Player to, String message) {
+		// TODO Auto-generated method stub
+		
+	}
 
     @Override
     public String toXML() {
