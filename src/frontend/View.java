@@ -22,25 +22,30 @@ public class View extends BaseUIManager {
 	private ToolsPane toolsPane;
 	private DetailPane infoPane;
 	private TemplatePane tempPane;
+	private ImmutableGameState myGameState;
+	private ClientController myController;
+	
 	
 	
 	public View(ImmutableGameState gameState, ClientController controller){
-		instantiateListeners();
+		myGameState = gameState;
+		myController = controller;
+		initPanesAndListeners();
 	}
 	
 	
 	
 	/**
-	 * Notifies when GameState changes and displays the new GameState.
+	 * Updates the display of the GameState. This method is to be called by the GameState whenever changes are made.
 	 */
 	public void update(){
-		
+		worldView.updateGrid(myGameState.getGrid());
 	}
 	
 	/**
-	 * Sends requests to ClientController when the user makes any changes.
+	 * Instantiates all panes in the GUI and makes View a listener to all necessary panes.
 	 */
-	private void instantiateListeners(){
+	private void initPanesAndListeners(){
 		
 	}
 
