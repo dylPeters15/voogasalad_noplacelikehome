@@ -1,7 +1,7 @@
 package chat_client;
 
 import util.net.ObservableClient;
-import util.net.ObservableHost;
+import util.net.ObservableHostBase;
 
 import java.time.Duration;
 import java.util.Scanner;
@@ -11,7 +11,7 @@ import java.util.Scanner;
  */
 public class ChatClientMain {
     //    public static final String HOSTNAME = "25.4.129.184";
-    public static final String HOSTNAME = ObservableHost.LOCALHOST;
+    public static final String HOSTNAME = ObservableHostBase.LOCALHOST;
     public static final int PORT = 10023;
     public static final String CLEARSCREEN = "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
 
@@ -22,9 +22,10 @@ public class ChatClientMain {
                 ChatLog.CHAT_LOG_TEST_SERIALIZER,
                 ChatLog.CHAT_LOG_TEST_UNSERIALIZER,
                 Duration.ofSeconds(10));
+        System.out.println("Client started successfully...");
         Scanner stdin = new Scanner(System.in);
         voogaClient.addListener(client -> System.out.print(CLEARSCREEN + client.getLast() + "\n\n>>  "));
-        voogaClient.run();
+        new Thread(voogaClient).start();
         while (voogaClient.isActive()) {
             String input = stdin.nextLine();
             String user = System.getProperty("user.name");

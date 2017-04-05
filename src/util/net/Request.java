@@ -1,11 +1,6 @@
 package util.net;
 
 import java.io.Serializable;
-import java.time.Clock;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 
 /**
  * This class provides contains all communications between the client and the server.
@@ -14,12 +9,12 @@ import java.time.format.FormatStyle;
  *
  * @param <T> The type of the content contained in the request.
  * @author Created by th174 on 4/2/2017.
- * @see Request,Modifier,ObservableServer, ObservableServer.ClientConnection ,ObservableClient,ObservableHost,AbstractObservableHost,RemoteListener
+ * @see Request,Modifier,ObservableServer, ObservableServer.ServerDelegate ,ObservableClient,ObservableHost,AbstractObservableHost,RemoteListener
  */
 public final class Request<T extends Serializable> implements Serializable {
-    public static final Serializable HEARTBEAT = "heartbeat";
+    public static final Serializable ERROR = "ERROR";
+    private static final Serializable HEARTBEAT = "HEARTBEAT";
     private final T content;
-    private final Instant timeStamp;
     private final int commitIndex;
 
     /**
@@ -39,12 +34,19 @@ public final class Request<T extends Serializable> implements Serializable {
      */
     public Request(T content, int commitIndex) {
         this.content = content;
-        this.timeStamp = Instant.now(Clock.systemUTC());
         this.commitIndex = commitIndex;
     }
 
-    public static Request<?> heartbeatRequest(int commitIndex) {
+    public static Request heartbeatRequest(int commitIndex) {
         return new Request<>(HEARTBEAT, commitIndex);
+    }
+
+    public static boolean isHeartbeat(Request request) {
+        return request.get().equals(HEARTBEAT);
+    }
+
+    public static boolean isError(Request request) {
+        return request.get().equals("ERROR");
     }
 
     /**
@@ -62,13 +64,6 @@ public final class Request<T extends Serializable> implements Serializable {
     }
 
     /**
-     * @return Timestamp when this request was created
-     */
-    public Instant getTimeStamp() {
-        return timeStamp;
-    }
-
-    /**
      * @return Returns the commitIndex that this Request was sent with
      */
     public int getCommitIndex() {
@@ -77,6 +72,6 @@ public final class Request<T extends Serializable> implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("Request:\n\tContent:\t%s\n\tTimestamp:\t%s,CommitIndex:\t%d", content, timeStamp.atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)), commitIndex);
+        return String.format("Request:\n\tContent:\t%s\n\tCommit:\t%d", content, commitIndex);
     }
 }

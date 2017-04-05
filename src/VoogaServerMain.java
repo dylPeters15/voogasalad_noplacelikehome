@@ -22,7 +22,7 @@ public class VoogaServerMain {
                 xstreamSerializer,
                 xstreamUnserializer);
         GameEngine gameEngine = new DieselEngine(voogaServer);
-        voogaServer.run();
+        new Thread(voogaServer).start();
         System.out.println("Server started successfully...");
     }
 }

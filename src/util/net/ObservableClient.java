@@ -4,9 +4,9 @@ import util.io.Serializer;
 import util.io.Unserializer;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.Socket;
 import java.time.Duration;
-import java.time.Instant;
 
 /**
  * This class provides a simple implementation of a client that connects to a server with a given server name and port.
@@ -17,8 +17,8 @@ import java.time.Instant;
  * @author Created by th174 on 4/1/2017.
  * @see Request,Modifier,ObservableServer, ObservableServer.ClientConnection ,ObservableClient,ObservableHost,AbstractObservableHost, RemoteListener
  */
-public class ObservableClient<T> extends ObservableHost<T> {
-    private volatile T state;
+public class ObservableClient<T> extends ObservableHostBase<T> {
+    private final SocketConnection connection;
 
     /**
      * Creates a client connected to a server located at host:port, and starts listening for requests sent from the server
@@ -64,50 +64,61 @@ public class ObservableClient<T> extends ObservableHost<T> {
      * @throws IOException {@inheritDoc}
      */
     public ObservableClient(String host, int port, Serializer<T> serializer, Unserializer<T> unserializer, Duration timeout) throws IOException {
-        super(new Socket(host, port), serializer, unserializer, timeout);
+        super(serializer, unserializer, timeout);
+        setCommitIndex(Integer.MIN_VALUE);
+        this.connection = new SocketConnection(new Socket(host, port), getTimeout());
     }
 
     @Override
-    public T getState() {
-        return state;
+    public void run() {
+        connection.listen(this::handleRequest);
+    }
+
+    @Override
+    protected boolean validateRequest(Request incomingRequest) {
+        if (incomingRequest.getCommitIndex() >= this.getCommitIndex()) {
+            setCommitIndex(incomingRequest.getCommitIndex());
+            return true;
+        } else {
+            handleError();
+        }
+        return false;
+    }
+
+    @Override
+    public boolean handleRequest(Request request) {
+        if (Request.isHeartbeat(request) && request.getCommitIndex() == this.getCommitIndex()) {
+            return handleHeartBeat();
+        } else return super.handleRequest(request);
     }
 
     /**
-     * Sets the local state to match the network shared state.
-     * <p>
-     * On clients, this should only ever be called in response to a request from the server. On servers, this should only be called if the request is approved.
-     * <p>
-     * All observers registered observers are notified when this method is invoked.
+     * Responds the heartbeat requests sent by the server by sending back another heartbeat request
      *
-     * @param state State on server to be set to new local state
+     * @return Returns true if heartbeat was handled successfully
      */
-    protected void setState(T state) {
-        this.state = state;
+    protected boolean handleHeartBeat() {
+        return send(getHeartBeatRequest());
     }
 
     /**
-     * Sets the local state to be equal to the new network state.
+     * Notifies the server that the client is in an error state
      *
-     * @param newState New state received from remote server.
+     * @return Returns true if error was handled successfully
      */
     @Override
-    public void handle(T newState, Instant timeStamp) {
-        setState(newState);
-    }
-
-    /**
-     * Applies the state modifier to the local state in order to stay in sync with the network state.
-     *
-     * @param stateModifier State modifier received from remote server.
-     */
-    @Override
-    public void handle(Modifier<T> stateModifier, Instant timeStamp) {
-        setState(stateModifier.modify(getState()));
+    protected boolean handleError() {
+        return send(getErrorRequest());
     }
 
     @Override
-    protected void handleHeartBeat() {
-        sendHeartBeat();
+    protected boolean send(Request request) {
+        return connection.send(request);
+    }
+
+    @Override
+    public boolean isActive() {
+        return connection.isActive();
     }
 }
 

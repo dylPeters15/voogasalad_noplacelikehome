@@ -16,8 +16,7 @@ public class VoogaClientMain extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        ResourceBundle bundle = ResourceBundle.getBundle("resources/Selections", Locale.getDefault());
-        primaryStage.setTitle(bundle.getString("Title"));
+        primaryStage.setTitle(ResourceBundle.getBundle("resources/Selections", Locale.getDefault()).getString("Title"));
         UI userInterface = new UI();
         primaryStage.setScene(userInterface.getPrimaryScene());
         primaryStage.setResizable(true);

@@ -22,6 +22,7 @@ public class ChatServerMain {
                 ChatLog.CHAT_LOG_TEST_SERIALIZER,
                 ChatLog.CHAT_LOG_TEST_UNSERIALIZER,
                 Duration.ofSeconds(10));
-        voogaServer.run();
+        new Thread(voogaServer).start();
+        System.out.println("Server started successfully...");
     }
 }

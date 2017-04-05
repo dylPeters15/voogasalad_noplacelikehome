@@ -3,13 +3,16 @@ package util.net;
 import util.io.Serializer;
 import util.io.Unserializer;
 
+import java.io.IOException;
+import java.io.Serializable;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.time.Clock;
 import java.time.Duration;
-import java.time.Instant;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This class provides a general server that allows multiple simultaneous client connections.
@@ -18,14 +21,14 @@ import java.util.HashSet;
  *
  * @param <T> The type of variable used to represent networked shared state.
  * @author Created by th174 on 4/1/2017.
- * @see Request,Modifier,ObservableServer, ServerConnection ,ObservableClient,ObservableHost,AbstractObservableHost,RemoteListener
+ * @see Request,Modifier,ObservableServer,ObservableClient,ObservableHostBase,SocketConnection
  */
-public class ObservableServer<T> extends AbstractObservableHost<T> {
-    private final Collection<ClientConnection> connections;
+public class ObservableServer<T> extends ObservableHostBase<T> {
+    private static final int DEFAULT_THREAD_POOL_SIZE = 12;
+    private final long heartBeatIntervalMillis;
+    private final Collection<ServerDelegate> connections;
     private final ServerSocket serverSocket;
-    private volatile Instant mostRecentTimeStamp;
-    private volatile T state;
-    private volatile int commitIndex;
+    private final ScheduledExecutorService executor;
 
     /**
      * Constructs an instance of VoogaServer without serialization
@@ -63,10 +66,12 @@ public class ObservableServer<T> extends AbstractObservableHost<T> {
      */
     public ObservableServer(T initialState, int port, Serializer<T> serializer, Unserializer<T> unserializer, Duration timeout) throws Exception {
         super(serializer, unserializer, timeout);
-        this.state = initialState;
-        this.mostRecentTimeStamp = Instant.now(Clock.systemUTC());
+        setState(initialState);
+        setCommitIndex(0);
         this.connections = new HashSet<>();
         this.serverSocket = new ServerSocket(port);
+        this.executor = Executors.newScheduledThreadPool(DEFAULT_THREAD_POOL_SIZE);
+        heartBeatIntervalMillis = getTimeout().toMillis() / 2;
     }
 
     /**
@@ -76,61 +81,35 @@ public class ObservableServer<T> extends AbstractObservableHost<T> {
      */
     @Override
     public void run() {
-        commitIndex = 0;
+        executor.scheduleAtFixedRate(this::sendHeartBeatRequest, 0, heartBeatIntervalMillis, TimeUnit.MILLISECONDS);
         try {
             while (serverSocket.isBound() && !serverSocket.isClosed()) {
-                ClientConnection child = new ClientConnection(serverSocket.accept());
-                submitTask(child);
-                connections.add(child);
+                ServerDelegate delegate = new ServerDelegate(serverSocket.accept());
+                executor.submit(delegate);
+                connections.add(delegate);
             }
         } catch (Exception e) {
             throw new RemoteConnectionException(e);
         } finally {
-            shutDown();
+            try {
+                serverSocket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            executor.shutdown();
         }
     }
 
-    @Override
-    public T getState() {
-        return state;
-    }
-
     /**
-     * Sends a serialized version of the state to all clients.
+     * Sets the server's local state, then sends the new state to all clients to be applied.
      *
-     * @param state New state object to be serialized and propagated across all servers and clients
-     * @return Returns true if state is sent successfully
-     */
-    @Override
-    protected boolean send(T state) {
-        for (ClientConnection e : connections) {
-            e.send(state);
-        }
-        return isActive();
-    }
-
-    /**
-     * Sets the server's local state, then sends serialized version of the state to all clients.
-     *
-     * @param state New state object to be serialized and propagated across all servers and clients
-     * @return Returns true if state is sent successfully
-     */
-    public synchronized final boolean sendAndApply(T state) {
-        this.state = state;
-        incrementCommitIndex();
-        return send(state);
-    }
-
-    /**
-     * Sends a modifier to all clients to be applied.
-     *
-     * @param modifier Request to be applied to the networked state on all clients.
+     * @param newState New state to be applied to the local state and send to all clients.
      * @return Returns true if the requests were sent successfully
      */
-    @Override
-    protected boolean send(Modifier<T> modifier) {
-        connections.removeIf(e -> !e.send(modifier));
-        return isActive();
+    public final boolean sendAndApply(T newState) {
+        setState(newState);
+        setCommitIndex(getCommitIndex() + 1);
+        return send(newState);
     }
 
     /**
@@ -139,24 +118,31 @@ public class ObservableServer<T> extends AbstractObservableHost<T> {
      * @param modifier Request to be applied to the networked state on all clients.
      * @return Returns true if the requests were sent successfully
      */
-    public final synchronized boolean sendAndApply(Modifier<T> modifier) {
-        this.state = modifier.modify(state);
-        incrementCommitIndex();
+    public final boolean sendAndApply(Modifier<T> modifier) {
+        setState(modifier.modify(getState()));
+        setCommitIndex(getCommitIndex() + 1);
         return send(modifier);
     }
 
-    private void incrementCommitIndex() {
-        commitIndex++;
-    }
-
     @Override
-    public synchronized void handle(T newState, Instant timeStamp) {
+    protected synchronized void handle(T newState) {
         sendAndApply(newState);
     }
 
     @Override
-    public synchronized void handle(Modifier<T> stateModifier, Instant timeStamp) {
+    protected synchronized void handle(Modifier<T> stateModifier) {
         sendAndApply(stateModifier);
+    }
+
+    @Override
+    protected boolean handleError() {
+        throw new InvalidRequestException("Error");
+    }
+
+    @Override
+    protected synchronized boolean send(Request request) {
+        connections.removeIf(e -> !e.send(request));
+        return isActive();
     }
 
     @Override
@@ -165,64 +151,45 @@ public class ObservableServer<T> extends AbstractObservableHost<T> {
     }
 
     @Override
-    protected int getCommitIndex() {
-        return commitIndex;
-    }
-
-    @Override
-    protected boolean validateRequest(Request<?> request) {
-        if (request.getTimeStamp().isAfter(mostRecentTimeStamp) && request.getCommitIndex() == this.commitIndex) {
-            mostRecentTimeStamp = request.getTimeStamp();
-            return true;
-        }
-        return false;
+    protected boolean validateRequest(Request request) {
+        return request.getCommitIndex() == getCommitIndex();
     }
 
     /**
      * This class listens to a client on a single socket and relays information between the main server and the client.
      *
      * @author Created by th174 on 4/1/2017.
-     * @see Request,Modifier, ObservableServer , util.net.ServerThread ,Client,AbstractHost,Host,Listener
+     * @see Request,Modifier,ObservableServer , util.net.ServerThread ,Client,AbstractHost,Host,Listener
      */
-    protected class ClientConnection extends ObservableHost<T> {
+    protected class ServerDelegate implements Runnable {
+        private final SocketConnection connection;
+
         /**
          * @param socket Socket to listen on for client requests.
-         * @throws Exception Thrown if socket is not open for reading and writing, or if an exception is thrown in serialization
+         * @throws IOException Thrown if socket is not open for reading and writing, or if an exception is thrown in serialization
          */
-        private ClientConnection(Socket socket) throws Exception {
-            super(socket, ObservableServer.this.getSerializer(), ObservableServer.this.getUnserializer(), ObservableServer.this.getTimeout());
+        public ServerDelegate(Socket socket) throws IOException {
+            connection = new SocketConnection(socket, ObservableServer.this.getTimeout());
+            System.out.println("Client connected:\t" + connection);
         }
 
         @Override
         public void run() {
-            send(getState());
-            submitRepeatedTask(this::sendHeartBeat, getTimeout().equals(NEVER_TIMEOUT) ? Duration.ofSeconds(30) : Duration.ofMillis(getTimeout().toMillis() / 2));
-            super.run();
-            System.out.println("Client Connected @ " + getSocket());
+            send(getHeartBeatRequest());
+            connection.listen(this::handleRequest);
         }
 
-        @Override
-        public T getState() {
-            return ObservableServer.this.getState();
+        private boolean handleRequest(Request<? extends Serializable> request) {
+            if (Request.isHeartbeat(request)) {
+                System.out.println("Heartbeat Received: " + request);
+                return true;
+            } else if (Request.isError(request)) {
+                return send(getRequest(getState()));
+            } else return ObservableServer.this.handleRequest(request);
         }
 
-        @Override
-        public void handle(Modifier<T> modifier, Instant timeStamp) {
-            ObservableServer.this.handleAndNotify(modifier, timeStamp);
-        }
-
-        @Override
-        protected void handleHeartBeat() {
-        }
-
-        @Override
-        protected int getCommitIndex() {
-            return ObservableServer.this.getCommitIndex();
-        }
-
-        @Override
-        public void handle(T state, Instant timeStamp) {
-            ObservableServer.this.handleAndNotify(state, timeStamp);
+        protected boolean send(Request request) {
+            return connection.send(request);
         }
     }
 }
