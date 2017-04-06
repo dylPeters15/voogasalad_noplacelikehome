@@ -7,15 +7,17 @@ import backend.util.MutableGameState;
 public class UserPredicate {
 
 	private Predicate<MutableGameState> userPredicate = 
-(hello) -> {return hello.getTurnNumber() == 0;};
-	public UserPredicate(){}
-	
-	boolean doNothing(){
-		System.out.println("Yes");
+	(hello) -> {hello.endTurn(); return hello.getTurnNumber() == 0;};
+
+	public UserPredicate() {
+	}
+
+	boolean doNothing() {
+		System.out.println("Predicate");
 		return false;
 	}
-	
-	public Predicate<MutableGameState> getPredicate(){
+
+	public Predicate<MutableGameState> getPredicate() {
 		return userPredicate;
 	}
 }
