@@ -11,7 +11,6 @@ import java.util.Map;
  * @author Created by th174 on 4/6/2017.
  */
 class VoogaJavaScriptEngine extends VoogaScriptEngine {
-    public static final String[] IDENTIFIERS = new String[]{"javascript", "js","nashorn"};
     private static final String FUNCTION_FORMAT = "" +
             "var console = { \n" +
             "    log: print,\n" +
@@ -24,7 +23,11 @@ class VoogaJavaScriptEngine extends VoogaScriptEngine {
     private static final String FUNCTION_NAME = "voogaJavascriptFunction";
     private static final ScriptEngine NASHORN = new ScriptEngineManager().getEngineByName("nashorn");
 
-    VoogaJavaScriptEngine() {
+    static {
+        VoogaScriptEngine.addEngine(new VoogaJavaScriptEngine(), "javascript", "js", "nashorn");
+    }
+
+    private VoogaJavaScriptEngine() {
         super();
     }
 
