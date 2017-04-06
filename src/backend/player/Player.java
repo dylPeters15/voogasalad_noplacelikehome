@@ -1,5 +1,6 @@
 package backend.player;
 
+import backend.cell.CellInstance;
 import backend.grid.MutableGrid;
 import backend.unit.UnitInstance;
 import backend.unit.properties.Faction;
@@ -44,12 +45,12 @@ public class Player extends VoogaObject implements MutablePlayer {
     }
 
     @Override
-    public Collection<Cell> getVisibleCells() {
+    public Collection<CellInstance> getVisibleCells() {
         return null;
     }
 
     @Override
-    public Collection<Cell> getExploredCells() {
+    public Collection<CellInstance> getExploredCells() {
         return null;
     }
 }

@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 /**
  * @author Created by th174 on 3/30/2017.
  */
-public abstract class VoogaCollection<T extends VoogaObject, U extends VoogaCollection<T,U>> extends VoogaTemplate<VoogaCollection<T, U>> implements Iterable<T> {
+public abstract class VoogaCollection<T extends VoogaObject, U extends VoogaCollection<T, U>> extends VoogaTemplate<VoogaCollection<T, U>> implements Iterable<T> {
     private final Map<String, T> gameObjects;
 
     public VoogaCollection(String name, String description, String imgPath, T... gameObjects) {
@@ -39,6 +39,10 @@ public abstract class VoogaCollection<T extends VoogaObject, U extends VoogaColl
         return (U) this;
     }
 
+    public U addAll(T... predefinedTerrains) {
+        return addAll(Arrays.asList(predefinedTerrains));
+    }
+
     public U remove(T u) {
         remove(u.getName());
         return (U) this;
@@ -57,4 +61,5 @@ public abstract class VoogaCollection<T extends VoogaObject, U extends VoogaColl
     public Iterator<T> iterator() {
         return gameObjects.values().iterator();
     }
+
 }
