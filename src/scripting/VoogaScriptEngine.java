@@ -25,7 +25,7 @@ public abstract class VoogaScriptEngine implements Serializer, Unserializer, Int
     }};
     private String script;
 
-    protected VoogaScriptEngine() {
+    VoogaScriptEngine() {
         script = "";
     }
 
@@ -33,18 +33,18 @@ public abstract class VoogaScriptEngine implements Serializer, Unserializer, Int
         return scriptEngines.get(name.toLowerCase());
     }
 
-    public final VoogaScriptEngine setScript(String script) {
+    public final VoogaScriptEngine read(String script) {
         this.script = script;
         return this;
     }
 
-    public final String getScript() {
+    final String getScript() {
         return script;
     }
 
     protected abstract Object eval(Map<String, Object> bindings) throws VoogaScriptException;
 
-    public HashMap<String, Object> createBindings(Object... params) {
+    private HashMap<String, Object> createBindings(Object... params) {
         HashMap<String, Object> bindings = new LinkedHashMap<>();
         try {
             for (int i = 0; i < params.length; i += 2) {
@@ -86,8 +86,8 @@ public abstract class VoogaScriptEngine implements Serializer, Unserializer, Int
         return eval(createBindings("originalValue", originalValue, "agent", agent, "target", target, "gameState", gameState));
     }
 
-    public static class VoogaScriptException extends RuntimeException {
-        protected VoogaScriptException(Exception e) {
+    static class VoogaScriptException extends RuntimeException {
+        VoogaScriptException(Exception e) {
             super(e);
         }
     }

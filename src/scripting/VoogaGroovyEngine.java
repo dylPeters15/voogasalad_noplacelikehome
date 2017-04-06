@@ -3,9 +3,9 @@ package scripting;
 import java.util.Map;
 
 /**
- * Created by bioadmin on 4/6/17.
+ * @author Created by th174 on 4/6/2017.
  */
-public class VoogaGroovyEngine extends VoogaScriptEngine {
+class VoogaGroovyEngine extends VoogaScriptEngine {
 
     protected VoogaGroovyEngine() {
         //TODO

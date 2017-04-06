@@ -10,8 +10,16 @@ import java.util.Map;
 /**
  * @author Created by th174 on 4/6/2017.
  */
-public class VoogaJavaScriptEngine extends VoogaScriptEngine {
-    private static final String FUNCTION_FORMAT = "function %s(%s) {\n%s\n}";
+class VoogaJavaScriptEngine extends VoogaScriptEngine {
+    private static final String FUNCTION_FORMAT = "" +
+            "var console = { \n" +
+            "    log: print,\n" +
+            "    warn: print,\n" +
+            "    error: print\n" +
+            "};\n\n" +
+            "var %s = function(%s) {\n" +
+            "%s\n" +
+            "};";
     private static final String FUNCTION_NAME = "voogaJavascriptFunction";
     private static final ScriptEngine NASHORN = new ScriptEngineManager().getEngineByName("nashorn");
 
@@ -22,14 +30,14 @@ public class VoogaJavaScriptEngine extends VoogaScriptEngine {
     @Override
     public Object eval(Map<String, Object> bindings) {
         try {
-            NASHORN.eval(formatScript(getScript(), bindings.keySet()));
+            NASHORN.eval(getFormattedScript(bindings.keySet()));
             return ((Invocable) NASHORN).invokeFunction(FUNCTION_NAME, bindings.values().toArray());
         } catch (ScriptException | NoSuchMethodException e) {
             throw new VoogaScriptException(e);
         }
     }
 
-    public static String formatScript(String script, Collection<String> paramNames) {
-        return String.format(FUNCTION_FORMAT, FUNCTION_NAME, paramNames.toString().substring(1, paramNames.toString().length() - 1), script);
+    public String getFormattedScript(Collection<String> paramNames) {
+        return String.format(FUNCTION_FORMAT, FUNCTION_NAME, paramNames.toString().substring(1, paramNames.toString().length() - 1), getScript().replaceAll("(?m)^", "\t"));
     }
 }
