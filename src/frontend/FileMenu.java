@@ -23,7 +23,7 @@ public class FileMenu extends VBox {
 	Pane selectionPane =  new Pane();
 
 	MenuBar menuBar;
-	private MenuItem playItem, saveItem, loadItem, newGameItem;
+	private MenuItem playItem, saveItem, loadItem, newGameItem, editItem;
 	Menu fileMenu, helpMenu;
 
 	public FileMenu(){
@@ -39,9 +39,14 @@ public class FileMenu extends VBox {
 			setOnAction(e -> save());
 		}};
 
-		this.loadItem = new MenuItem(SelectionProperties.getString("Edit/Load")){{
-			setOnAction(e -> editOrLoad());
+		this.editItem = new MenuItem(SelectionProperties.getString("Edit")){{
+			setOnAction(e -> edit());
 		}};
+		
+		this.loadItem = new MenuItem(SelectionProperties.getString("Load")){{
+			setOnAction(e -> edit());
+		}};
+
 
 		this.newGameItem = new MenuItem(SelectionProperties.getString("Create")){{
 			setOnAction(e -> newGame());
@@ -53,7 +58,7 @@ public class FileMenu extends VBox {
 		}};
 
 		this.fileMenu = new Menu(SelectionProperties.getString("File")) {{
-			getItems().addAll(playItem, saveItem, loadItem, newGameItem);
+			getItems().addAll(playItem, saveItem, editItem, loadItem, newGameItem);
 		}};
 
 		this.menuBar = new MenuBar() {{
@@ -90,8 +95,11 @@ public class FileMenu extends VBox {
 		}
 	}
 
-	private void editOrLoad(){
-		System.out.println("you can load and save files, but it won't do anything");
+	private void edit(){
+
+	}
+
+	private void load(){
 		read();
 	}
 
@@ -101,9 +109,9 @@ public class FileMenu extends VBox {
 
 	public void read(){
 		FileChooser fileChooser = new FileChooser();
-    	fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(".xml Files", "*.xml"));
-    	fileChooser.setTitle("Open Resource File");
-    	Window stage = null;
+		fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(".xml Files", "*.xml"));
+		fileChooser.setTitle("Open Resource File");
+		Window stage = null;
 		File file = fileChooser.showOpenDialog(stage);
 
 		try {
