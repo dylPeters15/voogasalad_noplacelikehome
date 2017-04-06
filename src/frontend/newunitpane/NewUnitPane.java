@@ -1,14 +1,32 @@
 package frontend.newunitpane;
 
 import frontend.BaseUIManager;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
 
-public class NewUnitPane extends BaseUIManager<Region>{
+/**
+ * 
+ * @author Dylan Peters
+ *
+ */
+public class NewUnitPane extends BaseUIManager<Region> {
+	private AnchorPane anchorPane;
+
+	public NewUnitPane() {
+		initialize();
+	}
 
 	@Override
 	public Region getObject() {
-		// TODO Auto-generated method stub
-		return null;
+		return anchorPane;
+	}
+
+	protected void submit() {
+
+	}
+
+	private void initialize() {
+		anchorPane = new AnchorPane();
 	}
 
 }
