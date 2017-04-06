@@ -14,7 +14,7 @@ public class TriggeredEffectInstance extends VoogaInstance<TriggeredEffectTempla
     private final int duration;
     private int turnsRemaining;
 
-    protected TriggeredEffectInstance(TriggeredEffectTemplate template) {
+    TriggeredEffectInstance(TriggeredEffectTemplate template) {
         super(template.getName(), template);
         this.effect = template.getEffect();
         this.duration = template.getDuration();

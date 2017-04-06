@@ -32,7 +32,7 @@ public class UnitInstance extends VoogaInstance<UnitTemplate> {
     private CellInstance currentCell;
     private boolean isVisible;
 
-    protected UnitInstance(String unitName, UnitTemplate unitTemplate, Player ownerPlayer, CellInstance startingCell) {
+    UnitInstance(String unitName, UnitTemplate unitTemplate, Player ownerPlayer, CellInstance startingCell) {
         super(unitName, unitTemplate);
         this.faction = unitTemplate.getFaction();
         this.movePattern = unitTemplate.getMovePattern();
@@ -73,11 +73,11 @@ public class UnitInstance extends VoogaInstance<UnitTemplate> {
         useActiveAbility(getActiveAbilityByName(activeAbilityName), target, gameState);
     }
 
-    private ActiveAbility<VoogaInstance> getActiveAbilityByName(String activeAbilityName) {
+    private ActiveAbility getActiveAbilityByName(String activeAbilityName) {
         return activeAbilities.get(activeAbilityName);
     }
 
-    public void useActiveAbility(ActiveAbility<VoogaInstance> activeAbility, VoogaInstance target, ImmutableGameState gameState) {
+    public void useActiveAbility(ActiveAbility activeAbility, VoogaInstance target, ImmutableGameState gameState) {
         processTriggers(Event.UNIT_PRE_ABILITY_USE, gameState);
         activeAbility.affect(this, target, gameState);
         processTriggers(Event.UNIT_POST_ABILITY_USE, gameState);

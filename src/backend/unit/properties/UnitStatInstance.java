@@ -12,7 +12,7 @@ public class UnitStatInstance<T extends Comparable<T>> extends VoogaInstance<Uni
     private final T minValue;
     private T currentValue;
 
-    protected UnitStatInstance(T initialValue, T minValue, T maxValue, UnitStatTemplate<T> template) {
+    UnitStatInstance(T initialValue, T minValue, T maxValue, UnitStatTemplate<T> template) {
         super(template.getName(), template);
         this.currentValue = initialValue;
         this.maxValue = maxValue;

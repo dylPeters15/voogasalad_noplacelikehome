@@ -10,11 +10,26 @@ import java.util.Collection;
 public class UnitStatTemplate<T extends Comparable<T>> extends VoogaTemplate<UnitStatTemplate<T>> {
     //TODO ResourceBundlify
     //For units
-    public static final UnitStatTemplate<Double> HITPOINTS = new UnitStatTemplate<>("Hitpoints", 0.0, 50.0, "Units lose HP when taking damage. When a unit's hitpoints reach 0, the unit dies.", "<3.png");
-    public static final UnitStatTemplate<Integer> MOVEPOINTS = new UnitStatTemplate<>("Movepoints", 0, 5, "Movepoints are consumed by moving on the map. Difficult terrain costs more movepoints, while more mobile units have more to spare.", "Boot.png");
-    public static final UnitStatTemplate<Double> ENERGY = new UnitStatTemplate<>("Energy", 0.0, 100.0, "Energy points are required for and consumed by some powerful abilities.", "NRG.png");
+    public static final UnitStatTemplate<Double> HITPOINTS = new UnitStatTemplate<Double>("Hitpoints")
+            .setMinValue(0.0)
+            .setMaxValue(50.0)
+            .setDescription("Units lose HP when taking damage. When a unit's hitpoints reach 0, the unit dies.")
+            .setImgPath("<3.png");
+    public static final UnitStatTemplate<Integer> MOVEPOINTS = new UnitStatTemplate<Integer>("Movepoints")
+            .setMinValue(0)
+            .setMaxValue(5)
+            .setDescription("Movepoints are consumed by moving on the map. Difficult terrain costs more movepoints, while more mobile units have more to spare.")
+            .setImgPath("Boot.png");
+    public static final UnitStatTemplate<Double> ENERGY = new UnitStatTemplate<Double>("Energy")
+            .setMinValue(0.0)
+            .setMaxValue(100.0)
+            .setDescription("Energy points are required for and consumed by some powerful abilities.")
+            .setImgPath("NRG.png");
     //For players
-    public static final UnitStatTemplate<Double> GOLD = new UnitStatTemplate<>("Gold", 0.0, Double.MAX_VALUE, "Players have a limited amount of gold to spend on their units.", "SHINY~~~.png");
+    public static final UnitStatTemplate<Double> GOLD = new UnitStatTemplate<Double>("Gold")
+            .setMinValue(0.0).setMaxValue(Double.MAX_VALUE)
+            .setDescription("Players have a limited amount of gold to spend on their units.")
+            .setImgPath("SHINY~~~.png");
     private T maxValue;
     private T minValue;
 
@@ -37,7 +52,7 @@ public class UnitStatTemplate<T extends Comparable<T>> extends VoogaTemplate<Uni
         return new UnitStatTemplate<>(getName(), minValue, maxValue, getDescription(), getImgPath());
     }
 
-    public UnitStatInstance<T> createInstance(){
+    public UnitStatInstance<T> createInstance() {
         return createInstance(maxValue);
     }
 

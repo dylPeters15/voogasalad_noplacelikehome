@@ -1,6 +1,5 @@
 package backend.player;
 
-import backend.cell.Cell;
 import backend.grid.MutableGrid;
 import backend.unit.UnitInstance;
 import backend.unit.properties.Faction;

@@ -17,10 +17,14 @@ import java.util.stream.Collectors;
 /**
  * @author Created by th174 on 3/28/2017.
  */
-public class CellInstance extends VoogaInstance<CellTemplate> implements Cell {
+public class CellInstance extends VoogaInstance<CellTemplate> {
     private final CoordinateTuple coordinates;
     private final Map<String, UnitInstance> currentOccupants;
     private final Collection<TriggeredEffectInstance> triggeredAbilities;
+
+    protected CellInstance(CoordinateTuple coordinateTuple, CellTemplate templateCell, Collection<UnitInstance> initialOccupants) {
+        this(coordinateTuple, templateCell, Collections.emptySet(), initialOccupants);
+    }
 
     protected CellInstance(CoordinateTuple coordinateTuple, CellTemplate templateCell, Collection<TriggeredEffectInstance> cellAbilities, Collection<UnitInstance> initialOccupants) {
         super(templateCell.getName() + "@" + coordinateTuple.toString(), templateCell);
@@ -37,12 +41,14 @@ public class CellInstance extends VoogaInstance<CellTemplate> implements Cell {
         processTriggers(Event.TURN_END, gameState);
     }
 
-    @Override
     public CoordinateTuple getCoordinates() {
         return coordinates;
     }
 
-    @Override
+    public int dimension() {
+        return getShape().getDimension();
+    }
+
     public Shape getShape() {
         return getTemplate().getShape();
     }
@@ -51,7 +57,6 @@ public class CellInstance extends VoogaInstance<CellTemplate> implements Cell {
         return grid.getNeighbors(this);
     }
 
-    @Override
     public Terrain getTerrain() {
         return getTemplate().getTerrain();
     }
