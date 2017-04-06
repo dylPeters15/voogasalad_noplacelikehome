@@ -17,7 +17,7 @@ import javafx.scene.input.MouseEvent;
  * @author Stone Mathers
  * Created 3/29/2017
  */
-public class Terrain implements Sprite {
+public class Terrain extends Sprite {
 
 	@Override
 	public Node getView() {

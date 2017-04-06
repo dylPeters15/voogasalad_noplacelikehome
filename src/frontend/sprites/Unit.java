@@ -15,7 +15,7 @@ import javafx.scene.input.MouseEvent;
  * @author Stone Mathers
  * Created 3/29/2017
  */
-public class Unit implements Sprite {
+public class Unit extends Sprite {
 
 	/* (non-Javadoc)
 	 * @see frontend.Displayable#getView()
