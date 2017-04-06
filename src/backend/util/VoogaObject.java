@@ -34,7 +34,7 @@ public abstract class VoogaObject implements XMLSerializable {
         return name;
     }
 
-    void setName(String name) {
+    VoogaTemplate setName(String name) {
         this.name = name;
     }
 
@@ -42,7 +42,7 @@ public abstract class VoogaObject implements XMLSerializable {
         return description;
     }
 
-    void setDescription(String description) {
+    VoogaTemplate setDescription(String description) {
         this.description = description;
     }
 
@@ -50,7 +50,7 @@ public abstract class VoogaObject implements XMLSerializable {
         return imgPath;
     }
 
-    void setImgPath(String imgPath) {
+    VoogaTemplate setImgPath(String imgPath) {
         this.imgPath = imgPath;
     }
 

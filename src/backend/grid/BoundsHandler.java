@@ -48,7 +48,6 @@ public class BoundsHandler extends VoogaObject {
                                 .collect(Collectors.toList())
                 ).convertToDimension(input.dimension());
             }, "Wraps out of bounds coordinates to the opposite side of a square grid.", "Torus.png");
-
     private final BiFunction<CoordinateTuple, MutableGrid, CoordinateTuple> boundsGetter;
 
     public BoundsHandler(String name, BiFunction<CoordinateTuple, MutableGrid, CoordinateTuple> boundsGetter, String description) {

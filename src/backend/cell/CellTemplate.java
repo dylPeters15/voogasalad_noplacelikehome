@@ -4,14 +4,14 @@ import backend.grid.CoordinateTuple;
 import backend.unit.UnitInstance;
 import backend.util.TriggeredEffectInstance;
 import backend.util.TriggeredEffectTemplate;
-import backend.util.VoogaObject;
+import backend.util.VoogaTemplate;
 
 import java.util.*;
 
 /**
  * @author Created by th174 on 3/31/2017.
  */
-public class CellTemplate extends VoogaObject implements Cell {
+public class CellTemplate extends VoogaTemplate<CellTemplate> implements Cell {
     //TODO ResourceBundlify
     public static final CellTemplate BASIC_HEXAGONAL_EMPTY = new CellTemplate("Basic Hexagonal Empty Cell", Shape.HEXAGONAL, Terrain.EMPTY);
     public static final CellTemplate BASIC_HEXAGONAL_FLAT = new CellTemplate("Basic Hexagonal Flat Cell", Shape.HEXAGONAL, Terrain.FLAT);
@@ -33,10 +33,13 @@ public class CellTemplate extends VoogaObject implements Cell {
     public static final CellTemplate BASIC_SQUARE_FORTIFIED = new CellTemplate("Basic Square Fortified Cell", Shape.SQUARE, Terrain.FORTIFIED);
     public static final CellTemplate STRONG_ATTACK_SQUARE_MOUNTAIN = new CellTemplate("Strong Attack Square Cell", Shape.SQUARE, Terrain.MOUNTAIN, TriggeredEffectTemplate.STRONG_ATTACK.createInstance());
     public static final CellTemplate STRONG_ATTACK_HEXAGON_MOUNTAIN = new CellTemplate("Strong Attack Square Cell", Shape.HEXAGONAL, Terrain.MOUNTAIN, TriggeredEffectTemplate.STRONG_ATTACK.createInstance());
-
     private final List<TriggeredEffectInstance> abilities;
     private Shape shape;
     private Terrain terrain;
+
+    public CellTemplate(String name) {
+        this(name, null, null);
+    }
 
     public CellTemplate(String name, Shape shape, Terrain terrain, TriggeredEffectInstance... abilities) {
         this(name, shape, terrain, terrain.getImgPath(), abilities);
@@ -59,6 +62,11 @@ public class CellTemplate extends VoogaObject implements Cell {
         this.shape = shape;
         this.terrain = terrain;
         this.abilities = new ArrayList<>(abilities);
+    }
+
+    @Override
+    public CellTemplate copy() {
+        return new CellTemplate(getName(), getShape(), getTerrain(), getDescription(), getImgPath(), getTriggeredAbilities());
     }
 
     public CellInstance createInstance(CoordinateTuple coordinateTuple) {
@@ -87,8 +95,9 @@ public class CellTemplate extends VoogaObject implements Cell {
         return shape;
     }
 
-    public void setShape(Shape shape) {
+    public CellTemplate setShape(Shape shape) {
         this.shape = shape;
+        return this;
     }
 
     @Override
@@ -96,8 +105,9 @@ public class CellTemplate extends VoogaObject implements Cell {
         return terrain;
     }
 
-    public void setTerrain(Terrain terrain) {
+    public CellTemplate setTerrain(Terrain terrain) {
         this.terrain = terrain;
+        return this;
     }
 
     @Override

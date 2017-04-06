@@ -19,10 +19,9 @@ import java.util.stream.Collectors;
  * @author Created by th174 on 3/27/2017.
  */
 public class UnitInstance extends VoogaInstance<UnitTemplate> {
-    private final HitPoints hitPoints;
-    private final MovePoints movePoints;
+    private final Map<String, UnitStatInstance> stats;
     private final GridPattern movePattern;
-    private final Map<String, ActiveAbility<VoogaInstance>> activeAbilities;
+    private final Map<String, ActiveAbility> activeAbilities;
     private final Map<String, TriggeredEffectInstance> triggeredAbilities;
     private final List<InteractionModifier<Double>> offensiveModifiers;
     private final List<InteractionModifier<Double>> defensiveModifiers;
@@ -36,12 +35,11 @@ public class UnitInstance extends VoogaInstance<UnitTemplate> {
     protected UnitInstance(String unitName, UnitTemplate unitTemplate, Player ownerPlayer, CellInstance startingCell) {
         super(unitName, unitTemplate);
         this.faction = unitTemplate.getFaction();
-        this.hitPoints = unitTemplate.getHitPoints();
-        this.movePoints = unitTemplate.getMovePoints();
         this.movePattern = unitTemplate.getMovePattern();
+        this.stats = unitTemplate.getUnitStats().parallelStream().map(UnitStatTemplate::createInstance).collect(Collectors.toMap(UnitStatInstance::getName, e -> e));
         this.moveCosts = new HashMap<>(unitTemplate.getTerrainMoveCosts());
-        this.triggeredAbilities = unitTemplate.getTriggeredAbilities().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().createInstance()));
-        this.activeAbilities = new HashMap<>(unitTemplate.getActiveAbilities());
+        this.triggeredAbilities = unitTemplate.getTriggeredAbilities().parallelStream().map(TriggeredEffectTemplate::createInstance).collect(Collectors.toMap(TriggeredEffectInstance::getName, e -> e));
+        this.activeAbilities = unitTemplate.getActiveAbilities().parallelStream().collect(Collectors.toMap(ActiveAbility::getName, e -> e));
         this.offensiveModifiers = new ArrayList<>(unitTemplate.getOffensiveModifiers());
         this.defensiveModifiers = new ArrayList<>(unitTemplate.getDefensiveModifiers());
         setOwner(ownerPlayer);
@@ -52,7 +50,7 @@ public class UnitInstance extends VoogaInstance<UnitTemplate> {
     public void moveTo(CellInstance cell, ImmutableGameState gameState) {
         processTriggers(Event.UNIT_PRE_MOVEMENT, gameState);
         currentCell.leave(this, gameState);
-        movePoints.useMovePoints(moveCosts.get(cell.getTerrain()));
+        getMovePoints().set(getMovePoints().getCurrentValue() - moveCosts.get(cell.getTerrain()));
         currentCell = cell;
         currentCell.arrive(this, gameState);
         processTriggers(Event.UNIT_POST_MOVEMENT, gameState);
@@ -64,11 +62,11 @@ public class UnitInstance extends VoogaInstance<UnitTemplate> {
 
     public void endTurn(GameState gameState) {
         processTriggers(Event.TURN_END, gameState);
-        movePoints.resetValue();
+        getMovePoints().resetValue();
     }
 
     public void takeDamage(double damage) {
-        getHitPoints().takeDamage(damage);
+        getHitPoints().set(getHitPoints().getCurrentValue() - damage);
     }
 
     public void useActiveAbility(String activeAbilityName, VoogaInstance target, ImmutableGameState gameState) {
@@ -94,7 +92,7 @@ public class UnitInstance extends VoogaInstance<UnitTemplate> {
         return movePattern.getCoordinates().parallelStream()
                 .map(e -> grid.get(e.sum(this.getLocation())))
                 .filter(Objects::nonNull)
-                .filter(e -> moveCosts.get(e.getTerrain()) < movePoints.getCurrentValue()).collect(Collectors.toSet());
+                .filter(e -> moveCosts.get(e.getTerrain()) < getMovePoints().getCurrentValue()).collect(Collectors.toSet());
     }
 
     public CellInstance getCurrentCell() {
@@ -162,16 +160,16 @@ public class UnitInstance extends VoogaInstance<UnitTemplate> {
         return InteractionModifier.modifyAll(getDefensiveModifiers(), originalValue, agent, this, gameState);
     }
 
-    public Map<String, ActiveAbility<? extends VoogaInstance>> getActiveAbilities() {
+    public Map<String, ActiveAbility> getActiveAbilities() {
         return Collections.unmodifiableMap(activeAbilities);
     }
 
-    public void addActiveAbility(ActiveAbility<VoogaInstance> instance) {
+    public void addActiveAbility(ActiveAbility instance) {
         activeAbilities.put(instance.getName(), instance);
     }
 
 
-    public void removeActiveAbility(ActiveAbility<VoogaInstance> instance) {
+    public void removeActiveAbility(ActiveAbility instance) {
         activeAbilities.remove(instance.getName());
     }
 
@@ -187,12 +185,12 @@ public class UnitInstance extends VoogaInstance<UnitTemplate> {
         triggeredAbilities.remove(instance.getName());
     }
 
-    public HitPoints getHitPoints() {
-        return hitPoints;
+    public UnitStatInstance<Double> getHitPoints() {
+        return stats.get("Hitpoints");
     }
 
-    public MovePoints getMovePoints() {
-        return movePoints;
+    public UnitStatInstance<Integer> getMovePoints() {
+        return stats.get("Movepoints");
     }
 
     public Faction getFaction() {
