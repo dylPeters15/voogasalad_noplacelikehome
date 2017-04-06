@@ -47,6 +47,7 @@ public class TriggeredEffectInstance extends VoogaInstance<TriggeredEffectTempla
         return getRemainingTurns() <= 0;
     }
 
+    @FunctionalInterface
     public interface Effect {
         void affect(UnitInstance unit, Event event, ImmutableGameState game);
     }
