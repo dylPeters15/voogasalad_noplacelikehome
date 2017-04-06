@@ -29,9 +29,7 @@ public class DieselEngine implements GameEngine{
 	
 	private final void checkTurnRules(MutableGameState state){
 		if(!state.getTurnRequirements().stream()
-									   .map(e -> e.test(state.getCurrentPlayer(), state))
-									   .collect(Collectors.toList())
-								       .contains(false) && state.canEndTurn()) state.endTurn();
+									   .allMatch(e -> e.test(state.getCurrentPlayer(), state)) && state.canEndTurn()) state.endTurn();
 	}
 	
 	private final void checkTurnEvents(MutableGameState state){
