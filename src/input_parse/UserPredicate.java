@@ -7,7 +7,7 @@ import backend.util.MutableGameState;
 public class UserPredicate {
 
 	private Predicate<MutableGameState> userPredicate = 
-	(hello) -> {hello.endTurn(); return hello.getTurnNumber() == 0;};
+(hello) -> {hello.endTurn(); return true;};
 
 	public UserPredicate() {
 	}
