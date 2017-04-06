@@ -35,14 +35,6 @@ public class Unit extends Sprite {
 
 	}
 
-	/* (non-Javadoc)
-	 * @see frontend.sprites.Sprite#setOnDrag()
-	 */
-	@Override
-	public void setOnDragDetected(EventHandler<MouseEvent> event) {
-		// TODO Auto-generated method stub
-
-	}
 
 	/* (non-Javadoc)
 	 * @see frontend.sprites.Sprite#getSpriteCells()
@@ -80,14 +72,7 @@ public class Unit extends Sprite {
 		return 0;
 	}
 
-	/* (non-Javadoc)
-	 * @see frontend.sprites.Sprite#getImage()
-	 */
-	@Override
-	public Image getImage() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+
 
 	/* (non-Javadoc)
 	 * @see frontend.sprites.Sprite#setImage(javafx.scene.image.Image)
@@ -106,8 +91,7 @@ public class Unit extends Sprite {
 
 	@Override
 	public String getListType() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Unit";
 	}
 
 }
