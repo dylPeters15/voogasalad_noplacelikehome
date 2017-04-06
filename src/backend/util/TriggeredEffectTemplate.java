@@ -9,7 +9,7 @@ import java.util.Collection;
 /**
  * @author Created by th174 on 3/31/2017.
  */
-public class TriggeredEffectTemplate extends VoogaObject implements Template<TriggeredEffectInstance> {
+public class TriggeredEffectTemplate extends VoogaObject {
     //Unit passive abilities
     public static final TriggeredEffectTemplate REGENERATION = new TriggeredEffectTemplate("Regeneration", (unit, event, game) -> unit.takeDamage(-6), "This unit regenerates 6 HP at the run of each turn.", "Regenerate.png", Event.TURN_START);
     public static final TriggeredEffectTemplate HEALER = new TriggeredEffectTemplate("Healer", (unit, event, game) -> unit.getNeighboringUnits(game.getGrid()).values().forEach(c -> c.forEach(u -> u.takeDamage(-6))), "This unit heals nearby units for 6 HP at the run of each turn.", "Red_Cross.png", Event.TURN_START);

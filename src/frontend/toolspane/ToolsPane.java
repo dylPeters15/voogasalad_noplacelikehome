@@ -2,18 +2,19 @@ package frontend.toolspane;
 
 import java.util.Collection;
 
-import backend.unit.Unit;
+import backend.unit.UnitTemplate;
 import frontend.BaseUIManager;
+import frontend.sprites.Unit;
 import javafx.scene.layout.Region;
 
 public class ToolsPane extends BaseUIManager<Region>{
 
 	
-	public ToolsPane(Collection<Unit> availableSprites){
+	public ToolsPane(Collection<UnitTemplate> availableSprites){
 		updateSprites(availableSprites);
 	}
 	
-	public void updateSprites(Collection<Unit> sprites){
+	public void updateSprites(Collection<UnitTemplate> sprites){
 		//TODO
 	}
 	

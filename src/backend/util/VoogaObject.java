@@ -10,9 +10,9 @@ import java.util.stream.Collectors;
  * @author Created by th174 on 3/31/2017.
  */
 public abstract class VoogaObject implements XMLSerializable {
-    private final String name;
-    private final String description;
-    private final String imgPath;
+    private String name;
+    private String description;
+    private String imgPath;
 
     public VoogaObject(String name, String description, String imgPath) {
         this.name = name;
@@ -34,12 +34,24 @@ public abstract class VoogaObject implements XMLSerializable {
         return name;
     }
 
+    void setName(String name) {
+        this.name = name;
+    }
+
     public String getDescription() {
         return description;
     }
 
+    void setDescription(String description) {
+        this.description = description;
+    }
+
     public String getImgPath() {
         return imgPath;
+    }
+
+    void setImgPath(String imgPath) {
+        this.imgPath = imgPath;
     }
 
     @Override
@@ -48,8 +60,7 @@ public abstract class VoogaObject implements XMLSerializable {
     }
 
     @Override
-    public String toXML() {
-        //TODO: Tavo pls
-        throw new RuntimeException("Not implemented yet");
+    public String toXML() throws Exception {
+        throw new Exception("Not implemented yet.");
     }
 }

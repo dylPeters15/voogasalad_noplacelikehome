@@ -2,7 +2,6 @@ package backend.cell;
 
 import backend.grid.CoordinateTuple;
 import backend.unit.UnitInstance;
-import backend.util.Template;
 import backend.util.TriggeredEffectInstance;
 import backend.util.TriggeredEffectTemplate;
 import backend.util.VoogaObject;
@@ -12,7 +11,7 @@ import java.util.*;
 /**
  * @author Created by th174 on 3/31/2017.
  */
-public class CellTemplate extends VoogaObject implements Cell, Template<CellInstance> {
+public class CellTemplate extends VoogaObject implements Cell {
     //TODO ResourceBundlify
     public static final CellTemplate BASIC_HEXAGONAL_EMPTY = new CellTemplate("Basic Hexagonal Empty Cell", Shape.HEXAGONAL, Terrain.EMPTY);
     public static final CellTemplate BASIC_HEXAGONAL_FLAT = new CellTemplate("Basic Hexagonal Flat Cell", Shape.HEXAGONAL, Terrain.FLAT);

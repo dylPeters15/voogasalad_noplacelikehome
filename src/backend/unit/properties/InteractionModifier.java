@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @author Created by th174 on 3/28/2017.
  */
-public class InteractionModifier<T> extends VoogaObject implements Ability {
+public class InteractionModifier<T> extends VoogaObject {
     //TODO: ResourceBundlify all this shit
     public static final InteractionModifier<?> DUMMY = new InteractionModifier<>("Dummy", (originalValue, agent, target, game) -> originalValue, "Dummy modifier that doesn't change anything", "Nothing.png");
     public static final InteractionModifier<Double> NO_EFFECT = new InteractionModifier<>("No effect", (originalValue, agent, target, game) -> 0.0, "Literally nothing", "The_abyss_stares_back.png");
