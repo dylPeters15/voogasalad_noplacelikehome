@@ -11,6 +11,7 @@ import util.io.Unserializer;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -44,7 +45,7 @@ public abstract class VoogaScriptEngine implements Serializer, Unserializer, Int
     protected abstract Object eval(Map<String, Object> bindings) throws VoogaScriptException;
 
     public HashMap<String, Object> createBindings(Object... params) {
-        HashMap<String, Object> bindings = new HashMap<>();
+        HashMap<String, Object> bindings = new LinkedHashMap<>();
         try {
             for (int i = 0; i < params.length; i += 2) {
                 bindings.put((String) params[i], params[i + 1]);

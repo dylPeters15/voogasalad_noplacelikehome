@@ -34,24 +34,27 @@ public abstract class VoogaObject implements XMLSerializable {
         return name;
     }
 
-    VoogaTemplate setName(String name) {
+    VoogaObject setName(String name) {
         this.name = name;
+        return this;
     }
 
     public String getDescription() {
         return description;
     }
 
-    VoogaTemplate setDescription(String description) {
+    VoogaObject setDescription(String description) {
         this.description = description;
+        return this;
     }
 
     public String getImgPath() {
         return imgPath;
     }
 
-    VoogaTemplate setImgPath(String imgPath) {
+    VoogaObject setImgPath(String imgPath) {
         this.imgPath = imgPath;
+        return this;
     }
 
     @Override
