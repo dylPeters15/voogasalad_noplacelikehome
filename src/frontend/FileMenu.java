@@ -83,6 +83,10 @@ public class FileMenu extends VBox {
 			chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(".xml Files", "*.xml"));
 			Window ownerWindow = null;
 			File file = chooser.showSaveDialog(ownerWindow);
+			if (file == null){
+				System.out.println("no file selected");
+				return;
+			}
 			FileOutputStream fileOut =
 					new FileOutputStream(file);
 			ObjectOutputStream out = new ObjectOutputStream(fileOut);
@@ -113,6 +117,10 @@ public class FileMenu extends VBox {
 		fileChooser.setTitle("Open Resource File");
 		Window stage = null;
 		File file = fileChooser.showOpenDialog(stage);
+		if (file == null){
+			System.out.println("no file selected");
+			return;
+		}
 
 		try {
 
@@ -133,8 +141,6 @@ public class FileMenu extends VBox {
 			return;
 
 		}catch(ClassNotFoundException c) {
-
-			System.out.println("Employee class not found");
 
 			c.printStackTrace();
 

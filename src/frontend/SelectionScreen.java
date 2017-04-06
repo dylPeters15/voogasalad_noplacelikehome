@@ -58,6 +58,10 @@ public class SelectionScreen extends VBox{
     	fileChooser.setTitle("Open Resource File");
     	Window stage = null;
 		File file = fileChooser.showOpenDialog(stage);
+		if (file == null){
+			System.out.println("no file selected");
+			return;
+		}
 
 		try {
 
