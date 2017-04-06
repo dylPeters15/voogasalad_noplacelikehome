@@ -3,33 +3,44 @@
  */
 package frontend.wizard;
 
+import java.util.ResourceBundle;
+
 import frontend.BaseUIManager;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 
 /**
  * @author Stone Mathers
- *
+ * Created 4/5/2017
  */
 public abstract class SettingNode extends BaseUIManager<Region> {
 
-	private HBox hb;
-	private String myName;
+	public static final double SPACING = 10.0;
 	
-	public SettingNode(String name){
-		myName = name;
-		hb = initHBox();
+	private HBox settingBox;
+	private String myName;
+	private ResourceBundle myResources = ResourceBundle.getBundle("frontend/resources/Wizard");
+	//TODO Have constructor take in something to determine language and use that to set ResourceBundle
+	
+	public SettingNode(){
+		settingBox = fillSettingBox(new HBox(SPACING));
 	}
 	
 	public String getName(){
 		return myName;
 	}
 	
-	protected abstract HBox initHBox();
+	protected ResourceBundle getResources(){
+		return myResources;
+	}
+	
+	public abstract String getData();
+	
+	protected abstract HBox fillSettingBox(HBox box);
 	
 	@Override
 	public Region getObject(){
-		return hb;
+		return settingBox;
 	}
 	
 }

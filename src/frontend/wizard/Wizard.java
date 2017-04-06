@@ -22,12 +22,12 @@ public class Wizard extends BaseUIManager<Region>{
 	private AnchorPane anchor;
 	
 	public Wizard(){
-		anchor = initAnchorPane();
+		anchor = createAnchorPane();
 	}
 	
-	private AnchorPane initAnchorPane(){
-		VBox settings = initSettings();
-		HBox buttons = initButtons();
+	private AnchorPane createAnchorPane(){
+		VBox settings = createSettingsBox();
+		HBox buttons = createButtonsBox();
 		anchor = new AnchorPane(settings, buttons);
 		
 		AnchorPane.setTopAnchor(settings, EDGE_OFFSET);
@@ -38,17 +38,16 @@ public class Wizard extends BaseUIManager<Region>{
 		return anchor;
 	}
 	
-	private VBox initSettings(){
-		//TODO
-		
-		return new VBox();
+	private VBox createSettingsBox(){
+		return new VBox(new NameSetting().getObject(), new AuthorSetting().getObject(), new CellShapeSetting().getObject(),
+							new GameTypeSetting().getObject(), new GridSizeSetting().getObject());
 	}
 	
-	private HBox initButtons(){
-		Button cancelButton = new Button("Cancel");
+	private HBox createButtonsBox(){
+		Button cancelButton = new Button("Cancel"); //TODO get string from resource file depending on language
 		cancelButton.setOnMouseClicked(e -> {}); //TODO: Implement cancel action
 		
-		Button continueButton = new Button("Continue");
+		Button continueButton = new Button("Continue"); //TODO get string from resource file depending on language
 		continueButton.setOnMouseClicked(e -> {}); //TODO: Implement continue action
 		
 		
