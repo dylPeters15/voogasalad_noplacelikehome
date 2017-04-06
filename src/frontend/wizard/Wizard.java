@@ -22,10 +22,10 @@ public class Wizard extends BaseUIManager<Region>{
 	private AnchorPane anchor;
 	
 	public Wizard(){
-		initAnchorPane();
+		anchor = initAnchorPane();
 	}
 	
-	private void initAnchorPane(){
+	private AnchorPane initAnchorPane(){
 		VBox settings = initSettings();
 		HBox buttons = initButtons();
 		anchor = new AnchorPane(settings, buttons);
@@ -34,6 +34,8 @@ public class Wizard extends BaseUIManager<Region>{
 		AnchorPane.setLeftAnchor(settings, EDGE_OFFSET);
 		AnchorPane.setBottomAnchor(buttons, EDGE_OFFSET);
 		AnchorPane.setRightAnchor(buttons, EDGE_OFFSET);
+		
+		return anchor;
 	}
 	
 	private VBox initSettings(){

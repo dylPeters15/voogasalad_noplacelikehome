@@ -3,9 +3,8 @@
  */
 package frontend.worldview.grid;
 
-import backend.grid.ImmutableGrid;
 import frontend.sprites.Sprite;
-import javafx.scene.Node;
+import javafx.scene.layout.Region;
 
 /**
  * @author 
@@ -14,7 +13,6 @@ import javafx.scene.Node;
 public class SquareGridDisplay extends GridDisplay {
 
 
-	
 	@Override
 	public void placeInCell(Sprite sprite, Coordinates mouseCoord) {
 		// TODO Auto-generated method stub
@@ -22,13 +20,13 @@ public class SquareGridDisplay extends GridDisplay {
 	}
 
 	@Override
-	public void updateCells(ImmutableGrid grid) {
+	public void updateCells(GridDisplay grid) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public Object getObject() {
+	public Region getObject() {
 		// TODO Auto-generated method stub
 		return null;
 	}
