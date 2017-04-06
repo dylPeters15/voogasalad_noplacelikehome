@@ -9,7 +9,10 @@ import backend.util.*;
 import util.io.Serializer;
 import util.io.Unserializer;
 
+import java.io.IOException;
 import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -18,19 +21,18 @@ import java.util.Map;
  * @author Created by th174 on 4/6/2017.
  */
 public abstract class VoogaScriptEngine implements Serializer, Unserializer, InteractionModifier.Modifier, TriggeredEffectInstance.Effect, ActiveAbility.AbilityEffect, ResultQuadPredicate {
-    private static final Map<String, VoogaScriptEngine> scriptEngines = new HashMap<String, VoogaScriptEngine>() {{
-        put("javascript", new VoogaJavaScriptEngine());
-        put("nashorn", new VoogaJavaScriptEngine());
-        put("groovy", new VoogaGroovyEngine());
-    }};
+    private static final Map<String, VoogaScriptEngine> ALL_SCRIPT_ENGINES = new HashMap<>();
     private String script;
 
-    VoogaScriptEngine() {
+    protected VoogaScriptEngine(String... engineIdentifiers) {
         script = "";
+        for (String engineIdentifier : engineIdentifiers) {
+            ALL_SCRIPT_ENGINES.putIfAbsent(engineIdentifier.toLowerCase(), this);
+        }
     }
 
     public static VoogaScriptEngine getScriptEngine(String name) {
-        return scriptEngines.get(name.toLowerCase());
+        return ALL_SCRIPT_ENGINES.get(name.toLowerCase());
     }
 
     public final VoogaScriptEngine read(String script) {
@@ -38,7 +40,11 @@ public abstract class VoogaScriptEngine implements Serializer, Unserializer, Int
         return this;
     }
 
-    final String getScript() {
+    public final VoogaScriptEngine read(Path path) throws IOException {
+        return read(new String(Files.readAllBytes(path)));
+    }
+
+    protected final String getScript() {
         return script;
     }
 

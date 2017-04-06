@@ -5,10 +5,11 @@ import java.util.Map;
 /**
  * @author Created by th174 on 4/6/2017.
  */
+//TODO Implement Groovy Engine
 class VoogaGroovyEngine extends VoogaScriptEngine {
 
     protected VoogaGroovyEngine() {
-        //TODO
+        super("groovy", "groovyshell");
     }
 
     @Override

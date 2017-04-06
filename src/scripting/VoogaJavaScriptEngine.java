@@ -13,9 +13,9 @@ import java.util.Map;
 class VoogaJavaScriptEngine extends VoogaScriptEngine {
     private static final String FUNCTION_FORMAT = "" +
             "var console = { \n" +
-            "    log: print,\n" +
-            "    warn: print,\n" +
-            "    error: print\n" +
+            "\tlog: print,\n" +
+            "\twarn: print,\n" +
+            "\terror: print\n" +
             "};\n\n" +
             "var %s = function(%s) {\n" +
             "%s\n" +
@@ -24,7 +24,7 @@ class VoogaJavaScriptEngine extends VoogaScriptEngine {
     private static final ScriptEngine NASHORN = new ScriptEngineManager().getEngineByName("nashorn");
 
     VoogaJavaScriptEngine() {
-        super();
+        super("Javascript", "js", "nashorn");
     }
 
     @Override
