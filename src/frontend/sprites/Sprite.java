@@ -9,7 +9,11 @@ import java.util.List;
 import frontend.Displayable;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.Node;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
 
 /**
@@ -27,8 +31,23 @@ public abstract class Sprite implements Displayable {
 	/**
 	 * Determines what is done when a Sprite is clicked and dragged.
 	 */
-	void setOnDragDetected(EventHandler<MouseEvent> event) {
-		
+	public void setOnDrag(Sprite sprite) {
+		ImageView spriteImage = new ImageView(getImage(sprite));
+		 spriteImage.setOnDragDetected(new EventHandler <MouseEvent>() {
+	            public void handle(MouseEvent event) {
+	                /* drag was detected, run drag-and-drop gesture*/
+	                System.out.println("onDragDetected");
+	                
+	                /* create dragboard */
+	                Dragboard db = (Dragboard) Dragboard.getSystemClipboard();
+	                
+	                /* put an image on dragboard */
+	                ClipboardContent content = new ClipboardContent();
+	                content.putImage(getImage(sprite));
+	                db.setContent(content);
+	                event.consume();
+	            }
+	        });
 	}
 	
 	/**
@@ -64,7 +83,7 @@ public abstract class Sprite implements Displayable {
 	/**
 	 * @return Image representing the Sprite.
 	 */
-	Image getImage() {
+	Image getImage(Sprite sprite) {
 		return null;
 	}
 	
@@ -83,7 +102,19 @@ public abstract class Sprite implements Displayable {
 	/**
 	 * @return String holding the type of list the Sprite belongs to.
 	 */
-	String getListType() {
+	public abstract String getListType();
+	
+	/**
+	 * @return Image representing the Sprite.
+	 */
+	String getName() {
 		return null;
 	}
+	
+	/**
+	 * @param Image to be set to represent the Sprite.
+	 */
+	void setName(String text) {
+	}
 }
+

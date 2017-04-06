@@ -31,11 +31,6 @@ public class Terrain extends Sprite {
 		
 	}
 
-	@Override
-	public void setOnDragDetected(EventHandler<MouseEvent> event) {
-		// TODO Auto-generated method stub
-		
-	}
 
 	@Override
 	public List<SpriteCell> getSpriteCells() {
@@ -62,12 +57,6 @@ public class Terrain extends Sprite {
 	}
 
 	@Override
-	public Image getImage() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public void setImage(Image image) {
 		// TODO Auto-generated method stub
 		
@@ -75,14 +64,13 @@ public class Terrain extends Sprite {
 
 	@Override
 	public void setListType(String type) {
-		// TODO Auto-generated method stub
+		 
 		
 	}
 
 	@Override
 	public String getListType() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Terrain";
 	}
 	
 	
