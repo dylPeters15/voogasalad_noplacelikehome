@@ -30,10 +30,10 @@ public class SelectionScreen extends VBox{
 		Button create = new Button(SelectionProperties.getString("Create")){{
 			this.setOnAction(e -> create());
 		}};
-		Button edit = new Button(SelectionProperties.getString("Edit/Load")){{
-			this.setOnAction(e -> edit());;
+		Button load = new Button(SelectionProperties.getString("Load")){{
+			this.setOnAction(e -> load());;
 		}};
-		this.getChildren().addAll(play, create, edit);
+		this.getChildren().addAll(play, create, load);
 		
 	}
 	
@@ -47,7 +47,7 @@ public class SelectionScreen extends VBox{
 		
 	}
 	
-	private void edit(){
+	private void load(){
 		System.out.println("you can load and save files, but it won't do anything");
 		read();
 	}
