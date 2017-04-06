@@ -22,7 +22,7 @@ public class UnitInstance extends VoogaInstance<UnitTemplate> {
     private final HitPoints hitPoints;
     private final MovePoints movePoints;
     private final GridPattern movePattern;
-    private final Map<String, ActiveAbility<VoogaObject>> activeAbilities;
+    private final Map<String, ActiveAbility<VoogaInstance>> activeAbilities;
     private final Map<String, TriggeredEffectInstance> triggeredAbilities;
     private final List<InteractionModifier<Double>> offensiveModifiers;
     private final List<InteractionModifier<Double>> defensiveModifiers;
@@ -75,11 +75,11 @@ public class UnitInstance extends VoogaInstance<UnitTemplate> {
         useActiveAbility(getActiveAbilityByName(activeAbilityName), target, gameState);
     }
 
-    private ActiveAbility<VoogaObject> getActiveAbilityByName(String activeAbilityName) {
+    private ActiveAbility<VoogaInstance> getActiveAbilityByName(String activeAbilityName) {
         return activeAbilities.get(activeAbilityName);
     }
 
-    public void useActiveAbility(ActiveAbility<VoogaObject> activeAbility, VoogaInstance target, ImmutableGameState gameState) {
+    public void useActiveAbility(ActiveAbility<VoogaInstance> activeAbility, VoogaInstance target, ImmutableGameState gameState) {
         processTriggers(Event.UNIT_PRE_ABILITY_USE, gameState);
         activeAbility.affect(this, target, gameState);
         processTriggers(Event.UNIT_POST_ABILITY_USE, gameState);
@@ -162,16 +162,29 @@ public class UnitInstance extends VoogaInstance<UnitTemplate> {
         return InteractionModifier.modifyAll(getDefensiveModifiers(), originalValue, agent, this, gameState);
     }
 
-    public Map<String, ActiveAbility<VoogaObject>> getActiveAbilities() {
-        return activeAbilities;
+    public Map<String, ActiveAbility<? extends VoogaInstance>> getActiveAbilities() {
+        return Collections.unmodifiableMap(activeAbilities);
+    }
+
+    public void addActiveAbility(ActiveAbility<VoogaInstance> instance) {
+        activeAbilities.put(instance.getName(), instance);
+    }
+
+
+    public void removeActiveAbility(ActiveAbility<VoogaInstance> instance) {
+        activeAbilities.remove(instance.getName());
     }
 
     public Map<String, TriggeredEffectInstance> getTriggeredAbilities() {
-        return triggeredAbilities;
+        return Collections.unmodifiableMap(triggeredAbilities);
     }
 
     public void addTriggeredAbility(TriggeredEffectInstance instance) {
-        triggeredAbilities.put(instance.getName(),instance);
+        triggeredAbilities.put(instance.getName(), instance);
+    }
+
+    public void removeTriggeredAbility(TriggeredEffectInstance instance) {
+        triggeredAbilities.remove(instance.getName());
     }
 
     public HitPoints getHitPoints() {

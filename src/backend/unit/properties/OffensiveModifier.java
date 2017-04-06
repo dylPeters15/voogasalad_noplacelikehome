@@ -3,6 +3,7 @@ package backend.unit.properties;
 import backend.unit.UnitInstance;
 import backend.util.ImmutableGameState;
 
+import javax.script.ScriptEngine;
 import java.util.Collection;
 
 /**

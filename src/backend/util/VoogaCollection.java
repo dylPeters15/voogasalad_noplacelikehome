@@ -1,7 +1,5 @@
 package backend.util;
 
-import javafx.util.Pair;
-
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -17,7 +15,7 @@ public class VoogaCollection<T extends VoogaObject> extends VoogaObject implemen
 
     public VoogaCollection(String name, String description, String imgPath, Collection<T> gameObjects) {
         super(name, description, imgPath);
-        this.gameObjects = gameObjects.stream().map(e -> new Pair<>(e.getName(), e)).collect(Collectors.toMap(Pair::getKey, Pair::getValue));
+        this.gameObjects = gameObjects.stream().collect(Collectors.toMap(VoogaObject::getName, e -> e));
     }
 
     public T get(String name) {

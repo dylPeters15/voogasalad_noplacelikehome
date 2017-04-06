@@ -78,6 +78,10 @@ public class CellTemplate extends VoogaObject implements Cell {
         return new CoordinateTuple(new int[getShape().getDimension()]);
     }
 
+    public int dimension() {
+        return getShape().getDimension();
+    }
+
     @Override
     public Shape getShape() {
         return shape;

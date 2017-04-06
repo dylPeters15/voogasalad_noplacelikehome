@@ -21,7 +21,6 @@ public class TriggeredEffectTemplate extends VoogaObject {
     public static final TriggeredEffectTemplate ON_FIRE = new TriggeredEffectTemplate("On Fire", (occupant, event, game) -> occupant.takeDamage(10), 2, "For the next two turns, units that move through this cell at the start of their turn take 8 damage.", "My_mixtape.png", Event.UNIT_POST_MOVEMENT);
     public static final TriggeredEffectTemplate STRONG_ATTACK = new TriggeredEffectTemplate("Strong Attack", (occupant, event, game) -> occupant.addOffensiveModifier(InteractionModifier.STRONG_ATTACK), 1, "For the next turn, units that move through this cell deal additional damage.", "Extra_damage.png", Event.UNIT_POST_MOVEMENT);
 
-
     protected static final int DEFAULT_DURATION = Integer.MAX_VALUE;
     private Collection<Event> activationTriggers;
     private Effect effect;
