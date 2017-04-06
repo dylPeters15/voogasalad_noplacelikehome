@@ -18,24 +18,26 @@ import java.util.Map;
  * @author Created by th174 on 4/6/2017.
  */
 public abstract class VoogaScriptEngine implements Serializer, Unserializer, InteractionModifier.Modifier, TriggeredEffectInstance.Effect, ActiveAbility.AbilityEffect, ResultQuadPredicate {
-    private static final Map<String, VoogaScriptEngine> scriptEngines = new HashMap<String, VoogaScriptEngine>() {{
-        put("javascript", new VoogaJavaScriptEngine());
-        put("nashorn", new VoogaJavaScriptEngine());
-        put("groovy", new VoogaGroovyEngine());
-    }};
+    private static final Map<String, VoogaScriptEngine> SCRIPT_ENGINES = new HashMap<>();
     private String script;
 
-    VoogaScriptEngine() {
+    protected VoogaScriptEngine() {
         script = "";
     }
 
     public static VoogaScriptEngine getScriptEngine(String name) {
-        return scriptEngines.get(name.toLowerCase());
+        return SCRIPT_ENGINES.get(name.toLowerCase());
     }
 
     public final VoogaScriptEngine read(String script) {
         this.script = script;
         return this;
+    }
+
+    protected static void addEngine(VoogaScriptEngine engine, String... identifiers) {
+        for (String identifier : identifiers) {
+            SCRIPT_ENGINES.put(identifier, engine);
+        }
     }
 
     final String getScript() {

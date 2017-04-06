@@ -7,7 +7,11 @@ import java.util.Map;
  */
 class VoogaGroovyEngine extends VoogaScriptEngine {
 
-    protected VoogaGroovyEngine() {
+    static {
+        VoogaScriptEngine.addEngine(new VoogaGroovyEngine(), "groovy", "groovyshell");
+    }
+
+    private VoogaGroovyEngine() {
         //TODO
     }
 
