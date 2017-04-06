@@ -7,7 +7,6 @@ import util.net.ObservableServer;
 
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 public class DieselEngine implements GameEngine{
 
