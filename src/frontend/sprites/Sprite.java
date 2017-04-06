@@ -16,58 +16,74 @@ import javafx.scene.input.MouseEvent;
  * @author Stone Mathers
  * Created 3/29/2017
  */
-public interface Sprite extends Displayable {
+public abstract class Sprite implements Displayable {
 
 	/**
 	 * Determines what is done when a Sprite is clicked.
 	 */
-	void setOnClick(EventHandler<ActionEvent> event);
+	void setOnClick(EventHandler<ActionEvent> event) {
+	}
 	
 	/**
 	 * Determines what is done when a Sprite is clicked and dragged.
 	 */
-	void setOnDragDetected(EventHandler<MouseEvent> event);
+	void setOnDragDetected(EventHandler<MouseEvent> event) {
+		
+	}
 	
 	/**
 	 * @return List of SpriteCells composing the Sprite.
 	 */
-	List<SpriteCell> getSpriteCells();
+	List<SpriteCell> getSpriteCells() {
+		return null;
+	}
 	
 	/**
 	 * Adds cell to the Sprite's list of SpriteCells.
 	 * 
 	 * @param SpriteCell to be added.
 	 */
-	void addSpriteCell(SpriteCell cell);
+	void addSpriteCell(SpriteCell cell) {
+	}
 	
 	/**
 	 * @param index in the list to search for a SpriteCell.
 	 * @return SpriteCell at the given index.
 	 */
-	SpriteCell getSpriteCell(int index);
+	SpriteCell getSpriteCell(int index) {
+		return null;
+	}
 	
 	/**
 	 * @return integer size of the list of SpriteCells.
 	 */
-	int getSize();
+	int getSize() {
+		return 0;
+	}
 	
 	/**
 	 * @return Image representing the Sprite.
 	 */
-	Image getImage();
+	Image getImage() {
+		return null;
+	}
 	
 	/**
 	 * @param Image to be set to represent the Sprite.
 	 */
-	void setImage(Image image);
+	void setImage(Image image) {
+	}
 	
 	/**
 	 * @param String that represents the type of list the Sprite belongs to.
 	 */
-	void setListType(String type);
+	void setListType(String type) {
+	}
 	
 	/**
 	 * @return String holding the type of list the Sprite belongs to.
 	 */
-	String getListType();
+	String getListType() {
+		return null;
+	}
 }
