@@ -3,7 +3,7 @@
  */
 package frontend;
 
-import backend.util.ImmutableGameState;
+import backend.util.GameState;
 import controller.ClientController;
 import frontend.detailpane.DetailPane;
 import frontend.templatepane.TemplatePane;
@@ -25,12 +25,12 @@ public class View extends BaseUIManager<Region> {
 	private ToolsPane toolsPane;
 	private DetailPane detailPane;
 	private TemplatePane tempPane;
-	private ImmutableGameState myGameState;
+	private GameState myGameState;
 	private ClientController myController;
 	
 	
 	
-	public View(ImmutableGameState gameState, ClientController controller){
+	public View(GameState gameState, ClientController controller){
 		myGameState = gameState;
 		myController = controller;
 		initBorderPane();
@@ -45,7 +45,7 @@ public class View extends BaseUIManager<Region> {
 	 */
 	public void update(){
 		worldView.updateGrid(myGameState.getGrid());
-		//TODO: something like templatePane.updateSprites(myGameState.getUnits());
+		tempPane.updateSprites(myGameState.getUnitTemplates());
 	}
 	
 	/**
@@ -76,13 +76,13 @@ public class View extends BaseUIManager<Region> {
 	private void initPanesAndListeners(){
 		menuBar = new VoogaMenuBar();
 		//TODO: make View a listener of menuBar
-		worldView = new WorldView();
+		worldView = new WorldView(myGameState.getGrid());
 		//TODO: make View a listener of worldView
-		//TODO: toolsPane = new ToolsPane(myGameState.getUnits());
+		toolsPane = new ToolsPane();
 		//TODO: make View a listener of toolsPane
 		detailPane = new DetailPane();
 		//TODO: make View a listener of detailPane
-		tempPane = new TemplatePane();
+		tempPane = new TemplatePane(myGameState.getUnitTemplates());
 		//TODO: make View a listener of tempPane
 	}
 	

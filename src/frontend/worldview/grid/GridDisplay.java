@@ -4,15 +4,16 @@
  */
 package frontend.worldview.grid;
 
-import backend.grid.ImmutableGrid;
 import frontend.BaseUIManager;
 import frontend.sprites.Sprite;
+import javafx.scene.layout.Region;
 
 /**
  * @author Stone Mathers
  * Created 3/29/2017
  */
-public abstract class GridDisplay extends BaseUIManager {
+public abstract class GridDisplay extends BaseUIManager<Region> {
+
 	
 	/**
 	 * Place a Sprite in the cell that contains the given coordinates.
@@ -23,7 +24,7 @@ public abstract class GridDisplay extends BaseUIManager {
 	public abstract void placeInCell(Sprite sprite, Coordinates mouseCoord);
 	
 	/**
-	 * Updates all cells in the grid using the given ImmutableGrid, which is obtained from a GameState.
+	 * Updates all cells in the grid using the given GridDisplay.
 	 */
-	public abstract void updateCells(ImmutableGrid grid);
+	public abstract void updateCells(GridDisplay grid);
 }
