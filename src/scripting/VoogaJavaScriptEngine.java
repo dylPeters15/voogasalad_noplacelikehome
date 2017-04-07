@@ -23,7 +23,11 @@ class VoogaJavaScriptEngine extends VoogaScriptEngine {
     private static final String FUNCTION_NAME = "voogaJavascriptFunction";
     private static final ScriptEngine NASHORN = new ScriptEngineManager().getEngineByName("nashorn");
 
-    VoogaJavaScriptEngine() {
+    static {
+        VoogaScriptEngine.addEngine(new VoogaJavaScriptEngine(), "javascript", "js", "nashorn");
+    }
+
+    private VoogaJavaScriptEngine() {
         super();
     }
 

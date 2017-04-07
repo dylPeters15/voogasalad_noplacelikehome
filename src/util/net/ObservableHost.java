@@ -13,10 +13,13 @@ import java.util.function.Consumer;
  * This class provides a basic implementation of a host process that connects to and communicates with a remote host.
  * <p>
  * It modifies a state of type T, and notifies listeners of changes to the state.
+ * <p>
+ * The shared network state should model the distributed networked state of your program, and contain information that needs to be replicated on each of the clients.
+ *
  *
  * @param <T> The type of variable used to represent network shared state.
  * @author Created by th174 on 4/1/2017.
- * @see Request,Modifier,ObservableServer,ObservableClient, ObservableHost ,SocketConnection
+ * @see Request,Modifier,ObservableServer,ObservableServer.ServerDelegate,ObservableClient,ObservableHost
  */
 public abstract class ObservableHost<T> implements Runnable {
     public static final Duration NEVER_TIMEOUT = Duration.ZERO;
@@ -31,7 +34,7 @@ public abstract class ObservableHost<T> implements Runnable {
     /**
      * @param serializer   Converts the state to a Serializable form, so that it can be sent to the client
      * @param unserializer Converts the Serializable form of the state back into its original form of type T
-     * @param timeout
+     * @param timeout Socket timeout duration
      */
     protected ObservableHost(Serializer<T> serializer, Unserializer<T> unserializer, Duration timeout) {
         this.serializer = serializer;

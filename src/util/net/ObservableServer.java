@@ -10,7 +10,6 @@ import java.net.Socket;
 import java.time.Duration;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -22,7 +21,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @param <T> The type of variable used to represent networked shared state.
  * @author Created by th174 on 4/1/2017.
- * @see Request,Modifier,ObservableServer,ObservableClient, ObservableHost ,SocketConnection
+ * @see Request,Modifier,ObservableServer,ObservableServer.ServerDelegate,ObservableClient,ObservableHost
  */
 public class ObservableServer<T> extends ObservableHost<T> {
     private static final int DEFAULT_THREAD_POOL_SIZE = 12;
@@ -142,13 +141,7 @@ public class ObservableServer<T> extends ObservableHost<T> {
 
     @Override
     protected boolean send(Request request) {
-        for (Iterator<ServerDelegate> iterator = connections.iterator(); iterator.hasNext(); ) {
-            ServerDelegate e = iterator.next();
-            if (!e.send(request)) {
-                e.shutDown();
-                iterator.remove();
-            }
-        }
+        connections.removeIf(e -> !e.send(request));
         return isActive();
     }
 
@@ -177,7 +170,7 @@ public class ObservableServer<T> extends ObservableHost<T> {
          */
         public ServerDelegate(Socket socket) throws IOException {
             connection = new SocketConnection(socket, ObservableServer.this.getTimeout());
-            System.out.println("Client connected:\t" + connection);
+            System.out.println("\nClient connected:\t" + connection);
         }
 
         @Override
@@ -188,7 +181,7 @@ public class ObservableServer<T> extends ObservableHost<T> {
 
         private boolean handleRequest(Request<? extends Serializable> request) {
             if (Request.isHeartbeat(request)) {
-                System.out.println("Heartbeat Received: " + request);
+                System.out.println("\nHeartbeat Received: \n" + request.toString().replaceAll("(?m)^", "\t"));
                 return true;
             } else if (!validateRequest(request)) {
                 return send(getRequest(getState()));

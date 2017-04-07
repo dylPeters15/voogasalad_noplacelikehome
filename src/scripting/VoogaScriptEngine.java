@@ -13,29 +13,33 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.function.BiPredicate;
 
 /**
  * @author Created by th174 on 4/6/2017.
  */
-public abstract class VoogaScriptEngine implements Serializer, Unserializer, InteractionModifier.Modifier, TriggeredEffectInstance.Effect, ActiveAbility.AbilityEffect, ResultQuadPredicate {
-    private static final Map<String, VoogaScriptEngine> scriptEngines = new HashMap<String, VoogaScriptEngine>() {{
-        put("javascript", new VoogaJavaScriptEngine());
-        put("nashorn", new VoogaJavaScriptEngine());
-        put("groovy", new VoogaGroovyEngine());
-    }};
+public abstract class VoogaScriptEngine implements Serializer, Unserializer, InteractionModifier.Modifier, TriggeredEffectInstance.Effect, ActiveAbility.AbilityEffect, ResultQuadPredicate, BiPredicate<Player, ImmutableGameState> {
+    private static final Map<String, VoogaScriptEngine> SCRIPT_ENGINES = new HashMap<>();
     private String script;
 
-    VoogaScriptEngine() {
+    protected VoogaScriptEngine() {
         script = "";
     }
 
     public static VoogaScriptEngine getScriptEngine(String name) {
-        return scriptEngines.get(name.toLowerCase());
+        return SCRIPT_ENGINES.get(name.toLowerCase());
     }
 
     public final VoogaScriptEngine read(String script) {
         this.script = script;
         return this;
+    }
+
+    protected static void addEngine(VoogaScriptEngine engine, String... identifiers) {
+        for (String identifier : identifiers) {
+            SCRIPT_ENGINES.put(identifier, engine);
+        }
     }
 
     final String getScript() {
@@ -58,17 +62,29 @@ public abstract class VoogaScriptEngine implements Serializer, Unserializer, Int
 
     @Override
     public Result determine(Player player, MutableGameState gameState) {
-        return (Result) eval(createBindings("player", player, "gameState", gameState));
+        try {
+            return Result.valueOf((String) eval(createBindings("player", player, "gameState", gameState)));
+        } catch (ClassCastException e) {
+            throw new VoogaScriptException(e);
+        }
     }
 
     @Override
     public Object doUnserialize(Serializable serializableObject) throws Exception {
-        return eval(createBindings("serializable", serializableObject));
+        try {
+            return eval(createBindings("serializable", serializableObject));
+        } catch (ClassCastException e) {
+            throw new VoogaScriptException(e);
+        }
     }
 
     @Override
     public Serializable doSerialize(Object object) throws Exception {
-        return (Serializable) eval(createBindings("object", object));
+        try {
+            return (Serializable) eval(createBindings("object", object));
+        } catch (ClassCastException e) {
+            throw new VoogaScriptException(e);
+        }
     }
 
     @Override
@@ -84,6 +100,18 @@ public abstract class VoogaScriptEngine implements Serializer, Unserializer, Int
     @Override
     public Object modify(Object originalValue, UnitInstance agent, UnitInstance target, ImmutableGameState gameState) {
         return eval(createBindings("originalValue", originalValue, "agent", agent, "target", target, "gameState", gameState));
+    }
+
+    @Override
+    public boolean test(Player player, ImmutableGameState immutableGameState) {
+        Object nonBooleanValue = eval(createBindings("player", player, "gameState", immutableGameState));
+        if (nonBooleanValue instanceof String) {
+            return !nonBooleanValue.equals("");
+        } else if (nonBooleanValue instanceof Boolean) {
+            return (Boolean) nonBooleanValue;
+        } else {
+            return Objects.nonNull(nonBooleanValue);
+        }
     }
 
     static class VoogaScriptException extends RuntimeException {
