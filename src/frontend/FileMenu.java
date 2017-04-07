@@ -8,11 +8,20 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Optional;
 import java.util.ResourceBundle;
+
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
@@ -25,8 +34,10 @@ public class FileMenu extends VBox {
 	MenuBar menuBar;
 	private MenuItem playItem, saveItem, loadItem, newGameItem, editItem;
 	Menu fileMenu, helpMenu;
+	UI ui;
 
-	public FileMenu(){
+	public FileMenu(UI ui){
+		this.ui = ui;
 		this.initMenu();
 	}
 
@@ -42,7 +53,7 @@ public class FileMenu extends VBox {
 		this.editItem = new MenuItem(SelectionProperties.getString("Edit")){{
 			setOnAction(e -> edit());
 		}};
-		
+
 		this.loadItem = new MenuItem(SelectionProperties.getString("Load")){{
 			setOnAction(e -> edit());
 		}};
@@ -71,7 +82,7 @@ public class FileMenu extends VBox {
 
 	private void play(){
 		System.out.println("you can load and save files, but it won't do anything");
-		read();
+		read("play");
 
 	}
 
@@ -83,10 +94,6 @@ public class FileMenu extends VBox {
 			chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(".xml Files", "*.xml"));
 			Window ownerWindow = null;
 			File file = chooser.showSaveDialog(ownerWindow);
-			if (file == null){
-				System.out.println("no file selected");
-				return;
-			}
 			FileOutputStream fileOut =
 					new FileOutputStream(file);
 			ObjectOutputStream out = new ObjectOutputStream(fileOut);
@@ -94,8 +101,24 @@ public class FileMenu extends VBox {
 			out.close();
 			fileOut.close();
 			System.out.printf("Serialized data is saved in " + file);
+
 		}catch(IOException i) {
 			i.printStackTrace();
+		}
+		catch (NullPointerException e){
+			e.printStackTrace();
+			Alert alert = new Alert(AlertType.CONFIRMATION);
+			alert.setTitle("No file selected");
+			//			alert.setGraphic(graphic); //insert DuvallSalad
+			alert.setHeaderText("Current game will not save");
+			alert.setContentText("Would you like to try again?");
+			Optional<ButtonType> result = alert.showAndWait();
+			
+			if (result.get() == new ButtonType("okay")){
+				save();
+			} else{
+				return;
+			}
 		}
 	}
 
@@ -104,50 +127,67 @@ public class FileMenu extends VBox {
 	}
 
 	private void load(){
-		read();
+		read("load");
 	}
 
 	private void newGame(){
 		System.out.println("you clicked New Game, which means you are ahead of me");
 	}
 
-	public void read(){
+	private void read(String saveOrLoad){
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(".xml Files", "*.xml"));
 		fileChooser.setTitle("Open Resource File");
 		Window stage = null;
 		File file = fileChooser.showOpenDialog(stage);
-		if (file == null){
-			System.out.println("no file selected");
-			return;
-		}
-
+		System.out.println(saveOrLoad);
 		try {
-
 			FileInputStream fileIn = new FileInputStream(file);
-
 			ObjectInputStream in = new ObjectInputStream(fileIn);
-
-			Object e =  in.readObject();
+			
+			//need to do something with the file
 
 			in.close();
-
 			fileIn.close();
+			
+			//this part probs doesn't work
+			Region pane = ui.getPrimaryPane();
+			((BorderPane) pane).setCenter(new View().getObject());
 
 		}catch(IOException i) {
-
 			i.printStackTrace();
-
 			return;
+		} catch (NullPointerException e){
+			e.printStackTrace();
+			Alert alert = new Alert(AlertType.CONFIRMATION);
+			alert.setTitle("No file selected");
+			
+			/*
+			 * failed attempt to set DuvallSalad as graphic
+			 */
+//			ImageView graphic = new ImageView(new Image("frontend/properties/DuvallSalad.png"));
+//			graphic.setScaleX(.25);
+//			graphic.setScaleY(.25);
+//			
+//			alert.setGraphic(graphic); //insert DuvallSalad
+			
+			if (saveOrLoad == "save"){
+				alert.setHeaderText("Current game will not save");
+			}
+			if (saveOrLoad == "load" || saveOrLoad == "play"){
+				alert.setHeaderText("Failed to load game");
+			}
 
-		}catch(ClassNotFoundException c) {
+			alert.setContentText("Would you like to try again?");
 
-			c.printStackTrace();
+			Optional<ButtonType> result = alert.showAndWait();
+			if (result.get() == new ButtonType("okay")){
+				read(saveOrLoad);
+			} else{
+				return;
 
-			return;
-
+			}
 		}
-
 	}
 }
 

@@ -36,6 +36,10 @@ public class View extends BaseUIManager<Region> {
 		initBorderPane();
 	}
 	
+	public View(){
+		initBorderPane();
+	}
+	
 	//TODO: Somewhere the View needs to call something like "controller.sendRequests(this.getRequests());" whenever one of its
 	//panes needs to send its new request(s). Whether this is in "update()" or a new method will be figured out once listening
 	//is figured out
@@ -82,7 +86,7 @@ public class View extends BaseUIManager<Region> {
 		//TODO: make View a listener of toolsPane
 		detailPane = new DetailPane();
 		//TODO: make View a listener of detailPane
-		tempPane = new TemplatePane(myGameState.getUnitTemplates());
+//		tempPane = new TemplatePane(myGameState.getUnitTemplates());
 		//TODO: make View a listener of tempPane
 	}
 	
