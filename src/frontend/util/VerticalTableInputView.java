@@ -1,13 +1,32 @@
 package frontend.util;
 
-import javafx.scene.layout.Region;
+import java.util.ArrayList;
+import java.util.Collection;
+
+import frontend.BaseUIManager;
+import javafx.collections.ListChangeListener;
+import javafx.scene.Parent;
+import javafx.scene.layout.VBox;
 
 public class VerticalTableInputView extends TableInputView {
-
-	@Override
-	public Region getObject() {
-		// TODO Auto-generated method stub
-		return null;
+	
+	public VerticalTableInputView(){
+		this(new ArrayList<BaseUIManager<Parent>>());
+	}
+	
+	public VerticalTableInputView(Collection<BaseUIManager<Parent>> childrenToAdd){
+		VBox vbox = new VBox();
+		setContent(vbox);
+		getChildren().addListener(new ListChangeListener<BaseUIManager<Parent>>() {
+			@Override
+			public void onChanged(javafx.collections.ListChangeListener.Change<? extends BaseUIManager<Parent>> change) {
+				if (change.wasAdded()){
+					change.getAddedSubList().stream().forEach(child -> vbox.getChildren().add(child.getObject()));
+				} else if (change.wasRemoved()){
+					change.getAddedSubList().stream().forEach(child -> vbox.getChildren().remove(child.getObject()));
+				}
+			}
+		});
 	}
 
 }
