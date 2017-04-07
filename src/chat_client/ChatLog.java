@@ -4,7 +4,7 @@ import util.io.Serializer;
 import util.io.Unserializer;
 
 /**
- * Class used for testing client-server networking
+ * Models a chat log, which contains messages sent by different users.
  *
  * @author Created by th174 on 4/1/2017.
  */
@@ -22,16 +22,12 @@ public class ChatLog {
         this.log = log;
     }
 
-    public void add(String test) {
-        log = test;
-    }
-
-    public String getLast() {
+    public String getChatLog() {
         return log;
     }
 
     public ChatLog appendMessage(String message, String user) {
-        add(String.format("%s\n<%s>:  %s", getLast(), user, message));
+        log = String.format("%s\n<%s>:  %s", log, user, message);
         return this;
     }
 

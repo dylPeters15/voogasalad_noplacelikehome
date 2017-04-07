@@ -14,7 +14,7 @@ import java.time.Duration;
  *
  * @param <T> The type of variable used to represent network shared state.
  * @author Created by th174 on 4/1/2017.
- * @see Request,Modifier,ObservableServer,ObservableClient, ObservableHost ,SocketConnection
+ * @see Request,Modifier,ObservableServer,ObservableServer.ServerDelegate,ObservableClient,ObservableHost
  */
 public class ObservableClient<T> extends ObservableHost<T> {
     private final SocketConnection connection;

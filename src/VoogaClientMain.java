@@ -1,6 +1,7 @@
 import frontend.UI;
 import javafx.application.Application;
 import javafx.stage.Stage;
+import scripting.VoogaScriptEngine;
 
 import java.util.Locale;
 import java.util.ResourceBundle;

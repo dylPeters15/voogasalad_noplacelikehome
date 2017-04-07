@@ -21,23 +21,23 @@ public abstract class VoogaTemplate<T extends VoogaTemplate> extends VoogaObject
         super(name, description, imgPath);
     }
 
-    public abstract T copy();
+    public abstract T clone();
 
     //elevate access modifiers
     @Override
-    public T setName(String name) {
+    public final T setName(String name) {
         super.setName(name);
         return (T) this;
     }
 
     @Override
-    public T setDescription(String description) {
+    public final T setDescription(String description) {
         super.setDescription(description);
         return (T) this;
     }
 
     @Override
-    public T setImgPath(String imgPath) {
+    public final T setImgPath(String imgPath) {
         super.setImgPath(imgPath);
         return (T) this;
     }

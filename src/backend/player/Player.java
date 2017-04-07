@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
  * @author Created by th174 on 3/28/2017.
  */
 public class Player extends VoogaObject implements MutablePlayer {
+
     private Faction faction;
     private Team team;
 

@@ -48,7 +48,7 @@ public class UnitStatTemplate<T extends Comparable<T>> extends VoogaTemplate<Uni
     }
 
     @Override
-    public UnitStatTemplate<T> copy() {
+    public UnitStatTemplate<T> clone() {
         return new UnitStatTemplate<>(getName(), minValue, maxValue, getDescription(), getImgPath());
     }
 

@@ -15,11 +15,11 @@ public abstract class VoogaCollection<T extends VoogaObject, U extends VoogaColl
 
     public VoogaCollection(String name, String description, String imgPath, Collection<T> gameObjects) {
         super(name, description, imgPath);
-        this.gameObjects = gameObjects.stream().collect(Collectors.toMap(VoogaObject::getName, e -> e));
+        this.gameObjects = gameObjects.parallelStream().collect(Collectors.toMap(VoogaObject::getName, e -> e));
     }
 
     @Override
-    public abstract U copy();
+    public abstract U clone();
 
     public T get(String name) {
         return gameObjects.get(name);
@@ -35,7 +35,7 @@ public abstract class VoogaCollection<T extends VoogaObject, U extends VoogaColl
     }
 
     public U addAll(Collection<T> predefinedTerrain) {
-        gameObjects.putAll(predefinedTerrain.stream().collect(Collectors.toMap(T::getName, e -> e)));
+        gameObjects.putAll(predefinedTerrain.parallelStream().collect(Collectors.toMap(T::getName, e -> e)));
         return (U) this;
     }
 

@@ -5,7 +5,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.Socket;
-import java.net.SocketException;
 import java.time.Duration;
 import java.util.function.Consumer;
 
@@ -15,7 +14,7 @@ import java.util.function.Consumer;
  * It can listen to a socket's input stream and send requests to a socket's output stream.
  *
  * @author Created by th174 on 4/5/2017.
- * @see Request,Modifier,ObservableServer,ObservableClient, ObservableHost,SocketConnection
+ * @see Request,Modifier,ObservableServer,ObservableServer.ServerDelegate,ObservableClient,ObservableHost
  */
 public class SocketConnection {
     private final Socket socket;
@@ -26,8 +25,9 @@ public class SocketConnection {
      *
      * @param socket  Socket that this connection is attached to
      * @param timeout Duration to wait for activity on the socket before it times out
+     * @throws ObservableHost.RemoteConnectionException Thrown when an error occurs in opening the socket for listening
      */
-    public SocketConnection(Socket socket, Duration timeout) {
+    public SocketConnection(Socket socket, Duration timeout) throws ObservableHost.RemoteConnectionException {
         try {
             this.socket = socket;
             this.socket.setSoTimeout((int) timeout.toMillis());
@@ -42,8 +42,9 @@ public class SocketConnection {
      * Continuously listens for requests sent over the socket, and handles them with a request handler
      *
      * @param requestHandler Consumer that handles requests through the socket
+     * @throws ObservableHost.RemoteConnectionException Thrown when an invalid request from the remote host is received.
      */
-    public void listen(Consumer<Request> requestHandler) {
+    public void listen(Consumer<Request> requestHandler) throws ObservableHost.RemoteConnectionException {
         try (ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream())) {
             while (isActive()) {
                 Request request = (Request<? extends Serializable>) inputStream.readObject();
@@ -75,7 +76,7 @@ public class SocketConnection {
     /**
      * Closes the connection
      */
-    public void shutDown() {
+    private void shutDown() {
         try {
             socket.close();
             System.out.println("Connection closed: " + socket);

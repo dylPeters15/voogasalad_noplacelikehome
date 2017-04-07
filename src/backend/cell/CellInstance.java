@@ -30,7 +30,7 @@ public class CellInstance extends VoogaInstance<CellTemplate> {
         super(templateCell.getName() + "@" + coordinateTuple.toString(), templateCell);
         this.coordinates = coordinateTuple;
         this.triggeredAbilities = new HashSet<>(cellAbilities);
-        currentOccupants = initialOccupants.stream().collect(Collectors.toMap(UnitInstance::getName, e -> e));
+        currentOccupants = initialOccupants.parallelStream().collect(Collectors.toMap(UnitInstance::getName, e -> e));
     }
 
     public void startTurn(ImmutableGameState gameState) {
