@@ -164,6 +164,16 @@ public class ObservableQueue<E> implements Queue<E>, Observable {
 		listeners.remove(listener);
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		elements.stream().forEachOrdered(element -> {
+			sb.append(element.toString());
+			sb.append("\n");
+		});
+		return sb.toString();
+	}
+
 	public void passTo(ObservableQueue<E> other) {
 		moveAllTo(other);
 		addListener(new InvalidationListener() {

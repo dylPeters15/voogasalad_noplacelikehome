@@ -9,24 +9,30 @@ import javafx.scene.Parent;
 import javafx.scene.layout.VBox;
 
 public class VerticalTableInputView extends TableInputView {
-	
-	public VerticalTableInputView(){
+
+	public VerticalTableInputView() {
 		this(new ArrayList<BaseUIManager<Parent>>());
 	}
-	
-	public VerticalTableInputView(Collection<BaseUIManager<Parent>> childrenToAdd){
+
+	public VerticalTableInputView(Collection<BaseUIManager<Parent>> childrenToAdd) {
+		super();
 		VBox vbox = new VBox();
 		setContent(vbox);
-		getChildren().addListener(new ListChangeListener<BaseUIManager<Parent>>() {
+		getChildren().addListener(new ListChangeListener<BaseUIManager<? extends Parent>>() {
 			@Override
-			public void onChanged(javafx.collections.ListChangeListener.Change<? extends BaseUIManager<Parent>> change) {
-				if (change.wasAdded()){
-					change.getAddedSubList().stream().forEach(child -> vbox.getChildren().add(child.getObject()));
-				} else if (change.wasRemoved()){
-					change.getAddedSubList().stream().forEach(child -> vbox.getChildren().remove(child.getObject()));
+			public void onChanged(
+					javafx.collections.ListChangeListener.Change<? extends BaseUIManager<? extends Parent>> change) {
+				if (change.next()) {
+					if (change.wasAdded()) {
+						change.getAddedSubList().stream().forEach(child -> vbox.getChildren().add(child.getObject()));
+					} else if (change.wasRemoved()) {
+						change.getAddedSubList().stream()
+								.forEach(child -> vbox.getChildren().remove(child.getObject()));
+					}
 				}
 			}
 		});
+		getChildren().addAll(childrenToAdd);
 	}
 
 }

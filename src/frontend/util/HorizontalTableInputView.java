@@ -9,24 +9,30 @@ import javafx.scene.Parent;
 import javafx.scene.layout.HBox;
 
 public class HorizontalTableInputView extends TableInputView {
-	
-	public HorizontalTableInputView(){
+
+	public HorizontalTableInputView() {
 		this(new ArrayList<BaseUIManager<Parent>>());
 	}
 
-	public HorizontalTableInputView(Collection<BaseUIManager<Parent>> childrenToAdd){
+	public HorizontalTableInputView(Collection<BaseUIManager<Parent>> childrenToAdd) {
+		super();
 		HBox hbox = new HBox();
 		setContent(hbox);
-		getChildren().addListener(new ListChangeListener<BaseUIManager<Parent>>() {
+		getChildren().addListener(new ListChangeListener<BaseUIManager<? extends Parent>>() {
 			@Override
-			public void onChanged(javafx.collections.ListChangeListener.Change<? extends BaseUIManager<Parent>> change) {
-				if (change.wasAdded()){
-					change.getAddedSubList().stream().forEach(child -> hbox.getChildren().add(child.getObject()));
-				} else if (change.wasRemoved()){
-					change.getAddedSubList().stream().forEach(child -> hbox.getChildren().remove(child.getObject()));
+			public void onChanged(
+					javafx.collections.ListChangeListener.Change<? extends BaseUIManager<? extends Parent>> change) {
+				if (change.next()) {
+					if (change.wasAdded()) {
+						change.getAddedSubList().stream().forEach(child -> hbox.getChildren().add(child.getObject()));
+					} else if (change.wasRemoved()) {
+						change.getAddedSubList().stream()
+								.forEach(child -> hbox.getChildren().remove(child.getObject()));
+					}
 				}
 			}
 		});
+		getChildren().addAll(childrenToAdd);
 	}
 
 }
