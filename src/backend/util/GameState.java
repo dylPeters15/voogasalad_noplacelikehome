@@ -1,5 +1,6 @@
 package backend.util;
 
+import backend.cell.CellTemplate;
 import backend.game_engine.ResultQuadPredicate;
 import backend.grid.MutableGrid;
 import backend.io.XMLSerializable;
@@ -21,7 +22,8 @@ public abstract class GameState implements XMLSerializable, MutableGameState {
 	private Collection<Team> teams;
 	private MutableGrid gameGrid;
 	private Collection<UnitTemplate> unitTemplates;
-
+	private Collection<CellTemplate> cellTemplates;
+	
 	private Collection<ResultQuadPredicate> currentObjectives;
 	private Map<Event, List<BiConsumer<Player, ImmutableGameState>>> turnActions;
 	private List<BiPredicate<Player, ImmutableGameState>> turnRequirements;
@@ -52,6 +54,10 @@ public abstract class GameState implements XMLSerializable, MutableGameState {
 	
 	public Collection<UnitTemplate> getUnitTemplates(){
 		return unitTemplates;
+	}
+	
+	public Collection<CellTemplate> getCellTemplates(){
+		return cellTemplates;
 	}
 
 	@Override
