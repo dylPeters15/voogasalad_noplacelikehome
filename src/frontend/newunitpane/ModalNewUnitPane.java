@@ -1,5 +1,6 @@
 package frontend.newunitpane;
 
+import backend.util.GameState;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -7,7 +8,8 @@ public class ModalNewUnitPane extends NewUnitPane {
 
 	private Stage stage;
 
-	public ModalNewUnitPane() {
+	public ModalNewUnitPane(GameState gameState) {
+		super(gameState);
 		initialize();
 	}
 
