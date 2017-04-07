@@ -7,12 +7,8 @@ import java.util.Map;
  */
 //TODO Implement Groovy Engine
 class VoogaGroovyEngine extends VoogaScriptEngine {
-    static {
-        VoogaScriptEngine.addEngine(new VoogaGroovyEngine(), "groovy", "groovyshell");
-    }
-
-    private VoogaGroovyEngine() {
-        //TODO
+    protected VoogaGroovyEngine(String script) {
+        super(script);
     }
 
     @Override

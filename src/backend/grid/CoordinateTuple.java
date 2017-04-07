@@ -35,7 +35,7 @@ public final class CoordinateTuple implements Iterable<Integer> {
 
     public Collection<CoordinateTuple> getRays(int radius) {
         return IntStream.rangeClosed(1, radius).boxed()
-                .flatMap(i -> IntStream.range(0, dimension()).boxed()
+                .flatMap(i -> IntStream.range(0, dimension()).boxed().parallel()
                         .flatMap(j -> {
                             List<Integer> temp1 = Collections.nCopies(dimension(), i);
                             List<Integer> temp2 = Collections.nCopies(dimension(), -i);
@@ -48,7 +48,7 @@ public final class CoordinateTuple implements Iterable<Integer> {
 
     public double euclideanDistanceTo(CoordinateTuple other) {
         return Math.sqrt(
-                IntStream.range(0, dimension())
+                IntStream.range(0, dimension()).parallel()
                         .mapToDouble(i -> Math.pow(this.get(i) - other.get(i), 2))
                         .sum());
     }
@@ -75,7 +75,7 @@ public final class CoordinateTuple implements Iterable<Integer> {
         return coordinates.iterator();
     }
 
-    public CoordinateTuple sum(CoordinateTuple other) {
+    public CoordinateTuple sum(CoordinateTuple other) throws DimensionMismatchException {
         if (this.dimension() != other.dimension()) {
             throw new DimensionMismatchException(this.dimension(), other.dimension());
         }
@@ -130,6 +130,10 @@ public final class CoordinateTuple implements Iterable<Integer> {
 
     public Stream<Integer> stream() {
         return coordinates.stream();
+    }
+
+    public Stream<Integer> parallelStream() {
+        return coordinates.parallelStream();
     }
 
     public static class DimensionMismatchException extends RuntimeException {

@@ -29,7 +29,7 @@ public class Faction extends VoogaCollection<UnitTemplate, Faction> {
     }
 
     @Override
-    public Faction copy() {
+    public Faction clone() {
         return new Faction(getName(), getDescription(), getImgPath(), getAll());
     }
 

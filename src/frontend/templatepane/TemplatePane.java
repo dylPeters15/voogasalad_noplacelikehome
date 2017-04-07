@@ -41,16 +41,16 @@ public class TemplatePane extends BaseUIManager<Region>{
 	
 	public VBox createContent(Collection sprites) {
 		VBox contentPane = new VBox();
-		for (Object sprite: sprites) {
-			VBox spriteContent = new VBox();
-			// fix getName and getImage once communication sorted
-			Text spriteName = new Text(sprite.getName());
-			spriteContent.getChildren().add(spriteName);
-			ImageView spriteImage = new ImageView(sprite.getImage()); 
-			spriteContent.getChildren().add(spriteImage);
-			contentPane.getChildren().add(spriteContent);
-			
-		}
+//		for (Object sprite: sprites) {
+//			VBox spriteContent = new VBox();
+//			// fix getName and getImage once communication sorted
+//			Text spriteName = new Text(sprite.getName());
+//			spriteContent.getChildren().add(spriteName);
+//			ImageView spriteImage = new ImageView(sprite.getImage());
+//			spriteContent.getChildren().add(spriteImage);
+//			contentPane.getChildren().add(spriteContent);
+//
+//		}
 		return contentPane;
 		
 	}

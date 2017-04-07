@@ -21,7 +21,7 @@ public abstract class VoogaTemplate<T extends VoogaTemplate> extends VoogaObject
         super(name, description, imgPath);
     }
 
-    public abstract T copy();
+    public abstract T clone();
 
     //elevate access modifiers
     @Override

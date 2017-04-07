@@ -1,7 +1,7 @@
-//import frontend.UI;
-
+import frontend.UI;
 import javafx.application.Application;
 import javafx.stage.Stage;
+import scripting.VoogaScriptEngine;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -18,8 +18,8 @@ public class VoogaClientMain extends Application {
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle(ResourceBundle.getBundle("resources/Selections", Locale.getDefault()).getString("Title"));
-//        UI userInterface = new UI();
-//        primaryStage.setScene(userInterface.getPrimaryScene());
+        UI userInterface = new UI();
+        primaryStage.setScene(userInterface.getPrimaryScene());
         primaryStage.setResizable(true);
         primaryStage.show();
     }

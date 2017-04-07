@@ -11,46 +11,58 @@ import util.io.Unserializer;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.BiPredicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author Created by th174 on 4/6/2017.
  */
 public abstract class VoogaScriptEngine implements Serializer, Unserializer, InteractionModifier.Modifier, TriggeredEffectInstance.Effect, ActiveAbility.AbilityEffect, ResultQuadPredicate, BiPredicate<Player, ImmutableGameState> {
-    private static final Map<String, VoogaScriptEngine> SCRIPT_ENGINES = new HashMap<>();
-    private String script;
+    private static final HashMap<String, String> SCRIPT_ENGINE_IDENTIFIERS = new HashMap<>();
 
-    protected VoogaScriptEngine() {
-        script = "";
+    static {
+        SCRIPT_ENGINE_IDENTIFIERS.putAll(Stream.of("javascript", "js", "nashorn", "ecmascript").collect(Collectors.toMap(e -> e, e -> "JavaScript")));
+        SCRIPT_ENGINE_IDENTIFIERS.putAll(Stream.of("groovy", "groovyshell", "apachegroovy").collect(Collectors.toMap(e -> e, e -> "Groovy")));
+        SCRIPT_ENGINE_IDENTIFIERS.putAll(Stream.of("java").collect(Collectors.toMap(e -> e, e -> "Java")));
+        SCRIPT_ENGINE_IDENTIFIERS.putAll(Stream.of("python", "py", "jython").collect(Collectors.toMap(e -> e, e -> "Python")));
+        SCRIPT_ENGINE_IDENTIFIERS.putAll(Stream.of("lua", "luaj").collect(Collectors.toMap(e -> e, e -> "Lua")));
+//        SCRIPT_ENGINE_IDENTIFIERS.putAll(Stream.of("slogo", "lol").collect(Collectors.toMap(e -> e, e -> "Slogo")));
     }
 
-    public static VoogaScriptEngine getScriptEngine(String name) {
-        return SCRIPT_ENGINES.get(name.toLowerCase());
+    private final String scriptContent;
+
+    protected VoogaScriptEngine(String scriptContent) {
+        this.scriptContent = scriptContent;
     }
 
-    public final VoogaScriptEngine read(String script) {
-        this.script = script;
-        return this;
+    public static Collection<String> getAllSupportedScriptingLanguages() {
+        return SCRIPT_ENGINE_IDENTIFIERS.values();
     }
 
-    public final VoogaScriptEngine read(Path path) throws IOException {
-        return read(new String(Files.readAllBytes(path)));
+    public static VoogaScriptEngine read(String language, Path path) throws IOException {
+        return read(language, new String(Files.readAllBytes(path)));
     }
 
-    protected static void addEngine(VoogaScriptEngine engine, String... identifiers) {
-        for (String identifier : identifiers) {
-            SCRIPT_ENGINES.put(identifier, engine);
+    public static VoogaScriptEngine read(String langauge, String script) throws VoogaScriptException {
+        langauge = SCRIPT_ENGINE_IDENTIFIERS.get(langauge.replace(" ", "").toLowerCase());
+        try {
+            return (VoogaScriptEngine) Class.forName(String.format("Vooga%sEngine", langauge)).getConstructor(String.class).newInstance(script);
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | ClassNotFoundException e) {
+            throw new VoogaScriptException("Language not supported");
         }
     }
 
+    protected final String formatFunction(String functionFormat, String functionName, Collection<String> paramNames) {
+        return String.format(functionFormat, functionName, paramNames.toString().substring(1, paramNames.toString().length() - 1), scriptContent.replaceAll("(?m)^", "\t"));
+    }
+
     final String getScript() {
-        return script;
+        return scriptContent;
     }
 
     protected abstract Object eval(Map<String, Object> bindings) throws VoogaScriptException;
@@ -77,7 +89,7 @@ public abstract class VoogaScriptEngine implements Serializer, Unserializer, Int
     }
 
     @Override
-    public Object doUnserialize(Serializable serializableObject) throws Exception {
+    public Object doUnserialize(Serializable serializableObject) throws VoogaScriptException {
         try {
             return eval(createBindings("serializable", serializableObject));
         } catch (ClassCastException e) {
@@ -86,7 +98,7 @@ public abstract class VoogaScriptEngine implements Serializer, Unserializer, Int
     }
 
     @Override
-    public Serializable doSerialize(Object object) throws Exception {
+    public Serializable doSerialize(Object object) throws VoogaScriptException {
         try {
             return (Serializable) eval(createBindings("object", object));
         } catch (ClassCastException e) {
@@ -124,6 +136,10 @@ public abstract class VoogaScriptEngine implements Serializer, Unserializer, Int
     static class VoogaScriptException extends RuntimeException {
         VoogaScriptException(Exception e) {
             super(e);
+        }
+
+        public VoogaScriptException(String s) {
+            super(s);
         }
     }
 }

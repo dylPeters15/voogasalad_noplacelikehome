@@ -47,6 +47,6 @@ public interface ImmutableGameState {
     void addTurnRequirement(BiPredicate<Player, ImmutableGameState> requirement);
 
     default boolean canEndTurn() {
-        return getTurnRequirements().stream().anyMatch(e -> !e.test(getCurrentPlayer(), this));
+        return getTurnRequirements().parallelStream().anyMatch(e -> !e.test(getCurrentPlayer(), this));
     }
 }
