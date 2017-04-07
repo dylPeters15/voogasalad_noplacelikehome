@@ -17,8 +17,8 @@ public class UnitTemplate extends VoogaTemplate<UnitTemplate> {
     //TODO ResourceBundlify
     public static final UnitTemplate SKELETON_WARRIOR = new UnitTemplate("Skeleton Warrior")
             .setFaction(Faction.UNDEAD)
-            .addUnitStat(UnitStatTemplate.HITPOINTS.copy().setMaxValue(39.0))
-            .addUnitStat(UnitStatTemplate.MOVEPOINTS.copy().setMaxValue(5))
+            .addUnitStat(UnitStatTemplate.HITPOINTS.clone().setMaxValue(39.0))
+            .addUnitStat(UnitStatTemplate.MOVEPOINTS.clone().setMaxValue(5))
             .setDescription("Once a noble knight in service of his kingdom, the skeleton warrior once again takes up the blade for the lich king.")
             .setImgPath("spooky1.png")
             .setMovePattern(GridPattern.HEXAGONAL_ADJACENT)
@@ -26,8 +26,8 @@ public class UnitTemplate extends VoogaTemplate<UnitTemplate> {
             .addOffensiveModifier(InteractionModifier.CHAOTIC);
     public static final UnitTemplate SKELETON_ARCHER = new UnitTemplate("Skeleton Archer")
             .setFaction(Faction.UNDEAD)
-            .addUnitStat(UnitStatTemplate.HITPOINTS.copy().setMaxValue(34.0))
-            .addUnitStat(UnitStatTemplate.MOVEPOINTS.copy().setMaxValue(6))
+            .addUnitStat(UnitStatTemplate.HITPOINTS.clone().setMaxValue(34.0))
+            .addUnitStat(UnitStatTemplate.MOVEPOINTS.clone().setMaxValue(6))
             .setMovePattern(GridPattern.HEXAGONAL_ADJACENT)
             .setImgPath("spooky2.png")
             .setDescription("The skeletal corpse of an impoverished serf left to starve, reanimated by necromancy. Now, bow and arrow in hand, he enacts his revenge on the living.")
@@ -67,7 +67,7 @@ public class UnitTemplate extends VoogaTemplate<UnitTemplate> {
     }
 
     @Override
-    public UnitTemplate copy() {
+    public UnitTemplate clone() {
         return new UnitTemplate(getName(), getUnitStats(), getFaction(), getMovePattern(), getTerrainMoveCosts(), getActiveAbilities(), getTriggeredAbilities(), getOffensiveModifiers(), getDefensiveModifiers(), getDescription(), getImgPath());
     }
 

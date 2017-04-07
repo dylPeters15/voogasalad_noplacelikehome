@@ -69,7 +69,7 @@ public class InteractionModifier<T> extends VoogaObject {
     public interface Modifier<T> {
         //Defensive Modifiers
         Modifier<Double> INVULNERABILITY = (incomingDamage, agent, target, game) -> 0.0;
-        Modifier<Double> FORMATION = (incomingDamage, agent, target, game) -> incomingDamage * (target.getNeighboringUnits(game.getGrid()).values().parallelStream().flatMap(Collection::stream).parallel().anyMatch(e -> e.getTeam().equals(target.getTeam()) && e.getName().equals(target.getName())) ? .6 : 1);
+        Modifier<Double> FORMATION = (incomingDamage, agent, target, game) -> incomingDamage * (target.getNeighboringUnits(game.getGrid()).values().parallelStream().flatMap(Collection::stream).anyMatch(e -> e.getTeam().equals(target.getTeam()) && e.getName().equals(target.getName())) ? .6 : 1);
         Modifier<Double> EVASIVE = (incomingDamage, agent, target, game) -> incomingDamage * Math.random() < .5 ? 0 : 1.5;
         Modifier<Double> STALWART = (incomingDamage, agent, target, game) -> incomingDamage * (target.getMovePoints().isFull() ? .5 : 1);
         Modifier<Double> HARDENED_SHIELDS = (incomingDamage, agent, target, game) -> incomingDamage > 5 ? 5 : incomingDamage;
@@ -85,7 +85,7 @@ public class InteractionModifier<T> extends VoogaObject {
         Modifier<Double> FIRST_BLOOD = (outgoingDamage, agent, target, game) -> outgoingDamage * (agent.getHitPoints().isFull() ? 1.5 : 1);
         Modifier<Double> EXECUTIONER = (outgoingDamage, agent, target, game) -> outgoingDamage * (agent.getHitPoints().getCurrentValue() / agent.getHitPoints().getMaxValue() < .25 ? 2 : 1);
         Modifier<Double> BRAVERY = (outgoingDamage, agent, target, game) -> outgoingDamage * (target.getHitPoints().getCurrentValue() > agent.getHitPoints().getCurrentValue() ? 1.5 : 1);
-        Modifier<Double> ASSASSIN = (outgoingDamage, agent, target, game) -> outgoingDamage * (target.getNeighboringUnits(game.getGrid()).values().parallelStream().flatMap(Collection::stream).parallel().anyMatch(e -> e.getTeam().equals(target.getTeam())) ? 1 : 1.5);
+        Modifier<Double> ASSASSIN = (outgoingDamage, agent, target, game) -> outgoingDamage * (target.getNeighboringUnits(game.getGrid()).values().parallelStream().flatMap(Collection::stream).anyMatch(e -> e.getTeam().equals(target.getTeam())) ? 1 : 1.5);
         Modifier<Double> CRITICAL_STRIKE = (outgoingDamage, agent, target, game) -> Math.random() < .25 ? outgoingDamage * 2 : outgoingDamage;
         Modifier<Double> STRONG_ATTACK = (outgoingDamage, agent, target, game) -> outgoingDamage * 1.5;
         T modify(T originalValue, UnitInstance agent, UnitInstance target, ImmutableGameState game);

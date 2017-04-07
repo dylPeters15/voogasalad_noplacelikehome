@@ -27,7 +27,7 @@ public class Region extends VoogaCollection<Terrain, Region> {
     }
 
     @Override
-    public Region copy() {
+    public Region clone() {
         return new Region(getName(), getDescription(), getImgPath(), getAll());
     }
 

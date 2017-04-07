@@ -17,7 +17,7 @@ public class Team extends VoogaCollection<Player, Team> {
     }
 
     @Override
-    public Team copy() {
+    public Team clone() {
         return new Team(getName(), getAll(), getDescription(), getImgPath());
     }
 

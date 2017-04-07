@@ -94,7 +94,7 @@ public class ObservableServer<T> extends ObservableHost<T> {
             try {
                 serverSocket.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                throw new Error(e);
             }
             executor.shutdown();
         }
@@ -190,10 +190,6 @@ public class ObservableServer<T> extends ObservableHost<T> {
 
         protected boolean send(Request request) {
             return connection.send(request);
-        }
-
-        private void shutDown() {
-            connection.shutDown();
         }
     }
 }

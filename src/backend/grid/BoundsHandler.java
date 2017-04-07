@@ -16,7 +16,7 @@ public class BoundsHandler extends VoogaObject {
             (input, grid) -> {
                 MutableGrid.GridBounds bounds = grid.getBounds();
                 return new CoordinateTuple(
-                        input.stream()
+                        input.parallelStream()
                                 .map(i -> Math.min(Math.max(input.get(i), bounds.getMax(i)), bounds.getMin(i)))
                                 .collect(Collectors.toList())
                 );
@@ -25,7 +25,7 @@ public class BoundsHandler extends VoogaObject {
             (input, grid) -> {
                 MutableGrid.GridBounds bounds = grid.getRectangularBounds();
                 return new CoordinateTuple(
-                        input.convertToRectangular().stream()
+                        input.convertToRectangular().parallelStream()
                                 .map(i -> Math.min(Math.max(input.get(i), bounds.getMax(i)), bounds.getMin(i)))
                                 .collect(Collectors.toList())
                 ).convertToDimension(input.dimension());
@@ -34,7 +34,7 @@ public class BoundsHandler extends VoogaObject {
             (input, grid) -> {
                 MutableGrid.GridBounds bounds = grid.getBounds();
                 return new CoordinateTuple(
-                        input.stream()
+                        input.parallelStream()
                                 .map(i -> Math.floorMod(input.get(i) - bounds.getMin(i), bounds.getMax(i) - bounds.getMin(i)) + bounds.getMin(i))
                                 .collect(Collectors.toList())
                 );
@@ -43,7 +43,7 @@ public class BoundsHandler extends VoogaObject {
             (input, grid) -> {
                 MutableGrid.GridBounds bounds = grid.getRectangularBounds();
                 return new CoordinateTuple(
-                        input.convertToRectangular().stream()
+                        input.convertToRectangular().parallelStream()
                                 .map(i -> Math.floorMod(input.get(i) - bounds.getMin(i), bounds.getMax(i) - bounds.getMin(i)) + bounds.getMin(i))
                                 .collect(Collectors.toList())
                 ).convertToDimension(input.dimension());

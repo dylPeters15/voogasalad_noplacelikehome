@@ -112,7 +112,7 @@ public class CellTemplate extends VoogaTemplate<CellTemplate> {
     }
 
     @Override
-    public CellTemplate copy() {
+    public CellTemplate clone() {
         return new CellTemplate(getName(), getShape(), getTerrain(), getDescription(), getImgPath(), getTriggeredAbilities());
     }
 

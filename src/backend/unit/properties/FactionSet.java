@@ -17,7 +17,7 @@ public class FactionSet extends VoogaCollection<Faction, FactionSet> {
     }
 
     @Override
-    public FactionSet copy() {
+    public FactionSet clone() {
         return new FactionSet(getName(), getDescription(), getImgPath(), getAll());
     }
 
