@@ -3,8 +3,11 @@ package backend.game_engine;
 import backend.game_engine.ResultQuadPredicate.Result;
 import backend.player.Player;
 import backend.util.MutableGameState;
+import util.io.Serializer;
+import util.io.Unserializer;
 import util.net.ObservableServer;
 
+import java.io.Serializable;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
@@ -17,6 +20,8 @@ import java.util.function.Consumer;
 
 public class DieselEngine implements GameEngine{
 
+	private Serializer serializer = this::save;
+	private Unserializer unserializer = this::load;
 	private ObservableServer<MutableGameState> server;
 	private Consumer<MutableGameState> stateUpdateListener = this::checkGame;
 	
@@ -35,7 +40,7 @@ public class DieselEngine implements GameEngine{
 	
 	private final void checkTurnRules(MutableGameState state){
 		if(!state.getTurnRequirements().parallelStream()
-									   .allMatch(e -> e.test(state.getCurrentPlayer(), state)) && state.canEndTurn()) state.endTurn();
+									   .allMatch(e -> e.test(state.getCurrentPlayer(), state)) && state.canEndTurn()) state.endTurn(state.getCurrentPlayer());
 	}
 	
 	private final void checkTurnEvents(MutableGameState state){
@@ -55,15 +60,15 @@ public class DieselEngine implements GameEngine{
 	}
 	
 	@Override
-	public void save() {
+	public Serializable save(Object gameEngine) {
+		return null;
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
-	public void load() {
+	public Object load(Object gameEngineXML) {
+		return null;
 		// TODO Auto-generated method stub
-		
 	}
 	
 	public void messagePlayer(Player from, Player to, String message) {}

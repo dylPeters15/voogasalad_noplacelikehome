@@ -1,6 +1,9 @@
 package backend.game_engine;
 
+import java.io.Serializable;
+
 import backend.player.Player;
+import util.io.Unserializer;
 
 /**
  * @author Alexander Zapata
@@ -11,7 +14,7 @@ public interface GameEngine {
 	
     void restart();
 
-    void save();
+    Serializable save(Object gameEngine);
 
-    void load();
+    Object load(Object gameEngine);
 }
