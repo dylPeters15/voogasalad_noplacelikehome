@@ -20,10 +20,10 @@ public class TemplatePane extends BaseUIManager<Region>{
 	Collection<UnitTemplate> units;
 	Collection<Terrain> terrains;
 	
-	public TemplatePane(Collection<UnitTemplate> availableUnits, 
-			Collection<Terrain> availableTerrains) {
+	public TemplatePane(Collection<UnitTemplate> availableUnits) {
+			//, Collection<Terrain> availableTerrains) {
 		units = availableUnits;
-		terrains = availableTerrains;
+		//terrains = availableTerrains;
 		pane = new Pane();
 		createCollabsible("Terrain", terrains);
 		createCollabsible("Unit", units);
@@ -48,7 +48,6 @@ public class TemplatePane extends BaseUIManager<Region>{
 			ImageView spriteImage = new ImageView(sprite.getImage()); 
 			spriteContent.getChildren().add(spriteImage);
 			contentPane.getChildren().add(spriteContent);
-			
 		}
 		return contentPane;
 		
