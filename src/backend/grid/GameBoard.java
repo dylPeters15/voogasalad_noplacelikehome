@@ -104,5 +104,4 @@ public class GameBoard extends VoogaObject implements MutableGrid, Iterable {
     private Stream<CellInstance> parallelStream() {
         return gameBoard.values().parallelStream();
     }
-
 }

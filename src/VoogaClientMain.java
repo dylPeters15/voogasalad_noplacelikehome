@@ -1,3 +1,5 @@
+import backend.cell.Terrain;
+import backend.unit.properties.ActiveAbility;
 import javafx.stage.Stage;
 import scripting.VoogaScriptEngine;
 import scripting.VoogaScriptEngineManager;
@@ -21,6 +23,7 @@ public class VoogaClientMain {
             }});
         }
         System.out.println((System.currentTimeMillis() - start) / 1000.0);
+        System.out.println(ActiveAbility.getPredefinedActiveAbilities());
 //        launch(args);
     }
 

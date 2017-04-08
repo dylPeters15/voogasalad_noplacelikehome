@@ -40,7 +40,7 @@ public interface VoogaScriptEngine extends Serializer, Unserializer, Interaction
     }
 
     default String getLanguage() {
-        return RESOURCES.getString(getClass().getSimpleName().replace("Vooga", "").replace("Engine", ""));
+        return RESOURCES.getString(getClass().getSimpleName().replaceAll("Vooga|Engine", ""));
     }
 
     @Override
