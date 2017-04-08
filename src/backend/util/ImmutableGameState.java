@@ -1,5 +1,6 @@
 package backend.util;
 
+import backend.cell.Terrain;
 import backend.game_engine.ResultQuadPredicate;
 import backend.grid.MutableGrid;
 import backend.player.Player;
@@ -19,10 +20,10 @@ public interface ImmutableGameState {
     Player getCurrentPlayer();
 
     Collection<Team> getTeams();
-   
+       
     void messagePlayer(Player from, Player to, String message);
 
-    void endTurn();
+    void endTurn(Player player);
 
     default void messageAll(Player from, String message) {
         getPlayers().forEach(player -> messagePlayer(from, player, message));
