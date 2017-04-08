@@ -13,10 +13,12 @@ import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 
 /**
- * @author Created by th174 on 3/30/2017.
+ * @author Created by th174 on 3/30/2017. Worked on by Alex
  */
 
-public abstract class GameState implements XMLSerializable, MutableGameState {
+//TODO: Implement getTurnNumber(), toXML() (Kinda Tavo's job), messagePlayer(Player from, Player to, String message), and endTurn();
+
+public class GameState implements XMLSerializable, MutableGameState {
 	private List<Player> playerList;
 	private Player currentPlayer;
 	private Collection<Team> teams;
@@ -100,6 +102,28 @@ public abstract class GameState implements XMLSerializable, MutableGameState {
 	public String toXML() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void messagePlayer(Player from, Player to, String message) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void endTurn() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Collection<ResultQuadPredicate> getObjectives() {
+		return currentObjectives;
+	}
+
+	@Override
+	public Collection<BiPredicate<Player, ImmutableGameState>> getTurnRequirements() {
+		return turnRequirements;
 	}
 
 }
