@@ -11,7 +11,6 @@ import javafx.event.EventHandler;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
 import util.net.Modifier;
-import util.net.Request;
 
 /**
  * 
@@ -44,11 +43,10 @@ public class NewUnitPane extends BaseUIManager<Region> {
 //		imageNamePairView.getRequests().passTo(getRequests());
 //		movePointView.getRequests().passTo(getRequests());
 //		abilitiesAdder.getRequests().passTo(getRequests());
-		Modifier<GameState> modifier = gameState -> {gameState.getUnitTemplates().add(new UnitTemplate("newtemplatename"));
+		Modifier<GameState> modifier = gameState -> {gameState.getUnitTemplates().add(new UnitTemplate("NewUnitName"));
 		return gameState;
-				};
-		Request<Modifier<GameState>> request = new Request<>(modifier);
-		getRequests().add(request);
+		};
+		getRequests().add(modifier);
 		System.out.println(getRequests().toString());
 	}
 
@@ -98,22 +96,22 @@ public class NewUnitPane extends BaseUIManager<Region> {
 		AnchorPane.setBottomAnchor(cancelSaveView.getObject(), BOTTOM_INSET);
 		AnchorPane.setRightAnchor(cancelSaveView.getObject(), RIGHT_INSET);
 
-//		setBounds();
+		setBounds();
 
 		anchorPane.getChildren().addAll(imageNamePairView.getObject(), movePointView.getObject(),
 				cancelSaveView.getObject(), abilitiesAdder.getObject());
 
 	}
 
-//	void setBounds() {
-//		imageNamePairView.getObject().prefWidthProperty().bind(anchorPane.widthProperty().multiply(0.3));
-//		imageNamePairView.getObject().prefHeightProperty().bind(anchorPane.heightProperty().multiply(0.2));
-//		movePointView.getObject().prefWidthProperty().bind(anchorPane.widthProperty().multiply(0.475));
-//		movePointView.getObject().prefHeightProperty().bind(anchorPane.heightProperty().multiply(0.85));
-//		abilitiesAdder.getObject().prefWidthProperty().bind(anchorPane.widthProperty().multiply(0.475));
-//		abilitiesAdder.getObject().prefHeightProperty().bind(anchorPane.heightProperty().multiply(0.75));
-//		cancelSaveView.getObject().prefWidthProperty().bind(anchorPane.widthProperty().multiply(0.3));
-//		cancelSaveView.getObject().prefHeightProperty().bind(anchorPane.heightProperty().multiply(0.1));
-//	}
+	void setBounds() {
+		imageNamePairView.getObject().prefWidthProperty().bind(anchorPane.widthProperty().multiply(0.3));
+		imageNamePairView.getObject().prefHeightProperty().bind(anchorPane.heightProperty().multiply(0.2));
+		movePointView.getObject().prefWidthProperty().bind(anchorPane.widthProperty().multiply(0.475));
+		movePointView.getObject().prefHeightProperty().bind(anchorPane.heightProperty().multiply(0.85));
+		abilitiesAdder.getObject().prefWidthProperty().bind(anchorPane.widthProperty().multiply(0.475));
+		abilitiesAdder.getObject().prefHeightProperty().bind(anchorPane.heightProperty().multiply(0.65));
+		cancelSaveView.getObject().prefWidthProperty().bind(anchorPane.widthProperty().multiply(0.3));
+		cancelSaveView.getObject().prefHeightProperty().bind(anchorPane.heightProperty().multiply(0.1));
+	}
 
 }
