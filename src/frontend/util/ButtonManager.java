@@ -1,27 +1,37 @@
 package frontend.util;
 
-import java.io.Serializable;
+import java.util.ResourceBundle;
 
 import frontend.BaseUIManager;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Region;
-import util.net.Request;
 
+/**
+ * A placeholder class to test and demonstrate the BaseUIManager
+ * 
+ * @author dylanpeters
+ *
+ */
 public class ButtonManager extends BaseUIManager<Region> {
 	private Button button;
-	private int index;
 
-	public ButtonManager(String string) {
-		button = new Button(string);
-		index = 0;
-		button.setOnAction(new EventHandler<ActionEvent>() {
+	public ButtonManager() {
+		button = new Button();
+		setButtonText();
+
+		getLanguage().addListener(new ChangeListener<ResourceBundle>() {
 			@Override
-			public void handle(ActionEvent event) {
-				getRequests().add(new Request<Serializable>("test" + index++));
+			public void changed(ObservableValue<? extends ResourceBundle> observable, ResourceBundle oldLanguage,
+					ResourceBundle newLanguage) {
+				setButtonText();
 			}
 		});
+	}
+
+	private void setButtonText() {
+		button.setText(getLanguage().getValue().getString("Play"));
 	}
 
 	@Override

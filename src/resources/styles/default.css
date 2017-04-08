@@ -17,24 +17,13 @@
     -fx-font-family: verdana;  
 }
 
-.button {
+.button, .combo-box, .menu-bar, .menu, .menu-item {
 -fx-background-color: #bfe7ff;
 -fx-border-color: #afd7ef;
 -fx-background-radius: 7;
 -fx-border-radius: 7;
 }
 
-.button:hover {
--fx-background-color: #e0f7f0;
-}
-
-.combo-box {
--fx-background-color: #bfe7ff;
--fx-border-color: #afd7ef;
--fx-background-radius: 7;
--fx-border-radius: 7;
-}
-
-.combo-box:hover {
+.button:hover, .combo-box:hover {
 -fx-background-color: #e0f7f0;
 }
