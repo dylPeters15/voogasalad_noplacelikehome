@@ -8,6 +8,13 @@ import util.net.ObservableServer;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
+/**
+ * @author Zapata
+ */
+
+//TODO: Implement some way to checkTurnState() to determine if it is the beginning or end of a turn. Implement restart(), save()
+// and load() (Tavo's job). Also implement a messagePlayer(Player from, Player to, String message).
+
 public class DieselEngine implements GameEngine{
 
 	private ObservableServer<MutableGameState> server;

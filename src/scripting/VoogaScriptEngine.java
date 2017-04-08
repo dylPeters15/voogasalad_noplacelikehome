@@ -10,16 +10,15 @@ import util.io.Serializer;
 import util.io.Unserializer;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.BiPredicate;
 
 /**
  * @author Created by th174 on 4/7/2017.
  */
 public interface VoogaScriptEngine extends Serializer, Unserializer, InteractionModifier.Modifier, TriggeredEffectInstance.Effect, ActiveAbility.AbilityEffect, ResultQuadPredicate, BiPredicate<Player, ImmutableGameState> {
+    ResourceBundle RESOURCES = ResourceBundle.getBundle("resources/Scripting", Locale.getDefault());
+
     VoogaScriptEngine setScript(String script) throws VoogaScriptException;
 
     Object eval(Map<String, Object> bindings) throws VoogaScriptException;
@@ -34,6 +33,14 @@ public interface VoogaScriptEngine extends Serializer, Unserializer, Interaction
             throw new Error("Invalid arguments, must be name, binding, name, binding, name binding etc.");
         }
         return bindings;
+    }
+
+    default String getDefaultText() {
+        return String.format(getLanguage() + "DefaultText", RESOURCES.getString("ReturnVarName"));
+    }
+
+    default String getLanguage() {
+        return RESOURCES.getString(getClass().getSimpleName().replaceAll("Vooga|Engine", ""));
     }
 
     @Override

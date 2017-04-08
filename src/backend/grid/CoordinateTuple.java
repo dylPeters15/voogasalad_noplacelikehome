@@ -37,8 +37,8 @@ public final class CoordinateTuple implements Iterable<Integer> {
         return IntStream.rangeClosed(1, radius).boxed()
                 .flatMap(i -> IntStream.range(0, dimension()).boxed().parallel()
                         .flatMap(j -> {
-                            List<Integer> temp1 = Collections.nCopies(dimension(), i);
-                            List<Integer> temp2 = Collections.nCopies(dimension(), -i);
+                            List<Integer> temp1 = new ArrayList<>(Collections.nCopies(dimension(), i));
+                            List<Integer> temp2 = new ArrayList<>(Collections.nCopies(dimension(), -i));
                             temp1.set(j, 0);
                             temp2.set(j, 0);
                             return Stream.of(new CoordinateTuple(temp1), new CoordinateTuple(temp2));
