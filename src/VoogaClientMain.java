@@ -11,13 +11,9 @@ public class VoogaClientMain {
 
     public static void main(String[] args) {
         long start = System.currentTimeMillis();
-        VoogaScriptEngine engine = VoogaScriptEngineManager.read("python", "" +
-                "import sys\n" +
-                "list = []\n" +
-                "list.append(a)\n" +
-                "list.append(b)\n" +
-                "ret = list\n" +
-                "print ret");
+        VoogaScriptEngine engine = VoogaScriptEngineManager.read("Java", "" +
+                "System.out.print(a+b);\n" +
+                "return a+b;");
         for (int i = 0; i < 1; i++) {
             Object result = engine.eval(new HashMap<String, Object>() {{
                 put("a", "hello");
@@ -28,7 +24,7 @@ public class VoogaClientMain {
 //        launch(args);
     }
 
-//    @Override
+    //    @Override
     public void start(Stage primaryStage) {
 //        primaryStage.setTitle(ResourceBundle.getBundle("resources/Selections", Locale.getDefault()).getString("Title"));
 //        UI userInterface = new UI();
