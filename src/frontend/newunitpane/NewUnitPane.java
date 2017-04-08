@@ -58,7 +58,7 @@ public class NewUnitPane extends BaseUIManager<Region> {
 		abilitiesAdder = new AbilitiesAdder(gameState);
 
 		AnchorPane.setTopAnchor(imageNamePairView.getObject(), TOP_INSET);
-		AnchorPane.setLeftAnchor(movePointView.getObject(), LEFT_INSET);
+		AnchorPane.setLeftAnchor(imageNamePairView.getObject(), LEFT_INSET);
 		AnchorPane.setTopAnchor(movePointView.getObject(), TOP_INSET);
 		AnchorPane.setRightAnchor(movePointView.getObject(), RIGHT_INSET);
 		AnchorPane.setBottomAnchor(abilitiesAdder.getObject(), BOTTOM_INSET);
@@ -66,22 +66,22 @@ public class NewUnitPane extends BaseUIManager<Region> {
 		AnchorPane.setBottomAnchor(cancelSaveView.getObject(), BOTTOM_INSET);
 		AnchorPane.setRightAnchor(cancelSaveView.getObject(), RIGHT_INSET);
 
-		setBounds();
+//		setBounds();
 
 		anchorPane.getChildren().addAll(imageNamePairView.getObject(), movePointView.getObject(),
 				cancelSaveView.getObject(), abilitiesAdder.getObject());
 
 	}
 
-	void setBounds() {
-		imageNamePairView.getObject().prefWidthProperty().bind(anchorPane.widthProperty().multiply(0.3));
-		imageNamePairView.getObject().prefHeightProperty().bind(anchorPane.heightProperty().multiply(0.2));
-		movePointView.getObject().prefWidthProperty().bind(anchorPane.widthProperty().multiply(0.475));
-		movePointView.getObject().prefHeightProperty().bind(anchorPane.heightProperty().multiply(0.85));
-		abilitiesAdder.getObject().prefWidthProperty().bind(anchorPane.widthProperty().multiply(0.475));
-		abilitiesAdder.getObject().prefHeightProperty().bind(anchorPane.heightProperty().multiply(0.75));
-		cancelSaveView.getObject().prefWidthProperty().bind(anchorPane.widthProperty().multiply(0.3));
-		cancelSaveView.getObject().prefHeightProperty().bind(anchorPane.heightProperty().multiply(0.1));
-	}
+//	void setBounds() {
+//		imageNamePairView.getObject().prefWidthProperty().bind(anchorPane.widthProperty().multiply(0.3));
+//		imageNamePairView.getObject().prefHeightProperty().bind(anchorPane.heightProperty().multiply(0.2));
+//		movePointView.getObject().prefWidthProperty().bind(anchorPane.widthProperty().multiply(0.475));
+//		movePointView.getObject().prefHeightProperty().bind(anchorPane.heightProperty().multiply(0.85));
+//		abilitiesAdder.getObject().prefWidthProperty().bind(anchorPane.widthProperty().multiply(0.475));
+//		abilitiesAdder.getObject().prefHeightProperty().bind(anchorPane.heightProperty().multiply(0.75));
+//		cancelSaveView.getObject().prefWidthProperty().bind(anchorPane.widthProperty().multiply(0.3));
+//		cancelSaveView.getObject().prefHeightProperty().bind(anchorPane.heightProperty().multiply(0.1));
+//	}
 
 }
