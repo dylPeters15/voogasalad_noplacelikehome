@@ -1,5 +1,5 @@
 .root {
-    -fx-base: #333333; 
+    -fx-base: #333333;
     -fx-background: #111111;
     -fx-accent: #0096c9 ;
     -fx-default-button: #abd8ed ;
@@ -12,19 +12,19 @@
             -fx-dark-text-color 59%,
             -fx-mid-text-color 60%
         );
-    -fx-focused-mark-color : -fx-focused-text-base-color ;  
+    -fx-focused-mark-color : -fx-focused-text-base-color ;
 
-    -fx-font-family: verdana;  
+    -fx-font-family: verdana;
 }
 
-.button {
+.button, .combo-box, .menu-bar, .menu, .menu-item {
 -fx-background-color: #555555;
 -fx-border-color: #9fe7df;
 -fx-background-radius: 7;
 -fx-border-radius: 7;
 }
 
-.button:hover {
+.button:hover, .combo-box:hover {
     -fx-background-color: #888888;
 }
 
@@ -32,22 +32,6 @@
     -fx-text-fill: #ffffff;
 }
 
-#text {
-    -fx-fill: #ffffff;
-    -fx-stroke: #ffffff;
-}
-
 .pane {
 -fx-background-color: #000000;
-}
-
-.combo-box {
--fx-background-color: #555555;
--fx-border-color: #9fe7df;
--fx-background-radius: 7;
--fx-border-radius: 7;
-}
-
-.combo-box:hover {
-    -fx-background-color: #888888;
 }
