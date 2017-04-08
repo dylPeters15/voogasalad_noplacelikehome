@@ -53,7 +53,7 @@ public class NewUnitPane extends BaseUIManager<Region> {
 
 		anchorPane = new AnchorPane();
 		imageNamePairView = new ImageNamePairView();
-		movePointView = new VerticalTableInputView();
+		movePointView = new TerrainMovePointView(gameState);
 		cancelSaveView = new CancelSaveView();
 		abilitiesAdder = new AbilitiesAdder(gameState);
 
