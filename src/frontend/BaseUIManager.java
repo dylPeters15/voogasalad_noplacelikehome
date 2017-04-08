@@ -51,7 +51,7 @@ public abstract class BaseUIManager<T extends Parent> implements ObjectManager<T
 
 	private ObjectProperty<ResourceBundle> language;
 	private ObjectProperty<String> styleSheet;
-	private ObservableQueue<Request<Serializable>> requests;
+	private ObservableQueue<Request<? extends Serializable>> requests;
 
 	/**
 	 * Creates a new SlogoBaseUIManager. Sets all values for the language and
@@ -71,11 +71,11 @@ public abstract class BaseUIManager<T extends Parent> implements ObjectManager<T
 		requests = new ObservableQueue<>();
 	}
 
-	public ObservableQueue<Request<Serializable>> getRequests() {
+	public ObservableQueue<Request<? extends Serializable>> getRequests() {
 		return requests;
 	}
 
-	public void addRequest(Request<Serializable> request) {
+	public void addRequest(Request<? extends Serializable> request) {
 		requests.add(request);
 	}
 

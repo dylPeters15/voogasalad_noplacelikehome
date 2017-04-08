@@ -23,6 +23,8 @@ public class SelectableInputRow extends BaseUIManager<Region> {
 	public SelectableInputRow(Image image, String name) {
 		checkbox = new CheckBox();
 		icon = new ImageView();
+		this.name = new Label();
+		hbox = new HBox();
 		setImage(image);
 		setName(name);
 		hbox.getChildren().addAll(checkbox,icon,this.name);

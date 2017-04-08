@@ -1,12 +1,17 @@
 package frontend.newunitpane;
 
+import backend.unit.UnitTemplate;
 import backend.util.GameState;
 import frontend.BaseUIManager;
 import frontend.util.CancelSaveView;
 import frontend.util.ImageNamePairView;
 import frontend.util.VerticalTableInputView;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
+import util.net.Modifier;
+import util.net.Request;
 
 /**
  * 
@@ -36,13 +41,19 @@ public class NewUnitPane extends BaseUIManager<Region> {
 	}
 
 	protected void submit() {
-		imageNamePairView.getRequests().passTo(getRequests());
-		movePointView.getRequests().passTo(getRequests());
-		abilitiesAdder.getRequests().passTo(getRequests());
+//		imageNamePairView.getRequests().passTo(getRequests());
+//		movePointView.getRequests().passTo(getRequests());
+//		abilitiesAdder.getRequests().passTo(getRequests());
+		Modifier<GameState> modifier = gameState -> {gameState.getUnitTemplates().add(new UnitTemplate("newtemplatename"));
+		return gameState;
+				};
+		Request<Modifier<GameState>> request = new Request<>(modifier);
+		getRequests().add(request);
+		System.out.println(getRequests().toString());
 	}
 
 	protected void cancel() {
-
+		
 	}
 
 	protected void newNewUnitPane() {
@@ -56,7 +67,28 @@ public class NewUnitPane extends BaseUIManager<Region> {
 		movePointView = new TerrainMovePointView(gameState);
 		cancelSaveView = new CancelSaveView();
 		abilitiesAdder = new AbilitiesAdder(gameState);
-
+		
+		cancelSaveView.setOnSave(new EventHandler<ActionEvent>(){
+			@Override
+			public void handle(ActionEvent event) {
+				submit();
+			}
+		});
+		
+		cancelSaveView.setOnCancel(new EventHandler<ActionEvent>(){
+			@Override
+			public void handle(ActionEvent event) {
+				cancel();
+			}
+		});
+		
+		cancelSaveView.setOnCreateNew(new EventHandler<ActionEvent>(){
+			@Override
+			public void handle(ActionEvent event) {
+				newNewUnitPane();
+			}
+		});
+		
 		AnchorPane.setTopAnchor(imageNamePairView.getObject(), TOP_INSET);
 		AnchorPane.setLeftAnchor(imageNamePairView.getObject(), LEFT_INSET);
 		AnchorPane.setTopAnchor(movePointView.getObject(), TOP_INSET);
