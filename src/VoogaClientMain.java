@@ -3,6 +3,7 @@ import javafx.stage.Stage;
 import scripting.VoogaScriptEngine;
 import scripting.VoogaScriptEngineManager;
 
+import javax.script.ScriptEngineManager;
 import java.util.HashMap;
 
 /**
@@ -12,6 +13,7 @@ public class VoogaClientMain extends Application {
 
     public static void main(String[] args) {
         long start = System.currentTimeMillis();
+        System.out.println(new ScriptEngineManager().getEngineFactories());
         VoogaScriptEngine engine = VoogaScriptEngineManager.read("Java", "System.out.println(a+b);\nreturn b+a;");
         for (int i = 0; i < 100; i++) {
             Object result = engine.eval(new HashMap<String, Object>() {{
