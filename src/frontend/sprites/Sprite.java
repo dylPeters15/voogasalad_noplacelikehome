@@ -6,21 +6,22 @@
 package frontend.sprites;
 
 import java.util.List;
-import frontend.Displayable;
+
+import frontend.BaseUIManager;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Region;
 
 /**
  * @author Stone Mathers
  * Created 3/29/2017
  */
-public abstract class Sprite implements Displayable {
+public abstract class Sprite extends BaseUIManager<Region> {
 
 	/**
 	 * Determines what is done when a Sprite is clicked.
@@ -53,23 +54,23 @@ public abstract class Sprite implements Displayable {
 	/**
 	 * @return List of SpriteCells composing the Sprite.
 	 */
-	List<SpriteCell> getSpriteCells() {
+	List<CellView> getSpriteCells() {
 		return null;
 	}
 	
 	/**
 	 * Adds cell to the Sprite's list of SpriteCells.
 	 * 
-	 * @param SpriteCell to be added.
+	 * @param CellView to be added.
 	 */
-	void addSpriteCell(SpriteCell cell) {
+	void addSpriteCell(CellView cell) {
 	}
 	
 	/**
 	 * @param index in the list to search for a SpriteCell.
 	 * @return SpriteCell at the given index.
 	 */
-	SpriteCell getSpriteCell(int index) {
+	CellView getSpriteCell(int index) {
 		return null;
 	}
 	

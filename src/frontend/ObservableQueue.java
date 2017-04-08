@@ -1,9 +1,14 @@
 package frontend;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Queue;
+
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
-
-import java.util.*;
 
 public class ObservableQueue<E> implements Queue<E>, Observable {
 
@@ -159,15 +164,30 @@ public class ObservableQueue<E> implements Queue<E>, Observable {
 		listeners.remove(listener);
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		elements.stream().forEachOrdered(element -> {
+			sb.append(element.toString());
+			sb.append("\n");
+		});
+		return sb.toString();
+	}
+
 	public void passTo(ObservableQueue<E> other) {
+		moveAllTo(other);
 		addListener(new InvalidationListener() {
 			@Override
 			public void invalidated(Observable observable) {
-				while (size() > 0) {
-					other.add(poll());
-				}
+				moveAllTo(other);
 			}
 		});
+	}
+
+	private void moveAllTo(ObservableQueue<E> other) {
+		while (size() > 0) {
+			other.add(poll());
+		}
 	}
 
 	private void notifyListeners() {

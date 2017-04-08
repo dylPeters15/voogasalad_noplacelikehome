@@ -9,43 +9,34 @@ import java.util.List;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.Node;
 import javafx.scene.image.Image;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Region;
 
 /**
- * @author Stone Mathers
- * Created 3/29/2017
+ * @author Stone Mathers Created 3/29/2017
  */
 public class Terrain extends Sprite {
 
 	@Override
-	public Node getView() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public void setOnClick(EventHandler<ActionEvent> event) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
-
 	@Override
-	public List<SpriteCell> getSpriteCells() {
+	public List<CellView> getSpriteCells() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void addSpriteCell(SpriteCell cell) {
+	public void addSpriteCell(CellView cell) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
-	public SpriteCell getSpriteCell(int index) {
+	public CellView getSpriteCell(int index) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -59,20 +50,23 @@ public class Terrain extends Sprite {
 	@Override
 	public void setImage(Image image) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void setListType(String type) {
-		 
-		
+
 	}
 
 	@Override
 	public String getListType() {
 		return "Terrain";
 	}
-	
-	
-	
+
+	@Override
+	public Region getObject() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
