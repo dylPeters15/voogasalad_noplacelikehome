@@ -23,7 +23,7 @@ public interface ImmutableGameState {
        
     void messagePlayer(Player from, Player to, String message);
 
-    void endTurn(Player player);
+    void endTurn();
 
     default void messageAll(Player from, String message) {
         getPlayers().forEach(player -> messagePlayer(from, player, message));
