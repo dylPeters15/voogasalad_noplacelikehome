@@ -64,7 +64,7 @@ public class GameState implements XMLSerializable, MutableGameState {
 
 	@Override
 	public void endTurn() {
-		if (playerList.indexOf(getCurrentPlayer()) == playerList.size()) {
+		if (playerList.indexOf(getCurrentPlayer()) == playerList.size() || playerList.size() == 0) {
 			setCurrentPlayer(playerList.get(0));
 			return;
 		}
