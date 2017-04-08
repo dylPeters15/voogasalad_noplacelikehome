@@ -2,7 +2,9 @@ import frontend.UI;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import scripting.VoogaScriptEngine;
+import scripting.VoogaScriptEngineManager;
 
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -12,7 +14,17 @@ import java.util.ResourceBundle;
 public class VoogaClientMain extends Application {
 
     public static void main(String[] args) {
-        launch(args);
+        long start = System.currentTimeMillis();
+        VoogaScriptEngine engine = VoogaScriptEngineManager.read("Java", "System.out.println(a+b);\nreturn b+a;");
+        for (int i = 0; i < 100; i++) {
+            Object result = engine.eval(new HashMap<String, Object>() {{
+                put("a", "hello");
+                put("b", " world");
+            }});
+            System.out.println(result);
+        }
+        System.out.println((System.currentTimeMillis() - start) / 1000.0);
+//        launch(args);
     }
 
     @Override
