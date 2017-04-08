@@ -1,6 +1,6 @@
 package backend.player;
 
-import backend.cell.Cell;
+import backend.cell.CellInstance;
 import backend.grid.MutableGrid;
 import backend.unit.UnitInstance;
 import backend.unit.properties.Faction;
@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
  * @author Created by th174 on 3/28/2017.
  */
 public class Player extends VoogaObject implements MutablePlayer {
+
     private Faction faction;
     private Team team;
 
@@ -45,12 +46,12 @@ public class Player extends VoogaObject implements MutablePlayer {
     }
 
     @Override
-    public Collection<Cell> getVisibleCells() {
+    public Collection<CellInstance> getVisibleCells() {
         return null;
     }
 
     @Override
-    public Collection<Cell> getExploredCells() {
+    public Collection<CellInstance> getExploredCells() {
         return null;
     }
 }

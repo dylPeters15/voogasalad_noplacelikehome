@@ -1,6 +1,6 @@
 package backend.player;
 
-import backend.cell.Cell;
+import backend.cell.CellInstance;
 import backend.grid.MutableGrid;
 import backend.unit.UnitInstance;
 import backend.unit.properties.Faction;
@@ -14,7 +14,7 @@ public interface ImmutablePlayer {
 
     Collection<UnitInstance> getOwnedUnits(MutableGrid grid);
 
-    Collection<Cell> getVisibleCells();
+    Collection<CellInstance> getVisibleCells();
 
-    Collection<Cell> getExploredCells();
+    Collection<CellInstance> getExploredCells();
 }

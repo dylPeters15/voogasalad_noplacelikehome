@@ -55,8 +55,6 @@ public class Parser {
 			lines.set(9, code);
 			Files.write(file.toPath(), lines);
 			compiler.run(null, null, null, file.toPath().toString());
-			UserPredicate here = new UserPredicate();
-			here.doNothing();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

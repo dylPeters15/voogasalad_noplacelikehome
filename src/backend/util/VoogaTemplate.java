@@ -3,7 +3,7 @@ package backend.util;
 /**
  * @author Created by th174 on 4/5/2017.
  */
-public abstract class VoogaTemplate extends VoogaObject {
+public abstract class VoogaTemplate<T extends VoogaTemplate> extends VoogaObject {
 
     public VoogaTemplate() {
         this("");
@@ -21,19 +21,24 @@ public abstract class VoogaTemplate extends VoogaObject {
         super(name, description, imgPath);
     }
 
+    public abstract T clone();
+
     //elevate access modifiers
     @Override
-    public void setName(String name) {
+    public final T setName(String name) {
         super.setName(name);
+        return (T) this;
     }
 
     @Override
-    public void setDescription(String description) {
+    public final T setDescription(String description) {
         super.setDescription(description);
+        return (T) this;
     }
 
     @Override
-    public void setImgPath(String imgPath) {
+    public final T setImgPath(String imgPath) {
         super.setImgPath(imgPath);
+        return (T) this;
     }
 }

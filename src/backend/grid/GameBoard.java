@@ -1,22 +1,17 @@
 package backend.grid;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Objects;
-import java.util.function.BiPredicate;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
-
 import backend.cell.CellInstance;
 import backend.cell.CellTemplate;
 import backend.player.Player;
 import backend.unit.UnitInstance;
 import backend.util.GameState;
 import backend.util.VoogaObject;
-import javafx.util.Pair;
+
+import java.util.*;
+import java.util.function.BiPredicate;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 /**
  * @author Created by th174 on 3/28/2017.
@@ -34,8 +29,7 @@ public class GameBoard extends VoogaObject implements MutableGrid, Iterable {
                 .flatMap(i -> IntStream.range(0, columns).mapToObj(j -> new CoordinateTuple(i, j)))
                 .parallel()
                 .map(e -> e.convertToDimension(templateCell.dimension()))
-                .map(e -> new Pair<>(e, templateCell.createInstance(e)))
-                .collect(Collectors.toMap(Pair::getKey, Pair::getValue));
+                .collect(Collectors.toMap(e -> e, templateCell::createInstance));
     }
 
     @Override
@@ -64,9 +58,7 @@ public class GameBoard extends VoogaObject implements MutableGrid, Iterable {
                 .getOrigin(coordinate.dimension())
                 .getNeighbors()
                 .parallelStream()
-                .map(e -> new Pair<>(e, gameBoard.get(coordinate.sum(e))))
-                .filter(e -> Objects.nonNull(e.getValue()))
-                .collect(Collectors.toMap(Pair::getKey, Pair::getValue));
+                .collect(Collectors.toMap(e -> e, e -> gameBoard.get((coordinate.sum(e)))));
     }
 
     @Override

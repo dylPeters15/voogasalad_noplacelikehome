@@ -4,6 +4,7 @@ import backend.cell.CellInstance;
 import backend.unit.UnitInstance;
 import backend.util.ImmutableGameState;
 import backend.util.TriggeredEffectTemplate;
+import backend.util.VoogaInstance;
 import backend.util.VoogaObject;
 
 import java.util.Collection;
@@ -14,12 +15,12 @@ import java.util.stream.Stream;
  *
  * @author Created by th174 on 3/29/2017.
  */
-public class ActiveAbility<T extends VoogaObject> extends VoogaObject{
+public class ActiveAbility<T extends VoogaInstance> extends VoogaObject{
     //All hexagonal
     public static final ActiveAbility<UnitInstance> SWORD = new ActiveAbility<>("Sword", new Attack(5, 3), GridPattern.HEXAGONAL_ADJACENT, "The attacker hits 3 times for 5 damage on any neighboring unit", "Sword.png");
     public static final ActiveAbility<UnitInstance> BOW = new ActiveAbility<>("Bow", new Attack(7, 2), GridPattern.HEXAGONAL_RAYS, "The attacker hits 2 times for 7 dmage on any unit in a straight line away from the attacker", "Bow.png");
     public static final ActiveAbility<UnitInstance> SUICIDE_SQUAD = new ActiveAbility<>("Suicide Squad, Attack!", (user, target, game) -> {
-        user.getAllNeighboringUnits(game.getGrid()).stream().filter(e -> e.getTeam() != user.getTeam()).forEach(u -> u.takeDamage(10));
+        user.getAllNeighboringUnits(game.getGrid()).parallelStream().filter(e -> e.getTeam() != user.getTeam()).forEach(u -> u.takeDamage(10));
         user.takeDamage(Integer.MAX_VALUE);
     }, GridPattern.HEXAGONAL_ADJACENT, "The attacker sacrifices itself to deal massive damage to all neighboring enemy units.", "Allahu_Akbar.png");
     public static final ActiveAbility<UnitInstance> FULL_HEAL = new ActiveAbility<>("Full Heal", (user, target, game) -> target.getHitPoints().resetValue(), GridPattern.HEXAGONAL_ADJACENT, "The attacker fully heals any neighboring unit", "Red_Cross.png");

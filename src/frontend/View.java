@@ -4,14 +4,16 @@
 package frontend;
 
 import backend.util.GameState;
-import controller.ClientController;
 import frontend.detailpane.DetailPane;
 import frontend.templatepane.TemplatePane;
 import frontend.toolspane.ToolsPane;
 import frontend.voogamenubar.VoogaMenuBar;
 import frontend.worldview.WorldView;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
+import util.net.ObservableClient;
 
 /**
  * @author Stone Mathers, Dylan Peters
@@ -26,19 +28,16 @@ public class View extends BaseUIManager<Region> {
 	private DetailPane detailPane;
 	private TemplatePane tempPane;
 	private GameState myGameState;
-	private ClientController myController;
+	private ObservableClient myClient; //TODO: What should this generic be?
 	
 	
 	
-	public View(GameState gameState, ClientController controller){
+	public View(GameState gameState, ObservableClient client){
 		myGameState = gameState;
-		myController = controller;
+		myClient = client;
+		client.addListener(e -> update());
 		initBorderPane();
 	}
-	
-	//TODO: Somewhere the View needs to call something like "controller.sendRequests(this.getRequests());" whenever one of its
-	//panes needs to send its new request(s). Whether this is in "update()" or a new method will be figured out once listening
-	//is figured out
 	
 	/**
 	 * Updates the display of the GameState. This method is to be called by the GameState whenever changes are made.
@@ -75,15 +74,24 @@ public class View extends BaseUIManager<Region> {
 	 */
 	private void initPanesAndListeners(){
 		menuBar = new VoogaMenuBar();
-		//TODO: make View a listener of menuBar
+		menuBar.getRequests().passTo(this.getRequests());
 		worldView = new WorldView(myGameState.getGrid());
-		//TODO: make View a listener of worldView
+		worldView.getRequests().passTo(this.getRequests());
 		toolsPane = new ToolsPane();
-		//TODO: make View a listener of toolsPane
+		toolsPane.getRequests().passTo(this.getRequests());
 		detailPane = new DetailPane();
-		//TODO: make View a listener of detailPane
-		tempPane = new TemplatePane(myGameState.getUnitTemplates());
-		//TODO: make View a listener of tempPane
+		detailPane.getRequests().passTo(this.getRequests());
+		tempPane = new TemplatePane(myGameState.getUnitTemplates(), myGameState.getCellTemplates());
+		tempPane.getRequests().passTo(this.getRequests());
+		
+		getRequests().addListener(new InvalidationListener() {
+			@Override
+			public void invalidated(Observable observable) {
+				while (!getRequests().isEmpty()) {
+					myClient.handleRequest(getRequests().poll());
+				}
+			}
+		});
 	}
 	
 	/**

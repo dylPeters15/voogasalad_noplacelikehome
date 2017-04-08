@@ -14,7 +14,7 @@ public class TriggeredEffectInstance extends VoogaInstance<TriggeredEffectTempla
     private final int duration;
     private int turnsRemaining;
 
-    protected TriggeredEffectInstance(TriggeredEffectTemplate template) {
+    TriggeredEffectInstance(TriggeredEffectTemplate template) {
         super(template.getName(), template);
         this.effect = template.getEffect();
         this.duration = template.getDuration();
@@ -47,6 +47,7 @@ public class TriggeredEffectInstance extends VoogaInstance<TriggeredEffectTempla
         return getRemainingTurns() <= 0;
     }
 
+    @FunctionalInterface
     public interface Effect {
         void affect(UnitInstance unit, Event event, ImmutableGameState game);
     }

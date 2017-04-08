@@ -9,15 +9,16 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Region;
 
 /**
- * @author Stone Mathers
- * Created 3/29/2017
+ * @author Stone Mathers Created 3/29/2017
  */
 public class Unit extends Sprite {
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see frontend.Displayable#getView()
 	 */
 	@Override
@@ -26,7 +27,9 @@ public class Unit extends Sprite {
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see frontend.sprites.Sprite#setOnClick()
 	 */
 	@Override
@@ -35,35 +38,42 @@ public class Unit extends Sprite {
 
 	}
 
-
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see frontend.sprites.Sprite#getSpriteCells()
 	 */
 	@Override
-	public List<SpriteCell> getSpriteCells() {
+	public List<CellView> getSpriteCells() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see frontend.sprites.Sprite#addSpriteCell(frontend.sprites.SpriteCell)
 	 */
 	@Override
-	public void addSpriteCell(SpriteCell cell) {
+	public void addSpriteCell(CellView cell) {
 		// TODO Auto-generated method stub
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see frontend.sprites.Sprite#getSpriteCell(int)
 	 */
 	@Override
-	public SpriteCell getSpriteCell(int index) {
+	public CellView getSpriteCell(int index) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see frontend.sprites.Sprite#getSize()
 	 */
 	@Override
@@ -72,9 +82,9 @@ public class Unit extends Sprite {
 		return 0;
 	}
 
-
-
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see frontend.sprites.Sprite#setImage(javafx.scene.image.Image)
 	 */
 	@Override
@@ -86,12 +96,18 @@ public class Unit extends Sprite {
 	@Override
 	public void setListType(String type) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public String getListType() {
 		return "Unit";
+	}
+
+	@Override
+	public Region getObject() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

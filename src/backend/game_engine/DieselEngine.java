@@ -7,7 +7,6 @@ import util.net.ObservableServer;
 
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 public class DieselEngine implements GameEngine{
 
@@ -28,7 +27,7 @@ public class DieselEngine implements GameEngine{
 	}
 	
 	private final void checkTurnRules(MutableGameState state){
-		if(!state.getTurnRequirements().stream()
+		if(!state.getTurnRequirements().parallelStream()
 									   .allMatch(e -> e.test(state.getCurrentPlayer(), state)) && state.canEndTurn()) state.endTurn();
 	}
 	

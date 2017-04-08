@@ -2,6 +2,7 @@ package frontend.templatepane;
 
 import java.util.Collection;
 
+import backend.cell.CellTemplate;
 import backend.unit.UnitTemplate;
 import frontend.BaseUIManager;
 import frontend.sprites.Sprite;
@@ -18,10 +19,11 @@ public class TemplatePane extends BaseUIManager<Region>{
 
 	Pane pane;
 	Collection<UnitTemplate> units;
-	Collection<Terrain> terrains;
+	Collection<CellTemplate> terrains;
 	
-	public TemplatePane(Collection<UnitTemplate> availableUnits) {
-			//, Collection<Terrain> availableTerrains) {
+
+	public TemplatePane(Collection<UnitTemplate> availableUnits, 
+			Collection<CellTemplate> availableTerrains) {
 		units = availableUnits;
 		//terrains = availableTerrains;
 		pane = new Pane();
@@ -49,6 +51,16 @@ public class TemplatePane extends BaseUIManager<Region>{
 			spriteContent.getChildren().add(spriteImage);
 			contentPane.getChildren().add(spriteContent);
 		}
+//		for (Object sprite: sprites) {
+//			VBox spriteContent = new VBox();
+//			// fix getName and getImage once communication sorted
+//			Text spriteName = new Text(sprite.getName());
+//			spriteContent.getChildren().add(spriteName);
+//			ImageView spriteImage = new ImageView(sprite.getImage());
+//			spriteContent.getChildren().add(spriteImage);
+//			contentPane.getChildren().add(spriteContent);
+//
+//		}
 		return contentPane;
 		
 	}

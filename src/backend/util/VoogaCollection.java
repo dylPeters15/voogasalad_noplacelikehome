@@ -1,14 +1,12 @@
 package backend.util;
 
-import javafx.util.Pair;
-
 import java.util.*;
 import java.util.stream.Collectors;
 
 /**
  * @author Created by th174 on 3/30/2017.
  */
-public class VoogaCollection<T extends VoogaObject> extends VoogaObject implements Iterable<T> {
+public abstract class VoogaCollection<T extends VoogaObject, U extends VoogaCollection<T, U>> extends VoogaTemplate<VoogaCollection<T, U>> implements Iterable<T> {
     private final Map<String, T> gameObjects;
 
     public VoogaCollection(String name, String description, String imgPath, T... gameObjects) {
@@ -17,8 +15,11 @@ public class VoogaCollection<T extends VoogaObject> extends VoogaObject implemen
 
     public VoogaCollection(String name, String description, String imgPath, Collection<T> gameObjects) {
         super(name, description, imgPath);
-        this.gameObjects = gameObjects.stream().map(e -> new Pair<>(e.getName(), e)).collect(Collectors.toMap(Pair::getKey, Pair::getValue));
+        this.gameObjects = gameObjects.parallelStream().collect(Collectors.toMap(VoogaObject::getName, e -> e));
     }
+
+    @Override
+    public abstract U clone();
 
     public T get(String name) {
         return gameObjects.get(name);
@@ -28,16 +29,28 @@ public class VoogaCollection<T extends VoogaObject> extends VoogaObject implemen
         return Collections.unmodifiableCollection(gameObjects.values());
     }
 
-    public void add(T u) {
+    public VoogaCollection<T, U> add(T u) {
         gameObjects.put(u.getName(), u);
+        return this;
     }
 
-    public void remove(T u) {
+    public U addAll(Collection<T> predefinedTerrain) {
+        gameObjects.putAll(predefinedTerrain.parallelStream().collect(Collectors.toMap(T::getName, e -> e)));
+        return (U) this;
+    }
+
+    public U addAll(T... predefinedTerrains) {
+        return addAll(Arrays.asList(predefinedTerrains));
+    }
+
+    public U remove(T u) {
         remove(u.getName());
+        return (U) this;
     }
 
-    public void remove(String s) {
+    public U remove(String s) {
         gameObjects.remove(s);
+        return (U) this;
     }
 
     public int size() {
@@ -48,4 +61,5 @@ public class VoogaCollection<T extends VoogaObject> extends VoogaObject implemen
     public Iterator<T> iterator() {
         return gameObjects.values().iterator();
     }
+
 }

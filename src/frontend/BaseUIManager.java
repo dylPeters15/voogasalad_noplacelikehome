@@ -41,8 +41,7 @@ import util.net.Request;
  * @author Dylan Peters
  *
  */
-public abstract class BaseUIManager<T extends Parent> implements
-		ObjectManager<T> {
+public abstract class BaseUIManager<T extends Parent> implements ObjectManager<T> {
 	private static final String LANGUAGE_RESOURCE_POINTER = "resources.languages/LanguagePointer";
 	private static final String LANGUAGE_RESOURCE_LIST = "resources.languages/LanguageFileList";
 	private static final String DEFAULT_LANGUAGE_KEY = "DefaultLanguageResource";
@@ -53,7 +52,7 @@ public abstract class BaseUIManager<T extends Parent> implements
 	private ObjectProperty<ResourceBundle> language;
 	private ObjectProperty<String> styleSheet;
 	private ObservableQueue<Request<Serializable>> requests;
-	
+
 	/**
 	 * Creates a new SlogoBaseUIManager. Sets all values for the language and
 	 * stylesheet to default. The default language is English.
@@ -64,19 +63,19 @@ public abstract class BaseUIManager<T extends Parent> implements
 		styleSheet = new SimpleObjectProperty<String>();
 		styleSheet.addListener(new ChangeListener<String>() {
 			@Override
-			public void changed(ObservableValue<? extends String> observable,
-					String oldValue, String newValue) {
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
 				getObject().getStylesheets().clear();
 				getObject().getStylesheets().add(newValue);
 			}
 		});
+		requests = new ObservableQueue<>();
 	}
-	
-	public ObservableQueue<Request<Serializable>> getRequests(){
+
+	public ObservableQueue<Request<Serializable>> getRequests() {
 		return requests;
 	}
-	
-	public void addRequest(Request<Serializable> request){
+
+	public void addRequest(Request<Serializable> request) {
 		requests.add(request);
 	}
 
@@ -121,8 +120,7 @@ public abstract class BaseUIManager<T extends Parent> implements
 	 */
 	protected final UnmodifiableObservableMap<String, ResourceBundle> getPossibleResourceBundleNamesAndResourceBundles() {
 		Map<String, ResourceBundle> map = new HashMap<String, ResourceBundle>();
-		ResourceBundle bundle = ResourceBundle
-				.getBundle(LANGUAGE_RESOURCE_LIST);
+		ResourceBundle bundle = ResourceBundle.getBundle(LANGUAGE_RESOURCE_LIST);
 		for (String key : bundle.keySet()) {
 			map.put(key, ResourceBundle.getBundle(bundle.getString(key)));
 		}
@@ -141,11 +139,9 @@ public abstract class BaseUIManager<T extends Parent> implements
 	 */
 	protected final UnmodifiableObservableMap<String, String> getPossibleStyleSheetNamesAndFileNames() {
 		Map<String, String> map = new HashMap<String, String>();
-		ResourceBundle fileBundle = ResourceBundle
-				.getBundle(STYLE_RESOURCE_LIST);
+		ResourceBundle fileBundle = ResourceBundle.getBundle(STYLE_RESOURCE_LIST);
 		for (String key : fileBundle.keySet()) {
-			map.put(getLanguage().getValue().getString(key),
-					fileBundle.getString(key));
+			map.put(getLanguage().getValue().getString(key), fileBundle.getString(key));
 		}
 		return (UnmodifiableObservableMap<String, String>) FXCollections
 				.unmodifiableObservableMap(FXCollections.observableMap(map));
@@ -159,8 +155,8 @@ public abstract class BaseUIManager<T extends Parent> implements
 	 * @return a ResourceBundle that this class uses by default
 	 */
 	protected ResourceBundle createDefaultResourceBundle() {
-		return ResourceBundle.getBundle(ResourceBundle.getBundle(
-				LANGUAGE_RESOURCE_POINTER).getString(DEFAULT_LANGUAGE_KEY));
+		return ResourceBundle
+				.getBundle(ResourceBundle.getBundle(LANGUAGE_RESOURCE_POINTER).getString(DEFAULT_LANGUAGE_KEY));
 	}
 
 	/**
@@ -171,8 +167,7 @@ public abstract class BaseUIManager<T extends Parent> implements
 	 * @return a ResourceBundle that this class uses by default
 	 */
 	protected String createDefaultStyleSheet() {
-		return ResourceBundle.getBundle(STYLESHEET_RESOURCE_POINTER).getString(
-				DEFAULT_STYLE_KEY);
+		return ResourceBundle.getBundle(STYLESHEET_RESOURCE_POINTER).getString(DEFAULT_STYLE_KEY);
 	}
 
 }
