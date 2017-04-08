@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Map;
-import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -14,7 +13,6 @@ import java.util.stream.IntStream;
  * @author Created by th174 on 4/6/2017.
  */
 public class VoogaJavaEngine implements VoogaScriptEngine {
-    private static final ResourceBundle RESOURCES = ResourceBundle.getBundle("resources/Scripting");
     private static int fileCount = 0;
     private boolean hasCompiled = false;
     private String className;

@@ -35,5 +35,14 @@ public abstract class VoogaJSR_223Engine implements VoogaScriptEngine {
             throw new VoogaScriptException(e);
         }
     }
+
+    protected ScriptEngine getEngine() {
+        return engine;
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + ", powered by JSR-223 " + getEngineName() + " script engine.\n";
+    }
 }
 
