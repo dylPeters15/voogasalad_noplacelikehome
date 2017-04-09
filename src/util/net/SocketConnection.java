@@ -34,6 +34,7 @@ public class SocketConnection {
             this.outputStream = new ObjectOutputStream(socket.getOutputStream());
             this.outputStream.flush();
         } catch (Exception e) {
+        	e.printStackTrace();
             throw new ObservableHost.RemoteConnectionException(e);
         }
     }
@@ -50,9 +51,11 @@ public class SocketConnection {
                 Request request = (Request<? extends Serializable>) inputStream.readObject();
                 requestHandler.accept(request);
             }
-        } catch (IOException e) {
+//        } catch (IOException e) {
+//        	e.printStackTrace();
         } catch (Exception e) {
-            throw new ObservableHost.RemoteConnectionException(e);
+        	e.printStackTrace();
+//            throw new ObservableHost.RemoteConnectionException(e);
         } finally {
             shutDown();
         }
@@ -69,6 +72,7 @@ public class SocketConnection {
             outputStream.writeObject(request);
             return isActive();
         } catch (IOException e) {
+        	e.printStackTrace();
             return false;
         }
     }
@@ -81,6 +85,7 @@ public class SocketConnection {
             socket.close();
             System.out.println("Connection closed: " + socket);
         } catch (IOException e) {
+        	e.printStackTrace();
             throw new ObservableHost.RemoteConnectionException(e);
         }
     }

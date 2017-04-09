@@ -14,7 +14,6 @@ public class Main extends Application {
 	public void start(Stage primaryStage) {
 
 		this.userInterface = new UI(1200.0, 800.0);
-
 		primaryStage.setScene(userInterface.getPrimaryScene());
 		primaryStage.setResizable(true);
 		primaryStage.show();

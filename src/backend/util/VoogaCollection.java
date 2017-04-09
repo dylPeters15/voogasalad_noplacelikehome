@@ -17,11 +17,12 @@ public abstract class VoogaCollection<T extends VoogaObject, U extends VoogaColl
 
 	public VoogaCollection(String name, String description, String imgPath, Collection<? extends T> gameObjects) {
 		super(name, description, imgPath);
-		this.gameObjects = gameObjects.parallelStream().collect(Collectors.toMap(VoogaObject::getName, VoogaObject::copy));
+		this.gameObjects = new LinkedHashMap<>();
+		addAll(gameObjects);
 	}
 
 	public U addAll(Collection<? extends T> elements) {
-		gameObjects.putAll(elements.parallelStream().collect(Collectors.toMap(T::getName, VoogaObject::copy)));
+		gameObjects.putAll(elements.parallelStream().collect(Collectors.toMap(T::getName, e -> e)));
 		return (U) this;
 	}
 

@@ -7,6 +7,7 @@ import backend.unit.properties.Faction;
 import backend.util.VoogaObject;
 
 import java.util.Collection;
+import java.util.List;
 
 public interface ImmutablePlayer extends VoogaObject {
 	Team getTeam();
@@ -18,4 +19,8 @@ public interface ImmutablePlayer extends VoogaObject {
 	Collection<CellInstance> getVisibleCells();
 
 	Collection<CellInstance> getExploredCells();
+
+	List<ChatMessage> getChatLog();
+
+	void receiveMessage(ChatMessage message);
 }

@@ -19,6 +19,11 @@ public class DefensiveModifierSet extends VoogaCollection<InteractionModifier<Do
 	}
 
 	@Override
+	public DefensiveModifierSet addAll(Collection<? extends InteractionModifier<Double>> elements) {
+		return super.addAll(elements.stream().map(InteractionModifier::copy).collect(Collectors.toList()));
+	}
+
+	@Override
 	public DefensiveModifierSet copy() {
 		return new DefensiveModifierSet(getAll().stream().map(InteractionModifier::copy).collect(Collectors.toList()));
 	}

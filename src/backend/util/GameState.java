@@ -20,7 +20,7 @@ import java.util.function.BiPredicate;
 public class GameState implements MutableGameState {
 	private List<Player> playerList;
 	private Player currentPlayer;
-	private Collection<Team> teams;
+	private Map<String, Team> teams;
 	private ModifiableGameBoard gameGrid;
 	private Collection<UnitTemplate> unitTemplates;
 	private Collection<UnitTemplate> activeAbilities;
@@ -37,26 +37,19 @@ public class GameState implements MutableGameState {
 
 	public GameState(ModifiableGameBoard grid) {
 		gameGrid = grid;
-
 		playerList = new ArrayList<>();
-		teams = new ArrayList<>();
-
+		teams = new HashMap<>();
 		unitTemplates = new ArrayList<>();
 		activeAbilities = new ArrayList<>();
 		terrains = new ArrayList<>();
 		cellTemplates = new ArrayList<>();
-
 		currentObjectives = new ArrayList<>();
 		turnActions = new HashMap<>();
 		turnRequirements = new ArrayList<>();
 	}
 
 	public void endTurn(Player player) {
-		if (playerList.indexOf(player) == playerList.size()) {
-			setCurrentPlayer(playerList.get(0));
-			return;
-		}
-		setCurrentPlayer(playerList.get(playerList.indexOf(player) + 1));
+		setCurrentPlayer(playerList.get((playerList.indexOf(player) + 1) % playerList.size()));
 	}
 
 	public Collection<ModifiableTerrain> getTerrains() {
@@ -81,17 +74,29 @@ public class GameState implements MutableGameState {
 	}
 
 	@Override
-	public void endTurn() {
+	public ImmutableGameState endTurn() {
 		if (playerList.indexOf(getCurrentPlayer()) == playerList.size() || playerList.size() == 0) {
 			setCurrentPlayer(playerList.get(0));
-			return;
+			return this;
 		}
 		setCurrentPlayer(playerList.get(playerList.indexOf(getCurrentPlayer()) + 1));
+		return this;
 	}
 
 	@Override
 	public Collection<Team> getTeams() {
-		return teams;
+		return teams.values();
+	}
+
+	@Override
+	public ImmutableGameState addTeam(Team team) {
+		teams.put(team.getName(), team);
+		return this;
+	}
+
+	@Override
+	public Team getTeamByName(String teamName) {
+		return teams.get(teamName);
 	}
 
 	@Override
@@ -100,9 +105,8 @@ public class GameState implements MutableGameState {
 	}
 
 	@Override
-	public void messagePlayer(Player from, Player to, String message) {
-		// TODO Auto-generated method stub
-
+	public Player getPlayerByName(String playerName) {
+		return null;
 	}
 
 	@Override
@@ -111,11 +115,12 @@ public class GameState implements MutableGameState {
 	}
 
 	@Override
-	public void addEventHandler(BiConsumer<Player, ImmutableGameState> eventListener, Event event) {
+	public ImmutableGameState addEventHandler(BiConsumer<Player, ImmutableGameState> eventListener, Event event) {
 		turnActions.merge(event, new ArrayList<>(Collections.singletonList(eventListener)), (list, t) -> {
 			list.addAll(t);
 			return list;
 		});
+		return this;
 	}
 
 	@Override
@@ -124,8 +129,9 @@ public class GameState implements MutableGameState {
 	}
 
 	@Override
-	public void addObjective(ResultQuadPredicate winCondition) {
+	public ImmutableGameState addObjective(ResultQuadPredicate winCondition) {
 		currentObjectives.add(winCondition);
+		return this;
 	}
 
 	@Override
@@ -134,8 +140,9 @@ public class GameState implements MutableGameState {
 	}
 
 	@Override
-	public void addTurnRequirement(BiPredicate<Player, ImmutableGameState> requirement) {
+	public ImmutableGameState addTurnRequirement(BiPredicate<Player, ImmutableGameState> requirement) {
 		turnRequirements.add(requirement);
+		return this;
 	}
 
 	@Override
@@ -155,5 +162,4 @@ public class GameState implements MutableGameState {
 	public void setGrid(ModifiableGameBoard grid) {
 		gameGrid = grid;
 	}
-
 }

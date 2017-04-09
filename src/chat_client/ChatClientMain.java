@@ -1,5 +1,6 @@
 package chat_client;
 
+import backend.util.io.JSONSerializer;
 import util.net.ObservableClient;
 import util.net.ObservableHost;
 
@@ -27,11 +28,12 @@ public class ChatClientMain {
     public static final String CLEARSCREEN = "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
 
     public static void main(String[] args) throws Exception {
-        ObservableClient<ChatLog> voogaClient = new ObservableClient<>(
+	    JSONSerializer<ChatLog> jsonSerializer = new JSONSerializer<>(ChatLog.class);
+	    ObservableClient<ChatLog> voogaClient = new ObservableClient<>(
                 SERVER_HOSTNAME,
                 PORT,
-                ChatLog.CHAT_LOG_TEST_SERIALIZER,
-                ChatLog.CHAT_LOG_TEST_UNSERIALIZER,
+                jsonSerializer,
+                jsonSerializer,
                 Duration.ofSeconds(30));
         System.out.println("Client started successfully...");
         Scanner stdin = new Scanner(System.in);

@@ -84,13 +84,14 @@ public abstract class ObservableHost<T> implements Runnable {
      * @return Returns true if the host was able to successfully process the request sent from the remote host
      */
     protected boolean handleRequest(Request request) {
-        if (validateRequest(request)) {
+	    if (validateRequest(request)) {
             if (request.get() instanceof Modifier) {
                 handle((Modifier<T>) request.get());
             } else {
                 try {
                     handle(getUnserializer().unserialize(request.get()));
-                } catch (Unserializer.UnserializationException e) {
+                } catch (Unserializer.UnserializationException | ClassCastException e) {
+                	e.printStackTrace();
                     handleError();
                     return false;
                 }

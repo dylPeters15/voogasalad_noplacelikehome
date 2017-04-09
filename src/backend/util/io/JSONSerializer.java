@@ -12,11 +12,13 @@ import java.lang.reflect.Type;
  */
 public class JSONSerializer<T> implements Serializer<T>, Unserializer<T> {
 	private static Gson gson = new Gson();
-	private Type objType = Object.class;
+	private final Type objType;
+	public JSONSerializer(Type type){
+		this.objType = type;
+	}
 
 	@Override
 	public String doSerialize(T obj) throws Exception {
-		objType = obj.getClass();
 		return gson.toJson(obj);
 	}
 

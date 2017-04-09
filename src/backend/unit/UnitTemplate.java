@@ -31,7 +31,6 @@ public class UnitTemplate extends VoogaTemplate<UnitTemplate> implements UnitIns
 			.setDescription("The skeletal corpse of an impoverished serf left to starve, reanimated by necromancy. Now, bow and arrow in hand, he enacts his revenge on the living.")
 			.addOffensiveModifiers(InteractionModifier.CHAOTIC)
 			.addActiveAbilities(ActiveAbility.BOW);
-
 	private final ActiveAbilitySet activeAbilities;
 	private final TriggeredAbilitySet triggeredAbilities;
 	private final OffensiveModifierSet offensiveModifiers;

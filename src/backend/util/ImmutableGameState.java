@@ -2,6 +2,8 @@ package backend.util;
 
 import backend.game_engine.ResultQuadPredicate;
 import backend.grid.ModifiableGameBoard;
+import backend.player.ChatMessage;
+import backend.player.ImmutablePlayer;
 import backend.player.Player;
 import backend.player.Team;
 
@@ -14,32 +16,49 @@ import java.util.function.BiPredicate;
 public interface ImmutableGameState {
 	ModifiableGameBoard getGrid();
 
-	void endTurn();
+	ImmutableGameState endTurn();
 
-	default void messageAll(Player from, String message) {
-		getPlayers().forEach(player -> messagePlayer(from, player, message));
+	default ImmutableGameState messageAll(String message, ImmutablePlayer sender) {
+		ChatMessage chatMessage = new ChatMessage(ChatMessage.AccessLevel.ALL, sender, message);
+		getTeams().forEach(team -> team.forEach(player -> player.receiveMessage(chatMessage)));
+		return this;
 	}
-    Collection<Team> getTeams();
+
+	default ImmutableGameState messagePlayer(String message, ImmutablePlayer sender, ImmutablePlayer recipient) {
+		ChatMessage chatMessage = new ChatMessage(ChatMessage.AccessLevel.WHISPER, sender, message);
+		sender.receiveMessage(chatMessage);
+		recipient.receiveMessage(chatMessage);
+		return this;
+	}
+
+	default ImmutableGameState messageTeam(String message, ImmutablePlayer sender) {
+		ChatMessage chatMessage = new ChatMessage(ChatMessage.AccessLevel.TEAM, sender, message);
+		sender.getTeam().forEach(player -> player.receiveMessage(chatMessage));
+		System.out.println(sender.getTeam().size());
+		return this;
+	}
+
+	Collection<Team> getTeams();
+
+	ImmutableGameState addTeam(Team team);
+
+	Team getTeamByName(String teamName);
 
 	List<Player> getPlayers();
 
-	void messagePlayer(Player from, Player to, String message);
-
-	default void messageTeam(Player from, String message) {
-		from.getTeam().getAll().forEach(player -> messagePlayer(from, player, message));
-	}
+	Player getPlayerByName(String playerName);
 
 	int getTurnNumber();
 
-	void addEventHandler(BiConsumer<Player, ImmutableGameState> eventListener, Event event);
+	ImmutableGameState addEventHandler(BiConsumer<Player, ImmutableGameState> eventListener, Event event);
 
 	Collection<ResultQuadPredicate> getObjectives();
 
-	void addObjective(ResultQuadPredicate winCondition);
+	ImmutableGameState addObjective(ResultQuadPredicate winCondition);
 
 	Map<Event, List<BiConsumer<Player, ImmutableGameState>>> getTurnEvents();
 
-	void addTurnRequirement(BiPredicate<Player, ImmutableGameState> requirement);
+	ImmutableGameState addTurnRequirement(BiPredicate<Player, ImmutableGameState> requirement);
 
 	default boolean canEndTurn() {
 		return getTurnRequirements().parallelStream().anyMatch(e -> !e.test(getCurrentPlayer(), this));

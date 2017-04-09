@@ -19,6 +19,11 @@ public class UnitStats extends VoogaCollection<UnitStatInstance, UnitStats> {
 	}
 
 	@Override
+	public UnitStats addAll(Collection<? extends UnitStatInstance> elements) {
+		return super.addAll(elements.stream().map(UnitStatInstance::copy).map(UnitStatInstance.class::cast).collect(Collectors.toList()));
+	}
+
+	@Override
 	public UnitStats copy() {
 		return new UnitStats(getAll().stream().map(UnitStatInstance::copy).map(UnitStatInstance.class::cast).collect(Collectors.toList()));
 	}

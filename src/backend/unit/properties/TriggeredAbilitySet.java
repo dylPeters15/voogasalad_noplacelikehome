@@ -20,6 +20,11 @@ public class TriggeredAbilitySet extends VoogaCollection<TriggeredEffectInstance
 	}
 
 	@Override
+	public TriggeredAbilitySet addAll(Collection<? extends TriggeredEffectInstance> elements) {
+		return super.addAll(elements.stream().map(TriggeredEffectInstance::copy).map(TriggeredEffectInstance.class::cast).collect(Collectors.toList()));
+	}
+
+	@Override
 	public TriggeredAbilitySet copy() {
 		return new TriggeredAbilitySet(getAll().stream().map(TriggeredEffectInstance::copy).map(TriggeredEffectInstance.class::cast).collect(Collectors.toList()));
 	}

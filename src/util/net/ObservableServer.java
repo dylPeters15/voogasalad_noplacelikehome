@@ -89,11 +89,13 @@ public class ObservableServer<T> extends ObservableHost<T> {
                 connections.add(delegate);
             }
         } catch (Exception e) {
+        	e.printStackTrace();
             throw new RemoteConnectionException(e);
         } finally {
             try {
                 serverSocket.close();
             } catch (IOException e) {
+            	e.printStackTrace();
                 throw new Error(e);
             }
             executor.shutdown();
@@ -180,8 +182,7 @@ public class ObservableServer<T> extends ObservableHost<T> {
         }
 
         private boolean handleRequest(Request<? extends Serializable> request) {
-            if (Request.isHeartbeat(request)) {
-                System.out.println("\nHeartbeat Received: \n" + request.toString().replaceAll("(?m)^", "\t"));
+	        if (Request.isHeartbeat(request)) {
                 return true;
             } else if (!validateRequest(request)) {
                 return send(getRequest(getState()));

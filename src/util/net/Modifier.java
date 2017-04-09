@@ -24,6 +24,7 @@ public interface Modifier<T> extends Serializable {
         try {
             return doModify(state);
         } catch (Exception e) {
+        	e.printStackTrace();
             throw new ModifierException(e);
         }
     }
