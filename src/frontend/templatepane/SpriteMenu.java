@@ -6,8 +6,8 @@ package frontend.templatepane;
 import java.util.HashMap;
 import java.util.Map;
 
-import frontend.Displayable;
 import frontend.sprites.Sprite;
+import frontend.util.ObjectManager;
 import javafx.scene.Group;
 import javafx.scene.Node;
 
@@ -15,7 +15,7 @@ import javafx.scene.Node;
  * @author Stone Mathers
  * Created 3/30/17
  */
-public class SpriteMenu implements Displayable {
+public class SpriteMenu implements ObjectManager<Node> {
 
 	private Group myGroup = new Group();
 	private Map<String, CollapsibleList> myLists;
@@ -40,7 +40,7 @@ public class SpriteMenu implements Displayable {
 	}
 	
 	@Override
-	public Node getView() {
+	public Node getObject() {
 		return myGroup;
 	}
 

@@ -2,9 +2,11 @@ package frontend.templatepane;
 
 import java.util.Collection;
 
+import backend.cell.Cell;
 import backend.cell.ModifiableCell;
 import backend.unit.ModifiableUnit;
-import frontend.BaseUIManager;
+import backend.unit.Unit;
+import frontend.util.BaseUIManager;
 import javafx.scene.control.TitledPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;

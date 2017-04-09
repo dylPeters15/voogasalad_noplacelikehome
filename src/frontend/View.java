@@ -5,9 +5,10 @@ package frontend;
 
 import backend.util.GameState;
 import frontend.detailpane.DetailPane;
+import frontend.menubar.VoogaMenuBar;
 import frontend.templatepane.TemplatePane;
 import frontend.toolspane.ToolsPane;
-import frontend.voogamenubar.VoogaMenuBar;
+import frontend.util.BaseUIManager;
 import frontend.worldview.WorldView;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;

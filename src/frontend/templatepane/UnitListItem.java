@@ -26,7 +26,7 @@ public class UnitListItem implements SpriteListItem {
 	}
 
 	@Override
-	public Node getView() {
+	public Node getObject() {
 		// TODO Auto-generated method stub
 		return null;
 	}

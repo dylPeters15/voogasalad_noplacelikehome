@@ -1,6 +1,6 @@
 package frontend.detailpane;
 
-import frontend.BaseUIManager;
+import frontend.util.BaseUIManager;
 import javafx.scene.layout.Region;
 
 public class DetailPane extends BaseUIManager<Region>{
