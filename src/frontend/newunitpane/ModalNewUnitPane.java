@@ -18,6 +18,16 @@ public class ModalNewUnitPane extends NewUnitPane {
 		super.submit();
 		stage.close();
 	}
+	
+	@Override
+	protected void cancel() {
+		stage.close();
+	}
+	
+	@Override
+	protected void newNewUnitPane(){
+		new ModalNewUnitPane(null);
+	}
 
 	private void initialize() {
 		stage = new Stage();

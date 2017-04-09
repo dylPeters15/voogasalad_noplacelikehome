@@ -1,6 +1,8 @@
 package frontend.util;
 
 import frontend.BaseUIManager;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
@@ -17,27 +19,22 @@ public class CancelSaveView extends BaseUIManager<Region>{
 	private void initialize() {
 		myCancelSaveView = new HBox();
 		createNew = new Button("Create New...");
-		createNew.setOnAction(e -> setOnCreateNew());
-		
 		cancel = new Button("Cancel");
-		cancel.setOnAction(e -> setOnCancel());
-		
 		save = new Button("Save");
-		save.setOnAction(e -> setOnSave());
 		
 		myCancelSaveView.getChildren().addAll(createNew, cancel, save);
 	}
 
-	void setOnCreateNew(){
-		
+	public void setOnCreateNew(EventHandler<ActionEvent> eventHandler){
+		createNew.setOnAction(eventHandler);
 	}
 	
-	void setOnCancel(){
-		
+	public void setOnCancel(EventHandler<ActionEvent> eventHandler){
+		cancel.setOnAction(eventHandler);
 	}
 	
-	void setOnSave(){
-		
+	public void setOnSave(EventHandler<ActionEvent> eventHandler){
+		save.setOnAction(eventHandler);
 	}
 	
 	@Override

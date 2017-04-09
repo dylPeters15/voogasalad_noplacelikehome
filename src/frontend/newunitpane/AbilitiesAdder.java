@@ -1,24 +1,31 @@
 package frontend.newunitpane;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 import backend.unit.properties.ActiveAbility;
 import backend.util.GameState;
-import backend.util.VoogaInstance;
+import frontend.util.SelectableInputRow;
 import frontend.util.VerticalTableInputView;
+import javafx.scene.image.Image;
 
-public class AbilitiesAdder extends VerticalTableInputView{
-	
-	Collection<ActiveAbility<? extends VoogaInstance<?>>> activeAbilities;
-	
-	public AbilitiesAdder(GameState gameState){
-		if (gameState != null){
-			activeAbilities = gameState.getActiveAbilities();
-		} else {
-			activeAbilities = new ArrayList<>();
-		}
-		activeAbilities.stream().forEachOrdered(ability -> getChildren().add(new AbilityInputRow(ability)));
+public class AbilitiesAdder extends VerticalTableInputView {
+
+	public AbilitiesAdder(GameState gameState) {
+//		if (gameState != null) {
+			ActiveAbility.getPredefinedActiveAbilities().stream()
+					.forEachOrdered(ability -> {
+						Image image = null;
+						try {
+							image = new Image(ability.getImgPath());
+						} catch (Exception e) {
+//							e.printStackTrace();
+						}
+						String description = "";
+						if (ability.getDescription() != null){
+							description = ability.getDescription();
+						}
+						SelectableInputRow row = new SelectableInputRow(image,description);
+						getChildren().add(row);
+					});
+//		}
 	}
 
 }
