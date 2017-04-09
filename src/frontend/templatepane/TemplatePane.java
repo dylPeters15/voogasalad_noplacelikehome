@@ -2,13 +2,10 @@ package frontend.templatepane;
 
 import java.util.Collection;
 
-import backend.cell.CellTemplate;
-import backend.unit.UnitTemplate;
+import backend.cell.ModifiableCell;
+import backend.unit.ModifiableUnit;
 import frontend.BaseUIManager;
-import frontend.sprites.Sprite;
-import frontend.sprites.Terrain;
 import javafx.scene.control.TitledPane;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
@@ -18,12 +15,12 @@ import javafx.scene.text.Text;
 public class TemplatePane extends BaseUIManager<Region>{
 
 	Pane pane;
-	Collection<UnitTemplate> units;
-	Collection<CellTemplate> terrains;
+	Collection<ModifiableUnit> units;
+	Collection<ModifiableCell> terrains;
 	
 
-	public TemplatePane(Collection<UnitTemplate> availableUnits, 
-			Collection<CellTemplate> availableTerrains) {
+	public TemplatePane(Collection<ModifiableUnit> availableUnits,
+			Collection<ModifiableCell> availableTerrains) {
 		units = availableUnits;
 		//terrains = availableTerrains;
 		pane = new Pane();
@@ -65,7 +62,7 @@ public class TemplatePane extends BaseUIManager<Region>{
 		
 	}
 	
-	public void updateSprites(Collection<UnitTemplate> sprites){
+	public void updateSprites(Collection<ModifiableUnit> sprites){
 		//TODO
 		//sprites will (I am fairly certain) contain all available sprites, not just the new ones
 	} 

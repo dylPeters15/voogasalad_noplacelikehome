@@ -1,8 +1,8 @@
 package backend.grid;
 
-import backend.cell.CellInstance;
-import backend.cell.CellTemplate;
-import backend.util.VoogaTemplate;
+import backend.cell.Cell;
+import backend.cell.ModifiableCell;
+import backend.util.ModifiableVoogaObject;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -13,14 +13,14 @@ import java.util.stream.IntStream;
 /**
  * @author Created by th174 on 3/28/2017.
  */
-public class ModifiableGameBoard extends VoogaTemplate<ModifiableGameBoard> implements GameBoard, GameBoardBuilder {
-	private final Map<CoordinateTuple, CellInstance> gameBoard;
-	private CellTemplate templateCell;
+public class ModifiableGameBoard extends ModifiableVoogaObject<ModifiableGameBoard> implements GameBoard, GameBoardBuilder {
+	private final Map<CoordinateTuple, Cell> gameBoard;
+	private ModifiableCell templateCell;
 	private BoundsHandler boundsHandler;
 	private int rows;
 	private int columns;
 
-	protected ModifiableGameBoard(String name, CellTemplate templateCell, int rows, int columns, BoundsHandler boundsHandler, String description, String imgPath) {
+	protected ModifiableGameBoard(String name, ModifiableCell templateCell, int rows, int columns, BoundsHandler boundsHandler, String description, String imgPath) {
 		super(name, description, imgPath);
 		this.boundsHandler = boundsHandler;
 		this.templateCell = templateCell;
@@ -48,18 +48,18 @@ public class ModifiableGameBoard extends VoogaTemplate<ModifiableGameBoard> impl
 	}
 
 	@Override
-	public ModifiableGameBoard addCell(CoordinateTuple coordinateTuple, CellTemplate cell) {
+	public ModifiableGameBoard addCell(CoordinateTuple coordinateTuple, ModifiableCell cell) {
 		gameBoard.put(coordinateTuple, cell.copy().setLocation(coordinateTuple));
 		return this;
 	}
 
 	@Override
-	public CellTemplate getTemplateCell() {
+	public ModifiableCell getTemplateCell() {
 		return templateCell;
 	}
 
 	@Override
-	public ModifiableGameBoard setTemplateCell(CellTemplate cell) {
+	public ModifiableGameBoard setTemplateCell(ModifiableCell cell) {
 		this.templateCell = cell;
 		return this;
 	}
@@ -77,17 +77,17 @@ public class ModifiableGameBoard extends VoogaTemplate<ModifiableGameBoard> impl
 	}
 
 	@Override
-	public Map<CoordinateTuple, CellInstance> getCells() {
+	public Map<CoordinateTuple, Cell> getCells() {
 		return Collections.unmodifiableMap(gameBoard);
 	}
 
 	@Override
-	public CellInstance get(CoordinateTuple coordinateTuple) {
+	public Cell get(CoordinateTuple coordinateTuple) {
 		return gameBoard.getOrDefault(boundsHandler.getMappedCoordinate(this, coordinateTuple), null);
 	}
 
 	@Override
-	public Iterator<Map.Entry<CoordinateTuple, CellInstance>> iterator() {
+	public Iterator<Map.Entry<CoordinateTuple, Cell>> iterator() {
 		return gameBoard.entrySet().iterator();
 	}
 

@@ -1,7 +1,7 @@
 package backend.grid;
 
-import backend.util.VoogaObject;
-import backend.util.VoogaTemplate;
+import backend.util.VoogaEntity;
+import backend.util.ModifiableVoogaObject;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 /**
  * @author Created by th174 on 3/30/2017.
  */
-public class GridPattern extends VoogaTemplate<GridPattern> implements VoogaObject {
+public class GridPattern extends ModifiableVoogaObject<GridPattern> implements VoogaEntity {
 	//TODO ResourceBundlify
 	public static final GridPattern NONE = new GridPattern("None", "This pattern contains no coordinates", "Empty.png");
 	public static final GridPattern HEXAGONAL_SINGLE_CELL = new GridPattern("Hexagonal Single Cell", "This pattern contains single hexagonal cell at the origin", "Single_square_cell.png", CoordinateTuple.getOrigin(3));

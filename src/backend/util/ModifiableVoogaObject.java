@@ -3,21 +3,21 @@ package backend.util;
 /**
  * @author Created by th174 on 4/5/2017.
  */
-public abstract class VoogaTemplate<T extends VoogaTemplate<T>> extends ImmutableVoogaObject<T> {
+public abstract class ModifiableVoogaObject<T extends ModifiableVoogaObject<T>> extends ImmutableVoogaObject<T> {
 
-	public VoogaTemplate() {
+	public ModifiableVoogaObject() {
 		this("");
 	}
 
-	public VoogaTemplate(String name) {
+	public ModifiableVoogaObject(String name) {
 		this(name, "");
 	}
 
-	public VoogaTemplate(String name, String description) {
+	public ModifiableVoogaObject(String name, String description) {
 		this(name, description, "");
 	}
 
-	public VoogaTemplate(String name, String description, String imgPath) {
+	public ModifiableVoogaObject(String name, String description, String imgPath) {
 		super(name, description, imgPath);
 	}
 

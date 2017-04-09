@@ -1,6 +1,6 @@
 package backend.unit.properties;
 
-import backend.util.VoogaCollection;
+import backend.util.ModifiableVoogaCollection;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 /**
  * @author Created by th174 on 4/9/2017.
  */
-public class ActiveAbilitySet extends VoogaCollection<ActiveAbility, ActiveAbilitySet> {
+public class ActiveAbilitySet extends ModifiableVoogaCollection<ActiveAbility, ActiveAbilitySet> {
 	public ActiveAbilitySet(ActiveAbility... abilities) {
 		this(Arrays.asList(abilities));
 	}

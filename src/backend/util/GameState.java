@@ -1,12 +1,12 @@
 package backend.util;
 
-import backend.cell.CellTemplate;
+import backend.cell.ModifiableCell;
 import backend.cell.ModifiableTerrain;
 import backend.game_engine.ResultQuadPredicate;
 import backend.grid.ModifiableGameBoard;
 import backend.player.Player;
 import backend.player.Team;
-import backend.unit.UnitTemplate;
+import backend.unit.ModifiableUnit;
 
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -22,10 +22,10 @@ public class GameState implements MutableGameState {
 	private Player currentPlayer;
 	private Map<String, Team> teams;
 	private ModifiableGameBoard gameGrid;
-	private Collection<UnitTemplate> unitTemplates;
-	private Collection<UnitTemplate> activeAbilities;
+	private Collection<ModifiableUnit> modifiableUnits;
+	private Collection<ModifiableUnit> activeAbilities;
 	private Collection<ModifiableTerrain> terrains;
-	private Collection<CellTemplate> cellTemplates;
+	private Collection<ModifiableCell> modifiableCells;
 
 	private Collection<ResultQuadPredicate> currentObjectives;
 	private Map<Event, List<BiConsumer<Player, ImmutableGameState>>> turnActions;
@@ -39,10 +39,10 @@ public class GameState implements MutableGameState {
 		gameGrid = grid;
 		playerList = new ArrayList<>();
 		teams = new HashMap<>();
-		unitTemplates = new ArrayList<>();
+		modifiableUnits = new ArrayList<>();
 		activeAbilities = new ArrayList<>();
 		terrains = new ArrayList<>();
-		cellTemplates = new ArrayList<>();
+		modifiableCells = new ArrayList<>();
 		currentObjectives = new ArrayList<>();
 		turnActions = new HashMap<>();
 		turnRequirements = new ArrayList<>();
@@ -56,16 +56,16 @@ public class GameState implements MutableGameState {
 		return terrains;
 	}
 
-	public Collection<UnitTemplate> getUnitTemplates() {
-		return unitTemplates;
+	public Collection<ModifiableUnit> getUnitTemplates() {
+		return modifiableUnits;
 	}
 
-	public Collection<UnitTemplate> getActiveAbilities() {
+	public Collection<ModifiableUnit> getActiveAbilities() {
 		return activeAbilities;
 	}
 
-	public Collection<CellTemplate> getCellTemplates() {
-		return cellTemplates;
+	public Collection<ModifiableCell> getModifiableCells() {
+		return modifiableCells;
 	}
 
 	@Override

@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 /**
  * @author Created by th174 on 4/8/2017.
  */
-public abstract class ImmutableVoogaObject<T extends ImmutableVoogaObject<T>> implements VoogaObject {
+public abstract class ImmutableVoogaObject<T extends ImmutableVoogaObject<T>> implements VoogaEntity {
 	private String name;
 	private String description;
 	private String imgPath;
@@ -53,7 +53,7 @@ public abstract class ImmutableVoogaObject<T extends ImmutableVoogaObject<T>> im
 		return (T) this;
 	}
 
-	protected static <T extends VoogaObject> Collection<T> getPredefined(Class<T> clazz) {
+	protected static <T extends VoogaEntity> Collection<T> getPredefined(Class<T> clazz) {
 		return Arrays.stream(clazz.getFields()).map(e -> {
 			try {
 				return e.get(null);

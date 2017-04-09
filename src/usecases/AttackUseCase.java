@@ -1,9 +1,9 @@
 package usecases;
 
-import backend.unit.UnitInstance;
+import backend.unit.Unit;
 import backend.unit.properties.ActiveAbility;
 import backend.util.GameState;
-import backend.util.VoogaObject;
+import backend.util.VoogaEntity;
 
 import java.util.Collection;
 import java.util.Map;
@@ -22,9 +22,9 @@ public class AttackUseCase {
      * @param gamestate   state of the game before the attack. This will be modified by
      *                    the attack.
      */
-    void setOnClick(UnitInstance backendunit, GameState gamestate) {
+    void setOnClick(Unit backendunit, GameState gamestate) {
         ActiveAbility attack = promptUserToPickAbility(backendunit.getActiveAbilities());
-        UnitInstance unitToAttack = promptUserForTarget(gamestate.getGrid()
+        Unit unitToAttack = promptUserForTarget(gamestate.getGrid()
                 .getUnits());
         attackUnit(backendunit, unitToAttack, attack, gamestate);
     }
@@ -36,9 +36,9 @@ public class AttackUseCase {
      * @param map containing all the active abilities of the unit
      * @return one active ability, chosen at random. (This will be chosen by the user in the front end)
      */
-    ActiveAbility<VoogaObject> promptUserToPickAbility(
-            Map<String, ActiveAbility<VoogaObject>> map) {
-        return ((ActiveAbility<VoogaObject>[]) map.values().toArray())[(int) (map
+    ActiveAbility<VoogaEntity> promptUserToPickAbility(
+            Map<String, ActiveAbility<VoogaEntity>> map) {
+        return ((ActiveAbility<VoogaEntity>[]) map.values().toArray())[(int) (map
                 .values().toArray().length * Math.random())];
     }
 
@@ -49,8 +49,8 @@ public class AttackUseCase {
      * @param units collection containing all of the units
      * @return one unit that the user will attack. (This will be chosen by the user in the front end)
      */
-    UnitInstance promptUserForTarget(Collection<UnitInstance> units) {
-        return ((UnitInstance[]) units.toArray())[(int) (units.toArray().length * Math
+    Unit promptUserForTarget(Collection<Unit> units) {
+        return ((Unit[]) units.toArray())[(int) (units.toArray().length * Math
                 .random())];
     }
 
@@ -64,7 +64,7 @@ public class AttackUseCase {
      * @param gamestate state of the game before the attack. This will be modified by
      *                  the attack.
      */
-    void attackUnit(UnitInstance a, UnitInstance b, ActiveAbility<UnitInstance> attack,
+    void attackUnit(Unit a, Unit b, ActiveAbility<Unit> attack,
                     GameState gamestate) {
         attack.affect(a, b, gamestate);
     }

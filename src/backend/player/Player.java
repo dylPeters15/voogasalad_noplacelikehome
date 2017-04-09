@@ -1,10 +1,10 @@
 package backend.player;
 
-import backend.cell.CellInstance;
+import backend.cell.Cell;
 import backend.grid.ModifiableGameBoard;
-import backend.unit.UnitInstance;
+import backend.unit.Unit;
 import backend.unit.properties.Faction;
-import backend.util.VoogaTemplate;
+import backend.util.ModifiableVoogaObject;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
  *
  * @author Created by th174 on 3/28/2017.
  */
-public class Player extends VoogaTemplate<Player> implements MutablePlayer {
+public class Player extends ModifiableVoogaObject<Player> implements MutablePlayer {
 	private Faction faction;
 	private Team team;
 	private List<ChatMessage> chatLog;
@@ -49,17 +49,17 @@ public class Player extends VoogaTemplate<Player> implements MutablePlayer {
 	}
 
 	@Override
-	public Collection<UnitInstance> getOwnedUnits(ModifiableGameBoard grid) {
+	public Collection<Unit> getOwnedUnits(ModifiableGameBoard grid) {
 		return grid.getUnits().parallelStream().filter(e -> e.getOwner().equals(this)).collect(Collectors.toSet());
 	}
 
 	@Override
-	public Collection<CellInstance> getVisibleCells() {
+	public Collection<Cell> getVisibleCells() {
 		return null;
 	}
 
 	@Override
-	public Collection<CellInstance> getExploredCells() {
+	public Collection<Cell> getExploredCells() {
 		return null;
 	}
 
