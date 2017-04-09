@@ -1,4 +1,4 @@
-package scripting;
+package util.scripting;
 
 import backend.game_engine.ResultQuadPredicate;
 import backend.player.Player;

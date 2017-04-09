@@ -14,7 +14,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Window;
 
 import backend.util.*;
-import frontend.view.View;
+import frontend.View;
 
 import java.io.File;
 import java.io.FileInputStream;

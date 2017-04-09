@@ -1,4 +1,4 @@
-package chat_client;
+package util.chat_client;
 
 import backend.util.io.JSONSerializer;
 import util.net.ObservableClient;

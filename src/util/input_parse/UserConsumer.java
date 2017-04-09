@@ -1,4 +1,4 @@
-package input_parse;
+package util.input_parse;
 
 import java.util.function.Consumer;
 

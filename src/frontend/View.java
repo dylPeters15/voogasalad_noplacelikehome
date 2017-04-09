@@ -1,7 +1,7 @@
 /**
  *
  */
-package frontend.view;
+package frontend;
 
 import backend.util.GameState;
 import frontend.detailpane.DetailPane;

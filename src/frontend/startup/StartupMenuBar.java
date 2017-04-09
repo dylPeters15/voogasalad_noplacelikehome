@@ -11,7 +11,7 @@ import java.io.ObjectOutputStream;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-import frontend.view.View;
+import frontend.View;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Menu;

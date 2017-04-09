@@ -1,4 +1,4 @@
-package scripting;
+package util.scripting;
 
 /**
  * @author Created by th174 on 4/6/2017.

@@ -1,4 +1,4 @@
-package input_parse;
+package util.input_parse;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,7 +12,7 @@ import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
 
 import backend.util.MutableGameState;
-import input_parse.InputDecoder.Type;
+import util.input_parse.InputDecoder.Type;
 
 public class Parser {
 	

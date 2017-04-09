@@ -1,9 +1,10 @@
-package junit_tests;
-
-import frontend.ObservableQueue;
-import org.junit.Test;
+package tests;
 
 import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
+
+import frontend.util.ObservableQueue;
 
 public class GenericTests {
 

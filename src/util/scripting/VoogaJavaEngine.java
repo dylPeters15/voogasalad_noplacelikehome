@@ -1,4 +1,4 @@
-package scripting;
+package util.scripting;
 
 import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;

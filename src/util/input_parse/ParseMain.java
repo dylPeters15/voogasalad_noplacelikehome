@@ -1,7 +1,7 @@
-package input_parse;
+package util.input_parse;
 
 import backend.util.GameState;
-import input_parse.InputDecoder.Type;
+import util.input_parse.InputDecoder.Type;
 
 public class ParseMain {
 	
