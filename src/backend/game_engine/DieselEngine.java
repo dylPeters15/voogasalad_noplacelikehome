@@ -3,8 +3,11 @@ package backend.game_engine;
 import backend.game_engine.ResultQuadPredicate.Result;
 import backend.player.Player;
 import backend.util.MutableGameState;
+import util.io.Serializer;
+import util.io.Unserializer;
 import util.net.ObservableServer;
 
+import java.io.Serializable;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
@@ -12,11 +15,11 @@ import java.util.function.Consumer;
  * @author Zapata
  */
 
-//TODO: Implement some way to checkTurnState() to determine if it is the beginning or end of a turn. Implement restart(), save()
-// and load() (Tavo's job). Also implement a messagePlayer(Player from, Player to, String message).
-
+//TODO: Implement some way to checkTurnState() to determine if it is the beginning or end of a turn. Implement restart(), save() and load() (Tavo's job). Also implement a messagePlayer(Player from, Player to, String message).
 public class DieselEngine implements GameEngine {
 
+	private Serializer serializer = this::save;
+	private Unserializer unserializer = this::load;
 	private ObservableServer<MutableGameState> server;
 	private Consumer<MutableGameState> stateUpdateListener = this::checkGame;
 
@@ -37,21 +40,15 @@ public class DieselEngine implements GameEngine {
 	}
 
 	@Override
-	public void restart() {
+	public Serializable save(Object gameEngine) {
 		// TODO Auto-generated method stub
-
+		return null;
 	}
 
 	@Override
-	public void save() {
+	public Object load(Object gameEngineXML) {
+		return null;
 		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void load() {
-		// TODO Auto-generated method stub
-
 	}
 
 	private void checkTurnRules(MutableGameState state) {

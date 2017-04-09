@@ -14,13 +14,12 @@ import java.util.function.BiPredicate;
 public interface ImmutableGameState {
 	ModifiableGameBoard getGrid();
 
-	Collection<Team> getTeams();
-
 	void endTurn();
 
 	default void messageAll(Player from, String message) {
 		getPlayers().forEach(player -> messagePlayer(from, player, message));
 	}
+    Collection<Team> getTeams();
 
 	List<Player> getPlayers();
 
