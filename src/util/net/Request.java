@@ -20,15 +20,6 @@ public final class Request<T extends Serializable> implements Serializable {
     /**
      * Creates a new request with content and a timestamp of the creation time.
      *
-     * @param content Content of request
-     */
-    public Request(T content) {
-        this(content, 0);
-    }
-
-    /**
-     * Creates a new request with content and a timestamp of the creation time.
-     *
      * @param content     Content of request
      * @param commitIndex commitIndex of the sender of this request
      */

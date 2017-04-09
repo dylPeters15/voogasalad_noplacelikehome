@@ -11,8 +11,8 @@ import java.util.stream.Collectors;
  */
 public class BoundsHandler extends ImmutableVoogaObject<BoundsHandler> {
 	//TODO ResourceBundlify this
-	public static final BoundsHandler INFINITE_BOUNDS = new BoundsHandler("Infinite Bounds", (input, grid) -> input, "Allows grid to expand to accommodate out of bounds coordinates.");
-	public static final BoundsHandler FINITE_BOUNDS = new BoundsHandler("Finite Bounds",
+	public transient static final BoundsHandler INFINITE_BOUNDS = new BoundsHandler("Infinite Bounds", (input, grid) -> input, "Allows grid to expand to accommodate out of bounds coordinates.");
+	public transient static final BoundsHandler FINITE_BOUNDS = new BoundsHandler("Finite Bounds",
 			(input, grid) -> {
 				ModifiableGameBoard.GridBounds bounds = grid.getBounds();
 				return new CoordinateTuple(
@@ -21,7 +21,7 @@ public class BoundsHandler extends ImmutableVoogaObject<BoundsHandler> {
 								.collect(Collectors.toList())
 				);
 			}, "Converts out of bounds coordinates to the closest inbounds coordinate on the grid.");
-	public static final BoundsHandler SQUARE_FINITE_BOUNDS = new BoundsHandler("Square Finite Bounds",
+	public transient static final BoundsHandler SQUARE_FINITE_BOUNDS = new BoundsHandler("Square Finite Bounds",
 			(input, grid) -> {
 				ModifiableGameBoard.GridBounds bounds = grid.getRectangularBounds();
 				return new CoordinateTuple(
@@ -30,7 +30,7 @@ public class BoundsHandler extends ImmutableVoogaObject<BoundsHandler> {
 								.collect(Collectors.toList())
 				).convertToDimension(input.dimension());
 			}, "Converts out of bounds coordinates to the closest inbounds coordinate on a square grid.");
-	public static final BoundsHandler TOROIDAL_BOUNDS = new BoundsHandler("Toroidal Bounds",
+	public transient static final BoundsHandler TOROIDAL_BOUNDS = new BoundsHandler("Toroidal Bounds",
 			(input, grid) -> {
 				ModifiableGameBoard.GridBounds bounds = grid.getBounds();
 				return new CoordinateTuple(
@@ -39,7 +39,7 @@ public class BoundsHandler extends ImmutableVoogaObject<BoundsHandler> {
 								.collect(Collectors.toList())
 				);
 			}, "Wraps out of bounds coordinates to the opposite side of the grid", "Torus.png");
-	public static final BoundsHandler SQUARE_TOROIDAL_BOUNDS = new BoundsHandler("Square Toroidal Bounds",
+	public transient static final BoundsHandler SQUARE_TOROIDAL_BOUNDS = new BoundsHandler("Square Toroidal Bounds",
 			(input, grid) -> {
 				ModifiableGameBoard.GridBounds bounds = grid.getRectangularBounds();
 				return new CoordinateTuple(
