@@ -1,5 +1,6 @@
 package util.io;
 
+import java.io.OutputStream;
 import java.io.Serializable;
 
 /**
@@ -10,6 +11,10 @@ import java.io.Serializable;
 @FunctionalInterface
 public interface Serializer<T> {
     Serializer NONE = Serializable.class::cast;
+
+    default void serializeToOutputStream(T obj, OutputStream outputStream){
+
+    }
 
     /**
      * @param obj Object to be converted to Serializable form

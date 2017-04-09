@@ -1,6 +1,6 @@
 package backend.grid;
 
-import backend.cell.CellTemplate;
+import backend.cell.ModifiableCell;
 
 /**
  * @author Created by th174 on 4/8/2017.
@@ -8,7 +8,7 @@ import backend.cell.CellTemplate;
 public interface GameBoardBuilder {
 	GameBoard copy();
 
-	GameBoardBuilder setTemplateCell(CellTemplate cell);
+	GameBoardBuilder setTemplateCell(ModifiableCell cell);
 
 	GameBoardBuilder setRows(int rows);
 
@@ -16,5 +16,5 @@ public interface GameBoardBuilder {
 
 	GameBoardBuilder setBoundsHandler(BoundsHandler boundsHandler);
 
-	GameBoardBuilder addCell(CoordinateTuple coordinates, CellTemplate cell);
+	GameBoardBuilder addCell(CoordinateTuple coordinates, ModifiableCell cell);
 }

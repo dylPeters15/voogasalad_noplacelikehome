@@ -7,15 +7,15 @@ import java.util.stream.Collectors;
 /**
  * @author Created by th174 on 3/30/2017.
  */
-public abstract class VoogaCollection<T extends VoogaObject, U extends VoogaCollection<T, U>> extends VoogaTemplate<U> implements ImmutableVoogaCollection<T> {
+public abstract class ModifiableVoogaCollection<T extends VoogaEntity, U extends ModifiableVoogaCollection<T, U>> extends ModifiableVoogaObject<U> implements ImmutableVoogaCollection<T> {
 	private final Map<String, T> gameObjects;
 
 	@SafeVarargs
-	public VoogaCollection(String name, String description, String imgPath, T... gameObjects) {
+	public ModifiableVoogaCollection(String name, String description, String imgPath, T... gameObjects) {
 		this(name, description, imgPath, Arrays.asList(gameObjects));
 	}
 
-	public VoogaCollection(String name, String description, String imgPath, Collection<? extends T> gameObjects) {
+	public ModifiableVoogaCollection(String name, String description, String imgPath, Collection<? extends T> gameObjects) {
 		super(name, description, imgPath);
 		this.gameObjects = new LinkedHashMap<>();
 		addAll(gameObjects);

@@ -2,7 +2,7 @@ package scripting;
 
 import backend.game_engine.ResultQuadPredicate;
 import backend.player.Player;
-import backend.unit.UnitInstance;
+import backend.unit.Unit;
 import backend.unit.properties.ActiveAbility;
 import backend.unit.properties.InteractionModifier;
 import backend.util.*;
@@ -16,7 +16,7 @@ import java.util.function.BiPredicate;
 /**
  * @author Created by th174 on 4/7/2017.
  */
-public interface VoogaScriptEngine extends Serializer, Unserializer, InteractionModifier.Modifier, TriggeredEffectInstance.Effect, ActiveAbility.AbilityEffect, ResultQuadPredicate, BiPredicate<Player, ImmutableGameState> {
+public interface VoogaScriptEngine extends Serializer, Unserializer, InteractionModifier.Modifier, TriggeredEffect.Effect, ActiveAbility.AbilityEffect, ResultQuadPredicate, BiPredicate<Player, ImmutableGameState> {
 	ResourceBundle RESOURCES = ResourceBundle.getBundle("resources/Scripting", Locale.US);
 
 	VoogaScriptEngine setScript(String script) throws VoogaScriptException;
@@ -59,17 +59,17 @@ public interface VoogaScriptEngine extends Serializer, Unserializer, Interaction
 	}
 
 	@Override
-	default void affect(UnitInstance unit, Event event, ImmutableGameState gameState) {
+	default void affect(Unit unit, Event event, ImmutableGameState gameState) {
 		eval(createBindings("unit", unit, "event", event, "gameState", gameState));
 	}
 
 	@Override
-	default void useAbility(UnitInstance user, VoogaObject target, ImmutableGameState gameState) {
+	default void useAbility(Unit user, VoogaEntity target, ImmutableGameState gameState) {
 		eval(createBindings("abilityUser", user, "abilityTarget", target, "gameState", gameState));
 	}
 
 	@Override
-	default Object modify(Object originalValue, UnitInstance agent, UnitInstance target, ImmutableGameState gameState) {
+	default Object modify(Object originalValue, Unit agent, Unit target, ImmutableGameState gameState) {
 		return eval(createBindings("originalValue", originalValue, "agent", agent, "target", target, "gameState", gameState));
 	}
 

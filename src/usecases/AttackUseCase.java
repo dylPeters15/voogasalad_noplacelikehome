@@ -1,13 +1,5 @@
 package usecases;
 
-import java.util.Collection;
-import java.util.Map;
-
-import backend.unit.UnitInstance;
-import backend.unit.properties.ActiveAbility;
-import backend.util.GameState;
-import backend.util.VoogaObject;
-
 /**
  * This is a description of how to code Exacmple Code Case 3
  */
@@ -22,14 +14,14 @@ public class AttackUseCase {
      * @param gamestate   state of the game before the attack. This will be modified by
      *                    the attack.
      */
-    @SuppressWarnings("unchecked")
-	void setOnClick(UnitInstance backendunit, GameState gamestate) {
-        @SuppressWarnings({ "rawtypes" })
-		ActiveAbility attack = promptUserToPickAbility((Map<String, ActiveAbility<VoogaObject>>) backendunit.getActiveAbilities());
-        UnitInstance unitToAttack = promptUserForTarget(gamestate.getGrid()
-                .getUnits());
-        attackUnit(backendunit, unitToAttack, attack, gamestate);
-    }
+//    @SuppressWarnings("unchecked")
+//	void setOnClick(Unit backendunit, GameState gamestate) {
+//        @SuppressWarnings({ "rawtypes" })
+//		ActiveAbility attack = promptUserToPickAbility((Map<String, ActiveAbility<ImmutableVoogaObject>>) backendunit.getActiveAbilities());
+//        Unit unitToAttack = promptUserForTarget(gamestate.getGrid()
+//                .getUnits());
+//        attackUnit(backendunit, unitToAttack, attack, gamestate);
+//    }
 
     /**
      * This will be filled in with JavaFX code to allow the user to select one
@@ -38,12 +30,12 @@ public class AttackUseCase {
      * @param map containing all the active abilities of the unit
      * @return one active ability, chosen at random. (This will be chosen by the user in the front end)
      */
-    @SuppressWarnings("unchecked")
-	ActiveAbility<VoogaObject> promptUserToPickAbility(
-            Map<String, ActiveAbility<VoogaObject>> map) {
-        return ((ActiveAbility<VoogaObject>[]) map.values().toArray())[(int) (map
-                .values().toArray().length * Math.random())];
-    }
+//    @SuppressWarnings("unchecked")
+//	ActiveAbility<ImmutableVoogaObject> promptUserToPickAbility(
+//            Map<String, ActiveAbility<VoogaObject>> map) {
+//        return ((ActiveAbility<VoogaObject>[]) map.values().toArray())[(int) (map
+//                .values().toArray().length * Math.random())];
+//    }
 
     /**
      * This will be filled in with JavaFX code to allow the user to select one
@@ -52,10 +44,10 @@ public class AttackUseCase {
      * @param units collection containing all of the units
      * @return one unit that the user will attack. (This will be chosen by the user in the front end)
      */
-    UnitInstance promptUserForTarget(Collection<UnitInstance> units) {
-        return ((UnitInstance[]) units.toArray())[(int) (units.toArray().length * Math
-                .random())];
-    }
+//    Unit promptUserForTarget(Collection<Unit> units) {
+//        return ((Unit[]) units.toArray())[(int) (units.toArray().length * Math
+//                .random())];
+//    }
 
     /**
      * This is the code that will be written by the front end that will be
@@ -67,9 +59,9 @@ public class AttackUseCase {
      * @param gamestate state of the game before the attack. This will be modified by
      *                  the attack.
      */
-    void attackUnit(UnitInstance a, UnitInstance b, ActiveAbility<UnitInstance> attack,
-                    GameState gamestate) {
-        attack.affect(a, b, gamestate);
-    }
+//    void attackUnit(Unit a, Unit b, ActiveAbility<Unit> attack,
+//                    GameState gamestate) {
+//        attack.affect(a, b, gamestate);
+//    }
 
 }

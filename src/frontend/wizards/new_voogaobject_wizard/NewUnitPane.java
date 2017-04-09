@@ -1,6 +1,6 @@
 package frontend.wizards.new_voogaobject_wizard;
 
-import backend.unit.UnitTemplate;
+import backend.unit.ModifiableUnit;
 import backend.util.GameState;
 import frontend.util.BaseUIManager;
 import frontend.wizards.new_voogaobject_wizard.util.AbilitiesAdder;
@@ -45,7 +45,7 @@ public class NewUnitPane extends BaseUIManager<Region> {
 //		imageNamePairView.getRequests().passTo(getRequests());
 //		movePointView.getRequests().passTo(getRequests());
 //		abilitiesAdder.getRequests().passTo(getRequests());
-		Modifier<GameState> modifier = gameState -> {gameState.getUnitTemplates().add(new UnitTemplate("NewUnitName"));
+		Modifier<GameState> modifier = gameState -> {gameState.getUnitTemplates().add(new ModifiableUnit("NewUnitName"));
 		return gameState;
 		};
 		getRequests().add(modifier);

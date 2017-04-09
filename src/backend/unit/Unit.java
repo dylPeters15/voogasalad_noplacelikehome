@@ -1,7 +1,7 @@
 package backend.unit;
 
-import backend.cell.CellInstance;
-import backend.cell.TerrainInstance;
+import backend.cell.Cell;
+import backend.cell.Terrain;
 import backend.grid.CoordinateTuple;
 import backend.grid.GridPattern;
 import backend.grid.ModifiableGameBoard;
@@ -10,11 +10,11 @@ import backend.player.Team;
 import backend.unit.properties.ActiveAbility;
 import backend.unit.properties.Faction;
 import backend.unit.properties.InteractionModifier;
-import backend.unit.properties.UnitStatInstance;
+import backend.unit.properties.UnitStat;
 import backend.util.GameState;
 import backend.util.ImmutableGameState;
-import backend.util.TriggeredEffectInstance;
-import backend.util.VoogaObject;
+import backend.util.TriggeredEffect;
+import backend.util.VoogaEntity;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -24,8 +24,11 @@ import java.util.stream.Collectors;
  *
  * @author Created by th174 on 3/27/2017.
  */
-public interface UnitInstance extends VoogaObject {
-	void moveTo(CellInstance destinationCell, ImmutableGameState gameState);
+public interface Unit extends VoogaEntity {
+	@Override
+	Unit copy();
+
+	void moveTo(Cell destinationCell, ImmutableGameState gameState);
 
 	void startTurn(GameState gameState);
 
@@ -33,15 +36,15 @@ public interface UnitInstance extends VoogaObject {
 
 	void takeDamage(double damage);
 
-	default void useActiveAbility(String activeAbilityName, VoogaObject target, ImmutableGameState gameState) {
+	default void useActiveAbility(String activeAbilityName, VoogaEntity target, ImmutableGameState gameState) {
 		useActiveAbility(getActiveAbilityByName(activeAbilityName), target, gameState);
 	}
 
-	void useActiveAbility(ActiveAbility activeAbility, VoogaObject target, ImmutableGameState gameState);
+	void useActiveAbility(ActiveAbility activeAbility, VoogaEntity target, ImmutableGameState gameState);
 
 	ActiveAbility getActiveAbilityByName(String name);
 
-	default Collection<CellInstance> getLegalMoves(ModifiableGameBoard grid) {
+	default Collection<Cell> getLegalMoves(ModifiableGameBoard grid) {
 		return getMovePattern().getCoordinates().parallelStream()
 				.map(e -> grid.get(e.sum(this.getLocation())))
 				.filter(Objects::nonNull)
@@ -54,59 +57,59 @@ public interface UnitInstance extends VoogaObject {
 		return getCurrentCell().getLocation();
 	}
 
-	CellInstance getCurrentCell();
+	Cell getCurrentCell();
 
-	Map<TerrainInstance, Integer> getTerrainMoveCosts();
+	Map<Terrain, Integer> getTerrainMoveCosts();
 
-	UnitStatInstance<Integer> getMovePoints();
+	UnitStat<Integer> getMovePoints();
 
-	default Collection<UnitInstance> getAllNeighboringUnits(ModifiableGameBoard grid) {
+	default Collection<Unit> getAllNeighboringUnits(ModifiableGameBoard grid) {
 		return getNeighboringUnits(grid).values().parallelStream().flatMap(Collection::stream).parallel().collect(Collectors.toSet());
 	}
 
-	default Map<CoordinateTuple, Collection<? extends UnitInstance>> getNeighboringUnits(ModifiableGameBoard grid) {
-		Map<CoordinateTuple, Collection<? extends UnitInstance>> neighbors = getCurrentCell().getNeighbors(grid).entrySet().parallelStream()
+	default Map<CoordinateTuple, Collection<? extends Unit>> getNeighboringUnits(ModifiableGameBoard grid) {
+		Map<CoordinateTuple, Collection<? extends Unit>> neighbors = getCurrentCell().getNeighbors(grid).entrySet().parallelStream()
 				.filter(e -> !e.getValue().getOccupants().isEmpty())
 				.collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getOccupants()));
 		neighbors.put(CoordinateTuple.getOrigin(getCurrentCell().dimension()), getCurrentCell().getOccupants().parallelStream().filter(e -> !equals(e)).collect(Collectors.toSet()));
 		return neighbors;
 	}
 
-	default Map<CoordinateTuple, CellInstance> getNeighboringCells(ModifiableGameBoard grid) {
+	default Map<CoordinateTuple, Cell> getNeighboringCells(ModifiableGameBoard grid) {
 		return getCurrentCell().getNeighbors(grid);
 	}
 
-	default UnitInstance addOffensiveModifiers(InteractionModifier<Double>... modifiers) {
+	default Unit addOffensiveModifiers(InteractionModifier<Double>... modifiers) {
 		return addOffensiveModifiers(Arrays.asList(modifiers));
 	}
 
-	UnitInstance addOffensiveModifiers(Collection<InteractionModifier<Double>> modifiers);
+	Unit addOffensiveModifiers(Collection<InteractionModifier<Double>> modifiers);
 
-	default UnitInstance removeOffensiveModifiers(InteractionModifier<Double>... modifiers) {
+	default Unit removeOffensiveModifiers(InteractionModifier<Double>... modifiers) {
 		return removeOffensiveModifiers(Arrays.asList(modifiers));
 	}
 
-	UnitInstance removeOffensiveModifiers(Collection<InteractionModifier<Double>> modifiers);
+	Unit removeOffensiveModifiers(Collection<InteractionModifier<Double>> modifiers);
 
-	default double applyAllOffensiveModifiers(Double originalValue, UnitInstance target, ImmutableGameState gameState) {
+	default double applyAllOffensiveModifiers(Double originalValue, Unit target, ImmutableGameState gameState) {
 		return InteractionModifier.modifyAll(getOffensiveModifiers(), originalValue, this, target, gameState);
 	}
 
 	List<InteractionModifier<Double>> getOffensiveModifiers();
 
-	default UnitInstance addDefensiveModifiers(InteractionModifier<Double>... modifiers) {
+	default Unit addDefensiveModifiers(InteractionModifier<Double>... modifiers) {
 		return addDefensiveModifiers(Arrays.asList(modifiers));
 	}
 
-	UnitInstance addDefensiveModifiers(Collection<InteractionModifier<Double>> modifiers);
+	Unit addDefensiveModifiers(Collection<InteractionModifier<Double>> modifiers);
 
-	default UnitInstance removeDefensiveModifiers(InteractionModifier<Double>... modifiers) {
+	default Unit removeDefensiveModifiers(InteractionModifier<Double>... modifiers) {
 		return removeDefensiveModifiers(Arrays.asList(modifiers));
 	}
 
-	UnitInstance removeDefensiveModifiers(Collection<InteractionModifier<Double>> modifiers);
+	Unit removeDefensiveModifiers(Collection<InteractionModifier<Double>> modifiers);
 
-	default double applyAllDefensiveModifiers(Double originalValue, UnitInstance agent, ImmutableGameState gameState) {
+	default double applyAllDefensiveModifiers(Double originalValue, Unit agent, ImmutableGameState gameState) {
 		return InteractionModifier.modifyAll(getDefensiveModifiers(), originalValue, agent, this, gameState);
 	}
 
@@ -114,33 +117,33 @@ public interface UnitInstance extends VoogaObject {
 
 	Collection<? extends ActiveAbility> getActiveAbilities();
 
-	default UnitInstance addActiveAbilities(ActiveAbility... abilities) {
+	default Unit addActiveAbilities(ActiveAbility... abilities) {
 		return addActiveAbilities(Arrays.asList(abilities));
 	}
 
-	UnitInstance addActiveAbilities(Collection<ActiveAbility> abilities);
+	Unit addActiveAbilities(Collection<ActiveAbility> abilities);
 
-	default UnitInstance removeActiveAbilities(ActiveAbility... abilities) {
+	default Unit removeActiveAbilities(ActiveAbility... abilities) {
 		return removeActiveAbilities(Arrays.asList(abilities));
 	}
 
-	UnitInstance removeActiveAbilities(Collection<ActiveAbility> abilities);
+	Unit removeActiveAbilities(Collection<ActiveAbility> abilities);
 
-	Collection<? extends TriggeredEffectInstance> getTriggeredAbilities();
+	Collection<? extends TriggeredEffect> getTriggeredAbilities();
 
-	default UnitInstance addTriggeredAbilities(TriggeredEffectInstance... abilities) {
+	default Unit addTriggeredAbilities(TriggeredEffect... abilities) {
 		return addTriggeredAbilities(Arrays.asList(abilities));
 	}
 
-	UnitInstance addTriggeredAbilities(Collection<TriggeredEffectInstance> abilities);
+	Unit addTriggeredAbilities(Collection<TriggeredEffect> abilities);
 
-	default UnitInstance removeTriggeredAbilities(TriggeredEffectInstance... abilities) {
+	default Unit removeTriggeredAbilities(TriggeredEffect... abilities) {
 		return removeTriggeredAbilities(Arrays.asList(abilities));
 	}
 
-	UnitInstance removeTriggeredAbilities(Collection<TriggeredEffectInstance> abilities);
+	Unit removeTriggeredAbilities(Collection<TriggeredEffect> abilities);
 
-	UnitStatInstance<Double> getHitPoints();
+	UnitStat<Double> getHitPoints();
 
 	Faction getFaction();
 

@@ -1,6 +1,6 @@
 package backend.unit.properties;
 
-import backend.unit.UnitInstance;
+import backend.unit.Unit;
 import backend.util.ImmutableGameState;
 import backend.util.ImmutableVoogaObject;
 
@@ -50,7 +50,7 @@ public class InteractionModifier<T> extends ImmutableVoogaObject<InteractionModi
 		this.modifier = modifier;
 	}
 
-	public T modify(T originalValue, UnitInstance agent, UnitInstance target, ImmutableGameState game) {
+	public T modify(T originalValue, Unit agent, Unit target, ImmutableGameState game) {
 		return modifier.modify(originalValue, agent, target, game);
 	}
 
@@ -59,7 +59,7 @@ public class InteractionModifier<T> extends ImmutableVoogaObject<InteractionModi
 		return new InteractionModifier<>(getName(), modifier, getDescription(), getImgPath());
 	}
 
-	public static <T> T modifyAll(List<? extends InteractionModifier<T>> modifiers, T originalValue, UnitInstance agent, UnitInstance target, ImmutableGameState game) {
+	public static <T> T modifyAll(List<? extends InteractionModifier<T>> modifiers, T originalValue, Unit agent, Unit target, ImmutableGameState game) {
 		for (InteractionModifier<T> op : modifiers) {
 			originalValue = op.modify(originalValue, agent, target, game);
 		}
@@ -94,6 +94,6 @@ public class InteractionModifier<T> extends ImmutableVoogaObject<InteractionModi
 		Modifier<Double> CRITICAL_STRIKE = (outgoingDamage, agent, target, game) -> Math.random() < .25 ? outgoingDamage * 2 : outgoingDamage;
 		Modifier<Double> STRONG_ATTACK = (outgoingDamage, agent, target, game) -> outgoingDamage * 1.5;
 
-		T modify(T originalValue, UnitInstance agent, UnitInstance target, ImmutableGameState game);
+		T modify(T originalValue, Unit agent, Unit target, ImmutableGameState game);
 	}
 }

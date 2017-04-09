@@ -1,16 +1,16 @@
 package backend.util;
 
-import backend.unit.UnitInstance;
+import backend.unit.Unit;
 
 import java.util.Collection;
 
 /**
  * @author Created by th174 on 4/5/17.
  */
-public interface TriggeredEffectInstance extends VoogaObject {
+public interface TriggeredEffect extends VoogaEntity {
 	int getRemainingTurns();
 
-	void affect(UnitInstance unit, Event event, ImmutableGameState game);
+	void affect(Unit unit, Event event, ImmutableGameState game);
 
 	Collection<Event> getActivationTriggers();
 
@@ -18,6 +18,6 @@ public interface TriggeredEffectInstance extends VoogaObject {
 
 	@FunctionalInterface
 	interface Effect {
-		void affect(UnitInstance unit, Event event, ImmutableGameState game);
+		void affect(Unit unit, Event event, ImmutableGameState game);
 	}
 }

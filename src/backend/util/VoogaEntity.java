@@ -3,8 +3,8 @@ package backend.util;
 /**
  * @author Created by th174 on 3/31/2017.
  */
-public interface VoogaObject {
-	<U extends VoogaObject> U copy();
+public interface VoogaEntity {
+	<U extends VoogaEntity> U copy();
 
 	String getName();
 

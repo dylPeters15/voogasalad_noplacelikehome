@@ -1,6 +1,6 @@
 package backend.player;
 
-import backend.util.VoogaCollection;
+import backend.util.ModifiableVoogaCollection;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 /**
  * @author Created by th174 on 3/30/2017.
  */
-public class Team extends VoogaCollection<MutablePlayer, Team> {
+public class Team extends ModifiableVoogaCollection<MutablePlayer, Team> {
 	public Team(String name, String description, String imgPath, MutablePlayer... players) {
 		super(name, description, imgPath, players);
 	}

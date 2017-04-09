@@ -1,9 +1,8 @@
 import backend.player.Player;
 import backend.player.Team;
 import backend.unit.properties.Faction;
-import backend.util.GameState;
 import backend.util.ImmutableGameState;
-import backend.util.io.JSONSerializer;
+import backend.util.io.XMLSerializer;
 import javafx.stage.Stage;
 import util.net.ObservableClient;
 
@@ -19,13 +18,15 @@ import java.util.stream.Collectors;
 public class VoogaClientMain {
 	public static final int PORT = 10023;
 	public static final String HOST = ObservableClient.LOCALHOST;
-	public static final int TIMEOUT = 20;
+	public static final int TIMEOUT = 120;
 	public static final String CHATBOX = "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n------------TEST GAME STATE CHAT LOG------------\n\n%s\n\n >>  ";
 
 	public static void main(String[] args) throws IOException, InterruptedException {
-		String name = System.getProperty("user.name");
+//		String name = System.getProperty("user.name");
+		String name = "testerman";
 		String teamName = name + "'s team";
-		JSONSerializer<ImmutableGameState> serializer = new JSONSerializer<>(GameState.class);
+		XMLSerializer<ImmutableGameState> serializer = new XMLSerializer<>();
+//		JSONSerializer<ImmutableGameState> serializer = new JSONSerializer<>();
 		ObservableClient<ImmutableGameState> client = new ObservableClient<>(HOST, PORT, serializer, serializer, Duration.ofSeconds(TIMEOUT));
 		client.addListener(state -> {
 			try {

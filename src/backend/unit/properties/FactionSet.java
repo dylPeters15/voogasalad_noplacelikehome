@@ -1,13 +1,13 @@
 package backend.unit.properties;
 
-import backend.util.VoogaCollection;
+import backend.util.ModifiableVoogaCollection;
 
 import java.util.Collection;
 
 /**
  * @author Created by th174 on 3/30/2017.
  */
-public class FactionSet extends VoogaCollection<Faction, FactionSet> {
+public class FactionSet extends ModifiableVoogaCollection<Faction, FactionSet> {
 	public FactionSet(String name, String description, String imgPath, Faction... factions) {
 		super(name, description, imgPath, factions);
 	}

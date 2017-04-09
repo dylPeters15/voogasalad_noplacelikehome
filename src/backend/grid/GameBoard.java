@@ -1,9 +1,9 @@
 package backend.grid;
 
-import backend.cell.CellInstance;
-import backend.cell.CellTemplate;
+import backend.cell.Cell;
+import backend.cell.ModifiableCell;
 import backend.player.Player;
-import backend.unit.UnitInstance;
+import backend.unit.Unit;
 import javafx.util.Pair;
 
 import java.util.*;
@@ -12,40 +12,40 @@ import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public interface GameBoard extends Iterable<Entry<CoordinateTuple, CellInstance>> {
+public interface GameBoard extends Iterable<Entry<CoordinateTuple, Cell>> {
 	BoundsHandler getBoundsHandler();
 
 	default int dimension() {
 		return getTemplateCell().dimension();
 	}
 
-	CellTemplate getTemplateCell();
+	ModifiableCell getTemplateCell();
 
-	default Collection<UnitInstance> getUnits() {
+	default Collection<Unit> getUnits() {
 		return parallelStream().flatMap(e -> e.getOccupants().stream()).collect(Collectors.toList());
 	}
 
-	default Stream<CellInstance> parallelStream() {
+	default Stream<Cell> parallelStream() {
 		return stream().parallel();
 	}
 
-	default Stream<CellInstance> stream() {
+	default Stream<Cell> stream() {
 		return getCells().values().stream();
 	}
 
-	Map<CoordinateTuple, CellInstance> getCells();
+	Map<CoordinateTuple, Cell> getCells();
 
-	default Map<CoordinateTuple, CellInstance> getNeighbors(CoordinateTuple coordinate) {
+	default Map<CoordinateTuple, Cell> getNeighbors(CoordinateTuple coordinate) {
 		return getNeighbors(get(coordinate));
 	}
 
-	default Map<CoordinateTuple, CellInstance> getNeighbors(CellInstance cell) {
+	default Map<CoordinateTuple, Cell> getNeighbors(Cell cell) {
 		return getRelative(cell.getLocation(), cell.getShape().getNeighborPattern());
 	}
 
-	CellInstance get(CoordinateTuple coordinateTuple);
+	Cell get(CoordinateTuple coordinateTuple);
 
-	default Map<CoordinateTuple, CellInstance> getRelative(CoordinateTuple center, GridPattern gridPattern) {
+	default Map<CoordinateTuple, Cell> getRelative(CoordinateTuple center, GridPattern gridPattern) {
 		return gridPattern.parallelStream().collect(Collectors.toMap(e -> e, e -> get(e.sum(center))));
 	}
 
@@ -57,12 +57,12 @@ public interface GameBoard extends Iterable<Entry<CoordinateTuple, CellInstance>
 		return new GridBounds(getMinMax(getCells().keySet().parallelStream().map(CoordinateTuple::convertToRectangular)));
 	}
 
-	default Collection<CellInstance> filterCells(Player player, BiPredicate<Player, CellInstance> visibilityPredicate) {
+	default Collection<Cell> filterCells(Player player, BiPredicate<Player, Cell> visibilityPredicate) {
 		return parallelStream().filter(c -> visibilityPredicate.test(player, c)).collect(Collectors.toList());
 	}
 
 	@Override
-	default Iterator<Entry<CoordinateTuple, CellInstance>> iterator() {
+	default Iterator<Entry<CoordinateTuple, Cell>> iterator() {
 		return getCells().entrySet().iterator();
 	}
 

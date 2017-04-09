@@ -1,6 +1,6 @@
 package backend.unit.properties;
 
-import backend.util.VoogaCollection;
+import backend.util.ModifiableVoogaCollection;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 /**
  * @author Created by th174 on 4/9/2017.
  */
-public class DefensiveModifierSet extends VoogaCollection<InteractionModifier<Double>, DefensiveModifierSet> {
+public class DefensiveModifierSet extends ModifiableVoogaCollection<InteractionModifier<Double>, DefensiveModifierSet> {
 	@SafeVarargs
 	public DefensiveModifierSet(InteractionModifier<Double>... modifiers) {
 		this(Arrays.asList(modifiers));
