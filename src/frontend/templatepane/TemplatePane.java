@@ -4,71 +4,102 @@ import java.util.Collection;
 
 import backend.cell.CellTemplate;
 import backend.unit.UnitTemplate;
+import backend.util.VoogaObject;
 import frontend.BaseUIManager;
 import frontend.sprites.Sprite;
 import frontend.sprites.Terrain;
+import javafx.event.EventHandler;
+import javafx.scene.Node;
 import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
+/**
+ * @author Faith Rodriguez
+ * Created 3/29/2017
+ */
+
 public class TemplatePane extends BaseUIManager<Region>{
 
 	Pane pane;
-	Collection<UnitTemplate> units;
-	Collection<CellTemplate> terrains;
+	Collection<? extends VoogaObject> units;
+	Collection<? extends VoogaObject> terrains;
 	
 
-	public TemplatePane(Collection<UnitTemplate> availableUnits, 
-			Collection<CellTemplate> availableTerrains) {
+	public TemplatePane(Collection<VoogaObject> availableUnits, 
+			Collection<VoogaObject> availableTerrains) {
 		units = availableUnits;
-		//terrains = availableTerrains;
+		terrains = availableTerrains;
 		pane = new Pane();
-		createCollabsible("Terrain", terrains);
-		createCollabsible("Unit", units);
 		
 	}
 	
-	public void createCollabsible(String label, Collection sprites) {
+	private void createCollabsible(String label, Collection<? extends VoogaObject> sprites) {
 		TitledPane spritePane = new TitledPane();
 		spritePane.setText(label);
-		spritePane.setContent(createContent(sprites));
+		VBox content = createContent(sprites);
+		spritePane.setContent(content);
 		spritePane.setCollapsible(true);
 		pane.getChildren().add(spritePane);
 	}
 	
-	public VBox createContent(Collection sprites) {
+	private VBox createContent(Collection<? extends VoogaObject> sprites) {
 		VBox contentPane = new VBox();
-		for (Object sprite: sprites) {
+		for (VoogaObject sprite: sprites) {
 			VBox spriteContent = new VBox();
 			// fix getName and getImage once communication sorted
 			Text spriteName = new Text(sprite.getName());
 			spriteContent.getChildren().add(spriteName);
-			ImageView spriteImage = new ImageView(sprite.getImage()); 
+			Image tempImage = new Image(sprite.getImgPath());
+			ImageView spriteImage = new ImageView(tempImage); 
 			spriteContent.getChildren().add(spriteImage);
 			contentPane.getChildren().add(spriteContent);
 		}
-//		for (Object sprite: sprites) {
-//			VBox spriteContent = new VBox();
-//			// fix getName and getImage once communication sorted
-//			Text spriteName = new Text(sprite.getName());
-//			spriteContent.getChildren().add(spriteName);
-//			ImageView spriteImage = new ImageView(sprite.getImage());
-//			spriteContent.getChildren().add(spriteImage);
-//			contentPane.getChildren().add(spriteContent);
-//
-//		}
 		return contentPane;
-		
 	}
 	
-	public void updateSprites(Collection<UnitTemplate> sprites){
-		//TODO
+	private void setOnDrag(Node o) {
+		//ImageView spriteImage = new ImageView(getImage(o));
+		 o.setOnDragDetected(new EventHandler <MouseEvent>() {
+	            public void handle(MouseEvent event) {
+	                /* drag was detected, run drag-and-drop gesture*/
+	                System.out.println("onDragDetected");
+	                
+	                /* create dragboard */
+	                Dragboard db = (Dragboard) Dragboard.getSystemClipboard();
+	                
+	                /* put an image on dragboard */
+	                ClipboardContent content = new ClipboardContent();
+	                content.putString(o.toString());
+	                db.setContent(content);
+	                event.consume();
+	            }
+	        });
+	}
+	
+	private void updatePane() {
+		pane.getChildren().clear();
+		createCollabsible("Terrain", terrains);
+		createCollabsible("Unit", units);
+	}
+	
+	public void updateUnits(Collection<UnitTemplate> unitsIn){
 		//sprites will (I am fairly certain) contain all available sprites, not just the new ones
+		units = unitsIn;
+		updatePane();
 	} 
+	
+	public void updateTerrains(Collection<backend.cell.Terrain> terrainsIn) {
+		terrains = terrainsIn;
+		updatePane();
+	}
 	
 	@Override
 	public Region getObject() {
