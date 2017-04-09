@@ -8,10 +8,10 @@ import backend.player.Player;
 public interface GameEngine {
 
 	void messagePlayer(Player from, Player to, String message);
-	
-    void restart();
 
-    void save();
+	void restart();
 
-    void load();
+	void save();
+
+	void load();
 }

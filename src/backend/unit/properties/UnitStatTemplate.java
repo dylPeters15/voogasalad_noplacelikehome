@@ -7,86 +7,86 @@ import java.util.Collection;
 /**
  * @author Created by th174 on 4/6/2017.
  */
-public class UnitStatTemplate<T extends Comparable<T>> extends VoogaTemplate<UnitStatTemplate<T>> {
-    //TODO ResourceBundlify
-    //For units
-    public static final UnitStatTemplate<Double> HITPOINTS = new UnitStatTemplate<Double>("Hitpoints")
-            .setMinValue(0.0)
-            .setMaxValue(50.0)
-            .setDescription("Units lose HP when taking damage. When a unit's hitpoints reach 0, the unit dies.")
-            .setImgPath("<3.png");
-    public static final UnitStatTemplate<Integer> MOVEPOINTS = new UnitStatTemplate<Integer>("Movepoints")
-            .setMinValue(0)
-            .setMaxValue(5)
-            .setDescription("Movepoints are consumed by moving on the map. Difficult terrain costs more movepoints, while more mobile units have more to spare.")
-            .setImgPath("Boot.png");
-    public static final UnitStatTemplate<Double> ENERGY = new UnitStatTemplate<Double>("Energy")
-            .setMinValue(0.0)
-            .setMaxValue(100.0)
-            .setDescription("Energy points are required for and consumed by some powerful abilities.")
-            .setImgPath("NRG.png");
-    //For players
-    public static final UnitStatTemplate<Double> GOLD = new UnitStatTemplate<Double>("Gold")
-            .setMinValue(0.0).setMaxValue(Double.MAX_VALUE)
-            .setDescription("Players have a limited amount of gold to spend on their units.")
-            .setImgPath("SHINY~~~.png");
-    private T maxValue;
-    private T minValue;
+public class UnitStatTemplate<T extends Comparable<T>> extends VoogaTemplate<UnitStatTemplate<T>> implements UnitStatInstance<T> {
+	//TODO ResourceBundlify
+	//For units
+	public static final UnitStatTemplate<Double> HITPOINTS = new UnitStatTemplate<Double>("Hitpoints")
+			.setMinValue(0.0)
+			.setMaxValue(50.0)
+			.setDescription("Units lose HP when taking damage. When a unit's hitpoints reach 0, the unit dies.")
+			.setImgPath("<3.png");
+	public static final UnitStatTemplate<Integer> MOVEPOINTS = new UnitStatTemplate<Integer>("Movepoints")
+			.setMinValue(0)
+			.setMaxValue(5)
+			.setDescription("Movepoints are consumed by moving on the map. Difficult terrain costs more movepoints, while more mobile units have more to spare.")
+			.setImgPath("Boot.png");
+	public static final UnitStatTemplate<Double> ENERGY = new UnitStatTemplate<Double>("Energy")
+			.setMinValue(0.0)
+			.setMaxValue(100.0)
+			.setDescription("Energy points are required for and consumed by some powerful abilities.")
+			.setImgPath("NRG.png");
+	//For players
+	public static final UnitStatTemplate<Double> GOLD = new UnitStatTemplate<Double>("Gold")
+			.setMinValue(0.0)
+			.setMaxValue(Double.MAX_VALUE)
+			.setDescription("Players have a limited amount of gold to spend on their units.")
+			.setImgPath("SHINY~~~.png");
 
-    public UnitStatTemplate(String name) {
-        this(name, "", "");
-    }
+	private T maxValue;
+	private T minValue;
+	private T currentValue;
 
-    public UnitStatTemplate(String name, String description, String imgPath) {
-        this(name, null, null, description, imgPath);
-    }
+	public UnitStatTemplate(String name) {
+		this(name, "", "");
+	}
 
-    public UnitStatTemplate(String name, T minValue, T maxValue, String description, String imgPath) {
-        super(name, description, imgPath);
-        this.maxValue = maxValue;
-        this.minValue = minValue;
-    }
+	public UnitStatTemplate(String name, String description, String imgPath) {
+		this(name, null, null, description, imgPath);
+	}
 
-    @Override
-    public UnitStatTemplate<T> clone() {
-        return new UnitStatTemplate<>(getName(), minValue, maxValue, getDescription(), getImgPath());
-    }
+	public UnitStatTemplate(String name, T minValue, T maxValue, String description, String imgPath) {
+		super(name, description, imgPath);
+		this.maxValue = maxValue;
+		this.minValue = minValue;
+	}
 
-    public UnitStatInstance<T> createInstance() {
-        return createInstance(maxValue);
-    }
+	@Override
+	public UnitStatTemplate<T> copy() {
+		return new UnitStatTemplate<>(getName(), minValue, maxValue, getDescription(), getImgPath());
+	}
 
-    public UnitStatInstance<T> createInstance(T maxValue) {
-        return createInstance(maxValue, maxValue);
-    }
+	@Override
+	public T getMaxValue() {
+		return maxValue;
+	}
 
-    public UnitStatInstance<T> createInstance(T initialValue, T maxValue) {
-        return createInstance(initialValue, this.getMinValue(), maxValue);
-    }
+	public UnitStatTemplate<T> setMaxValue(T maxValue) {
+		this.maxValue = maxValue;
+		return this;
+	}
 
-    public UnitStatInstance<T> createInstance(T initialvalue, T minValue, T maxValue) {
-        return new UnitStatInstance<>(initialvalue, minValue, maxValue, this);
-    }
+	@Override
+	public T getCurrentValue() {
+		return currentValue;
+	}
 
-    public UnitStatTemplate<T> setMaxValue(T maxValue) {
-        this.maxValue = maxValue;
-        return this;
-    }
+	@Override
+	public UnitStatTemplate<T> setCurrentValue(T currentValue) {
+		this.currentValue = currentValue;
+		return this;
+	}
 
-    public T getMaxValue() {
-        return maxValue;
-    }
+	@Override
+	public T getMinValue() {
+		return minValue;
+	}
 
-    public UnitStatTemplate<T> setMinValue(T minValue) {
-        this.minValue = minValue;
-        return this;
-    }
+	public UnitStatTemplate<T> setMinValue(T minValue) {
+		this.minValue = minValue;
+		return this;
+	}
 
-    public T getMinValue() {
-        return minValue;
-    }
-
-    public static Collection<UnitStatTemplate> getPredefinedUnitStatTemplates() {
-        return getPredefined(UnitStatTemplate.class);
-    }
+	public static Collection<UnitStatTemplate> getPredefinedUnitStatTemplates() {
+		return getPredefined(UnitStatTemplate.class);
+	}
 }

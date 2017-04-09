@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -45,7 +46,7 @@ public class SelectionScreen extends VBox{
 			this.setOnAction(e -> create());
 		}};
 		Button load = new Button(SelectionProperties.getString("Load")){{
-			this.setOnAction(e -> load());;
+			this.setOnAction(e -> load());
 		}};
 		this.setPadding(new Insets(30, 10, 10, 10));
 		this.setSpacing(10);
@@ -110,10 +111,10 @@ public class SelectionScreen extends VBox{
 			
 //			alert.setGraphic(graphic); //insert DuvallSalad
 			
-			if (saveOrLoad == "save"){
+			if (Objects.equals(saveOrLoad, "save")){
 				alert.setHeaderText("Current game will not save");
 			}
-			if (saveOrLoad == "load" || saveOrLoad == "play"){
+			if (Objects.equals(saveOrLoad, "load") || Objects.equals(saveOrLoad, "play")){
 				alert.setHeaderText("Failed to load game");
 			}
 			

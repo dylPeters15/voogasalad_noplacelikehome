@@ -17,11 +17,9 @@ import input_parse.InputDecoder.Type;
 public class Parser {
 	
 	private InputDecoder<Type, String> myInputDecoder = (type, string) -> {
-		String everything = (String) string;
-		java.util.List<String> code = Arrays.asList(everything.split("\\s+"));
+		java.util.List<String> code = Arrays.asList(string.split("\\s+"));
 		//code.remove(0);
-		String returnString = String.join(" ", code);
-		return returnString;
+		return String.join(" ", code);
 	};
 
 	private String filePath = "src/input_parse/";

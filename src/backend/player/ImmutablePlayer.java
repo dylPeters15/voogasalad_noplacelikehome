@@ -1,20 +1,21 @@
 package backend.player;
 
 import backend.cell.CellInstance;
-import backend.grid.MutableGrid;
+import backend.grid.ModifiableGameBoard;
 import backend.unit.UnitInstance;
 import backend.unit.properties.Faction;
+import backend.util.VoogaObject;
 
 import java.util.Collection;
 
-public interface ImmutablePlayer {
-    Team getTeam();
+public interface ImmutablePlayer extends VoogaObject {
+	Team getTeam();
 
-    Faction getFaction();
+	Faction getFaction();
 
-    Collection<UnitInstance> getOwnedUnits(MutableGrid grid);
+	Collection<UnitInstance> getOwnedUnits(ModifiableGameBoard grid);
 
-    Collection<CellInstance> getVisibleCells();
+	Collection<CellInstance> getVisibleCells();
 
-    Collection<CellInstance> getExploredCells();
+	Collection<CellInstance> getExploredCells();
 }

@@ -3,42 +3,36 @@ package backend.util;
 /**
  * @author Created by th174 on 4/5/2017.
  */
-public abstract class VoogaTemplate<T extends VoogaTemplate> extends VoogaObject {
+public abstract class VoogaTemplate<T extends VoogaTemplate<T>> extends ImmutableVoogaObject<T> {
 
-    public VoogaTemplate() {
-        this("");
-    }
+	public VoogaTemplate() {
+		this("");
+	}
 
-    public VoogaTemplate(String name) {
-        this(name, "");
-    }
+	public VoogaTemplate(String name) {
+		this(name, "");
+	}
 
-    public VoogaTemplate(String name, String description) {
-        this(name, description, "");
-    }
+	public VoogaTemplate(String name, String description) {
+		this(name, description, "");
+	}
 
-    public VoogaTemplate(String name, String description, String imgPath) {
-        super(name, description, imgPath);
-    }
+	public VoogaTemplate(String name, String description, String imgPath) {
+		super(name, description, imgPath);
+	}
 
-    public abstract T clone();
+	@Override
+	public final T setName(String name) {
+		return super.setName(name);
+	}
 
-    //elevate access modifiers
-    @Override
-    public final T setName(String name) {
-        super.setName(name);
-        return (T) this;
-    }
+	@Override
+	public final T setDescription(String description) {
+		return super.setDescription(description);
+	}
 
-    @Override
-    public final T setDescription(String description) {
-        super.setDescription(description);
-        return (T) this;
-    }
-
-    @Override
-    public final T setImgPath(String imgPath) {
-        super.setImgPath(imgPath);
-        return (T) this;
-    }
+	@Override
+	public final T setImgPath(String imgPath) {
+		return super.setImgPath(imgPath);
+	}
 }

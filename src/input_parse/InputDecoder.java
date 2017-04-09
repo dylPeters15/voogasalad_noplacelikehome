@@ -10,7 +10,7 @@ public interface InputDecoder<T, V> {
 		return code.split("\\s+")[0];
 	}
 
-	public enum Type{
+	enum Type{
 		PREDICATE("UserPredicate", "name (state) -> *"),
 		BIPREDICATE("UserBiPredicate", "name (player, state) -> *"),
 		CONSUMER("UserConsumer", "name (state) -> *"),
@@ -20,7 +20,7 @@ public interface InputDecoder<T, V> {
 
 		private String parseFormat;
 
-		private Type(String type, String format){
+		Type(String type, String format){
 			parseFormat = format;
 			typeString = type;
 		}

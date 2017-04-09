@@ -35,7 +35,8 @@ public abstract class Sprite extends BaseUIManager<Region> {
 	public void setOnDrag(Sprite sprite) {
 		ImageView spriteImage = new ImageView(getImage(sprite));
 		 spriteImage.setOnDragDetected(new EventHandler <MouseEvent>() {
-	            public void handle(MouseEvent event) {
+	            @Override
+				public void handle(MouseEvent event) {
 	                /* drag was detected, run drag-and-drop gesture*/
 	                System.out.println("onDragDetected");
 	                

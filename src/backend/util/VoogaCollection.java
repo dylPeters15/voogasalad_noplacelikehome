@@ -1,65 +1,74 @@
 package backend.util;
 
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
  * @author Created by th174 on 3/30/2017.
  */
-public abstract class VoogaCollection<T extends VoogaObject, U extends VoogaCollection<T, U>> extends VoogaTemplate<VoogaCollection<T, U>> implements Iterable<T> {
-    private final Map<String, T> gameObjects;
+public abstract class VoogaCollection<T extends VoogaObject, U extends VoogaCollection<T, U>> extends VoogaTemplate<U> implements ImmutableVoogaCollection<T> {
+	private final Map<String, T> gameObjects;
 
-    public VoogaCollection(String name, String description, String imgPath, T... gameObjects) {
-        this(name, description, imgPath, Arrays.asList(gameObjects));
-    }
+	@SafeVarargs
+	public VoogaCollection(String name, String description, String imgPath, T... gameObjects) {
+		this(name, description, imgPath, Arrays.asList(gameObjects));
+	}
 
-    public VoogaCollection(String name, String description, String imgPath, Collection<T> gameObjects) {
-        super(name, description, imgPath);
-        this.gameObjects = gameObjects.parallelStream().collect(Collectors.toMap(VoogaObject::getName, e -> e));
-    }
+	public VoogaCollection(String name, String description, String imgPath, Collection<? extends T> gameObjects) {
+		super(name, description, imgPath);
+		this.gameObjects = gameObjects.parallelStream().collect(Collectors.toMap(VoogaObject::getName, VoogaObject::copy));
+	}
 
-    @Override
-    public abstract U clone();
+	public U addAll(Collection<? extends T> elements) {
+		gameObjects.putAll(elements.parallelStream().collect(Collectors.toMap(T::getName, VoogaObject::copy)));
+		return (U) this;
+	}
 
-    public T get(String name) {
-        return gameObjects.get(name);
-    }
+	public U removeAll(Collection<? extends T> elements) {
+		gameObjects.values().removeAll(elements);
+		return (U) this;
+	}
 
-    public Collection<T> getAll() {
-        return Collections.unmodifiableCollection(gameObjects.values());
-    }
+	@Override
+	public abstract U copy();
 
-    public VoogaCollection<T, U> add(T u) {
-        gameObjects.put(u.getName(), u);
-        return this;
-    }
+	@Override
+	public T get(String name) {
+		return gameObjects.get(name);
+	}
 
-    public U addAll(Collection<T> predefinedTerrain) {
-        gameObjects.putAll(predefinedTerrain.parallelStream().collect(Collectors.toMap(T::getName, e -> e)));
-        return (U) this;
-    }
+	@Override
+	public final int size() {
+		return gameObjects.size();
+	}
 
-    public U addAll(T... predefinedTerrains) {
-        return addAll(Arrays.asList(predefinedTerrains));
-    }
+	@Override
+	public Collection<? extends T> getAll() {
+		return Collections.unmodifiableCollection(gameObjects.values());
+	}
 
-    public U remove(T u) {
-        remove(u.getName());
-        return (U) this;
-    }
+	@Override
+	public Iterator<T> iterator() {
+		return gameObjects.values().iterator();
+	}
 
-    public U remove(String s) {
-        gameObjects.remove(s);
-        return (U) this;
-    }
+	@SafeVarargs
+	public final U addAll(T... elements) {
+		return addAll(Arrays.asList(elements));
+	}
 
-    public int size() {
-        return gameObjects.size();
-    }
+	@SafeVarargs
+	public final U removeAll(T... element) {
+		return removeAll(Arrays.asList(element));
+	}
 
-    @Override
-    public Iterator<T> iterator() {
-        return gameObjects.values().iterator();
-    }
+	public final U removeAll(String... s) {
+		return removeAll(Arrays.stream(s).map(this::get).collect(Collectors.toList()));
+	}
 
+	public final U removeIf(Predicate<T> removalCondition) {
+		gameObjects.values().removeIf(removalCondition);
+		return (U) this;
+	}
 }

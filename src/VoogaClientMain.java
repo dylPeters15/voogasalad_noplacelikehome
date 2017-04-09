@@ -1,10 +1,11 @@
-import backend.cell.Terrain;
 import backend.unit.properties.ActiveAbility;
 import javafx.stage.Stage;
 import scripting.VoogaScriptEngine;
 import scripting.VoogaScriptEngineManager;
 
 import java.util.HashMap;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 /**
  * @author Created by th174 on 4/4/2017.
@@ -24,6 +25,7 @@ public class VoogaClientMain {
         }
         System.out.println((System.currentTimeMillis() - start) / 1000.0);
         System.out.println(ActiveAbility.getPredefinedActiveAbilities());
+        System.out.println(ResourceBundle.getBundle("Scripting", Locale.US).getString("JavaDefaultText"));
 //        launch(args);
     }
 

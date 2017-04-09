@@ -1,7 +1,7 @@
 package backend.util;
 
 import backend.game_engine.ResultQuadPredicate;
-import backend.grid.MutableGrid;
+import backend.grid.ModifiableGameBoard;
 import backend.player.Player;
 import backend.player.Team;
 
@@ -12,41 +12,41 @@ import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 
 public interface ImmutableGameState {
-    List<Player> getPlayers();
+	ModifiableGameBoard getGrid();
 
-    MutableGrid getGrid();
+	Collection<Team> getTeams();
 
-    Player getCurrentPlayer();
+	void endTurn();
 
-    Collection<Team> getTeams();
-   
-    void messagePlayer(Player from, Player to, String message);
+	default void messageAll(Player from, String message) {
+		getPlayers().forEach(player -> messagePlayer(from, player, message));
+	}
 
-    void endTurn();
+	List<Player> getPlayers();
 
-    default void messageAll(Player from, String message) {
-        getPlayers().forEach(player -> messagePlayer(from, player, message));
-    }
+	void messagePlayer(Player from, Player to, String message);
 
-    default void messageTeam(Player from, String message) {
-        from.getTeam().getAll().forEach(player -> messagePlayer(from, player, message));
-    }
+	default void messageTeam(Player from, String message) {
+		from.getTeam().getAll().forEach(player -> messagePlayer(from, player, message));
+	}
 
-    int getTurnNumber();
+	int getTurnNumber();
 
-    void addEventHandler(BiConsumer<Player, ImmutableGameState> eventListener, Event event);
+	void addEventHandler(BiConsumer<Player, ImmutableGameState> eventListener, Event event);
 
-    Collection<ResultQuadPredicate> getObjectives();
+	Collection<ResultQuadPredicate> getObjectives();
 
-    void addObjective(ResultQuadPredicate winCondition);
+	void addObjective(ResultQuadPredicate winCondition);
 
-    Collection<BiPredicate<Player, ImmutableGameState>> getTurnRequirements();
-    
-    Map<Event, List<BiConsumer<Player, ImmutableGameState>>> getTurnEvents();
+	Map<Event, List<BiConsumer<Player, ImmutableGameState>>> getTurnEvents();
 
-    void addTurnRequirement(BiPredicate<Player, ImmutableGameState> requirement);
+	void addTurnRequirement(BiPredicate<Player, ImmutableGameState> requirement);
 
-    default boolean canEndTurn() {
-        return getTurnRequirements().parallelStream().anyMatch(e -> !e.test(getCurrentPlayer(), this));
-    }
+	default boolean canEndTurn() {
+		return getTurnRequirements().parallelStream().anyMatch(e -> !e.test(getCurrentPlayer(), this));
+	}
+
+	Collection<BiPredicate<Player, ImmutableGameState>> getTurnRequirements();
+
+	Player getCurrentPlayer();
 }

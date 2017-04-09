@@ -1,5 +1,5 @@
 package backend.util;
 
-public interface MutableGameState extends ImmutableGameState{
+public interface MutableGameState extends ImmutableGameState {
 
 }

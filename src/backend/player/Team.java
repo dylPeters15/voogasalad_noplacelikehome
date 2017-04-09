@@ -3,35 +3,34 @@ package backend.player;
 import backend.util.VoogaCollection;
 
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 /**
  * @author Created by th174 on 3/30/2017.
  */
 public class Team extends VoogaCollection<Player, Team> {
-    public Team(String name, String description, String imgPath) {
-        super(name, description, imgPath);
-    }
+	public Team(String name, String description, String imgPath, Player... players) {
+		super(name, description, imgPath, players);
+	}
 
-    public Team(String name, Collection<Player> gameObjects, String description, String imgPath) {
-        super(name, description, imgPath, gameObjects);
-    }
+	public Team(String name, String description, String imgPath, Collection<? extends Player> gameObjects) {
+		super(name, description, imgPath, gameObjects);
+	}
 
-    @Override
-    public Team clone() {
-        return new Team(getName(), getAll(), getDescription(), getImgPath());
-    }
+	@Override
+	public Team addAll(Collection<? extends Player> players) {
+		players.forEach(e -> e.setTeam(this));
+		return super.addAll(players);
+	}
 
-    @Override
-    public Team add(Player player) {
-        super.add(player);
-        player.setTeam(this);
-        return this;
-    }
+	@Override
+	public Team removeAll(Collection<? extends Player> players) {
+		players.forEach(e -> e.setTeam(this));
+		return super.removeAll(players);
+	}
 
-    @Override
-    public Team remove(String playerName) {
-        get(playerName).setTeam(null);
-        super.remove(playerName);
-        return this;
-    }
+	@Override
+	public Team copy() {
+		return new Team(getName(), getDescription(), getImgPath(), getAll().stream().map(Player::copy).collect(Collectors.toList()));
+	}
 }

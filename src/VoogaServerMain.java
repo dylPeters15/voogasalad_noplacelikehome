@@ -1,6 +1,8 @@
 import backend.game_engine.DieselEngine;
 import backend.game_engine.GameEngine;
 import backend.util.MutableGameState;
+import backend.util.io.JSONSerializer;
+import backend.util.io.XMLSerializer;
 import util.io.Serializer;
 import util.io.Unserializer;
 import util.net.ObservableServer;
@@ -19,8 +21,8 @@ public class VoogaServerMain {
         ObservableServer<MutableGameState> voogaServer = new ObservableServer<>(
                 gameState,
                 PORT,
-                xstreamSerializer,
-                xstreamUnserializer);
+                new JSONSerializer<>(),
+                new JSONSerializer<>());
         GameEngine gameEngine = new DieselEngine(voogaServer);
         new Thread(voogaServer).start();
         System.out.println("Server started successfully...");

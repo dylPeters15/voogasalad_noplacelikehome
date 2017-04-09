@@ -1,14 +1,20 @@
 package backend.unit;
 
 import backend.cell.CellInstance;
-import backend.cell.Terrain;
+import backend.cell.TerrainInstance;
 import backend.grid.CoordinateTuple;
-import backend.grid.MutableGrid;
+import backend.grid.GridPattern;
+import backend.grid.ModifiableGameBoard;
 import backend.player.Player;
 import backend.player.Team;
-import backend.unit.properties.*;
-import backend.util.*;
-import javafx.util.Pair;
+import backend.unit.properties.ActiveAbility;
+import backend.unit.properties.Faction;
+import backend.unit.properties.InteractionModifier;
+import backend.unit.properties.UnitStatInstance;
+import backend.util.GameState;
+import backend.util.ImmutableGameState;
+import backend.util.TriggeredEffectInstance;
+import backend.util.VoogaObject;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -18,206 +24,137 @@ import java.util.stream.Collectors;
  *
  * @author Created by th174 on 3/27/2017.
  */
-public class UnitInstance extends VoogaInstance<UnitTemplate> {
-    private final Map<String, UnitStatInstance> stats;
-    private final GridPattern movePattern;
-    private final Map<String, ActiveAbility> activeAbilities;
-    private final Map<String, TriggeredEffectInstance> triggeredAbilities;
-    private final List<InteractionModifier<Double>> offensiveModifiers;
-    private final List<InteractionModifier<Double>> defensiveModifiers;
-    private final Map<Terrain, Integer> moveCosts;
-    private final Faction faction;
+public interface UnitInstance extends VoogaObject {
+	void moveTo(CellInstance destinationCell, ImmutableGameState gameState);
 
-    private Player ownerPlayer;
-    private CellInstance currentCell;
-    private boolean isVisible;
+	void startTurn(GameState gameState);
 
-    UnitInstance(String unitName, UnitTemplate unitTemplate, Player ownerPlayer, CellInstance startingCell) {
-        super(unitName, unitTemplate);
-        this.faction = unitTemplate.getFaction();
-        this.movePattern = unitTemplate.getMovePattern();
-        this.stats = unitTemplate.getUnitStats().parallelStream().map(UnitStatTemplate::createInstance).collect(Collectors.toMap(UnitStatInstance::getName, e -> e));
-        this.moveCosts = new HashMap<>(unitTemplate.getTerrainMoveCosts());
-        this.triggeredAbilities = unitTemplate.getTriggeredAbilities().parallelStream().map(TriggeredEffectTemplate::createInstance).collect(Collectors.toMap(TriggeredEffectInstance::getName, e -> e));
-        this.activeAbilities = unitTemplate.getActiveAbilities().parallelStream().collect(Collectors.toMap(ActiveAbility::getName, e -> e));
-        this.offensiveModifiers = new ArrayList<>(unitTemplate.getOffensiveModifiers());
-        this.defensiveModifiers = new ArrayList<>(unitTemplate.getDefensiveModifiers());
-        setOwner(ownerPlayer);
-        setCurrentCell(startingCell);
-        setVisible(true);
-    }
+	void endTurn(GameState gameState);
 
-    public void moveTo(CellInstance cell, ImmutableGameState gameState) {
-        processTriggers(Event.UNIT_PRE_MOVEMENT, gameState);
-        currentCell.leave(this, gameState);
-        getMovePoints().set(getMovePoints().getCurrentValue() - moveCosts.get(cell.getTerrain()));
-        currentCell = cell;
-        currentCell.arrive(this, gameState);
-        processTriggers(Event.UNIT_POST_MOVEMENT, gameState);
-    }
+	void takeDamage(double damage);
 
-    public void startTurn(GameState gameState) {
-        processTriggers(Event.TURN_START, gameState);
-    }
+	default void useActiveAbility(String activeAbilityName, VoogaObject target, ImmutableGameState gameState) {
+		useActiveAbility(getActiveAbilityByName(activeAbilityName), target, gameState);
+	}
 
-    public void endTurn(GameState gameState) {
-        processTriggers(Event.TURN_END, gameState);
-        getMovePoints().resetValue();
-    }
+	void useActiveAbility(ActiveAbility activeAbility, VoogaObject target, ImmutableGameState gameState);
 
-    public void takeDamage(double damage) {
-        getHitPoints().set(getHitPoints().getCurrentValue() - damage);
-    }
+	ActiveAbility getActiveAbilityByName(String name);
 
-    public void useActiveAbility(String activeAbilityName, VoogaInstance target, ImmutableGameState gameState) {
-        useActiveAbility(getActiveAbilityByName(activeAbilityName), target, gameState);
-    }
+	default Collection<CellInstance> getLegalMoves(ModifiableGameBoard grid) {
+		return getMovePattern().getCoordinates().parallelStream()
+				.map(e -> grid.get(e.sum(this.getLocation())))
+				.filter(Objects::nonNull)
+				.filter(e -> getTerrainMoveCosts().get(e.getTerrain()) < getMovePoints().getCurrentValue()).collect(Collectors.toSet());
+	}
 
-    private ActiveAbility getActiveAbilityByName(String activeAbilityName) {
-        return activeAbilities.get(activeAbilityName);
-    }
+	GridPattern getMovePattern();
 
-    public void useActiveAbility(ActiveAbility activeAbility, VoogaInstance target, ImmutableGameState gameState) {
-        processTriggers(Event.UNIT_PRE_ABILITY_USE, gameState);
-        activeAbility.affect(this, target, gameState);
-        processTriggers(Event.UNIT_POST_ABILITY_USE, gameState);
-    }
+	default CoordinateTuple getLocation() {
+		return getCurrentCell().getLocation();
+	}
 
-    private void processTriggers(Event event, ImmutableGameState gameState) {
-        triggeredAbilities.values().forEach(e -> e.affect(this, event, gameState));
-        triggeredAbilities.values().removeIf(TriggeredEffectInstance::isExpired);
-    }
+	CellInstance getCurrentCell();
 
-    public Collection<CellInstance> getLegalMoves(MutableGrid grid) {
-        return movePattern.getCoordinates().parallelStream()
-                .map(e -> grid.get(e.sum(this.getLocation())))
-                .filter(Objects::nonNull)
-                .filter(e -> moveCosts.get(e.getTerrain()) < getMovePoints().getCurrentValue()).collect(Collectors.toSet());
-    }
+	Map<TerrainInstance, Integer> getTerrainMoveCosts();
 
-    public CellInstance getCurrentCell() {
-        return currentCell;
-    }
+	UnitStatInstance<Integer> getMovePoints();
 
-    public void setCurrentCell(CellInstance currentCell) {
-        this.currentCell = currentCell;
-    }
+	default Collection<UnitInstance> getAllNeighboringUnits(ModifiableGameBoard grid) {
+		return getNeighboringUnits(grid).values().parallelStream().flatMap(Collection::stream).parallel().collect(Collectors.toSet());
+	}
 
-    public Map<CoordinateTuple, Collection<UnitInstance>> getNeighboringUnits(MutableGrid grid) {
-        Map<CoordinateTuple, Collection<UnitInstance>> neighbors = currentCell.getNeighbors(grid).entrySet().parallelStream()
-                .map(e -> new Pair<>(e.getKey(), e.getValue().getOccupants()))
-                .filter(e -> !e.getValue().isEmpty())
-                .collect(Collectors.toMap(Pair::getKey, Pair::getValue));
-        neighbors.put(CoordinateTuple.getOrigin(currentCell.dimension()), currentCell.getOccupants().parallelStream().filter(e -> !equals(e)).collect(Collectors.toSet()));
-        return neighbors;
-    }
+	default Map<CoordinateTuple, Collection<? extends UnitInstance>> getNeighboringUnits(ModifiableGameBoard grid) {
+		Map<CoordinateTuple, Collection<? extends UnitInstance>> neighbors = getCurrentCell().getNeighbors(grid).entrySet().parallelStream()
+				.filter(e -> !e.getValue().getOccupants().isEmpty())
+				.collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getOccupants()));
+		neighbors.put(CoordinateTuple.getOrigin(getCurrentCell().dimension()), getCurrentCell().getOccupants().parallelStream().filter(e -> !equals(e)).collect(Collectors.toSet()));
+		return neighbors;
+	}
 
-    public Collection<UnitInstance> getAllNeighboringUnits(MutableGrid grid) {
-        return getNeighboringUnits(grid).values().parallelStream().flatMap(Collection::stream).parallel().collect(Collectors.toSet());
-    }
+	default Map<CoordinateTuple, CellInstance> getNeighboringCells(ModifiableGameBoard grid) {
+		return getCurrentCell().getNeighbors(grid);
+	}
 
-    public Map<CoordinateTuple, CellInstance> getNeighboringCells(MutableGrid grid) {
-        return currentCell.getNeighbors(grid);
-    }
+	default UnitInstance addOffensiveModifiers(InteractionModifier<Double>... modifiers) {
+		return addOffensiveModifiers(Arrays.asList(modifiers));
+	}
 
-    public CoordinateTuple getLocation() {
-        return currentCell.getCoordinates();
-    }
+	UnitInstance addOffensiveModifiers(Collection<InteractionModifier<Double>> modifiers);
 
-    public Player getOwner() {
-        return ownerPlayer;
-    }
+	default UnitInstance removeOffensiveModifiers(InteractionModifier<Double>... modifiers) {
+		return removeOffensiveModifiers(Arrays.asList(modifiers));
+	}
 
-    public void setOwner(Player p) {
-        ownerPlayer = p;
-    }
+	UnitInstance removeOffensiveModifiers(Collection<InteractionModifier<Double>> modifiers);
 
-    public Team getTeam() {
-        return ownerPlayer.getTeam();
-    }
+	default double applyAllOffensiveModifiers(Double originalValue, UnitInstance target, ImmutableGameState gameState) {
+		return InteractionModifier.modifyAll(getOffensiveModifiers(), originalValue, this, target, gameState);
+	}
 
-    public List<InteractionModifier<Double>> getOffensiveModifiers() {
-        return offensiveModifiers;
-    }
+	List<InteractionModifier<Double>> getOffensiveModifiers();
 
-    public boolean addOffensiveModifier(InteractionModifier<Double> modifier) {
-        return this.offensiveModifiers.add(modifier);
-    }
+	default UnitInstance addDefensiveModifiers(InteractionModifier<Double>... modifiers) {
+		return addDefensiveModifiers(Arrays.asList(modifiers));
+	}
 
-    public double applyAllOffensiveModifiers(Double originalValue, UnitInstance target, ImmutableGameState gameState) {
-        return InteractionModifier.modifyAll(getOffensiveModifiers(), originalValue, this, target, gameState);
-    }
+	UnitInstance addDefensiveModifiers(Collection<InteractionModifier<Double>> modifiers);
 
-    public List<InteractionModifier<Double>> getDefensiveModifiers() {
-        return defensiveModifiers;
-    }
+	default UnitInstance removeDefensiveModifiers(InteractionModifier<Double>... modifiers) {
+		return removeDefensiveModifiers(Arrays.asList(modifiers));
+	}
 
-    public boolean addDefensiveModifier(InteractionModifier<Double> modifier) {
-        return defensiveModifiers.add(modifier);
-    }
+	UnitInstance removeDefensiveModifiers(Collection<InteractionModifier<Double>> modifiers);
 
-    public double applyAllDefensiveModifiers(Double originalValue, UnitInstance agent, ImmutableGameState gameState) {
-        return InteractionModifier.modifyAll(getDefensiveModifiers(), originalValue, agent, this, gameState);
-    }
+	default double applyAllDefensiveModifiers(Double originalValue, UnitInstance agent, ImmutableGameState gameState) {
+		return InteractionModifier.modifyAll(getDefensiveModifiers(), originalValue, agent, this, gameState);
+	}
 
-    public Map<String, ActiveAbility> getActiveAbilities() {
-        return Collections.unmodifiableMap(activeAbilities);
-    }
+	List<InteractionModifier<Double>> getDefensiveModifiers();
 
-    public void addActiveAbility(ActiveAbility instance) {
-        activeAbilities.put(instance.getName(), instance);
-    }
+	Collection<? extends ActiveAbility> getActiveAbilities();
 
+	default UnitInstance addActiveAbilities(ActiveAbility... abilities) {
+		return addActiveAbilities(Arrays.asList(abilities));
+	}
 
-    public void removeActiveAbility(ActiveAbility instance) {
-        activeAbilities.remove(instance.getName());
-    }
+	UnitInstance addActiveAbilities(Collection<ActiveAbility> abilities);
 
-    public Map<String, TriggeredEffectInstance> getTriggeredAbilities() {
-        return Collections.unmodifiableMap(triggeredAbilities);
-    }
+	default UnitInstance removeActiveAbilities(ActiveAbility... abilities) {
+		return removeActiveAbilities(Arrays.asList(abilities));
+	}
 
-    public void addTriggeredAbility(TriggeredEffectInstance instance) {
-        triggeredAbilities.put(instance.getName(), instance);
-    }
+	UnitInstance removeActiveAbilities(Collection<ActiveAbility> abilities);
 
-    public void removeTriggeredAbility(TriggeredEffectInstance instance) {
-        triggeredAbilities.remove(instance.getName());
-    }
+	Collection<? extends TriggeredEffectInstance> getTriggeredAbilities();
 
-    public UnitStatInstance<Double> getHitPoints() {
-        return stats.get("Hitpoints");
-    }
+	default UnitInstance addTriggeredAbilities(TriggeredEffectInstance... abilities) {
+		return addTriggeredAbilities(Arrays.asList(abilities));
+	}
 
-    public UnitStatInstance<Integer> getMovePoints() {
-        return stats.get("Movepoints");
-    }
+	UnitInstance addTriggeredAbilities(Collection<TriggeredEffectInstance> abilities);
 
-    public Faction getFaction() {
-        return faction;
-    }
+	default UnitInstance removeTriggeredAbilities(TriggeredEffectInstance... abilities) {
+		return removeTriggeredAbilities(Arrays.asList(abilities));
+	}
 
-    public GridPattern getMovePattern() {
-        return movePattern;
-    }
+	UnitInstance removeTriggeredAbilities(Collection<TriggeredEffectInstance> abilities);
 
-    public Map<Terrain, Integer> getTerrainMoveCosts() {
-        return moveCosts;
-    }
+	UnitStatInstance<Double> getHitPoints();
 
-    public void setVisible(boolean isVisible) {
-        this.isVisible = isVisible;
-    }
+	Faction getFaction();
 
-    public boolean isVisible() {
-        return isVisible;
-    }
+	boolean isVisible();
 
-    public int movePointsTo(CoordinateTuple other) {
-        throw new RuntimeException("Not Implemented Yet");
-    }
+	void setVisible(boolean isVisible);
 
-    public Collection<TriggeredEffectInstance> getAllTriggeredAbilities() {
-        return getTriggeredAbilities().values();
-    }
+	default int movePointsTo(CoordinateTuple other) {
+		throw new RuntimeException("Not Implemented Yet");
+	}
+
+	default Team getTeam() {
+		return getOwner().getTeam();
+	}
+
+	Player getOwner();
 }

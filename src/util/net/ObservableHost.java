@@ -232,9 +232,7 @@ public abstract class ObservableHost<T> implements Runnable {
     }
 
     private void fireStateUpdatedEvent() {
-        stateUpdateListeners.forEach(e -> {
-            e.accept(getState());
-        });
+        stateUpdateListeners.forEach(e -> e.accept(getState()));
     }
 
     /**

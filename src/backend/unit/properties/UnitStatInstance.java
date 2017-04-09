@@ -1,54 +1,35 @@
 package backend.unit.properties;
 
-import backend.util.VoogaInstance;
+import backend.util.VoogaObject;
 
 /**
  * Timmy
  *
  * @author Created by th174 on 3/28/2017.
  */
-public class UnitStatInstance<T extends Comparable<T>> extends VoogaInstance<UnitStatTemplate> implements Comparable<UnitStatInstance<T>> {
-    private final T maxValue;
-    private final T minValue;
-    private T currentValue;
+public interface UnitStatInstance<T extends Comparable<T>> extends VoogaObject, Comparable<UnitStatInstance<T>> {
+	default void resetValue() {
+		setCurrentValue(getMaxValue());
+	}
 
-    UnitStatInstance(T initialValue, T minValue, T maxValue, UnitStatTemplate<T> template) {
-        super(template.getName(), template);
-        this.currentValue = initialValue;
-        this.maxValue = maxValue;
-        this.minValue = minValue;
-    }
+	T getMaxValue();
 
-    public void set(T newValue) {
-        currentValue = newValue;
-    }
+	default boolean isFull() {
+		return getCurrentValue().compareTo(getMaxValue()) < 0;
+	}
 
-    public void resetValue() {
-        set(getMaxValue());
-    }
+	T getCurrentValue();
 
-    public T getMaxValue() {
-        return maxValue;
-    }
+	UnitStatInstance<T> setCurrentValue(T newValue);
 
-    public T getMinValue() {
-        return minValue;
-    }
+	default boolean isEmpty() {
+		return getCurrentValue().compareTo(getMinValue()) > 0;
+	}
 
-    public T getCurrentValue() {
-        return currentValue;
-    }
+	T getMinValue();
 
-    public boolean isFull() {
-        return currentValue.compareTo(maxValue) < 0;
-    }
-
-    public boolean isEmpty() {
-        return currentValue.compareTo(minValue) > 0;
-    }
-
-    @Override
-    public int compareTo(UnitStatInstance<T> o) {
-        return this.currentValue.compareTo(o.currentValue);
-    }
+	@Override
+	default int compareTo(UnitStatInstance<T> o) {
+		return this.getCurrentValue().compareTo(o.getCurrentValue());
+	}
 }
