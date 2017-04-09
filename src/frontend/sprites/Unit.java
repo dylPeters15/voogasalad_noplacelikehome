@@ -7,7 +7,6 @@ import java.util.List;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Region;
 
@@ -15,17 +14,6 @@ import javafx.scene.layout.Region;
  * @author Stone Mathers Created 3/29/2017
  */
 public class Unit extends Sprite {
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see frontend.Displayable#getView()
-	 */
-	@Override
-	public Node getView() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	/*
 	 * (non-Javadoc)

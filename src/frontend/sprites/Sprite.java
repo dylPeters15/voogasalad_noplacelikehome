@@ -7,7 +7,7 @@ package frontend.sprites;
 
 import java.util.List;
 
-import frontend.BaseUIManager;
+import frontend.util.BaseUIManager;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.image.Image;

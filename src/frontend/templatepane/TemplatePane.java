@@ -4,9 +4,9 @@ import java.util.Collection;
 
 import backend.cell.CellTemplate;
 import backend.unit.UnitTemplate;
-import frontend.BaseUIManager;
 import frontend.sprites.Sprite;
 import frontend.sprites.Terrain;
+import frontend.util.BaseUIManager;
 import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;

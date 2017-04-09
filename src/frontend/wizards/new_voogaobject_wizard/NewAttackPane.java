@@ -1,16 +1,10 @@
-package frontend.toolspane;
+package frontend.wizards.new_voogaobject_wizard;
 
 import frontend.util.BaseUIManager;
 import javafx.scene.layout.Region;
 
-public class ToolsPane extends BaseUIManager<Region>{
+public class NewAttackPane extends BaseUIManager<Region>{
 
-	
-	public ToolsPane(){
-		
-	}
-	
-	
 	@Override
 	public Region getObject() {
 		// TODO Auto-generated method stub

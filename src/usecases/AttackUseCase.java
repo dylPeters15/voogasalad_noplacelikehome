@@ -1,12 +1,12 @@
 package usecases;
 
+import java.util.Collection;
+import java.util.Map;
+
 import backend.unit.UnitInstance;
 import backend.unit.properties.ActiveAbility;
 import backend.util.GameState;
 import backend.util.VoogaObject;
-
-import java.util.Collection;
-import java.util.Map;
 
 /**
  * This is a description of how to code Exacmple Code Case 3
@@ -22,8 +22,10 @@ public class AttackUseCase {
      * @param gamestate   state of the game before the attack. This will be modified by
      *                    the attack.
      */
-    void setOnClick(UnitInstance backendunit, GameState gamestate) {
-        ActiveAbility attack = promptUserToPickAbility(backendunit.getActiveAbilities());
+    @SuppressWarnings("unchecked")
+	void setOnClick(UnitInstance backendunit, GameState gamestate) {
+        @SuppressWarnings({ "rawtypes" })
+		ActiveAbility attack = promptUserToPickAbility((Map<String, ActiveAbility<VoogaObject>>) backendunit.getActiveAbilities());
         UnitInstance unitToAttack = promptUserForTarget(gamestate.getGrid()
                 .getUnits());
         attackUnit(backendunit, unitToAttack, attack, gamestate);
@@ -36,7 +38,8 @@ public class AttackUseCase {
      * @param map containing all the active abilities of the unit
      * @return one active ability, chosen at random. (This will be chosen by the user in the front end)
      */
-    ActiveAbility<VoogaObject> promptUserToPickAbility(
+    @SuppressWarnings("unchecked")
+	ActiveAbility<VoogaObject> promptUserToPickAbility(
             Map<String, ActiveAbility<VoogaObject>> map) {
         return ((ActiveAbility<VoogaObject>[]) map.values().toArray())[(int) (map
                 .values().toArray().length * Math.random())];

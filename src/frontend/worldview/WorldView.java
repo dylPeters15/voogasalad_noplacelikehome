@@ -1,7 +1,7 @@
 package frontend.worldview;
 
 import backend.grid.GameBoard;
-import frontend.BaseUIManager;
+import frontend.util.BaseUIManager;
 import frontend.worldview.grid.GridDisplay;
 import javafx.scene.layout.Region;
 
