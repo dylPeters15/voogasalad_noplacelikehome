@@ -1,0 +1,2 @@
+The functionality of this package has been used as a starting point for the scripting of java that can be seen in the 
+scripting package. This package will remain here, but its branch will be deleted from the project. See ya!

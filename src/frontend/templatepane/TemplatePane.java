@@ -2,16 +2,16 @@ package frontend.templatepane;
 
 import java.util.Collection;
 
-import backend.cell.CellTemplate;
-import backend.unit.UnitTemplate;
-import backend.util.VoogaObject;
-import frontend.BaseUIManager;
 import frontend.sprites.Sprite;
 import frontend.sprites.Terrain;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
+import backend.cell.Cell;
+import backend.cell.ModifiableCell;
+import backend.unit.ModifiableUnit;
+import backend.unit.Unit;
+import frontend.util.BaseUIManager;
 import javafx.scene.control.TitledPane;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
@@ -35,11 +35,17 @@ public class TemplatePane extends BaseUIManager<Region>{
 
 	public TemplatePane(Collection<VoogaObject> availableUnits, 
 			Collection<VoogaObject> availableTerrains) {
-		units = availableUnits;
-		terrains = availableTerrains;
-		pane = new Pane();
-		
-	}
+	Collection<ModifiableUnit> units;
+	Collection<ModifiableCell> terrains;
+	
+
+//	public TemplatePane(Collection<ModifiableUnit> availableUnits,
+//			Collection<ModifiableCell> availableTerrains) {
+//		units = availableUnits;
+//		terrains = availableTerrains;
+//		pane = new Pane();
+//		
+//	}
 	
 	private void createCollabsible(String label, Collection<? extends VoogaObject> sprites) {
 		TitledPane spritePane = new TitledPane();
@@ -90,7 +96,8 @@ public class TemplatePane extends BaseUIManager<Region>{
 		createCollabsible("Unit", units);
 	}
 	
-	public void updateUnits(Collection<UnitTemplate> unitsIn){
+	public void updateSprites(Collection<ModifiableUnit> sprites){
+		//TODO
 		//sprites will (I am fairly certain) contain all available sprites, not just the new ones
 		units = unitsIn;
 		updatePane();

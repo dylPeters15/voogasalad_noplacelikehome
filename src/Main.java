@@ -1,10 +1,10 @@
-import frontend.UI;
+import frontend.startup.StartupScreen;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
 public class Main extends Application {
 
-	private UI userInterface;
+	private StartupScreen userInterface;
 
 	public static void main(String[] args) {
 		launch(args);
@@ -13,8 +13,7 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 
-		this.userInterface = new UI(1200.0, 800.0);
-
+		this.userInterface = new StartupScreen(1200.0, 800.0);
 		primaryStage.setScene(userInterface.getPrimaryScene());
 		primaryStage.setResizable(true);
 		primaryStage.show();

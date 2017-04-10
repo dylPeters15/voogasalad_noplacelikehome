@@ -85,9 +85,13 @@ public class ObservableClient<T> extends ObservableHost<T> {
     }
 
     @Override
-    public boolean handleRequest(Request request) {
-        if (Request.isHeartbeat(request) && request.getCommitIndex() == this.getCommitIndex()) {
-            return handleHeartBeat();
+    protected boolean handleRequest(Request request) {
+	    if (Request.isHeartbeat(request)) {
+	    	if(request.getCommitIndex() == this.getCommitIndex()) {
+			    return handleHeartBeat();
+		    } else {
+	    		return handleError();
+		    }
         } else return super.handleRequest(request);
     }
 
@@ -112,7 +116,7 @@ public class ObservableClient<T> extends ObservableHost<T> {
 
     @Override
     protected boolean send(Request request) {
-        return connection.send(request);
+	    return connection.send(request);
     }
 
     @Override
