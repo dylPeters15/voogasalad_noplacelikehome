@@ -3,7 +3,6 @@ package util.net;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.net.Socket;
 import java.time.Duration;
 import java.util.concurrent.ExecutorService;
@@ -22,7 +21,6 @@ public class SocketConnection {
 	private final Socket socket;
 	private final ObjectOutputStream outputStream;
 	private final ExecutorService executor;
-
 
 	/**
 	 * Creates a socket connection from a socket
@@ -52,7 +50,8 @@ public class SocketConnection {
 	public void listen(Consumer<Request> requestHandler) throws ObservableHost.RemoteConnectionException {
 		try (ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream())) {
 			while (isActive()) {
-				Request request = (Request<? extends Serializable>) inputStream.readObject();
+				Request request = (Request) inputStream.readObject();
+				System.out.println("Received:\n" + request);
 				executor.execute(() -> requestHandler.accept(request));
 			}
 		} catch (IOException e) {
@@ -71,10 +70,10 @@ public class SocketConnection {
 	 */
 	public synchronized boolean send(Request request) {
 		try {
+			System.out.println("Sent:\n" + request);
 			outputStream.writeObject(request);
 			return isActive();
 		} catch (IOException e) {
-			e.printStackTrace();
 			return false;
 		}
 	}
@@ -88,7 +87,6 @@ public class SocketConnection {
 			executor.shutdown();
 			System.out.println("Connection closed: " + socket);
 		} catch (IOException e) {
-			e.printStackTrace();
 			throw new ObservableHost.RemoteConnectionException(e);
 		}
 	}

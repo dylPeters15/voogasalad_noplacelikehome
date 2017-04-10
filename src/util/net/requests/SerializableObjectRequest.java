@@ -33,4 +33,9 @@ public class SerializableObjectRequest<T extends Serializable> extends Request {
 	public T get() {
 		return serializedObject;
 	}
+
+	@Override
+	public String toString() {
+		return super.toString()+ "\n\tContent:\n" + serializedObject.toString().replaceAll("(?m)^","\t\t");
+	}
 }

@@ -97,8 +97,6 @@ public class ObservableClient<T> extends ObservableHost<T> {
 
 	/**
 	 * Responds the heartbeat requests sent by the server by sending back another heartbeat request
-	 *
-	 * @return Returns true if heartbeat was handled successfully
 	 */
 	private void handleHeartBeat() {
 		send(getHeartBeatRequest());

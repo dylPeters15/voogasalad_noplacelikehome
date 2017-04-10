@@ -22,13 +22,4 @@ public class ModifierRequest<T> extends SerializableObjectRequest<Modifier<T>> {
 	public ModifierRequest(Modifier<T> serializedObject) {
 		super(serializedObject);
 	}
-
-	/**
-	 * Creates a new request that contains a modifier and a commit index
-	 *
-	 * @param commitIndex commitIndex of the sender of this request
-	 */
-	public ModifierRequest(Modifier<T> modifier, int commitIndex) {
-		super(modifier);
-	}
 }

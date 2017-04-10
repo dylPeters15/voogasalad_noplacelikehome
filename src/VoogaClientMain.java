@@ -1,8 +1,7 @@
 import backend.player.Player;
 import backend.player.Team;
-import backend.util.GameState;
 import backend.util.ImmutableGameState;
-import backend.util.io.JSONSerializer;
+import backend.util.io.XMLSerializer;
 import javafx.stage.Stage;
 import util.net.ObservableClient;
 
@@ -24,8 +23,8 @@ public class VoogaClientMain {
 	public static void main(String[] args) throws IOException, InterruptedException {
 		String name = System.getProperty("user.name") + Math.random();
 		String teamName = name + "'s team";
-//		XMLSerializer<ImmutableGameState> serializer = new XMLSerializer<>();
-		JSONSerializer<ImmutableGameState> serializer = new JSONSerializer<>(GameState.class);
+		XMLSerializer<ImmutableGameState> serializer = new XMLSerializer<>();
+//		JSONSerializer<ImmutableGameState> serializer = new JSONSerializer<>(GameState.class);
 		ObservableClient<ImmutableGameState> client = new ObservableClient<>(HOST, PORT, serializer, serializer, Duration.ofSeconds(TIMEOUT));
 		client.addListener(state -> {
 			try {

@@ -88,7 +88,6 @@ public class ObservableServer<T> extends ObservableHost<T> {
 				connections.add(delegate);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
 			throw new RemoteConnectionException(e);
 		} finally {
 			try {
@@ -106,9 +105,9 @@ public class ObservableServer<T> extends ObservableHost<T> {
 	 * @param newState New state to be applied to the local state and send to all clients.
 	 * @return Returns true if the requests were sent successfully
 	 */
-	public final boolean sendAndApply(T newState) {
+	public final synchronized boolean sendAndApply(T newState) {
 		setState(newState);
-		setCommitIndex(getCommitIndex() + 1);
+		incrementCommitIndex();
 		return send(newState);
 	}
 
@@ -118,19 +117,19 @@ public class ObservableServer<T> extends ObservableHost<T> {
 	 * @param modifier Request to be applied to the networked state on all clients.
 	 * @return Returns true if the requests were sent successfully
 	 */
-	public final boolean sendAndApply(Modifier<T> modifier) {
+	public final synchronized boolean sendAndApply(Modifier<T> modifier) {
 		setState(modifier.modify(getState()));
 		setCommitIndex(getCommitIndex() + 1);
 		return send(modifier);
 	}
 
 	@Override
-	protected synchronized void handle(T newState) {
+	protected void handle(T newState) {
 		sendAndApply(newState);
 	}
 
 	@Override
-	protected synchronized void handle(Modifier<T> stateModifier) {
+	protected void handle(Modifier<T> stateModifier) {
 		sendAndApply(stateModifier);
 	}
 
@@ -178,7 +177,7 @@ public class ObservableServer<T> extends ObservableHost<T> {
 			if (request instanceof HeartbeatRequest) {
 				return true;
 			} else if (!ObservableServer.this.handleRequest(request)) {
-				return send(getErrorRequest());
+				send(getRequest(getState()));
 			}
 			return true;
 		}

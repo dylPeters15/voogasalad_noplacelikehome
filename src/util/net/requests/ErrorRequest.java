@@ -15,9 +15,8 @@ public class ErrorRequest extends SerializableObjectRequest<Integer> {
 	 * Creates a new request that contains a serialized object and a commit index.
 	 *
 	 * @param errorCode   An error code related to the error that occured
-	 * @param commitIndex commit index of the sender of this request
 	 */
-	public ErrorRequest(int errorCode, int commitIndex) {
+	public ErrorRequest(int errorCode) {
 		super(errorCode);
 	}
 }

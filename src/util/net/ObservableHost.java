@@ -9,7 +9,6 @@ import util.net.requests.SerializableObjectRequest;
 
 import java.time.Duration;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -33,7 +32,7 @@ public abstract class ObservableHost<T> implements Runnable {
 	private final Duration timeout;
 	private final Map<Class<? extends Request>, Consumer<? super Request>> requestHandlers;
 	private final Map<Class<? extends Request>, Predicate<? super Request>> requestValidators;
-	private AtomicInteger commitIndex;
+	private volatile int commitIndex;
 	private volatile T state;
 
 	/**
@@ -45,7 +44,7 @@ public abstract class ObservableHost<T> implements Runnable {
 		this.serializer = serializer;
 		this.unserializer = unserializer;
 		this.stateUpdateListeners = new ArrayList<>();
-		this.commitIndex = new AtomicInteger(0);
+		this.commitIndex = 0;
 		this.timeout = timeout;
 		this.requestHandlers = new HashMap<>();
 		this.requestValidators = new HashMap<>();
@@ -69,7 +68,7 @@ public abstract class ObservableHost<T> implements Runnable {
 	 *
 	 * @param state State on local host, should match networked state
 	 */
-	protected synchronized void setState(T state) {
+	protected void setState(T state) {
 		this.state = state;
 	}
 
@@ -77,11 +76,15 @@ public abstract class ObservableHost<T> implements Runnable {
 	 * @return Returns current local commit index
 	 */
 	protected final int getCommitIndex() {
-		return commitIndex.get();
+		return commitIndex;
 	}
 
-	protected void setCommitIndex(int value) {
-		commitIndex.set(value);
+	protected final void setCommitIndex(int value) {
+		commitIndex = value;
+	}
+
+	protected final void incrementCommitIndex() {
+		commitIndex++;
 	}
 
 	/**
@@ -100,12 +103,12 @@ public abstract class ObservableHost<T> implements Runnable {
 		if (requestValidators.getOrDefault(request.getClass(), r -> true).test(request)) {
 			Consumer<? super Request> handler = requestHandlers.get(request.getClass());
 			if (Objects.nonNull(handler)) {
+				setCommitIndex(request.getCommitIndex());
 				handler.accept(request);
 				return true;
-			} else {
-				handleError(request);
 			}
 		}
+		handleError(request);
 		return false;
 	}
 
@@ -191,7 +194,7 @@ public abstract class ObservableHost<T> implements Runnable {
 	 * @return Returns a request that contains a modification of the state
 	 */
 	public final Request getRequest(Modifier<T> modifier) {
-		return new ModifierRequest<>(modifier, getCommitIndex());
+		return new ModifierRequest<>(modifier);
 	}
 
 	/**
@@ -224,7 +227,7 @@ public abstract class ObservableHost<T> implements Runnable {
 	 * @return Returns an error request notifying the remote host that the local host is currently in an error state.
 	 */
 	protected final Request getErrorRequest() {
-		return new ErrorRequest(-1, getCommitIndex());
+		return new ErrorRequest(-1);
 	}
 
 	/**
