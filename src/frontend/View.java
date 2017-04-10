@@ -12,6 +12,8 @@ import frontend.util.BaseUIManager;
 import frontend.worldview.WorldView;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
 import util.net.ObservableClient;
@@ -114,5 +116,19 @@ public class View extends BaseUIManager<Region> {
 	@Override
 	public Region getObject() {
 		return myBorder;
+	}
+	
+	public void setGameState(GameState newGameState)
+	{
+		this.myGameState = newGameState;
+	}
+	
+	public void sendAlert(String s) {
+		Alert myAlert;
+		myAlert = new Alert(AlertType.INFORMATION);
+		myAlert.setTitle("Information Dialog");
+		myAlert.setHeaderText(null);
+		myAlert.setContentText(s);
+		myAlert.showAndWait();
 	}
 }

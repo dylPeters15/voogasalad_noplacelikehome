@@ -5,18 +5,24 @@ import controller.CommunicationController;
 
 public class ModelGenerator implements Model {
 
-	private CommunicationController myController;
+	private CommunicationController controller;
+	private GameState gameState;
 	
-	public ModelGenerator(CommunicationController myController) {
-		this.myController=myController;
-		generateGamestate();
+	public ModelGenerator(CommunicationController mController, GameState mGameState) {
+		this.controller=mController;
+		this.gameState = mGameState;
 	}
-	
+		
 	public void generateGameState()
 	{
 		//GameRuleCreator. Pass in gameState
 			//Translate/parse/etc
 		
+	}
+	
+	public void setGameState(GameState mGameState)
+	{
+		this.gameState = mGameState;
 	}
 	
 	

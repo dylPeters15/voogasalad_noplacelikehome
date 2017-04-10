@@ -1,6 +1,9 @@
 package controller;
 
+
+import backend.ModelGenerator;
 import backend.util.GameState;
+import frontend.View;
 
 /**
  * @author Created by ncp14
@@ -10,106 +13,74 @@ import backend.util.GameState;
  * myFrontBuffer passes from
  */
 public class CommunicationController {
+	//front to back buffer for gamestate
 	private Buffer<GameState> frontToBackBuffer; 
+	
+	//GameRules buffer - should be groovy code
+	private Buffer<String> gameRulesCode; 
+	
+	//end front to back buffer
 	private Buffer<GameState> backToFrontBuffer;
-	private Buffer<String> gameCode;
-	//private InternalController myGUIController;
-	private Translate myBackend;
+	
+	private ModelGenerator mModelGenerator; //Touchdown class in backend
+	private View mView; //Touchdown class in frontend
+	
 	public CommunicationController() {
-		this.myFrontBuffer = new MyBuffer<Turtle>();
-		this.myBackBuffer = new MyBuffer<String>();
+		this.frontToBackBuffer = new MyBuffer<GameState>();
+		this.backToFrontBuffer = new MyBuffer<GameState>();
+		this.gameRulesCode = new MyBuffer<String>();
 	}
-	public CommunicationController(Buffer<Turtle> myFrontBuffer, Buffer<String> myBackBuffer) {
-		this.myFrontBuffer = myFrontBuffer;
-		this.myBackBuffer = myBackBuffer;
+	public CommunicationController(Buffer<GameState> frontToBackBuffer, Buffer<GameState> backToFrontBuffer, Buffer<String> gameRulesCode) {
+		this.frontToBackBuffer = frontToBackBuffer;
+		this.backToFrontBuffer = backToFrontBuffer;
+		this.gameRulesCode = gameRulesCode;
 	}
-	public CommunicationController(InternalController myGUI) {
-		this();
-		this.myGUIController = myGUI;
-		this.myBackend = new Translate(this, new Turtle(new Position(10, 10, 0)));
-	}
+
 	/*
 	 * This method updates the front end by the information read from the buffer
-	 * and sets the new turtle location through GraphicController given to it.
+	 *
 	 */
 	public void updateFrontend() {
-		while (!this.myFrontBuffer.isBufferEmpty()) {
-			Turtle curCommand = this.myFrontBuffer.getBufferHead();
-			double x = myGUIController.getCurPosX();
-			double y = myGUIController.getCurPosY();
-			// double rot = myGUIController.getRotation();
-			Position newPosition = curCommand.getPosition();
-			// .getNewPosition(new Position(x, y, 0));
-			// double dis = newPosition.getDisplacement();
-			double angle = newPosition.getOrientation();
-			// angle=angle+rot;
-			double xx = 200 + newPosition.getX() - 10;
-			double yy = 200 + newPosition.getY() - 10;
-			// System.out.println(x+" "+y+" "+dx+" "+dy);
-			// Line newLine = new Line(x, y, xx, yy);
-			// newLine.setFill(null);
-			// newLine.setStroke(Color.BLACK);
-			// newLine.setStrokeWidth(10);
-			myGUIController.setCurPosX(xx);
-			myGUIController.setCurPosY(yy);
-			myGUIController.setRotate(angle);
-			myGUIController.updateTurtleLocation(xx, yy, curCommand.getPen());
+		while (!this.backToFrontBuffer.isBufferEmpty()) {
+			mView.setGameState(this.backToFrontBuffer.getBufferHead());
 		}
 	}
-	/**
-	 * This method updates the frontend variable display by the information from
-	 * the backend database through GraphicController
-	 * 
-	 * @param myVariable
-	 */
-	public void updateVariable(List<Variable> myVariable) {
-		for (Variable cur : myVariable) {
-			this.myGUIController.updateVariable(cur.getName(), Integer.toString(cur.getValue()));
-		}
-	}
-	/**
-	 * This method updates a single variable by the database information
-	 * 
-	 * @param cur
-	 */
-	public void updateVariable(Variable cur) {
-		// System.out.println("VariableUpdates__________________________");
-		this.myGUIController.updateVariable(cur.getName(), Integer.toString(cur.getValue()));
-	}
+
 	/**
 	 * This method reads from buffer the incoming update in the buffer and
 	 * informs the backend command by command
 	 */
 	public void updateBackend() {
-		while (!this.myBackBuffer.isBufferEmpty()) {
-			String curUserInput = this.myBackBuffer.getBufferHead();
-			myBackend.setCommand(curUserInput);
+		while (!this.frontToBackBuffer.isBufferEmpty()) {
+			ModelGenerator mModelGenerator = new ModelGenerator(this, this.frontToBackBuffer.getBufferHead());
+			mModelGenerator.generateGameState();
 		}
 	}
 	/**
 	 * This method adds the command to buffer queue without truly informing the
 	 * backend.
 	 * 
-	 * @param command
+	 * @param newGameState
 	 */
-	public void passToBackend(String command) {
-		this.myBackBuffer.addToBuffer(command);
+	public void passToBackend(GameState newGameState) {
+		this.frontToBackBuffer.addToBuffer(newGameState);
 		this.updateBackend();
 	}
 	/**
-	 * This method reads from buffer the incoming update of turtle state inside
-	 * the buffer and updates the front end state by state.
+	 * This method reads from buffer the incoming update of GameState inside
+	 * the buffer and updates the GameState according.
 	 */
-	public void passToFrontend(Turtle command) {
-		this.myFrontBuffer.addToBuffer(command);
+	public void passToFrontend(GameState newGameState) {
+		this.frontToBackBuffer.addToBuffer(newGameState);
 		this.updateFrontend();
 	}
 	/**
-	 * This method gives the backend the freedom to send alerts
+	 * This method gives the backend the freedom to send alerts.
+	 * Not sure if this is necessary.
 	 * 
 	 * @param message
 	 */
 	public void alert(String message) {
-		this.myGUIController.sendAlert(message);
+		this.mView.sendAlert(message);
 	}
 }
