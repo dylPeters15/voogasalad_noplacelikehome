@@ -6,7 +6,7 @@ package frontend.templatepane;
 
 import java.util.List;
 
-import frontend.Displayable;
+import frontend.util.ObjectManager;
 import javafx.scene.Group;
 import javafx.scene.Node;
 
@@ -14,13 +14,13 @@ import javafx.scene.Node;
  * @author Stone Mathers 
  * Created 3/29/2017
  */
-public class CollapsibleList implements Displayable {
+public class CollapsibleList implements ObjectManager<Node> {
 
 	private Group myGroup = new Group();
 	private List<ListItem> myList;
-	Displayable myParent;
+	ObjectManager<Node> myParent;
 	
-	public CollapsibleList(Displayable parent){
+	public CollapsibleList(ObjectManager<Node> parent){
 		myParent = parent;
 	}
 	
@@ -54,7 +54,7 @@ public class CollapsibleList implements Displayable {
 	}
 	
 	@Override
-	public Node getView(){
+	public Node getObject(){
 		return myGroup;
 	}
 

@@ -5,9 +5,10 @@ package frontend;
 
 import backend.util.GameState;
 import frontend.detailpane.DetailPane;
+import frontend.menubar.VoogaMenuBar;
 import frontend.templatepane.TemplatePane;
 import frontend.toolspane.ToolsPane;
-import frontend.voogamenubar.VoogaMenuBar;
+import frontend.util.BaseUIManager;
 import frontend.worldview.WorldView;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
@@ -81,7 +82,7 @@ public class View extends BaseUIManager<Region> {
 		toolsPane.getRequests().passTo(this.getRequests());
 		detailPane = new DetailPane();
 		detailPane.getRequests().passTo(this.getRequests());
-		tempPane = new TemplatePane(myGameState.getUnitTemplates(), myGameState.getCellTemplates());
+		tempPane = new TemplatePane(myGameState.getUnitTemplates(), myGameState.getModifiableCells());
 		tempPane.getRequests().passTo(this.getRequests());
 		
 		getRequests().addListener(new InvalidationListener() {

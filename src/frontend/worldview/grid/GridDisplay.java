@@ -4,8 +4,8 @@
  */
 package frontend.worldview.grid;
 
-import frontend.BaseUIManager;
 import frontend.sprites.Sprite;
+import frontend.util.BaseUIManager;
 import javafx.scene.layout.Region;
 
 /**

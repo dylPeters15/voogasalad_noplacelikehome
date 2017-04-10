@@ -1,6 +1,6 @@
 package frontend.toolspane;
 
-import frontend.BaseUIManager;
+import frontend.util.BaseUIManager;
 import javafx.scene.layout.Region;
 
 public class ToolsPane extends BaseUIManager<Region>{

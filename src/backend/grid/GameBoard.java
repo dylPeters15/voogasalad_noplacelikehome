@@ -1,107 +1,100 @@
 package backend.grid;
 
-import backend.cell.CellInstance;
-import backend.cell.CellTemplate;
+import backend.cell.Cell;
+import backend.cell.ModifiableCell;
 import backend.player.Player;
-import backend.unit.UnitInstance;
-import backend.util.GameState;
-import backend.util.VoogaObject;
+import backend.unit.Unit;
+import javafx.util.Pair;
 
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-/**
- * @author Created by th174 on 3/28/2017.
- */
-public class GameBoard extends VoogaObject implements MutableGrid, Iterable {
-    private final Map<CoordinateTuple, CellInstance> gameBoard;
-    private final CellTemplate templateCell;
-    private BoundsHandler currentBoundsMode;
+public interface GameBoard extends Iterable<Entry<CoordinateTuple, Cell>> {
+	BoundsHandler getBoundsHandler();
 
-    public GameBoard(String name, CellTemplate templateCell, int rows, int columns, BoundsHandler currentBoundsMode, String description, String imgPath, GameState game) {
-        super(name, description, imgPath);
-        this.currentBoundsMode = currentBoundsMode;
-        this.templateCell = templateCell;
-        gameBoard = IntStream.range(0, rows).boxed()
-                .flatMap(i -> IntStream.range(0, columns).mapToObj(j -> new CoordinateTuple(i, j)))
-                .parallel()
-                .map(e -> e.convertToDimension(templateCell.dimension()))
-                .collect(Collectors.toMap(e -> e, templateCell::createInstance));
-    }
+	default int dimension() {
+		return getTemplateCell().dimension();
+	}
 
-    @Override
-    public CellInstance get(CoordinateTuple coordinateTuple) {
-        return gameBoard.getOrDefault(currentBoundsMode.getMappedCoordinate(this, coordinateTuple), null);
-    }
+	ModifiableCell getTemplateCell();
 
-    @Override
-    public CellTemplate getTemplateCell() {
-        return templateCell;
-    }
+	default Collection<Unit> getUnits() {
+		return parallelStream().flatMap(e -> e.getOccupants().stream()).collect(Collectors.toList());
+	}
 
-    @Override
-    public Map<CoordinateTuple, CellInstance> getCells() {
-        return Collections.unmodifiableMap(gameBoard);
-    }
+	default Stream<Cell> parallelStream() {
+		return stream().parallel();
+	}
 
-    @Override
-    public Collection<UnitInstance> getUnits() {
-        return parallelStream().map(CellInstance::getOccupants).flatMap(Collection::stream).filter(Objects::nonNull).collect(Collectors.toSet());
-    }
+	default Stream<Cell> stream() {
+		return getCells().values().stream();
+	}
 
-    @Override
-    public Map<CoordinateTuple, CellInstance> getNeighbors(CoordinateTuple coordinate) {
-        return CoordinateTuple
-                .getOrigin(coordinate.dimension())
-                .getNeighbors()
-                .parallelStream()
-                .collect(Collectors.toMap(e -> e, e -> gameBoard.get((coordinate.sum(e)))));
-    }
+	Map<CoordinateTuple, Cell> getCells();
 
-    @Override
-    public GridBounds getBounds() {
-        return new GridBounds(getMinMax(gameBoard.keySet().parallelStream()));
-    }
+	default Map<CoordinateTuple, Cell> getNeighbors(CoordinateTuple coordinate) {
+		return getNeighbors(get(coordinate));
+	}
 
-    @Override
-    public GridBounds getRectangularBounds() {
-        return new GridBounds(getMinMax(gameBoard.keySet().parallelStream().map(CoordinateTuple::convertToRectangular)));
-    }
+	default Map<CoordinateTuple, Cell> getNeighbors(Cell cell) {
+		return getRelative(cell.getLocation(), cell.getShape().getNeighborPattern());
+	}
 
-    private int[][] getMinMax(Stream<CoordinateTuple> coordinateTuples) {
-        int[][] minMax = new int[coordinateTuples.findAny().orElse(CoordinateTuple.EMPTY).dimension()][2];
-        coordinateTuples.forEach(e -> {
-            for (int[] ints : minMax) {
-                ints[0] = Math.min(e.get(0), ints[0]);
-                ints[1] = Math.max(e.get(0), ints[1]);
-            }
-        });
-        return minMax;
-    }
+	Cell get(CoordinateTuple coordinateTuple);
 
-    @Override
-    public void setBoundaryConditions(BoundsHandler boundaryConditions) {
-        this.currentBoundsMode = boundaryConditions;
-    }
+	default Map<CoordinateTuple, Cell> getRelative(CoordinateTuple center, GridPattern gridPattern) {
+		return gridPattern.parallelStream().collect(Collectors.toMap(e -> e, e -> get(e.sum(center))));
+	}
 
-    @Override
-    public Collection<CellInstance> filterCells(Player player, BiPredicate<Player, CellInstance> visibilityPredicate) {
-        return parallelStream().filter(c -> visibilityPredicate.test(player, c)).collect(Collectors.toList());
-    }
+	default GridBounds getBounds() {
+		return new GridBounds(getMinMax(getCells().keySet().parallelStream()));
+	}
 
-    @Override
-    public Iterator iterator() {
-        return gameBoard.entrySet().iterator();
-    }
+	default GridBounds getRectangularBounds() {
+		return new GridBounds(getMinMax(getCells().keySet().parallelStream().map(CoordinateTuple::convertToRectangular)));
+	}
 
-    public Stream<CellInstance> stream() {
-        return gameBoard.values().stream();
-    }
+	default Collection<Cell> filterCells(Player player, BiPredicate<Player, Cell> visibilityPredicate) {
+		return parallelStream().filter(c -> visibilityPredicate.test(player, c)).collect(Collectors.toList());
+	}
 
-    private Stream<CellInstance> parallelStream() {
-        return gameBoard.values().parallelStream();
-    }
+	@Override
+	default Iterator<Entry<CoordinateTuple, Cell>> iterator() {
+		return getCells().entrySet().iterator();
+	}
+
+	static int[][] getMinMax(Stream<CoordinateTuple> coordinateTuples) {
+		int[][] minMax = new int[coordinateTuples.findAny().orElse(CoordinateTuple.EMPTY).dimension()][2];
+		coordinateTuples.forEach(e -> {
+			for (int[] ints : minMax) {
+				ints[0] = Math.min(e.get(0), ints[0]);
+				ints[1] = Math.max(e.get(0), ints[1]);
+			}
+		});
+		return minMax;
+	}
+
+	class GridBounds {
+		private final List<Pair<Integer, Integer>> bounds;
+
+		@SafeVarargs
+		protected GridBounds(Pair<Integer, Integer>... minMax) {
+			bounds = Arrays.asList(minMax);
+		}
+
+		protected GridBounds(int[]... minMax) {
+			bounds = Arrays.stream(minMax).map(e -> new Pair<>(e[0], e[1])).collect(Collectors.toList());
+		}
+
+		public int getMin(int i) {
+			return bounds.get(i).getKey();
+		}
+
+		public int getMax(int i) {
+			return bounds.get(i).getValue();
+		}
+	}
 }

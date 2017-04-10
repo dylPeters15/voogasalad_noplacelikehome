@@ -1,8 +1,5 @@
 package input_parse;
 
-import backend.util.GameState;
-import input_parse.InputDecoder.Type;
-
 public class ParseMain {
 	
 	public static void main(String[] args) {
