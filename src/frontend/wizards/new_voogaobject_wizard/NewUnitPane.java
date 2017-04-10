@@ -7,7 +7,7 @@ import frontend.wizards.new_voogaobject_wizard.util.AbilitiesAdder;
 import frontend.wizards.new_voogaobject_wizard.util.CancelSaveView;
 import frontend.wizards.new_voogaobject_wizard.util.ImageNamePairView;
 import frontend.wizards.new_voogaobject_wizard.util.TerrainMovePointView;
-import frontend.wizards.new_voogaobject_wizard.util.VerticalTableInputView;
+import frontend.wizards.wizard_2_0.util.VerticalTableInputView;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.layout.AnchorPane;

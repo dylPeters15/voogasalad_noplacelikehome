@@ -31,7 +31,6 @@ public final class VoogaScriptEngineManager {
 			SCRIPT_ENGINE_IDENTIFIERS.putAll(Stream.of("javascript", "js", "nashorn", "ecmascript").collect(Collectors.toMap(e -> e, e -> VoogaJavaScriptEngine.class)));
 			SCRIPT_ENGINE_IDENTIFIERS.putAll(Stream.of("groovy", "groovyshell", "apachegroovy").collect(Collectors.toMap(e -> e, e -> VoogaGroovyEngine.class)));
 			SCRIPT_ENGINE_IDENTIFIERS.putAll(Stream.of("java").collect(Collectors.toMap(e -> e, e -> VoogaJavaEngine.class)));
-			SCRIPT_ENGINE_IDENTIFIERS.putAll(Stream.of("python", "py", "jython").collect(Collectors.toMap(e -> e, e -> VoogaPythonEngine.class)));
 			SCRIPT_ENGINE_IDENTIFIERS.putAll(Stream.of("lua", "luaj").collect(Collectors.toMap(e -> e, e -> VoogaLuaEngine.class)));
 			SCRIPT_ENGINE_IDENTIFIERS.putAll(Stream.of("jruby", "ruby").collect(Collectors.toMap(e -> e, e -> VoogaRubyEngine.class)));
 		}

@@ -3,9 +3,10 @@ package util.net;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.net.Socket;
 import java.time.Duration;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
 /**
@@ -19,7 +20,7 @@ import java.util.function.Consumer;
 public class SocketConnection {
 	private final Socket socket;
 	private final ObjectOutputStream outputStream;
-
+	private final ExecutorService executor;
 
 	/**
 	 * Creates a socket connection from a socket
@@ -34,8 +35,8 @@ public class SocketConnection {
 			this.socket.setSoTimeout((int) timeout.toMillis());
 			this.outputStream = new ObjectOutputStream(socket.getOutputStream());
 			this.outputStream.flush();
+			this.executor = Executors.newCachedThreadPool();
 		} catch (Exception e) {
-			e.printStackTrace();
 			throw new ObservableHost.RemoteConnectionException(e);
 		}
 	}
@@ -49,15 +50,12 @@ public class SocketConnection {
 	public void listen(Consumer<Request> requestHandler) throws ObservableHost.RemoteConnectionException {
 		try (ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream())) {
 			while (isActive()) {
-				Request request = (Request<? extends Serializable>) inputStream.readObject();
-				System.out.println("---Received---\n" + request);
-				requestHandler.accept(request);
+				Request request = (Request) inputStream.readObject();
+				executor.execute(() -> requestHandler.accept(request));
 			}
-//        } catch (IOException e) {
-//        	e.printStackTrace();
+		} catch (IOException e) {
 		} catch (Exception e) {
-			e.printStackTrace();
-//            throw new ObservableHost.RemoteConnectionException(e);
+			throw new ObservableHost.RemoteConnectionException(e);
 		} finally {
 			shutDown();
 		}
@@ -72,10 +70,8 @@ public class SocketConnection {
 	public synchronized boolean send(Request request) {
 		try {
 			outputStream.writeObject(request);
-			System.out.println("---Sent---\n" + request);
 			return isActive();
 		} catch (IOException e) {
-			e.printStackTrace();
 			return false;
 		}
 	}
@@ -86,9 +82,9 @@ public class SocketConnection {
 	private void shutDown() {
 		try {
 			socket.close();
+			executor.shutdown();
 			System.out.println("Connection closed: " + socket);
 		} catch (IOException e) {
-			e.printStackTrace();
 			throw new ObservableHost.RemoteConnectionException(e);
 		}
 	}

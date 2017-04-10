@@ -46,8 +46,9 @@ public class ModifiableUnitStat<T extends Comparable<T>> extends ModifiableVooga
 
 	public ModifiableUnitStat(String name, T minValue, T maxValue, String description, String imgPath) {
 		super(name, description, imgPath);
-		this.maxValue = maxValue;
-		this.minValue = minValue;
+		setMaxValue(maxValue);
+		setMinValue(minValue);
+		setCurrentValue(maxValue);
 	}
 
 	@Override
@@ -86,7 +87,8 @@ public class ModifiableUnitStat<T extends Comparable<T>> extends ModifiableVooga
 		return this;
 	}
 
-	public static Collection<ModifiableUnitStat> getPredefinedUnitStatTemplates() {
+	@Deprecated
+	public static Collection<ModifiableUnitStat> getPredefinedUnitStats() {
 		return getPredefined(ModifiableUnitStat.class);
 	}
 }

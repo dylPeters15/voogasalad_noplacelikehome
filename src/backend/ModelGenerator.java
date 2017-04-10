@@ -13,11 +13,18 @@ public class ModelGenerator implements Model {
 		this.gameState = mGameState;
 	}
 		
+	private CommunicationController myController;
+
+	public ModelGenerator(CommunicationController myController) {
+		this.myController=myController;
+		generateGamestate();
+	}
+
 	public void generateGameState()
 	{
 		//GameRuleCreator. Pass in gameState
 			//Translate/parse/etc
-		
+		//This is basically just XML/JSON
 	}
 	
 	public void setGameState(GameState mGameState)
@@ -33,6 +40,17 @@ public class ModelGenerator implements Model {
 	
 	
 	
+=======
+
+
+
+
+
+
+
+
+
+>>>>>>> 47c3f2afac411cab22c43c48263a62e6ed3af7e3
 	@Override
 	public GameState getGameState() {
 		// TODO Auto-generated method stub

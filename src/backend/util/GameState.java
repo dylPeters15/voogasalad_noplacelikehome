@@ -1,5 +1,14 @@
 package backend.util;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.function.BiPredicate;
+
 import backend.cell.ModifiableCell;
 import backend.cell.ModifiableTerrain;
 import backend.game_engine.ResultQuadPredicate;
@@ -8,26 +17,23 @@ import backend.grid.ModifiableGameBoard;
 import backend.player.Player;
 import backend.player.Team;
 import backend.unit.ModifiableUnit;
-
-import java.util.*;
-import java.util.function.BiConsumer;
-import java.util.function.BiPredicate;
+import backend.unit.properties.ActiveAbility;
 
 /**
  * @author Created by th174 on 3/30/2017. Worked on by Alex and Noah (ncp14)
  */
-
-//TODO: Implement getTurnNumber(), toXML() (Kinda Tavo's job), messagePlayer(Player from, Player to, String message);
+//TODO: Implement getTurnNumber(), messagePlayer(Player from, Player to, String message);
 public class GameState implements MutableGameState {
 	private List<Player> playerList;
 	private Player currentPlayer;
 	private Map<String, Team> teams;
 	private ModifiableGameBoard gameGrid;
 	private Collection<ModifiableUnit> modifiableUnits;
-	private Collection<ModifiableUnit> activeAbilities;
+	private Collection<ActiveAbility<?>> activeAbilities;
 	private Collection<ModifiableTerrain> terrains;
 	private Collection<ModifiableCell> modifiableCells;
-	private List<GameRule> gameRules;
+
+	private final Random random;
 
 	private Collection<ResultQuadPredicate> currentObjectives;
 	private Map<Event, List<BiConsumer<Player, ImmutableGameState>>> turnActions;
@@ -38,16 +44,18 @@ public class GameState implements MutableGameState {
 	}
 
 	public GameState(ModifiableGameBoard grid) {
-//		gameGrid = grid;
+		gameGrid = grid;
 		playerList = new ArrayList<>();
 		teams = new HashMap<>();
 		modifiableUnits = new ArrayList<>();
-		activeAbilities = new ArrayList<>();
-		terrains = new ArrayList<>();
+		activeAbilities = new ArrayList<>(ActiveAbility.getPredefinedActiveAbilities());
+		terrains = new ArrayList<>(ModifiableTerrain.getPredefinedTerrain());
 		modifiableCells = new ArrayList<>();
 		currentObjectives = new ArrayList<>();
 		turnActions = new HashMap<>();
 		turnRequirements = new ArrayList<>();
+		random = new Random();
+		random.setSeed(12012);
 	}
 
 	public void endTurn(Player player) {
@@ -56,13 +64,14 @@ public class GameState implements MutableGameState {
 
 	public Collection<ModifiableTerrain> getTerrains() {
 		return terrains;
+
 	}
 
 	public Collection<ModifiableUnit> getUnitTemplates() {
 		return modifiableUnits;
 	}
 
-	public Collection<ModifiableUnit> getActiveAbilities() {
+	public Collection<ActiveAbility<?>> getActiveAbilities() {
 		return activeAbilities;
 	}
 
@@ -166,6 +175,11 @@ public class GameState implements MutableGameState {
 	@Override
 	public Player getCurrentPlayer() {
 		return currentPlayer;
+	}
+
+	@Override
+	public double random() {
+		return random.nextDouble();
 	}
 
 	private void setCurrentPlayer(Player player) {

@@ -8,6 +8,7 @@ import backend.util.ImmutableVoogaObject;
 import backend.util.ModifiableTriggeredEffect;
 import backend.util.VoogaEntity;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.stream.Stream;
 
@@ -55,12 +56,13 @@ public class ActiveAbility<T extends VoogaEntity> extends ImmutableVoogaObject<A
 		return new ActiveAbility<>(getName(), getAbilityEffect(), getRange(), getDescription(), getImgPath());
 	}
 
+	@Deprecated
 	public static Collection<ActiveAbility> getPredefinedActiveAbilities() {
 		return getPredefined(ActiveAbility.class);
 	}
 
 	@FunctionalInterface
-	public interface AbilityEffect<T extends VoogaEntity> {
+	public interface AbilityEffect<T extends VoogaEntity> extends Serializable {
 		void useAbility(Unit user, T target, ImmutableGameState game);
 	}
 }

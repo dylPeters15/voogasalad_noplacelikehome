@@ -36,6 +36,18 @@ public interface Unit extends VoogaEntity {
 
 	void takeDamage(double damage);
 
+	UnitStat getUnitStat(String name);
+
+	Collection<? extends UnitStat> getUnitStats();
+
+	default UnitStat<Integer> getMovePoints() {
+		return getUnitStat("Movepoints");
+	}
+
+	default UnitStat<Double> getHitPoints() {
+		return getUnitStat("Hitpoints");
+	}
+
 	default void useActiveAbility(String activeAbilityName, VoogaEntity target, ImmutableGameState gameState) {
 		useActiveAbility(getActiveAbilityByName(activeAbilityName), target, gameState);
 	}
@@ -60,8 +72,6 @@ public interface Unit extends VoogaEntity {
 	Cell getCurrentCell();
 
 	Map<Terrain, Integer> getTerrainMoveCosts();
-
-	UnitStat<Integer> getMovePoints();
 
 	default Collection<Unit> getAllNeighboringUnits(ModifiableGameBoard grid) {
 		return getNeighboringUnits(grid).values().parallelStream().flatMap(Collection::stream).parallel().collect(Collectors.toSet());
@@ -142,8 +152,6 @@ public interface Unit extends VoogaEntity {
 	}
 
 	Unit removeTriggeredAbilities(Collection<TriggeredEffect> abilities);
-
-	UnitStat<Double> getHitPoints();
 
 	Faction getFaction();
 

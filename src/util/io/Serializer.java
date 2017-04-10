@@ -1,6 +1,5 @@
 package util.io;
 
-import java.io.OutputStream;
 import java.io.Serializable;
 
 /**
@@ -10,38 +9,34 @@ import java.io.Serializable;
  */
 @FunctionalInterface
 public interface Serializer<T> {
-    Serializer NONE = Serializable.class::cast;
+	Serializer NONE = Serializable.class::cast;
 
-    default void serializeToOutputStream(T obj, OutputStream outputStream){
+	/**
+	 * @param obj Object to be converted to Serializable form
+	 * @return Serializable form of obj
+	 * @throws SerializationException Thrown if implementation throws exception
+	 */
+	default Serializable serialize(T obj) throws SerializationException {
+		try {
+			return doSerialize(obj);
+		} catch (Exception e) {
+			throw new SerializationException(e);
+		}
+	}
 
-    }
+	/**
+	 * @param obj Object to be converted to Serializable form
+	 * @return Serializable form of obj
+	 * @throws Exception Thrown if implementation throws exception
+	 */
+	Serializable doSerialize(T obj) throws Exception;
 
-    /**
-     * @param obj Object to be converted to Serializable form
-     * @return Serializable form of obj
-     * @throws SerializationException Thrown if implementation throws exception
-     */
-    default Serializable serialize(T obj) throws SerializationException {
-        try {
-            return doSerialize(obj);
-        } catch (Exception e) {
-            throw new SerializationException(e);
-        }
-    }
-
-    /**
-     * @param obj Object to be converted to Serializable form
-     * @return Serializable form of obj
-     * @throws Exception Thrown if implementation throws exception
-     */
-    Serializable doSerialize(T obj) throws Exception;
-
-    /**
-     * Wraps exceptions thrown in doSerialize
-     */
-    class SerializationException extends RuntimeException {
-        private SerializationException(Exception e) {
-            super("Error occurred in serialization: " + e.getMessage(), e);
-        }
-    }
+	/**
+	 * Wraps exceptions thrown in doSerialize
+	 */
+	class SerializationException extends RuntimeException {
+		private SerializationException(Exception e) {
+			super("Error occurred in serialization: " + e.getMessage(), e);
+		}
+	}
 }

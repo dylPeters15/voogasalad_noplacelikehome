@@ -22,7 +22,7 @@ public interface VoogaScriptEngine extends Serializer, Unserializer, Interaction
 	VoogaScriptEngine setScript(String script) throws VoogaScriptException;
 
 	default String getDefaultText() {
-		return String.format(getLanguage() + "DefaultText", RESOURCES.getString("ReturnVarName"));
+		return RESOURCES.getString(getLanguage() + "DefaultText");
 	}
 
 	default String getLanguage() {
@@ -65,7 +65,7 @@ public interface VoogaScriptEngine extends Serializer, Unserializer, Interaction
 
 	@Override
 	default void useAbility(Unit user, VoogaEntity target, ImmutableGameState gameState) {
-		eval(createBindings("abilityUser", user, "abilityTarget", target, "gameState", gameState));
+		eval(createBindings("user", user, "target", target, "gameState", gameState));
 	}
 
 	@Override

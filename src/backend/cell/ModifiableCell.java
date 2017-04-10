@@ -100,7 +100,8 @@ public class ModifiableCell extends ModifiableVoogaObject implements Cell {
 		this.shape = shape;
 		this.terrain = terrain;
 		this.abilities = abilities.stream().map(ModifiableTriggeredEffect::copy).collect(Collectors.toList());
-		occupants = null;
+		this.coordinates = location;
+		occupants = new HashMap<>();
 	}
 
 	public ModifiableCell addTriggeredAbility(ModifiableTriggeredEffect modifiableTriggeredEffect) {
@@ -218,6 +219,16 @@ public class ModifiableCell extends ModifiableVoogaObject implements Cell {
 
 	@Override
 	public ModifiableCell copy() {
-		return new ModifiableCell(getName(), getLocation(), getShape(), getTerrain(), getDescription(), getImgPath(), getTriggeredAbilities());
+		return new ModifiableCell(getName(), getLocation(), getShape(), getTerrain(), getDescription(), getImgPath(), getTriggeredAbilities().stream().map(ModifiableTriggeredEffect::copy).collect(Collectors.toList()));
+	}
+
+	@Deprecated
+	public Collection<ModifiableCell> getPredefinedCells() {
+		return getPredefined(ModifiableCell.class);
+	}
+
+	@Override
+	public String toString() {
+		return "\n" + super.toString() + " @ " + getLocation();
 	}
 }
