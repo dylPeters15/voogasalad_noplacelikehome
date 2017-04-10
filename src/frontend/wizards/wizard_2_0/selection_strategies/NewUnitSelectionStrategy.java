@@ -21,7 +21,7 @@ public class NewUnitSelectionStrategy extends BaseSelectionStrategy<Unit> {
 
 	@Override
 	public Unit finish() {
-		return new ModifiableUnit("NewName");
+		return new ModifiableUnit("NewUnitName");
 		// can change ^ to use a constructor with more options, using
 		// information retreived from the user by the pages. For example:
 		// "return new ModifiableUnit(imageNamePairView.getName(),
