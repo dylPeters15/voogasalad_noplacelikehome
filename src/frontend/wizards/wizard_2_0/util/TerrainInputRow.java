@@ -1,7 +1,6 @@
-package frontend.newunitpane;
+package frontend.wizards.wizard_2_0.util;
 
 import backend.cell.ModifiableTerrain;
-import frontend.wizards.new_voogaobject_wizard.util.NumericInputRow;
 
 public class TerrainInputRow extends NumericInputRow {
 

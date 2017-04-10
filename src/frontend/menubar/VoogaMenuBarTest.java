@@ -2,7 +2,7 @@ package frontend.menubar;
 
 import java.util.ResourceBundle;
 
-import frontend.wizards.new_voogaobject_wizard.util.ButtonManager;
+import frontend.wizards.wizard_2_0.util.ButtonManager;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;

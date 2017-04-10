@@ -1,6 +1,7 @@
 package frontend.wizards.wizard_2_0.util;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 import frontend.util.BaseUIManager;
@@ -38,6 +39,7 @@ public class ButtonBar extends BaseUIManager<Region> {
 	private void initialize(Collection<String> buttonNames) {
 		hbox = new HBox();
 		hbox.setAlignment(Pos.BOTTOM_RIGHT);
+		buttons = new HashMap<>();
 		buttonNames.stream().forEachOrdered(buttonName -> {
 			Button button = new Button(buttonName);
 			buttons.put(buttonName, button);

@@ -5,25 +5,28 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import frontend.util.BaseUIManager;
+import frontend.wizards.wizard_2_0.selection_strategies.WizardSelectionStrategy;
 import frontend.wizards.wizard_2_0.util.ButtonBar;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
+import javafx.stage.Stage;
 
 public class Wizard<T> extends BaseUIManager<Region> {
 	private static final Collection<String> buttonNames = new ArrayList<>(
 			Arrays.asList("Previous", "Next", "Cancel", "Finish"));
 	private WizardSelectionStrategy<T> selectionStrategy;
 	private BorderPane borderPane;
+	private Stage stage;
 
 	public Wizard(WizardSelectionStrategy<T> selectionStrategy) {
-		initialize(selectionStrategy);
+		this(new Stage(), selectionStrategy);
 	}
 
-	@Override
-	public Region getObject() {
-		return borderPane;
+	public Wizard(Stage stage, WizardSelectionStrategy<T> selectionStrategy) {
+		initialize(stage, selectionStrategy);
 	}
 
 	protected void previous() {
@@ -35,14 +38,18 @@ public class Wizard<T> extends BaseUIManager<Region> {
 	}
 
 	protected void cancel() {
-
+		stage.close();
 	}
 
 	protected void finish() {
-		selectionStrategy.finish();
+		setChanged();
+		notifyObservers(selectionStrategy.finish());
+		clearChanged();
+		stage.close();
 	}
 
-	private void initialize(WizardSelectionStrategy<T> selectionStrategy) {
+	private void initialize(Stage stage, WizardSelectionStrategy<T> selectionStrategy) {
+		this.stage = stage;
 		this.selectionStrategy = selectionStrategy;
 		borderPane = new BorderPane();
 
@@ -77,8 +84,16 @@ public class Wizard<T> extends BaseUIManager<Region> {
 			}
 		});
 
-		borderPane.setCenter(selectionStrategy.getPage());
+		borderPane.setCenter(selectionStrategy.getObject());
 		borderPane.setBottom(buttonBar.getObject());
+
+		stage.setScene(new Scene(borderPane));
+		stage.show();
+	}
+
+	@Override
+	public Region getObject() {
+		return null;
 	}
 
 }

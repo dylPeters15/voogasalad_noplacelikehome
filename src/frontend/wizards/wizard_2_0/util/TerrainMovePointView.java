@@ -1,8 +1,7 @@
-package frontend.newunitpane;
+package frontend.wizards.wizard_2_0.util;
 
 import backend.cell.ModifiableTerrain;
 import backend.util.GameState;
-import frontend.wizards.new_voogaobject_wizard.util.VerticalTableInputView;
 
 public class TerrainMovePointView extends VerticalTableInputView{
 	

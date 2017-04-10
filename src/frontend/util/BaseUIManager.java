@@ -5,6 +5,7 @@ package frontend.util;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Observable;
 import java.util.ResourceBundle;
 
 import com.sun.javafx.collections.UnmodifiableObservableMap;
@@ -41,7 +42,7 @@ import util.net.Modifier;
  * @author Dylan Peters
  *
  */
-public abstract class BaseUIManager<T extends Parent> implements ObjectManager<T> {
+public abstract class BaseUIManager<T extends Parent> extends Observable implements ObjectManager<T> {
 	private static final String LANGUAGE_RESOURCE_POINTER = "resources.languages/LanguagePointer";
 	private static final String LANGUAGE_RESOURCE_LIST = "resources.languages/LanguageFileList";
 	private static final String DEFAULT_LANGUAGE_KEY = "DefaultLanguageResource";
