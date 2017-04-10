@@ -31,6 +31,7 @@ public class Region extends ModifiableVoogaCollection<Terrain, Region> {
 		return new Region(getName(), getDescription(), getImgPath(), getAll());
 	}
 
+	@Deprecated
 	public static Collection<Region> getPredefinedRegions() {
 		return getPredefined(Region.class);
 	}

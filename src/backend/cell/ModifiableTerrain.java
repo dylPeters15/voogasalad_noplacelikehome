@@ -18,27 +18,27 @@ public class ModifiableTerrain extends ModifiableVoogaObject<ModifiableTerrain> 
 			.setImgPath("black_void_of_the_abyss.png");
 	public transient static final Terrain FLAT = new ModifiableTerrain("Flat")
 			.setDefaultMoveCost(1)
-			.setDefaultDefenseModifier(new InteractionModifier<>("Default Flat Terrain Defense", (originalValue, agent, target, game) -> Math.random() < .7 ? originalValue : 0, "Units have 30% evasion on Flat terrain by default."))
+			.setDefaultDefenseModifier(new InteractionModifier<>("Default Flat Terrain Defense", (originalValue, agent, target, game) -> game.random() < .7 ? originalValue : 0, "Units have 30% evasion on Flat terrain by default."))
 			.setDescription("Open, flat, land that offers little defensive cover, but allows for easy movement.")
 			.setImgPath("grassy_plain.png");
 	public transient static final Terrain FOREST = new ModifiableTerrain("Forest")
 			.setDefaultMoveCost(2)
-			.setDefaultDefenseModifier(new InteractionModifier<>("Default Forest Terrain Defense", (originalValue, agent, target, game) -> Math.random() < .4 ? originalValue : 0, "Units have 60% evasion on Forest terrain by default."))
+			.setDefaultDefenseModifier(new InteractionModifier<>("Default Forest Terrain Defense", (originalValue, agent, target, game) -> game.random() < .4 ? originalValue : 0, "Units have 60% evasion on Forest terrain by default."))
 			.setDescription("Thick forest that offers plenty of cover, but makes navigating difficult.")
 			.setImgPath("forest.png");
 	public transient static final Terrain WATER = new ModifiableTerrain("Water")
 			.setDefaultMoveCost(3)
-			.setDefaultDefenseModifier(new InteractionModifier<>("Default Water Terrain Defense", (originalValue, agent, target, game) -> Math.random() < .8 ? originalValue : 0, "Units have 20% evasion on Water terrain by default."))
+			.setDefaultDefenseModifier(new InteractionModifier<>("Default Water Terrain Defense", (originalValue, agent, target, game) -> game.random() < .8 ? originalValue : 0, "Units have 20% evasion on Water terrain by default."))
 			.setDescription("Water that impedes movement for non-aquatic units")
 			.setImgPath("splish_splash.png");
 	public transient static final Terrain MOUNTAIN = new ModifiableTerrain("Mountain")
 			.setDefaultMoveCost(2)
-			.setDefaultDefenseModifier(new InteractionModifier<>("Default Mountain Terrain Defense", (originalValue, agent, target, game) -> Math.random() < .5 ? originalValue : 0, "Units have 50% evasion on Mountain terrain by default."))
+			.setDefaultDefenseModifier(new InteractionModifier<>("Default Mountain Terrain Defense", (originalValue, agent, target, game) -> game.random() < .5 ? originalValue : 0, "Units have 50% evasion on Mountain terrain by default."))
 			.setDescription("Rugged mountains that are difficult to navigate through")
 			.setImgPath("snowy_mountains.png");
 	public transient static final Terrain FORTIFIED = new ModifiableTerrain("Fortified")
 			.setDefaultMoveCost(1)
-			.setDefaultDefenseModifier(new InteractionModifier<>("Default Fortified Terrain Defense", (originalValue, agent, target, game) -> Math.random() < .3 ? originalValue : 0, "Units have 70% evasion on Fortified terrain by default."))
+			.setDefaultDefenseModifier(new InteractionModifier<>("Default Fortified Terrain Defense", (originalValue, agent, target, game) -> game.random() < .3 ? originalValue : 0, "Units have 70% evasion on Fortified terrain by default."))
 			.setDescription("A fortified defensive position")
 			.setImgPath("castle.png");
 
@@ -91,6 +91,7 @@ public class ModifiableTerrain extends ModifiableVoogaObject<ModifiableTerrain> 
 		return (obj instanceof ModifiableTerrain) && ((Terrain) obj).getName().equals(this.getName());
 	}
 
+	@Deprecated
 	public static Collection<ModifiableTerrain> getPredefinedTerrain() {
 		return getPredefined(ModifiableTerrain.class);
 	}

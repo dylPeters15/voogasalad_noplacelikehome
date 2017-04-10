@@ -6,6 +6,8 @@ import backend.unit.properties.InteractionModifier;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author Created by th174 on 3/31/2017.
@@ -112,17 +114,17 @@ public class ModifiableTriggeredEffect extends ModifiableVoogaObject<ModifiableT
 	}
 
 	@Override
-    public ModifiableTriggeredEffect copy() {
+	public ModifiableTriggeredEffect copy() {
 		return new ModifiableTriggeredEffect(getName(), getEffect(), getDuration(), getDescription(), getImgPath(), getActivationTriggers());
 	}
 
 	@Override
-    public int getRemainingTurns() {
+	public int getRemainingTurns() {
 		return turnsRemaining;
 	}
 
 	@Override
-    public final void affect(Unit unit, Event event, ImmutableGameState game) {
+	public final void affect(Unit unit, Event event, ImmutableGameState game) {
 		if (getActivationTriggers().contains(event)) {
 			effect.affect(unit, event, game);
 		}
@@ -132,14 +134,23 @@ public class ModifiableTriggeredEffect extends ModifiableVoogaObject<ModifiableT
 	}
 
 	@Override
-    public Collection<Event> getActivationTriggers() {
+	public Collection<Event> getActivationTriggers() {
 		return activationTriggers;
 	}
 
 	@Override
-    public boolean isExpired() {
+	public boolean isExpired() {
 		return getRemainingTurns() <= 0;
 	}
 
+	@Deprecated
+	public Collection<ModifiableTriggeredEffect> getPredefinedUnitPassives() {
+		return Stream.of(REGENERATION, HEALER, SHADOWSTALKER, POISONED).collect(Collectors.toList());
+	}
+
+	@Deprecated
+	public Collection<ModifiableTriggeredEffect> getPredefinedCellPassives() {
+		return Stream.of(FULL_HEAL, POISON, ON_FIRE, STRONG_ATTACK).collect(Collectors.toList());
+	}
 }
 

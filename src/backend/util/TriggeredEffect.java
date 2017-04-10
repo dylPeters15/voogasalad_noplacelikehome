@@ -2,6 +2,7 @@ package backend.util;
 
 import backend.unit.Unit;
 
+import java.io.Serializable;
 import java.util.Collection;
 
 /**
@@ -17,7 +18,7 @@ public interface TriggeredEffect extends VoogaEntity {
 	boolean isExpired();
 
 	@FunctionalInterface
-	interface Effect {
+	interface Effect extends Serializable{
 		void affect(Unit unit, Event event, ImmutableGameState game);
 	}
 }

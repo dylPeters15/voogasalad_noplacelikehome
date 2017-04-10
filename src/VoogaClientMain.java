@@ -29,12 +29,8 @@ public class VoogaClientMain {
 		client.addListener(state -> {
 			try {
 				System.out.printf(CHATBOX,
-						state.getTeamByName(teamName)
-								.get(name)
-								.getChatLog()
-								.parallelStream()
-								.map(Object::toString)
-								.collect(Collectors.joining("\n")));
+						state.getTeamByName(teamName).get(name).getChatLog().parallelStream()
+								.map(Object::toString).collect(Collectors.joining("\n")));
 			} catch (NullPointerException e) {
 			}
 		});
@@ -50,9 +46,7 @@ public class VoogaClientMain {
 		while (client.isActive()) {
 			String input = stdin.nextLine();
 			client.addToOutbox(state -> state
-					.messageAll(input, state
-							.getTeamByName(teamName)
-							.get(name)));
+					.messageAll(input + "\tN = " + state.random(), state.getTeamByName(teamName).get(name)));
 		}
 	}
 

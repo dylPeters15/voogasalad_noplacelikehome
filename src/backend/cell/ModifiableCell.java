@@ -220,4 +220,9 @@ public class ModifiableCell extends ModifiableVoogaObject implements Cell {
 	public ModifiableCell copy() {
 		return new ModifiableCell(getName(), getLocation(), getShape(), getTerrain(), getDescription(), getImgPath(), getTriggeredAbilities());
 	}
+
+	@Deprecated
+	public Collection<ModifiableCell> getPredefinedCells(){
+		return getPredefined(ModifiableCell.class);
+	}
 }

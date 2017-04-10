@@ -86,7 +86,8 @@ public class ModifiableUnitStat<T extends Comparable<T>> extends ModifiableVooga
 		return this;
 	}
 
-	public static Collection<ModifiableUnitStat> getPredefinedUnitStatTemplates() {
+	@Deprecated
+	public static Collection<ModifiableUnitStat> getPredefinedUnitStats() {
 		return getPredefined(ModifiableUnitStat.class);
 	}
 }

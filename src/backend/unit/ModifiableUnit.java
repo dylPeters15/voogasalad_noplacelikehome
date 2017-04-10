@@ -302,7 +302,8 @@ public class ModifiableUnit extends ModifiableVoogaObject<ModifiableUnit> implem
 		return this;
 	}
 
-	public static Collection<ModifiableUnit> getPredefinedUnitTemplates() {
+	@Deprecated
+	public static Collection<ModifiableUnit> getPredefinedUnits() {
 		return getPredefined(ModifiableUnit.class);
 	}
 }
