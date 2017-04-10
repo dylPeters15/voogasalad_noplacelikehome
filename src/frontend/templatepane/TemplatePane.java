@@ -10,8 +10,11 @@ import backend.cell.Cell;
 import backend.cell.ModifiableCell;
 import backend.unit.ModifiableUnit;
 import backend.unit.Unit;
+import backend.util.ModifiableVoogaObject;
+import backend.cell.ModifiableTerrain;
 import frontend.util.BaseUIManager;
 import javafx.scene.control.TitledPane;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
@@ -29,25 +32,19 @@ import javafx.scene.text.Text;
 public class TemplatePane extends BaseUIManager<Region>{
 
 	Pane pane;
-	Collection<? extends VoogaObject> units;
-	Collection<? extends VoogaObject> terrains;
+	Collection<? extends ModifiableVoogaObject> units;
+	Collection<? extends ModifiableVoogaObject> terrains;
 	
 
-	public TemplatePane(Collection<VoogaObject> availableUnits, 
-			Collection<VoogaObject> availableTerrains) {
-	Collection<ModifiableUnit> units;
-	Collection<ModifiableCell> terrains;
+	public TemplatePane(Collection<ModifiableVoogaObject> availableUnits, 
+			Collection<ModifiableVoogaObject> availableTerrains) {
+			units = availableUnits;
+			terrains = availableTerrains;
+			pane = new Pane();
 	
-
-//	public TemplatePane(Collection<ModifiableUnit> availableUnits,
-//			Collection<ModifiableCell> availableTerrains) {
-//		units = availableUnits;
-//		terrains = availableTerrains;
-//		pane = new Pane();
-//		
-//	}
+	}
 	
-	private void createCollabsible(String label, Collection<? extends VoogaObject> sprites) {
+	private void createCollabsible(String label, Collection<? extends ModifiableVoogaObject> sprites) {
 		TitledPane spritePane = new TitledPane();
 		spritePane.setText(label);
 		VBox content = createContent(sprites);
@@ -56,9 +53,9 @@ public class TemplatePane extends BaseUIManager<Region>{
 		pane.getChildren().add(spritePane);
 	}
 	
-	private VBox createContent(Collection<? extends VoogaObject> sprites) {
+	private VBox createContent(Collection<? extends ModifiableVoogaObject> sprites) {
 		VBox contentPane = new VBox();
-		for (VoogaObject sprite: sprites) {
+		for (ModifiableVoogaObject sprite: sprites) {
 			VBox spriteContent = new VBox();
 			// fix getName and getImage once communication sorted
 			Text spriteName = new Text(sprite.getName());
@@ -66,13 +63,14 @@ public class TemplatePane extends BaseUIManager<Region>{
 			Image tempImage = new Image(sprite.getImgPath());
 			ImageView spriteImage = new ImageView(tempImage); 
 			spriteContent.getChildren().add(spriteImage);
+			setOnDrag(spriteContent);
 			contentPane.getChildren().add(spriteContent);
 		}
 		return contentPane;
 	}
 	
 	private void setOnDrag(Node o) {
-		//ImageView spriteImage = new ImageView(getImage(o));
+		//ImageView spriteImage = new ImageView(getImage(o));   
 		 o.setOnDragDetected(new EventHandler <MouseEvent>() {
 	            public void handle(MouseEvent event) {
 	                /* drag was detected, run drag-and-drop gesture*/
@@ -96,14 +94,13 @@ public class TemplatePane extends BaseUIManager<Region>{
 		createCollabsible("Unit", units);
 	}
 	
-	public void updateSprites(Collection<ModifiableUnit> sprites){
-		//TODO
+	public void updateUnits(Collection<ModifiableUnit> unitsIn){
 		//sprites will (I am fairly certain) contain all available sprites, not just the new ones
 		units = unitsIn;
 		updatePane();
 	} 
 	
-	public void updateTerrains(Collection<backend.cell.Terrain> terrainsIn) {
+	public void updateTerrains(Collection<ModifiableTerrain> terrainsIn) {
 		terrains = terrainsIn;
 		updatePane();
 	}
