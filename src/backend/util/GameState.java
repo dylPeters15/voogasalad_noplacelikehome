@@ -54,6 +54,7 @@ public class GameState implements MutableGameState {
 
 	public Collection<ModifiableTerrain> getTerrains() {
 		return terrains;
+
 	}
 
 	public Collection<ModifiableUnit> getUnitTemplates() {
