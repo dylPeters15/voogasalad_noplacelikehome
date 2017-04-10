@@ -41,7 +41,7 @@ public class VoogaJavaEngine implements VoogaScriptEngine {
 	public VoogaScriptEngine setScript(String script) throws VoogaScriptException {
 		className = String.format(RESOURCES.getString("JavaUserScriptName"), fileCount);
 		srcPath = String.format(RESOURCES.getString("JavaUserScriptPath"), className);
-		methodName = RESOURCES.getString("JavaMethodName");
+		methodName = RESOURCES.getString("FunctionName");
 		this.fullSource = String.format(
 				RESOURCES.getString("JavaClassTemplate"),
 				className,

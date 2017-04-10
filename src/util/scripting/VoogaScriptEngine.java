@@ -22,7 +22,7 @@ public interface VoogaScriptEngine extends Serializer, Unserializer, Interaction
 	VoogaScriptEngine setScript(String script) throws VoogaScriptException;
 
 	default String getDefaultText() {
-		return String.format(getLanguage() + "DefaultText", RESOURCES.getString("ReturnVarName"));
+		return RESOURCES.getString(getLanguage() + "DefaultText");
 	}
 
 	default String getLanguage() {
