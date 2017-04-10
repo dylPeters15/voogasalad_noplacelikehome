@@ -5,26 +5,18 @@ import java.util.Arrays;
 import backend.unit.ModifiableUnit;
 import backend.unit.Unit;
 import backend.util.GameState;
-import frontend.wizards.wizard_2_0.util.AbilitiesAdder;
-import frontend.wizards.wizard_2_0.util.ImageNamePairView;
-import frontend.wizards.wizard_2_0.util.TerrainMovePointView;
+import frontend.wizards.wizard_2_0.wizard_pages.AbilitiesAdderPage;
+import frontend.wizards.wizard_2_0.wizard_pages.ImageNameDescriptionPage;
+import frontend.wizards.wizard_2_0.wizard_pages.TerrainMovePointPage;
 
 public class NewUnitSelectionStrategy extends BaseSelectionStrategy<Unit> {
 
-	private ImageNamePairView imageNamePairView;
-	private AbilitiesAdder abilitiesAdder;
-	private TerrainMovePointView terrainMovePointView;
+	private ImageNameDescriptionPage imageNameDescriptionPage;
+	private AbilitiesAdderPage abilitiesAdderPage;
+	private TerrainMovePointPage terrainMovePointPage;
 
 	public NewUnitSelectionStrategy(GameState gameState) {
 		initialize(gameState);
-	}
-
-	@Override
-	public void next() {
-		super.next();
-		if (getCurrentPage() == terrainMovePointView) {
-			canFinishWritable().setValue(true);
-		}
 	}
 
 	@Override
@@ -37,11 +29,10 @@ public class NewUnitSelectionStrategy extends BaseSelectionStrategy<Unit> {
 	}
 
 	private void initialize(GameState gameState) {
-		imageNamePairView = new ImageNamePairView();
-		abilitiesAdder = new AbilitiesAdder(gameState);
-		terrainMovePointView = new TerrainMovePointView(gameState);
-		getPages().addAll(Arrays.asList(imageNamePairView, abilitiesAdder, terrainMovePointView));
-		canNextWritable().setValue(true);
+		imageNameDescriptionPage = new ImageNameDescriptionPage();
+		abilitiesAdderPage = new AbilitiesAdderPage();
+		terrainMovePointPage = new TerrainMovePointPage();
+		getPages().addAll(Arrays.asList(imageNameDescriptionPage, abilitiesAdderPage, terrainMovePointPage));
 	}
 
 }

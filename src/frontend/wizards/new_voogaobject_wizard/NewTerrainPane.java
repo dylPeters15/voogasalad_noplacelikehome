@@ -1,8 +1,8 @@
 package frontend.wizards.new_voogaobject_wizard;
 
 import frontend.util.BaseUIManager;
-import frontend.wizards.wizard_2_0.util.CancelSaveView;
-import frontend.wizards.wizard_2_0.util.ImageNamePairView;
+import frontend.wizards.new_voogaobject_wizard.util.CancelSaveView;
+import frontend.wizards.new_voogaobject_wizard.util.ImageNamePairView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
 
