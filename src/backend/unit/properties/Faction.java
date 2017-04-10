@@ -12,7 +12,7 @@ import java.util.Collection;
  * @author Created by th174 on 3/29/2017.
  */
 public class Faction extends ModifiableVoogaCollection<Unit, Faction> {
-	public static final Faction UNDEAD = new Faction("Undead")
+	public transient static final Faction UNDEAD = new Faction("Undead")
 			.setDescription("The reanimated corpses of the dead want no more than to slake their thirst with the fresh blood of the living")
 			.setImgPath("get_spooked.png")
 			.addAll(ModifiableUnit.SKELETON_WARRIOR, ModifiableUnit.SKELETON_ARCHER);

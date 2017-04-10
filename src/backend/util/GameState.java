@@ -42,7 +42,7 @@ public class GameState implements MutableGameState {
 	}
 
 	public GameState(ModifiableGameBoard grid) {
-//		gameGrid = grid;
+		gameGrid = grid;
 		playerList = new ArrayList<>();
 		teams = new HashMap<>();
 		modifiableUnits = new ArrayList<>();
@@ -60,6 +60,7 @@ public class GameState implements MutableGameState {
 
 	public Collection<ModifiableTerrain> getTerrains() {
 		return terrains;
+
 	}
 
 	public Collection<ModifiableUnit> getUnitTemplates() {

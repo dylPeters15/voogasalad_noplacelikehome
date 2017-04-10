@@ -14,70 +14,70 @@ import java.util.stream.Collectors;
  */
 public class ModifiableCell extends ModifiableVoogaObject implements Cell {
 	//TODO ResourceBundlify
-	public static final ModifiableCell BASIC_HEXAGONAL_EMPTY = new ModifiableCell("Basic Hexagonal Empty Cell")
+	public transient static final ModifiableCell BASIC_HEXAGONAL_EMPTY = new ModifiableCell("Basic Hexagonal Empty Cell")
 			.setShape(Shape.HEXAGONAL)
 			.setTerrain(ModifiableTerrain.EMPTY);
-	public static final ModifiableCell BASIC_HEXAGONAL_FLAT = new ModifiableCell("Basic Hexagonal Flat Cell")
+	public transient static final ModifiableCell BASIC_HEXAGONAL_FLAT = new ModifiableCell("Basic Hexagonal Flat Cell")
 			.setShape(Shape.HEXAGONAL)
 			.setTerrain(ModifiableTerrain.FLAT);
-	public static final ModifiableCell BASIC_HEXAGONAL_FOREST = new ModifiableCell("Basic Hexagonal Forest Cell")
+	public transient static final ModifiableCell BASIC_HEXAGONAL_FOREST = new ModifiableCell("Basic Hexagonal Forest Cell")
 			.setShape(Shape.HEXAGONAL)
 			.setTerrain(ModifiableTerrain.FOREST);
-	public static final ModifiableCell BASIC_HEXAGONAL_WATER = new ModifiableCell("Basic Hexagonal Water Cell")
+	public transient static final ModifiableCell BASIC_HEXAGONAL_WATER = new ModifiableCell("Basic Hexagonal Water Cell")
 			.setShape(Shape.HEXAGONAL)
 			.setTerrain(ModifiableTerrain.WATER);
-	public static final ModifiableCell BASIC_HEXAGONAL_MOUNTAIN = new ModifiableCell("Basic Hexagonal Mountain Cell")
+	public transient static final ModifiableCell BASIC_HEXAGONAL_MOUNTAIN = new ModifiableCell("Basic Hexagonal Mountain Cell")
 			.setShape(Shape.HEXAGONAL)
 			.setTerrain(ModifiableTerrain.MOUNTAIN);
-	public static final ModifiableCell BASIC_HEXAGONAL_FORTIFIED = new ModifiableCell("Basic Hexagonal Fortified Cell")
+	public transient static final ModifiableCell BASIC_HEXAGONAL_FORTIFIED = new ModifiableCell("Basic Hexagonal Fortified Cell")
 			.setShape(Shape.HEXAGONAL)
 			.setTerrain(ModifiableTerrain.FORTIFIED);
-	public static final ModifiableCell HEALING_HEXAGONAL_EMPTY = new ModifiableCell("Healing Hexagonal Empty Cell")
+	public transient static final ModifiableCell HEALING_HEXAGONAL_EMPTY = new ModifiableCell("Healing Hexagonal Empty Cell")
 			.setShape(Shape.HEXAGONAL).setTerrain(ModifiableTerrain.EMPTY)
 			.addTriggeredAbility(ModifiableTriggeredEffect.FULL_HEAL);
-	public static final ModifiableCell HEALING_HEXAGONAL_FLAT = new ModifiableCell("Healing Hexagonal Flat Cell")
+	public transient static final ModifiableCell HEALING_HEXAGONAL_FLAT = new ModifiableCell("Healing Hexagonal Flat Cell")
 			.setShape(Shape.HEXAGONAL)
 			.setTerrain(ModifiableTerrain.FLAT)
 			.addTriggeredAbility(ModifiableTriggeredEffect.FULL_HEAL);
-	public static final ModifiableCell HEALING_HEXAGONAL_FOREST = new ModifiableCell("Healing Hexagonal Forest Cell")
+	public transient static final ModifiableCell HEALING_HEXAGONAL_FOREST = new ModifiableCell("Healing Hexagonal Forest Cell")
 			.setShape(Shape.HEXAGONAL)
 			.setTerrain(ModifiableTerrain.FOREST)
 			.addTriggeredAbility(ModifiableTriggeredEffect.FULL_HEAL);
-	public static final ModifiableCell HEALING_HEXAGONAL_WATER = new ModifiableCell("Healing Hexagonal Water Cell")
+	public transient static final ModifiableCell HEALING_HEXAGONAL_WATER = new ModifiableCell("Healing Hexagonal Water Cell")
 			.setShape(Shape.HEXAGONAL)
 			.setTerrain(ModifiableTerrain.WATER)
 			.addTriggeredAbility(ModifiableTriggeredEffect.FULL_HEAL);
-	public static final ModifiableCell HEALING_HEXAGONAL_MOUNTAIN = new ModifiableCell("Healing Hexagonal Mountain Cell")
+	public transient static final ModifiableCell HEALING_HEXAGONAL_MOUNTAIN = new ModifiableCell("Healing Hexagonal Mountain Cell")
 			.setShape(Shape.HEXAGONAL)
 			.setTerrain(ModifiableTerrain.MOUNTAIN)
 			.addTriggeredAbility(ModifiableTriggeredEffect.FULL_HEAL);
-	public static final ModifiableCell HEALING_HEXAGONAL_FORTIFIED = new ModifiableCell("Healing Hexagonal Fortified Cell")
+	public transient static final ModifiableCell HEALING_HEXAGONAL_FORTIFIED = new ModifiableCell("Healing Hexagonal Fortified Cell")
 			.setShape(Shape.HEXAGONAL)
 			.setTerrain(ModifiableTerrain.FORTIFIED)
 			.addTriggeredAbility(ModifiableTriggeredEffect.FULL_HEAL);
-	public static final ModifiableCell BASIC_SQUARE_EMPTY = new ModifiableCell("Basic Square Empty Cell")
+	public transient static final ModifiableCell BASIC_SQUARE_EMPTY = new ModifiableCell("Basic Square Empty Cell")
 			.setShape(Shape.SQUARE)
 			.setTerrain(ModifiableTerrain.EMPTY);
-	public static final ModifiableCell BASIC_SQUARE_FLAT = new ModifiableCell("Basic Square Flat Cell")
+	public transient static final ModifiableCell BASIC_SQUARE_FLAT = new ModifiableCell("Basic Square Flat Cell")
 			.setShape(Shape.SQUARE)
 			.setTerrain(ModifiableTerrain.FLAT);
-	public static final ModifiableCell BASIC_SQUARE_FOREST = new ModifiableCell("Basic Square Forest Cell")
+	public transient static final ModifiableCell BASIC_SQUARE_FOREST = new ModifiableCell("Basic Square Forest Cell")
 			.setShape(Shape.SQUARE)
 			.setTerrain(ModifiableTerrain.FOREST);
-	public static final ModifiableCell BASIC_SQUARE_WATER = new ModifiableCell("Basic Square Water Cell")
+	public transient static final ModifiableCell BASIC_SQUARE_WATER = new ModifiableCell("Basic Square Water Cell")
 			.setShape(Shape.SQUARE)
 			.setTerrain(ModifiableTerrain.WATER);
-	public static final ModifiableCell BASIC_SQUARE_MOUNTAIN = new ModifiableCell("Basic Square Mountain Cell")
+	public transient static final ModifiableCell BASIC_SQUARE_MOUNTAIN = new ModifiableCell("Basic Square Mountain Cell")
 			.setShape(Shape.SQUARE)
 			.setTerrain(ModifiableTerrain.MOUNTAIN);
-	public static final ModifiableCell BASIC_SQUARE_FORTIFIED = new ModifiableCell("Basic Square Fortified Cell")
+	public transient static final ModifiableCell BASIC_SQUARE_FORTIFIED = new ModifiableCell("Basic Square Fortified Cell")
 			.setShape(Shape.SQUARE)
 			.setTerrain(ModifiableTerrain.FORTIFIED);
-	public static final ModifiableCell STRONG_ATTACK_SQUARE_MOUNTAIN = new ModifiableCell("Strong Attack Square Cell")
+	public transient static final ModifiableCell STRONG_ATTACK_SQUARE_MOUNTAIN = new ModifiableCell("Strong Attack Square Cell")
 			.setShape(Shape.SQUARE)
 			.setTerrain(ModifiableTerrain.MOUNTAIN)
 			.addTriggeredAbility(ModifiableTriggeredEffect.STRONG_ATTACK);
-	public static final ModifiableCell STRONG_ATTACK_HEXAGON_MOUNTAIN = new ModifiableCell("Strong Attack Square Cell")
+	public transient static final ModifiableCell STRONG_ATTACK_HEXAGON_MOUNTAIN = new ModifiableCell("Strong Attack Square Cell")
 			.setShape(Shape.HEXAGONAL)
 			.setTerrain(ModifiableTerrain.MOUNTAIN)
 			.addTriggeredAbility(ModifiableTriggeredEffect.STRONG_ATTACK);
