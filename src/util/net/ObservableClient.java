@@ -2,6 +2,8 @@ package util.net;
 
 import util.io.Serializer;
 import util.io.Unserializer;
+import util.net.requests.HeartbeatRequest;
+import util.net.requests.ModifierRequest;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -13,6 +15,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  * This class provides a simple implementation of a client that connects to a server with a given server name and port.
  * <p>
  * The client can request changes to the state, but cannot modify the state directly unless instructed to do so by the server.
+ * <p>
  *
  * @param <T> The type of variable used to represent network shared state.
  * @author Created by th174 on 4/1/2017.
@@ -20,7 +23,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class ObservableClient<T> extends ObservableHost<T> {
 	private final SocketConnection connection;
-	private final BlockingQueue<Modifier<T>> outbox;
+	private final BlockingQueue<Request> outbox;
 
 	/**
 	 * Creates a client connected to a server located at host:port, and starts listening for requests sent from the server
@@ -70,6 +73,9 @@ public class ObservableClient<T> extends ObservableHost<T> {
 		setCommitIndex(Integer.MIN_VALUE);
 		this.connection = new SocketConnection(new Socket(host, port), getTimeout());
 		outbox = new LinkedBlockingQueue<>();
+		setRequestValidator(ModifierRequest.class, request -> request.getCommitIndex() == this.getCommitIndex() + 1);
+		setRequestHandler(HeartbeatRequest.class, request -> handleHeartBeat());
+		setRequestValidator(HeartbeatRequest.class, request -> request.getCommitIndex() == this.getCommitIndex());
 	}
 
 	@Override
@@ -78,32 +84,15 @@ public class ObservableClient<T> extends ObservableHost<T> {
 	}
 
 	@Override
-	protected boolean validateRequest(Request incomingRequest) {
-		if (incomingRequest.getCommitIndex() >= this.getCommitIndex()) {
-			setCommitIndex(incomingRequest.getCommitIndex());
-			return true;
-		} else {
-			handleError();
-		}
-		return false;
-	}
-
-	@Override
 	protected boolean handleRequest(Request request) {
-		boolean ret;
-		if (Request.isHeartbeat(request) && request.getCommitIndex() == this.getCommitIndex()) {
-			ret = handleHeartBeat();
-		} else if (Request.isHeartbeat(request) || Request.isError(request)) {
-			ret = handleError();
-		} else {
-			ret = super.handleRequest(request);
-			try{
-				send(outbox.take());
+		if (super.handleRequest(request)) {
+			try {
+				send(outbox.take().setCommitIndex(getCommitIndex()));
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
-		return ret;
+		return true;
 	}
 
 	/**
@@ -111,23 +100,20 @@ public class ObservableClient<T> extends ObservableHost<T> {
 	 *
 	 * @return Returns true if heartbeat was handled successfully
 	 */
-	protected boolean handleHeartBeat() {
-		return send(getHeartBeatRequest());
+	private void handleHeartBeat() {
+		send(getHeartBeatRequest());
 	}
 
 	/**
 	 * Notifies the server that the client is in an error state
-	 *
-	 * @return Returns true if error was handled successfully
 	 */
-	@Override
-	protected boolean handleError() {
-		return send(getErrorRequest());
+	protected void handleError(Request request) {
+		send(getErrorRequest());
 	}
 
 	@Override
 	protected boolean send(Request request) {
-		return connection.send(request);
+		return connection.send(request.setCommitIndex(getCommitIndex()));
 	}
 
 	@Override
@@ -140,8 +126,22 @@ public class ObservableClient<T> extends ObservableHost<T> {
 		return super.send(modifier);
 	}
 
-	public boolean addToOutbox(Modifier<T> modifier) {
-		return outbox.add(modifier);
+	/**
+	 * Queues up a request containing a modifier to be sent to the server
+	 *
+	 * @param modifier Modifier to be sent to the server
+	 */
+	public void addToOutbox(Modifier<T> modifier) {
+		outbox.add(getRequest(modifier));
+	}
+
+	/**
+	 * Queues up a request containing a serialized state to be sent to the server
+	 *
+	 * @param state Modifier to be sent to the server
+	 */
+	public void addToOutbox(T state) {
+		outbox.add(getRequest(state));
 	}
 }
 

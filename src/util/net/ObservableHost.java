@@ -2,12 +2,16 @@ package util.net;
 
 import util.io.Serializer;
 import util.io.Unserializer;
+import util.net.requests.ErrorRequest;
+import util.net.requests.HeartbeatRequest;
+import util.net.requests.ModifierRequest;
+import util.net.requests.SerializableObjectRequest;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 /**
  * This class provides a basic implementation of a host process that connects to and communicates with a remote host.
@@ -27,6 +31,8 @@ public abstract class ObservableHost<T> implements Runnable {
 	private final Unserializer<T> unserializer;
 	private final Collection<Consumer<T>> stateUpdateListeners;
 	private final Duration timeout;
+	private final Map<Class<? extends Request>, Consumer<? super Request>> requestHandlers;
+	private final Map<Class<? extends Request>, Predicate<? super Request>> requestValidators;
 	private AtomicInteger commitIndex;
 	private volatile T state;
 
@@ -41,6 +47,11 @@ public abstract class ObservableHost<T> implements Runnable {
 		this.stateUpdateListeners = new ArrayList<>();
 		this.commitIndex = new AtomicInteger(0);
 		this.timeout = timeout;
+		this.requestHandlers = new HashMap<>();
+		this.requestValidators = new HashMap<>();
+		setRequestHandler(ModifierRequest.class, request -> handle(((ModifierRequest<T>) request).get()));
+		setRequestHandler(SerializableObjectRequest.class, request -> handle(getUnserializer().unserialize(((SerializableObjectRequest) request).get())));
+		setRequestValidator(SerializableObjectRequest.class, request -> request.getCommitIndex() >= this.getCommitIndex());
 	}
 
 	@Override
@@ -69,52 +80,65 @@ public abstract class ObservableHost<T> implements Runnable {
 		return commitIndex.get();
 	}
 
-	/**
-	 * Increments the commit index by one
-	 */
-	protected final void setCommitIndex(int value) {
+	protected void setCommitIndex(int value) {
 		commitIndex.set(value);
 	}
 
 	/**
 	 * This method is invoked on all requests received from the remote host
+	 * <p>
+	 * If a request validator exists for the type of incoming request, then the request is checked for errors.
+	 * <p>
+	 * If a request handler exists for the type of incoming request, then the request by the request handler
+	 * <p>
+	 * Else, the request is handled as an error.
 	 *
 	 * @param request Incoming request received from remote host
-	 * @return Returns true if the host was able to successfully process the request sent from the remote host
+	 * @return Returns true if the incoming request was valid
 	 */
 	protected boolean handleRequest(Request request) {
-		if (validateRequest(request)) {
-			if (request.get() instanceof Modifier) {
-				handle((Modifier<T>) request.get());
+		if (requestValidators.getOrDefault(request.getClass(), r -> true).test(request)) {
+			Consumer<? super Request> handler = requestHandlers.get(request.getClass());
+			if (Objects.nonNull(handler)) {
+				handler.accept(request);
+				return true;
 			} else {
-				try {
-					handle(getUnserializer().unserialize(request.get()));
-				} catch (Unserializer.UnserializationException | ClassCastException e) {
-					handleError();
-					return false;
-				}
+				handleError(request);
 			}
-			return true;
-		} else {
-			handleError();
-			return false;
 		}
+		return false;
 	}
 
 	/**
 	 * Invoked when the remote host sends a request indicating that it is in an error state
 	 *
-	 * @return Returns true if error is handled successfully
+	 * @param request The invalid request to be handled
 	 */
-	protected abstract boolean handleError();
+	protected abstract void handleError(Request request);
 
 	/**
-	 * Checks if a request received from the remote host is a valid request.
+	 * Adds a requestValidator for a type of incoming request.
+	 * <p>
+	 * If the requestValidator returns true, then the request handler is triggered.
+	 * <p>
+	 * If no requestValidator has been specified, then it will default to true, and the request handler will be triggered.
 	 *
-	 * @param incomingRequest Request received from remote host
-	 * @return Returns true if the request is valid
+	 * @param requestType      New type of request
+	 * @param requestValidator Predicate that returns true if the give request is valid
 	 */
-	protected abstract boolean validateRequest(Request incomingRequest);
+	public final void setRequestValidator(Class<? extends Request> requestType, Predicate<? super Request> requestValidator) {
+		requestValidators.put(requestType, requestValidator);
+	}
+
+	/**
+	 * Adds a request handler for a type of incoming request
+	 *
+	 * @param requestType    New type of request
+	 * @param requestHandler Consumer that handles the new type of request
+	 */
+	public final void setRequestHandler(Class<? extends Request> requestType, Consumer<? super Request> requestHandler) {
+		requestHandlers.put(requestType, requestHandler);
+	}
 
 	/**
 	 * Invoked when the local host receives a modifier sent from the remote host
@@ -149,7 +173,7 @@ public abstract class ObservableHost<T> implements Runnable {
 	 * @return Returns a request that contains a serialized version of the state.
 	 */
 	protected final Request getRequest(T state) {
-		return new Request<>(getSerializer().serialize(state), getCommitIndex());
+		return new SerializableObjectRequest<>(getSerializer().serialize(state));
 	}
 
 	/**
@@ -167,7 +191,7 @@ public abstract class ObservableHost<T> implements Runnable {
 	 * @return Returns a request that contains a modification of the state
 	 */
 	public final Request getRequest(Modifier<T> modifier) {
-		return new Request<>(modifier, getCommitIndex());
+		return new ModifierRequest<>(modifier, getCommitIndex());
 	}
 
 	/**
@@ -184,7 +208,7 @@ public abstract class ObservableHost<T> implements Runnable {
 	 * @return Returns a heartbeat request notifying the remote host that the local host is in a normal operation state.
 	 */
 	protected final Request getHeartBeatRequest() {
-		return new Request<>(Request.HEARTBEAT, getCommitIndex());
+		return new HeartbeatRequest();
 	}
 
 	/**
@@ -200,16 +224,7 @@ public abstract class ObservableHost<T> implements Runnable {
 	 * @return Returns an error request notifying the remote host that the local host is currently in an error state.
 	 */
 	protected final Request getErrorRequest() {
-		return new Request<>(Request.ERROR, Integer.MIN_VALUE);
-	}
-
-	/**
-	 * Sends an error request notifying the remote host that the local host is currently in an error state.
-	 *
-	 * @return Returns true if the message was sent successfully
-	 */
-	protected final boolean sendErrorRequest() {
-		return send(getErrorRequest());
+		return new ErrorRequest(-1, getCommitIndex());
 	}
 
 	/**

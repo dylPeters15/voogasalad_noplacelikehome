@@ -2,9 +2,9 @@ package util.net;
 
 import util.io.Serializer;
 import util.io.Unserializer;
+import util.net.requests.HeartbeatRequest;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.time.Duration;
@@ -67,7 +67,6 @@ public class ObservableServer<T> extends ObservableHost<T> {
 	public ObservableServer(T initialState, int port, Serializer<T> serializer, Unserializer<T> unserializer, Duration timeout) throws Exception {
 		super(serializer, unserializer, timeout);
 		setState(initialState);
-		setCommitIndex(0);
 		this.connections = new HashSet<>();
 		this.serverSocket = new ServerSocket(port);
 		this.executor = Executors.newScheduledThreadPool(DEFAULT_THREAD_POOL_SIZE);
@@ -136,8 +135,7 @@ public class ObservableServer<T> extends ObservableHost<T> {
 	}
 
 	@Override
-	protected boolean handleError() {
-		throw new InvalidRequestException("Error");
+	protected void handleError(Request request) {
 	}
 
 	@Override
@@ -151,10 +149,6 @@ public class ObservableServer<T> extends ObservableHost<T> {
 		return serverSocket.isBound() && !serverSocket.isClosed() && !connections.isEmpty();
 	}
 
-	@Override
-	protected boolean validateRequest(Request request) {
-		return request.getCommitIndex() == getCommitIndex() && !Request.isError(request);
-	}
 
 	/**
 	 * This class is delegated to be the server to listen to a client on a single socket and relays information between the main server and the client.
@@ -180,16 +174,17 @@ public class ObservableServer<T> extends ObservableHost<T> {
 			connection.listen(this::handleRequest);
 		}
 
-		private boolean handleRequest(Request<? extends Serializable> request) {
-			if (Request.isHeartbeat(request)) {
+		private boolean handleRequest(Request request) {
+			if (request instanceof HeartbeatRequest) {
 				return true;
-			} else if (!validateRequest(request)) {
-				return this.send(getRequest(getState()));
-			} else return ObservableServer.this.handleRequest(request);
+			} else if (!ObservableServer.this.handleRequest(request)) {
+				return send(getErrorRequest());
+			}
+			return true;
 		}
 
 		protected boolean send(Request request) {
-			return connection.send(request);
+			return connection.send(request.setCommitIndex(ObservableServer.this.getCommitIndex()));
 		}
 	}
 }

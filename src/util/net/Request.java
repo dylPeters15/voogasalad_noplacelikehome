@@ -3,67 +3,41 @@ package util.net;
 import java.io.Serializable;
 
 /**
- * This class provides contains all communications between the client and the server.
- * Each request contains a content as well as a timestamp of when the request was created.
- * The server uses the timestamp to determine whether or not to approve the request.
+ * This class provides contains communications between the client and the server.
+ * Each request has a commit message, which the host uses to determine whether or not the request is valid.
  *
- * @param <T> The type of the content contained in the request.
  * @author Created by th174 on 4/2/2017.
  * @see Request,Modifier,ObservableServer,ObservableServer.ServerDelegate,ObservableClient,ObservableHost
  */
-public final class Request<T extends Serializable> implements Serializable {
-    public static final Serializable ERROR = "ERROR";
-    public static final Serializable HEARTBEAT = "HEARTBEAT";
-    private final T content;
-    private final int commitIndex;
+public abstract class Request implements Serializable {
+	private int commitIndex;
 
-    /**
-     * Creates a new request with content and a timestamp of the creation time.
-     *
-     * @param content     Content of request
-     * @param commitIndex commitIndex of the sender of this request
-     */
-    public Request(T content, int commitIndex) {
-        this.content = content;
-        this.commitIndex = commitIndex;
-    }
+	/**
+	 * Creates a new request.
+	 */
+	public Request() {
+		this.commitIndex = Integer.MIN_VALUE;
+	}
 
-    /**
-     * Tests if the specified request is a heartbeat request
-     *
-     * @param request request to test
-     * @return Returns true if request is a heartbeat
-     */
-    public static boolean isHeartbeat(Request request) {
-        return request.get().equals(HEARTBEAT);
-    }
+	/**
+	 * @return Returns the commitIndex that this request was sent with
+	 */
+	public int getCommitIndex() {
+		return commitIndex;
+	}
 
-    /**
-     * Tests is the specified request is an error request
-     *
-     * @param request request to test
-     * @return Returns true if request is an error request
-     */
-    public static boolean isError(Request request) {
-        return request.get().equals(ERROR);
-    }
+	/**
+	 * Sets a commit index to send with this request.
+	 *
+	 * @param commitIndex commit index of the sender of this request
+	 */
+	public Request setCommitIndex(int commitIndex) {
+		this.commitIndex = commitIndex;
+		return this;
+	}
 
-    /**
-     * @return Returns the content contained inside with this Request
-     */
-    public T get() {
-        return content;
-    }
-
-    /**
-     * @return Returns the commitIndex that this Request was sent with
-     */
-    public int getCommitIndex() {
-        return commitIndex;
-    }
-
-    @Override
-    public String toString() {
-        return String.format("Request:\n\tContent:\t%s\n\tCommit:\t%d", content, commitIndex);
-    }
+	@Override
+	public String toString() {
+		return String.format("Request:\n\tType:\t%s\n\tCommit:\t%d", getClass().getSimpleName(), commitIndex);
+	}
 }
