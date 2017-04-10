@@ -18,8 +18,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 
 public class ImageNameDescriptionPage extends WizardPage {
-	private static final double IMAGE_VIEW_WIDTH = 100;
-	private static final double IMAGE_VIEW_HEIGHT = 100;
 
 	private HBox hbox;
 	private Button uploadButton;
@@ -70,8 +68,8 @@ public class ImageNameDescriptionPage extends WizardPage {
 			}
 		});
 
-		imageView.setFitWidth(IMAGE_VIEW_WIDTH);
-		imageView.setFitHeight(IMAGE_VIEW_HEIGHT);
+		imageView.fitWidthProperty().bind(imageBox.widthProperty());
+		imageView.fitHeightProperty().bind(imageView.fitWidthProperty());
 
 		imageView.imageProperty().addListener(new ChangeListener<Image>() {
 			@Override
@@ -91,6 +89,21 @@ public class ImageNameDescriptionPage extends WizardPage {
 				checkIfCanNext();
 			}
 		});
+
+		// //for debugging:
+		// hbox.setBackground(
+		// new Background(new BackgroundFill(Paint.valueOf("ff3344"), new
+		// CornerRadii(0), new Insets(0))));
+		// nameAndDescription.setBackground(
+		// new Background(new BackgroundFill(Paint.valueOf("aa3344"), new
+		// CornerRadii(0), new Insets(0))));
+		// imageBox.setBackground(
+		// new Background(new BackgroundFill(Paint.valueOf("ff8844"), new
+		// CornerRadii(0), new Insets(0))));
+		// nameAndDescription.prefWidthProperty().bind(hbox.widthProperty().multiply(0.8));
+		// nameAndDescription.prefHeightProperty().bind(hbox.heightProperty());
+		// imageBox.prefWidthProperty().bind(hbox.widthProperty().subtract(nameAndDescription.widthProperty()));
+		// imageBox.prefHeightProperty().bind(hbox.heightProperty());
 
 	}
 

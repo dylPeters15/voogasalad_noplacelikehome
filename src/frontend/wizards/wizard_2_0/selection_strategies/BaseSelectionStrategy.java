@@ -96,6 +96,8 @@ public abstract class BaseSelectionStrategy<T> extends BaseUIManager<Region> imp
 		if (canGoToPage(newPageNum)) {
 			removeAllPagesFromView();
 			stackPane.getChildren().add(pages.get(newPageNum).getObject());
+//			pages.get(newPageNum).getObject().prefWidthProperty().bind(stackPane.prefWidthProperty());
+//			pages.get(newPageNum).getObject().prefHeightProperty().bind(stackPane.prefHeightProperty());
 
 			canPrevious.unbind();
 			canPrevious.setValue(newPageNum != 0);
