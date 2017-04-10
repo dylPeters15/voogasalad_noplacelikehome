@@ -4,7 +4,7 @@ import java.util.Queue;
 /**
  * Interface for Buffer which saves the update for frontend and backend
  * 
- * @author Noah Pritt
+ * @author ncp14
  *
  * @param <T>
  */
