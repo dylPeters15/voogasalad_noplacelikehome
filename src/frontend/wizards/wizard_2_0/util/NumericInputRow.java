@@ -1,8 +1,8 @@
 package frontend.wizards.wizard_2_0.util;
 
-import java.util.function.UnaryOperator;
-
 import frontend.util.BaseUIManager;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -25,40 +25,47 @@ public class NumericInputRow extends BaseUIManager<Region> {
 
 		myNameField = new Label(name);
 
-		myNumericalInputField = new TextField("0");
+		myNumericalInputField = new TextField("0.0");
+		myNumericalInputField.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				try {
+					if (!newValue.isEmpty()) {
+						Double.parseDouble(newValue);
+					}
+				} catch (Exception e) {
+					myNumericalInputField.setText("0.0");
+				}
+			}
+		});
 
 		myLabelField = new Label(label);
 
 		myNumericInputRow.getChildren().addAll(new ImageView(image), myNameField, myNumericalInputField, myLabelField);
 	}
 
-	// can implement here
 	void setName(String name) {
-
+		myNameField.setText(name);
 	}
 
 	String getName() {
-		return null;
+		return myNameField.getText();
 	}
 
 	void setValue(Double value) {
-
+		myNumericalInputField.setText(value.toString());
 	}
 
 	public double getValue() {
-		return 0.0;
+		return myNumericalInputField.getText().isEmpty() ? 0.0 : Double.parseDouble(myNumericalInputField.getText());
 	}
 
 	void setLabel(String label) {
-
+		myLabelField.setText(label);
 	}
 
 	String getLabel() {
-		return null;
-	}
-
-	void setOnValueEntry(UnaryOperator<Object> action) {
-
+		return myLabelField.getText();
 	}
 
 	@Override
