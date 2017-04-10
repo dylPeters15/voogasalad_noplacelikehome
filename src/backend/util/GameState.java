@@ -1,5 +1,14 @@
 package backend.util;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.function.BiPredicate;
+
 import backend.cell.ModifiableCell;
 import backend.cell.ModifiableTerrain;
 import backend.game_engine.ResultQuadPredicate;
@@ -7,10 +16,7 @@ import backend.grid.ModifiableGameBoard;
 import backend.player.Player;
 import backend.player.Team;
 import backend.unit.ModifiableUnit;
-
-import java.util.*;
-import java.util.function.BiConsumer;
-import java.util.function.BiPredicate;
+import backend.unit.properties.ActiveAbility;
 
 /**
  * @author Created by th174 on 3/30/2017. Worked on by Alex
@@ -23,7 +29,7 @@ public class GameState implements MutableGameState {
 	private Map<String, Team> teams;
 	private ModifiableGameBoard gameGrid;
 	private Collection<ModifiableUnit> modifiableUnits;
-	private Collection<ModifiableUnit> activeAbilities;
+	private Collection<ActiveAbility<?>> activeAbilities;
 	private Collection<ModifiableTerrain> terrains;
 	private Collection<ModifiableCell> modifiableCells;
 
@@ -40,8 +46,8 @@ public class GameState implements MutableGameState {
 		playerList = new ArrayList<>();
 		teams = new HashMap<>();
 		modifiableUnits = new ArrayList<>();
-		activeAbilities = new ArrayList<>();
-		terrains = new ArrayList<>();
+		activeAbilities = new ArrayList<>(ActiveAbility.getPredefinedActiveAbilities());
+		terrains = new ArrayList<>(ModifiableTerrain.getPredefinedTerrain());
 		modifiableCells = new ArrayList<>();
 		currentObjectives = new ArrayList<>();
 		turnActions = new HashMap<>();
@@ -60,7 +66,7 @@ public class GameState implements MutableGameState {
 		return modifiableUnits;
 	}
 
-	public Collection<ModifiableUnit> getActiveAbilities() {
+	public Collection<ActiveAbility<?>> getActiveAbilities() {
 		return activeAbilities;
 	}
 
