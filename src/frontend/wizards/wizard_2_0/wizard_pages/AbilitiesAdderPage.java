@@ -7,8 +7,8 @@ import java.util.stream.Collectors;
 
 import backend.unit.properties.ActiveAbility;
 import backend.util.GameState;
-import frontend.wizards.new_voogaobject_wizard.util.VerticalTableInputView;
 import frontend.wizards.wizard_2_0.util.SelectableInputRow;
+import frontend.wizards.wizard_2_0.util.VerticalTableInputView;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Region;
 
