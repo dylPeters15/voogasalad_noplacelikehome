@@ -9,7 +9,8 @@ import java.util.stream.Stream;
  * @author Created by th174 on 3/28/2017.
  */
 public final class CoordinateTuple implements Iterable<Integer> {
-	public transient static final CoordinateTuple EMPTY = new CoordinateTuple();
+	public static final CoordinateTuple EMPTY = new CoordinateTuple();
+	private static final Map<Integer, Shape> shapeDimensions = new HashMap<>();
 
 	private final List<Integer> coordinates;
 
@@ -21,21 +22,22 @@ public final class CoordinateTuple implements Iterable<Integer> {
 		this.coordinates = Collections.unmodifiableList(coordinates);
 	}
 
-	public Collection<CoordinateTuple> getNeighbors() {
-		return getRays(1);
+	public static CoordinateTuple getOrigin(int dimension) {
+		return new CoordinateTuple(new int[dimension]);
 	}
 
-	public Collection<CoordinateTuple> getRays(int radius) {
-		return IntStream.rangeClosed(1, radius).boxed()
-				.flatMap(i -> IntStream.range(0, dimension()).boxed().parallel()
-						.flatMap(j -> {
-							List<Integer> temp1 = new ArrayList<>(Collections.nCopies(dimension(), i));
-							List<Integer> temp2 = new ArrayList<>(Collections.nCopies(dimension(), -i));
-							temp1.set(j, 0);
-							temp2.set(j, 0);
-							return Stream.of(new CoordinateTuple(temp1), new CoordinateTuple(temp2));
-						}))
-				.parallel().collect(Collectors.toList());
+	public Collection<CoordinateTuple> getNeighbors() {
+		if (shapeDimensions.isEmpty()) {
+			Arrays.stream(Shape.values()).forEach(shape -> shapeDimensions.put(shape.getDimension(), shape));
+		}
+		return shapeDimensions.get(dimension()).getNeighborPattern().getCoordinates().stream().map(this::sum).collect(Collectors.toList());
+	}
+
+	public Collection<CoordinateTuple> getRays(int minRadius, int maxRadius) {
+		return getNeighbors().stream()
+				.flatMap(coordinateTuple -> IntStream.range(minRadius, maxRadius).mapToObj(coordinateTuple::product))
+				.map(this::sum)
+				.collect(Collectors.toList());
 	}
 
 	public int dimension() {
@@ -72,6 +74,12 @@ public final class CoordinateTuple implements Iterable<Integer> {
 		}
 		int[] newCoordinates = new int[dimension()];
 		IntStream.range(0, dimension()).forEach(i -> newCoordinates[i] = this.get(i) + other.get(i));
+		return new CoordinateTuple(newCoordinates);
+	}
+
+	public CoordinateTuple product(double scalar) {
+		int[] newCoordinates = new int[dimension()];
+		IntStream.range(0, dimension()).forEach(i -> newCoordinates[i] = Math.toIntExact(Math.round(this.get(i) * scalar)));
 		return new CoordinateTuple(newCoordinates);
 	}
 
@@ -130,10 +138,6 @@ public final class CoordinateTuple implements Iterable<Integer> {
 	@Override
 	public String toString() {
 		return coordinates.toString().replace("[", "(").replace("]", ")");
-	}
-
-	public static CoordinateTuple getOrigin(int dimension) {
-		return new CoordinateTuple(new int[dimension]);
 	}
 
 	public static class DimensionMismatchException extends RuntimeException {

@@ -5,6 +5,7 @@ import backend.unit.Unit;
 import backend.util.ModifiableVoogaCollection;
 
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 /**
  * Timmy
@@ -12,10 +13,10 @@ import java.util.Collection;
  * @author Created by th174 on 3/29/2017.
  */
 public class Faction extends ModifiableVoogaCollection<Unit, Faction> {
-	public transient static final Faction UNDEAD = new Faction("Undead")
+	public static final Faction UNDEAD = new Faction("Undead")
 			.setDescription("The reanimated corpses of the dead want no more than to slake their thirst with the fresh blood of the living")
 			.setImgPath("get_spooked.png")
-			.addAll(ModifiableUnit.SKELETON_WARRIOR, ModifiableUnit.SKELETON_ARCHER);
+			.addAll(ModifiableUnit.SKELETON_ARCHER,ModifiableUnit.SKELETON_WARRIOR);
 
 	public Faction(String name) {
 		this(name, "", "");
@@ -30,8 +31,18 @@ public class Faction extends ModifiableVoogaCollection<Unit, Faction> {
 	}
 
 	@Override
+	public Faction addAll(Collection<? extends Unit> elements) {
+		try {
+			elements.forEach(e -> ((ModifiableUnit) e).setFaction(this));
+		} catch (ClassCastException e){
+			e.printStackTrace();
+		}
+		return super.addAll(elements);
+	}
+
+	@Override
 	public Faction copy() {
-		return new Faction(getName(), getDescription(), getImgPath(), getAll());
+		return new Faction(getName(), getDescription(), getImgPath(), getAll().parallelStream().map(Unit::copy).collect(Collectors.toList()));
 	}
 
 	public static Collection<Faction> getPredefinedFactions() {

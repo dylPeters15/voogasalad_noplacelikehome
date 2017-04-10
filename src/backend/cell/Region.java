@@ -9,7 +9,7 @@ import java.util.Collection;
  */
 public class Region extends ModifiableVoogaCollection<Terrain, Region> {
 	//TODO ResourceBundlify this
-	public transient static final Region DEFAULT_REGION = new Region("Default Region")
+	public static final Region DEFAULT_REGION = new Region("Default Region")
 			.setDescription("The default region contains all the pre-defined terrains")
 			.setImgPath("default_region.png")
 			.addAll(ModifiableTerrain.getPredefinedTerrain());
