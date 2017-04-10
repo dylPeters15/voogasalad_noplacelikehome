@@ -42,7 +42,7 @@ public class ChatClientMain {
         while (voogaClient.isActive()) {
             String input = stdin.nextLine();
             String user = System.getProperty("user.name");
-            voogaClient.send(state -> state.appendMessage(input, user));
+            voogaClient.addToOutbox(state -> state.appendMessage(input, user));
         }
     }
 }

@@ -14,7 +14,7 @@ import java.util.*;
  */
 public class ModifiableUnit extends ModifiableVoogaObject<ModifiableUnit> implements Unit {
 	//TODO ResourceBundlify
-	public static final Unit SKELETON_WARRIOR = new ModifiableUnit("Skeleton Warrior")
+	public transient static final Unit SKELETON_WARRIOR = new ModifiableUnit("Skeleton Warrior")
 			.setFaction(Faction.UNDEAD)
 			.addUnitStats(ModifiableUnitStat.HITPOINTS.copy().setMaxValue(39.0), ModifiableUnitStat.MOVEPOINTS.copy().setMaxValue(5))
 			.setDescription("Once a noble knight in service of his kingdom, the skeleton warrior once again takes up the blade for the lich king.")
@@ -22,7 +22,7 @@ public class ModifiableUnit extends ModifiableVoogaObject<ModifiableUnit> implem
 			.setMovePattern(GridPattern.HEXAGONAL_ADJACENT)
 			.addActiveAbilities(ActiveAbility.SWORD)
 			.addOffensiveModifiers(InteractionModifier.CHAOTIC);
-	public static final Unit SKELETON_ARCHER = new ModifiableUnit("Skeleton Archer")
+	public transient static final Unit SKELETON_ARCHER = new ModifiableUnit("Skeleton Archer")
 			.setFaction(Faction.UNDEAD)
 			.addUnitStats(ModifiableUnitStat.HITPOINTS.copy().setMaxValue(34.0))
 			.addUnitStats(ModifiableUnitStat.MOVEPOINTS.copy().setMaxValue(6))

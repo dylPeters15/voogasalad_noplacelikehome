@@ -11,7 +11,7 @@ import java.util.concurrent.Executors;
  */
 public class VoogaServerMain {
 	public static final int PORT = 10023;
-	public static final int TIMEOUT = 120;
+	public static final int TIMEOUT = 20;
 
 	public static void main(String[] args) throws Exception {
 		//TODO

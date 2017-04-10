@@ -1,0 +1,6 @@
+<backend.unit.properties.InteractionModifier>
+  <name>Dummy</name>
+  <description>Dummy modifier that doesn&apos;t change anything</description>
+  <imgPath>Nothing.png</imgPath>
+  <modifier class="null"/>
+</backend.unit.properties.InteractionModifier>

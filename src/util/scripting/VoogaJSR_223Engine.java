@@ -31,6 +31,10 @@ public abstract class VoogaJSR_223Engine implements VoogaScriptEngine {
 		return this;
 	}
 
+	protected CompiledScript getCompiledScript() {
+		return compiledScript;
+	}
+
 	@Override
 	public Object eval(Map<String, Object> bindings) throws VoogaScriptException {
 		try {
