@@ -1,0 +1,12 @@
+<backend.cell.ModifiableTerrain>
+  <name>Empty</name>
+  <description>Literally nothing</description>
+  <imgPath>black_void_of_the_abyss.png</imgPath>
+  <defaultMoveCost>2147483647</defaultMoveCost>
+  <defaultDefenseModifier>
+    <name>No effect</name>
+    <description>Literally nothing</description>
+    <imgPath>The_abyss_stares_back.png</imgPath>
+    <modifier class="null"/>
+  </defaultDefenseModifier>
+</backend.cell.ModifiableTerrain>

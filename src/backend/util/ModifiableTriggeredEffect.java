@@ -5,6 +5,7 @@ import backend.unit.properties.InteractionModifier;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 
 /**
  * @author Created by th174 on 3/31/2017.
@@ -78,7 +79,7 @@ public class ModifiableTriggeredEffect extends ModifiableVoogaObject<ModifiableT
 	public ModifiableTriggeredEffect(String name, Effect effect, int numTurns, String description, String imgPath, Collection<Event> activationTriggers) {
 		super(name, description, imgPath);
 		this.effect = effect;
-		this.activationTriggers = activationTriggers;
+		this.activationTriggers = new HashSet<>(activationTriggers);
 		this.duration = numTurns;
 		this.turnsRemaining = duration;
 	}
