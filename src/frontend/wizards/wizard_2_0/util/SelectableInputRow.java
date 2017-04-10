@@ -1,4 +1,4 @@
-package frontend.wizards.new_voogaobject_wizard.util;
+package frontend.wizards.wizard_2_0.util;
 
 import frontend.util.BaseUIManager;
 import javafx.beans.property.BooleanProperty;
@@ -15,19 +15,22 @@ public class SelectableInputRow extends BaseUIManager<Region> {
 	CheckBox checkbox;
 	ImageView icon;
 	Label name;
+	Label description;
 
 	public SelectableInputRow() {
-		this(null, null);
+		this(null, null, null);
 	}
 
-	public SelectableInputRow(Image image, String name) {
+	public SelectableInputRow(Image image, String name, String description) {
+		hbox = new HBox();
 		checkbox = new CheckBox();
 		icon = new ImageView();
 		this.name = new Label();
-		hbox = new HBox();
+		this.description = new Label();
 		setImage(image);
 		setName(name);
-		hbox.getChildren().addAll(checkbox,icon,this.name);
+		setDescription(description);
+		hbox.getChildren().addAll(checkbox, icon, this.name, this.description);
 	}
 
 	public void setImage(Image image) {
@@ -46,20 +49,28 @@ public class SelectableInputRow extends BaseUIManager<Region> {
 		return name.getText();
 	}
 
+	public void setDescription(String description) {
+		this.description.setText(description);
+	}
+
+	public String getDescription() {
+		return description.getText();
+	}
+
 	@Override
 	public Region getObject() {
 		return hbox;
 	}
-	
-	public BooleanProperty getSelectedProperty(){
+
+	public BooleanProperty getSelectedProperty() {
 		return checkbox.selectedProperty();
 	}
-	
-	public boolean getSelected(){
+
+	public boolean getSelected() {
 		return checkbox.isSelected();
 	}
-	
-	public void setSelected(boolean selected){
+
+	public void setSelected(boolean selected) {
 		checkbox.setSelected(selected);
 	}
 

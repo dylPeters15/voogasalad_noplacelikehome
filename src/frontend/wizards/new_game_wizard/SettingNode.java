@@ -19,7 +19,7 @@ public abstract class SettingNode extends BaseUIManager<Region> {
 	
 	private HBox settingBox;
 	private String myName;
-	private ResourceBundle myResources = ResourceBundle.getBundle("frontend/resources/Wizard");
+	private ResourceBundle myResources = ResourceBundle.getBundle("frontend/properties/Wizard");
 	//TODO Have constructor take in something to determine language and use that to set ResourceBundle
 	
 	public SettingNode(){
