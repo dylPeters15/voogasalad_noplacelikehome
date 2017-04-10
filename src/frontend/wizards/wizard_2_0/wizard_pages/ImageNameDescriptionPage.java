@@ -22,6 +22,7 @@ public class ImageNameDescriptionPage extends WizardPage {
 	private HBox hbox;
 	private Button uploadButton;
 	private ImageView imageView;
+	private String imagePath;
 	private TextField nameField;
 	private TextArea descriptionField;
 
@@ -44,6 +45,10 @@ public class ImageNameDescriptionPage extends WizardPage {
 
 	public String getDescription() {
 		return descriptionField.getText();
+	}
+	
+	public String getImagePath(){
+		return imagePath;
 	}
 
 	private void initialize() {
@@ -114,6 +119,7 @@ public class ImageNameDescriptionPage extends WizardPage {
 		File file = choose.showOpenDialog(null);
 		if (file != null) {
 			imageView.setImage(new Image(file.toURI().toString()));
+			imagePath = file.toURI().toString();
 		}
 	}
 
