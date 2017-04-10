@@ -75,7 +75,7 @@ public abstract class BaseSelectionStrategy<T> extends BaseUIManager<Region> imp
 		return pages;
 	}
 
-	private int getCurrentPageNum() {
+	protected int getCurrentPageNum() {
 		int i = 0;
 		for (BaseUIManager<? extends Parent> page : pages) {
 			if (stackPane.getChildren().contains(page.getObject())) {
@@ -84,6 +84,10 @@ public abstract class BaseSelectionStrategy<T> extends BaseUIManager<Region> imp
 			i++;
 		}
 		return -1;
+	}
+
+	protected BaseUIManager<? extends Parent> getCurrentPage() {
+		return getCurrentPageNum() == -1 ? null : pages.get(getCurrentPageNum());
 	}
 
 	private void goToPageNum(int newPageNum) {
