@@ -13,6 +13,13 @@ public class GameRuleCreator {
 		this.gameState = mGameState;
 		this.inputCode = inputCode;
 		this.codeType = codeType;
+		performTranslation();
+	}
+	
+	public void performTranslation()
+	{
+		Translate mTranslate = new Translate();
+		List<GameRule> newRules = mTranslate.performTranslation();
 	}
 
 }

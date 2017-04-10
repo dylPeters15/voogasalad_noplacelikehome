@@ -3,6 +3,7 @@ package backend.util;
 import backend.cell.ModifiableCell;
 import backend.cell.ModifiableTerrain;
 import backend.game_engine.ResultQuadPredicate;
+import backend.game_rules.GameRule;
 import backend.grid.ModifiableGameBoard;
 import backend.player.Player;
 import backend.player.Team;
@@ -13,7 +14,7 @@ import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 
 /**
- * @author Created by th174 on 3/30/2017. Worked on by Alex
+ * @author Created by th174 on 3/30/2017. Worked on by Alex and Noah (ncp14)
  */
 
 //TODO: Implement getTurnNumber(), toXML() (Kinda Tavo's job), messagePlayer(Player from, Player to, String message);
@@ -26,6 +27,7 @@ public class GameState implements MutableGameState {
 	private Collection<ModifiableUnit> activeAbilities;
 	private Collection<ModifiableTerrain> terrains;
 	private Collection<ModifiableCell> modifiableCells;
+	private List<GameRule> gameRules;
 
 	private Collection<ResultQuadPredicate> currentObjectives;
 	private Map<Event, List<BiConsumer<Player, ImmutableGameState>>> turnActions;
@@ -67,6 +69,17 @@ public class GameState implements MutableGameState {
 	public Collection<ModifiableCell> getModifiableCells() {
 		return modifiableCells;
 	}
+	
+	public List<GameRule> getRules()
+	{
+		return gameRules;
+	}
+	
+	public void updateGameRules(List<GameRule> mRules)
+	{
+		gameRules = mRules;
+	}
+	
 
 	@Override
 	public ModifiableGameBoard getGrid() {
