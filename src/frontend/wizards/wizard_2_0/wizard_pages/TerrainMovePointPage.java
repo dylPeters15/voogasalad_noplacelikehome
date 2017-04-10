@@ -42,7 +42,7 @@ public class TerrainMovePointPage extends WizardPage {
 		canNextWritable().setValue(true);
 	}
 
-	public Map<Terrain, Double> getTerrainMovePoints() {
+	public Map<Terrain, Integer> getTerrainMovePoints() {
 		return rowToTerrain.keySet().stream()
 				.collect(Collectors.toMap(row -> rowToTerrain.get(row), row -> row.getValue()));
 	}

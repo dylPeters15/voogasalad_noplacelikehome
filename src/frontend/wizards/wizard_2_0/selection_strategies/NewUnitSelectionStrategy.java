@@ -27,6 +27,13 @@ public class NewUnitSelectionStrategy extends BaseSelectionStrategy<Unit> {
 		System.out.println("Abilities: " + abilitiesAdderPage.getSelectedAbilities());
 		System.out.println("Terrain Move Points: " + terrainMovePointPage.getTerrainMovePoints());
 		return new ModifiableUnit(imageNameDescriptionPage.getName());
+		// return new ModifiableUnit(imageNameDescriptionPage.getName(),
+		// unitStats, unitFaction, movePattern,
+		// terrainMovePointPage.getTerrainMovePoints(),
+		// abilitiesAdderPage.getSelectedAbilities(), triggeredAbilities,
+		// offensiveModifiers, defensiveModifiers,
+		// imageNameDescriptionPage.getDescription(),
+		// imageNameDescriptionPage.getImagePath());
 		// can change ^ to use a constructor with more options, using
 		// information retreived from the user by the pages. For example:
 		// "return new ModifiableUnit(imageNamePairView.getName(),
