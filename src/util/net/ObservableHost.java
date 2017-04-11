@@ -26,8 +26,8 @@ import java.util.function.Predicate;
 public abstract class ObservableHost<T> implements Runnable {
 	public static final Duration NEVER_TIMEOUT = Duration.ZERO;
 	public static final String LOCALHOST = "127.0.0.1";
-	private final Serializer<T> serializer;
-	private final Unserializer<T> unserializer;
+	private final Serializer<? super T> serializer;
+	private final Unserializer<? extends T> unserializer;
 	private final Collection<Consumer<T>> stateUpdateListeners;
 	private final Duration timeout;
 	private final Map<Class<? extends Request>, Consumer<? super Request>> requestHandlers;
@@ -40,7 +40,7 @@ public abstract class ObservableHost<T> implements Runnable {
 	 * @param unserializer Converts the Serializable form of the state back into its original form of type T
 	 * @param timeout      Socket timeout duration
 	 */
-	protected ObservableHost(Serializer<T> serializer, Unserializer<T> unserializer, Duration timeout) {
+	protected ObservableHost(Serializer<? super T> serializer, Unserializer<? extends T> unserializer, Duration timeout) {
 		this.serializer = serializer;
 		this.unserializer = unserializer;
 		this.stateUpdateListeners = new ArrayList<>();
@@ -267,14 +267,14 @@ public abstract class ObservableHost<T> implements Runnable {
 	/**
 	 * @return Returns the serializer currently used by this host
 	 */
-	protected final Serializer<T> getSerializer() {
+	protected final Serializer<? super T> getSerializer() {
 		return serializer;
 	}
 
 	/**
 	 * @return Returns the serializer currently usd by this host
 	 */
-	protected final Unserializer<T> getUnserializer() {
+	protected final Unserializer<? extends T> getUnserializer() {
 		return unserializer;
 	}
 

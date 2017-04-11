@@ -7,6 +7,7 @@ import backend.grid.BoundsHandler;
 import backend.grid.GameBoard;
 import backend.grid.GridPattern;
 import backend.grid.ModifiableGameBoard;
+import backend.player.ImmutablePlayer;
 import backend.player.Player;
 import backend.player.Team;
 import backend.unit.ModifiableUnit;
@@ -16,6 +17,7 @@ import backend.unit.properties.ModifiableUnitStat;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
@@ -43,12 +45,27 @@ public class AuthoringGameState extends GameplayState implements VoogaEntity {
 	}
 
 	@Override
-	public AuthoringGameState addPlayer(Player newPlayer) {
+	public Player getPlayerByName(String name) {
+		return (Player) super.getPlayerByName(name);
+	}
+
+	@Override
+	public Player getCurrentPlayer() {
+		return (Player) super.getCurrentPlayer();
+	}
+
+	@Override
+	public List<Player> getAllPlayers() {
+		return (List<Player>) super.getAllPlayers();
+	}
+
+	@Override
+	public AuthoringGameState addPlayer(ImmutablePlayer newPlayer) {
 		return (AuthoringGameState) super.addPlayer(newPlayer);
 	}
 
 	@Override
-	public AuthoringGameState addPlayer(Player newPlayer, Team team) {
+	public AuthoringGameState addPlayer(ImmutablePlayer newPlayer, Team team) {
 		return (AuthoringGameState) super.addPlayer(newPlayer, team);
 	}
 
@@ -93,22 +110,22 @@ public class AuthoringGameState extends GameplayState implements VoogaEntity {
 	}
 
 	@Override
-	public AuthoringGameState addTurnActions(Event event, Collection<BiConsumer<Player, GameplayState>> actions) {
+	public AuthoringGameState addTurnActions(Event event, Collection<BiConsumer<ImmutablePlayer, GameplayState>> actions) {
 		return (AuthoringGameState) super.addTurnActions(event, actions);
 	}
 
 	@Override
-	public AuthoringGameState addTurnActions(Event event, BiConsumer<Player, GameplayState>... actions) {
+	public AuthoringGameState addTurnActions(Event event, BiConsumer<ImmutablePlayer, GameplayState>... actions) {
 		return (AuthoringGameState) super.addTurnActions(event, actions);
 	}
 
 	@Override
-	public AuthoringGameState addTurnRequirements(Collection<BiPredicate<Player, GameplayState>> turnRequirements) {
+	public AuthoringGameState addTurnRequirements(Collection<BiPredicate<ImmutablePlayer, GameplayState>> turnRequirements) {
 		return (AuthoringGameState) super.addTurnRequirements(turnRequirements);
 	}
 
 	@Override
-	public AuthoringGameState addTurnRequirements(BiPredicate<Player, GameplayState>... turnRequirements) {
+	public AuthoringGameState addTurnRequirements(BiPredicate<ImmutablePlayer, GameplayState>... turnRequirements) {
 		return (AuthoringGameState) super.addTurnRequirements(turnRequirements);
 	}
 
@@ -128,22 +145,22 @@ public class AuthoringGameState extends GameplayState implements VoogaEntity {
 	}
 
 	@Override
-	public AuthoringGameState removeTurnActions(Event event, Collection<BiConsumer<Player, GameplayState>> actions) {
+	public AuthoringGameState removeTurnActions(Event event, Collection<BiConsumer<ImmutablePlayer, GameplayState>> actions) {
 		return (AuthoringGameState) super.removeTurnActions(event, actions);
 	}
 
 	@Override
-	public AuthoringGameState removeTurnActions(Event event, BiConsumer<Player, GameplayState>[] actions) {
+	public AuthoringGameState removeTurnActions(Event event, BiConsumer<ImmutablePlayer, GameplayState>[] actions) {
 		return (AuthoringGameState) super.removeTurnActions(event, actions);
 	}
 
 	@Override
-	public AuthoringGameState removeTurnRequirements(Collection<BiPredicate<Player, GameplayState>> turnRequirements) {
+	public AuthoringGameState removeTurnRequirements(Collection<BiPredicate<ImmutablePlayer, GameplayState>> turnRequirements) {
 		return (AuthoringGameState) super.removeTurnRequirements(turnRequirements);
 	}
 
 	@Override
-	public AuthoringGameState removeTurnRequirements(BiPredicate<Player, GameplayState>... turnRequirements) {
+	public AuthoringGameState removeTurnRequirements(BiPredicate<ImmutablePlayer, GameplayState>... turnRequirements) {
 		return (AuthoringGameState) super.removeTurnRequirements(turnRequirements);
 	}
 
