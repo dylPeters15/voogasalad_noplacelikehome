@@ -104,7 +104,7 @@ public class ModifiableUnit extends ModifiableVoogaObject<ModifiableUnit> implem
 
 	@Override
 	public final ActiveAbility getActiveAbilityByName(String name) {
-		return activeAbilities.get(name);
+		return activeAbilities.getByName(name);
 	}
 
 	@Override
@@ -242,7 +242,7 @@ public class ModifiableUnit extends ModifiableVoogaObject<ModifiableUnit> implem
 
 	@Override
 	public UnitStat getUnitStat(String name) {
-		return stats.get(name);
+		return stats.getByName(name);
 	}
 
 	@Override
@@ -278,6 +278,7 @@ public class ModifiableUnit extends ModifiableVoogaObject<ModifiableUnit> implem
 		this.currentCell = currentCell;
 	}
 
+	@Override
 	public final Collection<? extends UnitStat> getUnitStats() {
 		return stats.getAll();
 	}

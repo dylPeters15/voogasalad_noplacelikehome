@@ -2,13 +2,12 @@ package backend.game_engine;
 
 import backend.player.Player;
 import backend.util.GameplayState;
-import backend.util.GameplayState;
 
+import java.io.Serializable;
 import java.util.function.BiConsumer;
 
 @FunctionalInterface
-public interface ResultQuadPredicate {
-
+public interface ResultQuadPredicate extends Serializable {
 	Result determine(Player player, GameplayState state);
 
 	enum Result {

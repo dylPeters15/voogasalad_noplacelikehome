@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 /**
  * @author Created by th174 on 3/30/2017.
  */
-public abstract class ModifiableVoogaCollection<T extends VoogaEntity, U extends ModifiableVoogaCollection<T, U>> extends ModifiableVoogaObject<U> implements ImmutableVoogaCollection<T> {
+public class ModifiableVoogaCollection<T extends VoogaEntity, U extends ModifiableVoogaCollection<T, U>> extends ModifiableVoogaObject<U> implements ImmutableVoogaCollection<T> {
 	private final Map<String, T> gameObjects;
 
 	@SafeVarargs
@@ -32,10 +32,12 @@ public abstract class ModifiableVoogaCollection<T extends VoogaEntity, U extends
 	}
 
 	@Override
-	public abstract U copy();
+	public ModifiableVoogaCollection<T, U> copy() {
+		return new ModifiableVoogaCollection<>(getName(), getDescription(), getImgPath(), stream().map(T::copy).map(e -> (T) e).collect(Collectors.toList()));
+	}
 
 	@Override
-	public T get(String name) {
+	public T getByName(String name) {
 		return gameObjects.get(name);
 	}
 
@@ -65,7 +67,7 @@ public abstract class ModifiableVoogaCollection<T extends VoogaEntity, U extends
 	}
 
 	public final U removeAll(String... s) {
-		return removeAll(Arrays.stream(s).map(this::get).collect(Collectors.toList()));
+		return removeAll(Arrays.stream(s).map(this::getByName).collect(Collectors.toList()));
 	}
 
 	public final U removeIf(Predicate<T> removalCondition) {

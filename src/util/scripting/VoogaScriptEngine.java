@@ -74,8 +74,8 @@ public interface VoogaScriptEngine extends Serializer, Unserializer, Interaction
 	}
 
 	@Override
-	default boolean test(Player player, GameplayState immutableGameState) {
-		Object nonBooleanValue = eval(createBindings("player", player, "gameState", immutableGameState));
+	default boolean test(Player player, GameplayState gameState) {
+		Object nonBooleanValue = eval(createBindings("player", player, "gameState", gameState));
 		if (nonBooleanValue instanceof String) {
 			return !nonBooleanValue.equals("");
 		} else if (nonBooleanValue instanceof Boolean) {

@@ -4,8 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import backend.cell.ModifiableTerrain;
 import backend.cell.Terrain;
-import backend.util.GameState;
+import backend.util.AuthoringGameState;
 import frontend.wizards.wizard_2_0.util.NumericInputRow;
 import frontend.wizards.wizard_2_0.util.VerticalTableInputView;
 import javafx.scene.image.Image;
@@ -16,7 +17,7 @@ public class TerrainMovePointPage extends WizardPage {
 	private VerticalTableInputView table;
 	private Map<NumericInputRow, Terrain> rowToTerrain;
 
-	public TerrainMovePointPage(GameState gameState) {
+	public TerrainMovePointPage(AuthoringGameState gameState) {
 		initialize(gameState);
 	}
 
@@ -25,10 +26,10 @@ public class TerrainMovePointPage extends WizardPage {
 		return table.getObject();
 	}
 
-	private void initialize(GameState gameState) {
+	private void initialize(AuthoringGameState gameState) {
 		table = new VerticalTableInputView();
 		rowToTerrain = new HashMap<>();
-		gameState.getTerrains().stream().forEachOrdered(terrain -> {
+		ModifiableTerrain.getPredefinedTerrain().forEach(terrain -> {
 			Image image;
 			try {
 				image = new Image(terrain.getImgPath());
@@ -44,7 +45,7 @@ public class TerrainMovePointPage extends WizardPage {
 
 	public Map<Terrain, Integer> getTerrainMovePoints() {
 		return rowToTerrain.keySet().stream()
-				.collect(Collectors.toMap(row -> rowToTerrain.get(row), row -> row.getValue()));
+				.collect(Collectors.toMap(row -> rowToTerrain.get(row), NumericInputRow::getValue));
 	}
 
 }

@@ -1,10 +1,10 @@
 package frontend.wizards.wizard_2_0.selection_strategies;
 
-import backend.util.GameState;
+import backend.util.AuthoringGameState;
 import frontend.wizards.wizard_2_0.wizard_pages.GridInstantiationPage;
 import frontend.wizards.wizard_2_0.wizard_pages.ImageNameDescriptionPage;
 
-public class NewGameSelectionStrategy extends BaseSelectionStrategy<GameState> {
+public class NewGameSelectionStrategy extends BaseSelectionStrategy<AuthoringGameState> implements WizardSelectionStrategy<AuthoringGameState> {
 
 	private ImageNameDescriptionPage imageNameDescriptionPage;
 	private GridInstantiationPage gridInstantiationPage;
@@ -14,8 +14,8 @@ public class NewGameSelectionStrategy extends BaseSelectionStrategy<GameState> {
 	}
 
 	@Override
-	public GameState finish() {
-		GameState gameState = new GameState(gridInstantiationPage.getGameBoard());
+	public AuthoringGameState finish() {
+		AuthoringGameState gameState = new AuthoringGameState("TestGameState").setGrid(gridInstantiationPage.getGameBoard());
 		return gameState;
 	}
 
@@ -24,5 +24,4 @@ public class NewGameSelectionStrategy extends BaseSelectionStrategy<GameState> {
 		gridInstantiationPage = new GridInstantiationPage();
 		getPages().addAll(imageNameDescriptionPage, gridInstantiationPage);
 	}
-
 }

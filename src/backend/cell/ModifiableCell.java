@@ -73,14 +73,7 @@ public class ModifiableCell extends ModifiableVoogaObject implements Cell {
 	public static final ModifiableCell BASIC_SQUARE_FORTIFIED = new ModifiableCell("Basic Square Fortified Cell")
 			.setShape(Shape.SQUARE)
 			.setTerrain(ModifiableTerrain.FORTIFIED);
-	public static final ModifiableCell STRONG_ATTACK_SQUARE_MOUNTAIN = new ModifiableCell("Strong Attack Square Cell")
-			.setShape(Shape.SQUARE)
-			.setTerrain(ModifiableTerrain.MOUNTAIN)
-			.addTriggeredAbility(ModifiableTriggeredEffect.STRONG_ATTACK);
-	public static final ModifiableCell STRONG_ATTACK_HEXAGON_MOUNTAIN = new ModifiableCell("Strong Attack Square Cell")
-			.setShape(Shape.HEXAGONAL)
-			.setTerrain(ModifiableTerrain.MOUNTAIN)
-			.addTriggeredAbility(ModifiableTriggeredEffect.STRONG_ATTACK);
+
 	private final List<ModifiableTriggeredEffect> abilities;
 	private final Map<String, Unit> occupants;
 	private Shape shape;
@@ -228,7 +221,7 @@ public class ModifiableCell extends ModifiableVoogaObject implements Cell {
 	}
 
 	@Deprecated
-	public Collection<ModifiableCell> getPredefinedCells() {
+	public static Collection<ModifiableCell> getPredefinedCells() {
 		return getPredefined(ModifiableCell.class);
 	}
 
