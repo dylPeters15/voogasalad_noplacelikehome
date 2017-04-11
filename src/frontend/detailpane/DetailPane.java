@@ -9,23 +9,33 @@ import backend.unit.ModifiableUnit;
 import backend.unit.properties.ActiveAbility;
 import backend.util.VoogaEntity;
 import frontend.util.BaseUIManager;
+import javafx.geometry.Insets;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
 public class DetailPane extends BaseUIManager<Region>{
 
-	VBox pane;
+	VBox pane = new VBox();
 	Label spriteInfo;
 	String content = "";
 	
 	public DetailPane() {
-		pane = new VBox();
 		pane.setFillWidth(true);
+		Text title = new Text("Sprite Details");
+		pane.getChildren().add(title);
 		spriteInfo = new Label(content);
-		spriteInfo.setWrapText(true);
-		pane.getChildren().add(spriteInfo);
+		setLabel();
+		clearContent();
 		
 	}
 	
@@ -33,27 +43,38 @@ public class DetailPane extends BaseUIManager<Region>{
 		clearContent();
 		addString("Name", sprite.getName());
 		addString("Description", sprite.getDescription());
+		Label newSpriteInfo;
 		if (spriteType.equals("unit")) {
-			setUnitContent((ModifiableUnit) sprite);
+			newSpriteInfo = new Label(setUnitContent((ModifiableUnit) sprite));			
 		}
 		else {
-			setTerrainContent((ModifiableTerrain) sprite);
+			newSpriteInfo = new Label(setTerrainContent((ModifiableTerrain) sprite));
 		}
+		pane.getChildren().remove(spriteInfo);
+		spriteInfo = newSpriteInfo;
+		setLabel();
 		
 	}
+
+	private void setLabel() {
+		pane.getChildren().add(spriteInfo);		
+		spriteInfo.setWrapText(true);
+	}
 	
-	private void setUnitContent(ModifiableUnit unit) {
+	private String setUnitContent(ModifiableUnit unit) {
 		addMoveCosts(unit);
 		addCollection("Active Abilities", unit.getActiveAbilities());
 		addCollection("DefensiveModifiers", unit.getDefensiveModifiers());
 		addString("Hit Points", unit.getHitPoints().toString());
 		addString("Move Points", unit.getMovePoints().toString());
 		addString("Legal Moves", unit.getMovePattern().toString());
+		return content;
 	}
 	
-	private void setTerrainContent(ModifiableTerrain terrain) {
+	private String setTerrainContent(ModifiableTerrain terrain) {
 		addString("Default Move Cost", ((Integer) terrain.getDefaultMoveCost()).toString());
 		addString("Default Defense Modifier", ((Integer) terrain.getDefaultMoveCost()).toString());
+		return content;
 	}
 	
 	
