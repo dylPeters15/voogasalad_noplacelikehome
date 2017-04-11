@@ -68,6 +68,10 @@ public class StartupSelectionScreen extends VBox {
 	private void play() {
 		read("play");
 	}
+	
+	private void edit() {
+		read("load");
+	}
 
 	private void create() {
 		NewGameWizard wiz = new NewGameWizard();
@@ -81,11 +85,6 @@ public class StartupSelectionScreen extends VBox {
 		});
 
 	}
-
-	private void edit() {
-		read("load");
-	}
-
 	private void createGame(AuthoringGameState state, boolean editable) {
 		//Controller control = new CommunicationController();
 		View view = new View(state,null);

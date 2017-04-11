@@ -47,7 +47,7 @@ public class StartupScreen {
         Background imgv = new Background(bi);
         this.primaryPane = new BorderPane() {{
             resize(width, height);
-            setTop(fileMenu);
+//            setTop(fileMenu);
             setBottom(selectionScreen);
             selectionScreen.setAlignment(Pos.CENTER);
             setBackground(imgv);
