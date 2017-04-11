@@ -10,6 +10,7 @@ import backend.cell.Cell;
 import backend.cell.ModifiableCell;
 import backend.unit.ModifiableUnit;
 import backend.unit.Unit;
+import backend.util.AuthoringGameState;
 import backend.util.ModifiableVoogaObject;
 import backend.util.VoogaEntity;
 import backend.cell.ModifiableTerrain;
@@ -39,10 +40,9 @@ public class TemplatePane extends BaseUIManager<Region>{
 	DetailPane detailPane;
 	
 
-	public TemplatePane(Collection<ModifiableUnit> availableUnits, 
-			Collection<ModifiableTerrain> availableTerrains, DetailPane detailPaneIn) {
-			units = availableUnits;
-			terrains = availableTerrains;
+	public TemplatePane(AuthoringGameState gameState, DetailPane detailPaneIn) {
+			units = (Collection<? extends ModifiableUnit>) gameState.getTemplateByCategory(AuthoringGameState.UNIT);
+			terrains = (Collection<? extends ModifiableTerrain>) gameState.getTemplateByCategory(AuthoringGameState.TERRAIN);;
 			pane = new Pane();
 			detailPane = detailPaneIn;
 	
