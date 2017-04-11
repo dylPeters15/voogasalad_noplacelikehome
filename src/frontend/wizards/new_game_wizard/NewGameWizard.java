@@ -4,6 +4,8 @@
 package frontend.wizards.new_game_wizard;
 
 import frontend.util.BaseUIManager;
+import frontend.wizards.wizard_2_0.util.CellShapeSetting;
+import frontend.wizards.wizard_2_0.util.GridSizeSetting;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;

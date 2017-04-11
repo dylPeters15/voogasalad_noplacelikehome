@@ -8,24 +8,23 @@ import backend.unit.properties.*;
 import backend.util.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Created by th174 on 3/30/2017.
  */
 public class ModifiableUnit extends ModifiableVoogaObject<ModifiableUnit> implements Unit {
 	//TODO ResourceBundlify
-	public transient static final Unit SKELETON_WARRIOR = new ModifiableUnit("Skeleton Warrior")
-//			.setFaction(Faction.UNDEAD)
-			.addUnitStats(ModifiableUnitStat.HITPOINTS.copy().setMaxValue(39.0), ModifiableUnitStat.MOVEPOINTS.copy().setMaxValue(5))
+	public static final Unit SKELETON_WARRIOR = new ModifiableUnit("Skeleton Warrior")
+			.addUnitStats(ModifiableUnitStat.HITPOINTS.setMaxValue(39.0), ModifiableUnitStat.MOVEPOINTS.setMaxValue(5))
 			.setDescription("Once a noble knight in service of his kingdom, the skeleton warrior once again takes up the blade for the lich king.")
 			.setImgPath("spooky1.png")
 			.setMovePattern(GridPattern.HEXAGONAL_ADJACENT)
 			.addActiveAbilities(ActiveAbility.SWORD)
 			.addOffensiveModifiers(InteractionModifier.CHAOTIC);
-	public transient static final Unit SKELETON_ARCHER = new ModifiableUnit("Skeleton Archer")
-//			.setFaction(Faction.UNDEAD)
-			.addUnitStats(ModifiableUnitStat.HITPOINTS.copy().setMaxValue(34.0))
-			.addUnitStats(ModifiableUnitStat.MOVEPOINTS.copy().setMaxValue(6))
+	public static final Unit SKELETON_ARCHER = new ModifiableUnit("Skeleton Archer")
+			.addUnitStats(ModifiableUnitStat.HITPOINTS.setMaxValue(34.0))
+			.addUnitStats(ModifiableUnitStat.MOVEPOINTS.setMaxValue(6))
 			.setMovePattern(GridPattern.HEXAGONAL_ADJACENT)
 			.setImgPath("spooky2.png")
 			.setDescription("The skeletal corpse of an impoverished serf left to starve, reanimated by necromancy. Now, bow and arrow in hand, he enacts his revenge on the living.")
@@ -52,7 +51,7 @@ public class ModifiableUnit extends ModifiableVoogaObject<ModifiableUnit> implem
 		super(unitTemplateName, unitDescription, imgPath);
 		this.faction = faction;
 		this.terrainMoveCosts = new HashMap<>(moveCosts);
-		this.stats = new UnitStats(unitStats);
+		this.stats = new UnitStats(unitStats.parallelStream().map(UnitStat::copy).collect(Collectors.toList()));
 		this.movePattern = movePattern;
 		this.triggeredAbilities = new TriggeredAbilitySet(triggeredAbilities);
 		this.activeAbilities = new ActiveAbilitySet(activeAbilities);
@@ -105,7 +104,7 @@ public class ModifiableUnit extends ModifiableVoogaObject<ModifiableUnit> implem
 
 	@Override
 	public final ActiveAbility getActiveAbilityByName(String name) {
-		return null;
+		return activeAbilities.get(name);
 	}
 
 	@Override
@@ -126,11 +125,6 @@ public class ModifiableUnit extends ModifiableVoogaObject<ModifiableUnit> implem
 	@Override
 	public final Map<Terrain, Integer> getTerrainMoveCosts() {
 		return Collections.unmodifiableMap(terrainMoveCosts);
-	}
-
-	@Override
-	public final UnitStat<Integer> getMovePoints() {
-		return stats.get("Movepoints");
 	}
 
 	@Override
@@ -209,7 +203,8 @@ public class ModifiableUnit extends ModifiableVoogaObject<ModifiableUnit> implem
 
 	@Override
 	public ModifiableUnit removeActiveAbilities(ActiveAbility... abilities) {
-		return null;
+		activeAbilities.removeAll(abilities);
+		return this;
 	}
 
 	@Override
@@ -246,8 +241,8 @@ public class ModifiableUnit extends ModifiableVoogaObject<ModifiableUnit> implem
 	}
 
 	@Override
-	public final UnitStat<Double> getHitPoints() {
-		return stats.get("Hitpoints");
+	public UnitStat getUnitStat(String name) {
+		return stats.get(name);
 	}
 
 	@Override
@@ -302,7 +297,8 @@ public class ModifiableUnit extends ModifiableVoogaObject<ModifiableUnit> implem
 		return this;
 	}
 
-	public static Collection<ModifiableUnit> getPredefinedUnitTemplates() {
+	@Deprecated
+	public static Collection<ModifiableUnit> getPredefinedUnits() {
 		return getPredefined(ModifiableUnit.class);
 	}
 }

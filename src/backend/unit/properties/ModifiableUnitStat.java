@@ -10,23 +10,23 @@ import java.util.Collection;
 public class ModifiableUnitStat<T extends Comparable<T>> extends ModifiableVoogaObject<ModifiableUnitStat<T>> implements UnitStat<T> {
 	//TODO ResourceBundlify
 	//For units
-	public transient static final ModifiableUnitStat<Double> HITPOINTS = new ModifiableUnitStat<Double>("Hitpoints")
+	public static final ModifiableUnitStat<Double> HITPOINTS = new ModifiableUnitStat<Double>("Hitpoints")
 			.setMinValue(0.0)
 			.setMaxValue(50.0)
 			.setDescription("Units lose HP when taking damage. When a unit's hitpoints reach 0, the unit dies.")
 			.setImgPath("<3.png");
-	public transient static final ModifiableUnitStat<Integer> MOVEPOINTS = new ModifiableUnitStat<Integer>("Movepoints")
+	public static final ModifiableUnitStat<Integer> MOVEPOINTS = new ModifiableUnitStat<Integer>("Movepoints")
 			.setMinValue(0)
 			.setMaxValue(5)
 			.setDescription("Movepoints are consumed by moving on the map. Difficult terrain costs more movepoints, while more mobile units have more to spare.")
 			.setImgPath("Boot.png");
-	public transient static final ModifiableUnitStat<Double> ENERGY = new ModifiableUnitStat<Double>("Energy")
+	public static final ModifiableUnitStat<Double> ENERGY = new ModifiableUnitStat<Double>("Energy")
 			.setMinValue(0.0)
 			.setMaxValue(100.0)
 			.setDescription("Energy points are required for and consumed by some powerful abilities.")
 			.setImgPath("NRG.png");
 	//For players
-	public transient static final ModifiableUnitStat<Double> GOLD = new ModifiableUnitStat<Double>("Gold")
+	public static final ModifiableUnitStat<Double> GOLD = new ModifiableUnitStat<Double>("Gold")
 			.setMinValue(0.0)
 			.setMaxValue(Double.MAX_VALUE)
 			.setDescription("Players have a limited amount of gold to spend on their units.")
@@ -46,8 +46,9 @@ public class ModifiableUnitStat<T extends Comparable<T>> extends ModifiableVooga
 
 	public ModifiableUnitStat(String name, T minValue, T maxValue, String description, String imgPath) {
 		super(name, description, imgPath);
-		this.maxValue = maxValue;
-		this.minValue = minValue;
+		setMaxValue(maxValue);
+		setMinValue(minValue);
+		setCurrentValue(maxValue);
 	}
 
 	@Override
@@ -86,7 +87,8 @@ public class ModifiableUnitStat<T extends Comparable<T>> extends ModifiableVooga
 		return this;
 	}
 
-	public static Collection<ModifiableUnitStat> getPredefinedUnitStatTemplates() {
+	@Deprecated
+	public static Collection<ModifiableUnitStat> getPredefinedUnitStats() {
 		return getPredefined(ModifiableUnitStat.class);
 	}
 }

@@ -67,4 +67,6 @@ public interface ImmutableGameState {
 	Collection<BiPredicate<Player, ImmutableGameState>> getTurnRequirements();
 
 	Player getCurrentPlayer();
+
+	double random();
 }

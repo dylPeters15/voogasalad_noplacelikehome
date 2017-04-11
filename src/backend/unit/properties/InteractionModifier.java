@@ -4,6 +4,7 @@ import backend.unit.Unit;
 import backend.util.ImmutableGameState;
 import backend.util.ImmutableVoogaObject;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
@@ -66,16 +67,17 @@ public class InteractionModifier<T> extends ImmutableVoogaObject<InteractionModi
 		return originalValue;
 	}
 
+	@Deprecated
 	public static Collection<InteractionModifier> getPredefinedInteractionModifiers() {
 		return getPredefined(InteractionModifier.class);
 	}
 
 	@FunctionalInterface
-	public interface Modifier<T> {
+	public interface Modifier<T> extends Serializable {
 		//Defensive Modifiers
 		Modifier<Double> INVULNERABILITY = (incomingDamage, agent, target, game) -> 0.0;
 		Modifier<Double> FORMATION = (incomingDamage, agent, target, game) -> incomingDamage * (target.getNeighboringUnits(game.getGrid()).values().parallelStream().flatMap(Collection::stream).anyMatch(e -> e.getTeam().equals(target.getTeam()) && e.getName().equals(target.getName())) ? .6 : 1);
-		Modifier<Double> EVASIVE = (incomingDamage, agent, target, game) -> incomingDamage * Math.random() < .5 ? 0 : 1.5;
+		Modifier<Double> EVASIVE = (incomingDamage, agent, target, game) -> incomingDamage * game.random() < .5 ? 0 : 1.5;
 		Modifier<Double> STALWART = (incomingDamage, agent, target, game) -> incomingDamage * (target.getMovePoints().isFull() ? .5 : 1);
 		Modifier<Double> HARDENED_SHIELDS = (incomingDamage, agent, target, game) -> incomingDamage > 5 ? 5 : incomingDamage;
 		Modifier<Double> FEARFUL = (incomingDamage, agent, target, game) -> incomingDamage * (game.getTurnNumber() % 6 == 4 || game.getTurnNumber() % 6 == 5 ? 1.25 : 1);
@@ -86,7 +88,7 @@ public class InteractionModifier<T> extends ImmutableVoogaObject<InteractionModi
 		//Offensive Modifiers
 		Modifier<Double> CHAOTIC = (outgoingDamage, agent, target, game) -> outgoingDamage * (game.getTurnNumber() % 6 == 1 || game.getTurnNumber() % 6 == 2 ? 0.75 : game.getTurnNumber() % 6 == 4 || game.getTurnNumber() % 6 == 5 ? 1.25 : 1);
 		Modifier<Double> LAWFUL = (outgoingDamage, agent, target, game) -> outgoingDamage * (game.getTurnNumber() % 6 == 1 || game.getTurnNumber() % 6 == 2 ? 1.25 : game.getTurnNumber() % 6 == 4 || game.getTurnNumber() % 6 == 5 ? 0.75 : 1);
-		Modifier<Double> BLINDED = (outgoingDamage, agent, target, game) -> Math.random() < .5 ? outgoingDamage : 0;
+		Modifier<Double> BLINDED = (outgoingDamage, agent, target, game) -> game.random() < .5 ? outgoingDamage : 0;
 		Modifier<Double> FIRST_BLOOD = (outgoingDamage, agent, target, game) -> outgoingDamage * (agent.getHitPoints().isFull() ? 1.5 : 1);
 		Modifier<Double> EXECUTIONER = (outgoingDamage, agent, target, game) -> outgoingDamage * (agent.getHitPoints().getCurrentValue() / agent.getHitPoints().getMaxValue() < .25 ? 2 : 1);
 		Modifier<Double> BRAVERY = (outgoingDamage, agent, target, game) -> outgoingDamage * (target.getHitPoints().getCurrentValue() > agent.getHitPoints().getCurrentValue() ? 1.5 : 1);

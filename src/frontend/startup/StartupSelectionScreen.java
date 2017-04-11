@@ -12,15 +12,20 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
-
+import util.net.ObservableClient;
 import backend.util.*;
+import controller.CommunicationController;
+import controller.Controller;
 import frontend.View;
+import frontend.wizards.new_game_wizard.NewGameWizard;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.Objects;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -28,9 +33,11 @@ public class StartupSelectionScreen extends VBox{
 
 	private ResourceBundle SelectionProperties = ResourceBundle.getBundle("frontend/properties/SelectionProperties");
 	private StartupScreen ui;
+	ObservableClient<ImmutableGameState> myClient;
 
 
-	public StartupSelectionScreen(StartupScreen ui){ //should have some sort of parameter that is passing the UI
+	public StartupSelectionScreen(StartupScreen ui, ObservableClient<ImmutableGameState> client){ //should have some sort of parameter that is passing the UI
+		myClient = client;
 		this.setUpPane();
 		this.ui = ui;
 		System.out.println(this.getChildren());
@@ -47,7 +54,7 @@ public class StartupSelectionScreen extends VBox{
 			this.setOnAction(e -> create());
 		}};
 		Button load = new Button(SelectionProperties.getString("Load")){{
-			this.setOnAction(e -> load());
+			this.setOnAction(e -> edit());
 		}};
 		this.setPadding(new Insets(30, 10, 10, 10));
 		this.setSpacing(10);
@@ -62,13 +69,34 @@ public class StartupSelectionScreen extends VBox{
 	}
 
 	private void create(){
+		NewGameWizard wiz = new NewGameWizard();
+		wiz.addObserver(new Observer() {
+			
+			@Override
+			public void update(Observable o, Object arg) {
+				createGame((GameState)arg, true);
+			}
+		});
 		System.out.println("you clicked 'create.' I haven't gotten that far");
 
 	}
 
-	private void load(){
+	private void edit(){
 		System.out.println("you can load and save files, but it won't do anything");
 		read("load");
+	}
+	
+	private void createGame(GameState state, boolean editable) {
+		Controller control = new CommunicationController();
+		View view = new View();
+		myClient.setGameState(state);
+		control.setClient(myClient);
+		control.setGameState(state);
+		view.setEditable(editable);
+		view.setController(control);
+		control.setView(view);
+		return view.show();
+		
 	}
 
 	private void read(String saveOrLoad){

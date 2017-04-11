@@ -12,6 +12,7 @@ import java.util.function.BiPredicate;
 import backend.cell.ModifiableCell;
 import backend.cell.ModifiableTerrain;
 import backend.game_engine.ResultQuadPredicate;
+import backend.game_rules.GameRule;
 import backend.grid.ModifiableGameBoard;
 import backend.player.Player;
 import backend.player.Team;
@@ -19,10 +20,9 @@ import backend.unit.ModifiableUnit;
 import backend.unit.properties.ActiveAbility;
 
 /**
- * @author Created by th174 on 3/30/2017. Worked on by Alex
+ * @author Created by th174 on 3/30/2017. Worked on by Alex and Noah (ncp14)
  */
-
-//TODO: Implement getTurnNumber(), toXML() (Kinda Tavo's job), messagePlayer(Player from, Player to, String message);
+//TODO: Implement getTurnNumber(), messagePlayer(Player from, Player to, String message);
 public class GameState implements MutableGameState {
 	private List<Player> playerList;
 	private Player currentPlayer;
@@ -32,6 +32,8 @@ public class GameState implements MutableGameState {
 	private Collection<ActiveAbility<?>> activeAbilities;
 	private Collection<ModifiableTerrain> terrains;
 	private Collection<ModifiableCell> modifiableCells;
+
+	private final Random random;
 
 	private Collection<ResultQuadPredicate> currentObjectives;
 	private Map<Event, List<BiConsumer<Player, ImmutableGameState>>> turnActions;
@@ -52,6 +54,8 @@ public class GameState implements MutableGameState {
 		currentObjectives = new ArrayList<>();
 		turnActions = new HashMap<>();
 		turnRequirements = new ArrayList<>();
+		random = new Random();
+		random.setSeed(12012);
 	}
 
 	public void endTurn(Player player) {
@@ -74,6 +78,17 @@ public class GameState implements MutableGameState {
 	public Collection<ModifiableCell> getModifiableCells() {
 		return modifiableCells;
 	}
+	
+	public List<GameRule> getRules()
+	{
+		return gameRules;
+	}
+	
+	public void updateGameRules(List<GameRule> mRules)
+	{
+		gameRules = mRules;
+	}
+	
 
 	@Override
 	public ModifiableGameBoard getGrid() {
@@ -160,6 +175,11 @@ public class GameState implements MutableGameState {
 	@Override
 	public Player getCurrentPlayer() {
 		return currentPlayer;
+	}
+
+	@Override
+	public double random() {
+		return random.nextDouble();
 	}
 
 	private void setCurrentPlayer(Player player) {

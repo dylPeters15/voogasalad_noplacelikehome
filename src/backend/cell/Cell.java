@@ -5,8 +5,8 @@ import backend.grid.ModifiableGameBoard;
 import backend.grid.Shape;
 import backend.unit.Unit;
 import backend.util.ImmutableGameState;
-import backend.util.TriggeredEffect;
 import backend.util.ModifiableTriggeredEffect;
+import backend.util.TriggeredEffect;
 import backend.util.VoogaEntity;
 
 import java.util.Collection;
@@ -16,6 +16,9 @@ import java.util.Map;
  * @author Created by th174 on 3/28/2017.
  */
 public interface Cell extends VoogaEntity {
+	@Override
+	ModifiableCell copy();
+
 	void startTurn(ImmutableGameState gameState);
 
 	void endTurn(ImmutableGameState gameState);

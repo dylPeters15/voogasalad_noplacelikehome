@@ -1,6 +1,7 @@
 package util.chat_client;
 
-import backend.util.io.JSONSerializer;
+import util.io.Serializer;
+import util.io.Unserializer;
 import util.net.ObservableServer;
 
 import java.time.Duration;
@@ -23,12 +24,11 @@ public class ChatServerMain {
     public static final int PORT = 1337;
 
     public static void main(String[] args) throws Exception {
-	    JSONSerializer<ChatLog> jsonSerializer = new JSONSerializer<>(ChatLog.class);
         ObservableServer<ChatLog> voogaServer = new ObservableServer<>(
                 new ChatLog("----------Welcome to team No_place_like_~/'s chat!----------\n\n"),
                 PORT,
-                jsonSerializer,
-                jsonSerializer,
+                Serializer.NONE,
+                Unserializer.NONE,
                 Duration.ofSeconds(30));
         Executors.newSingleThreadExecutor().submit(voogaServer);
         System.out.println("Server started successfully...");

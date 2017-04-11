@@ -16,5 +16,5 @@ public interface GameBoardBuilder {
 
 	GameBoardBuilder setBoundsHandler(BoundsHandler boundsHandler);
 
-	GameBoardBuilder addCell(CoordinateTuple coordinates, ModifiableCell cell);
+	GameBoardBuilder setCell(CoordinateTuple coordinates, ModifiableCell cell);
 }

@@ -4,9 +4,7 @@ import backend.cell.Cell;
 import backend.cell.ModifiableCell;
 import backend.util.ModifiableVoogaObject;
 
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -15,25 +13,28 @@ import java.util.stream.IntStream;
  */
 public class ModifiableGameBoard extends ModifiableVoogaObject<ModifiableGameBoard> implements GameBoard, GameBoardBuilder {
 	private final Map<CoordinateTuple, Cell> gameBoard;
-	private ModifiableCell templateCell;
+	private Cell templateCell;
 	private BoundsHandler boundsHandler;
 	private int rows;
 	private int columns;
 
-	protected ModifiableGameBoard(String name, ModifiableCell templateCell, int rows, int columns, BoundsHandler boundsHandler, String description, String imgPath) {
+	public ModifiableGameBoard(String name, Cell templateCell, int rows, int columns, BoundsHandler boundsHandler, String description, String imgPath) {
+		this(name, templateCell, generateGameBoard(templateCell, rows, columns), boundsHandler, description, imgPath);
+		this.rows = rows;
+		this.columns = columns;
+	}
+
+	private ModifiableGameBoard(String name, Cell templateCell, Map<CoordinateTuple, Cell> gameBoard, BoundsHandler boundsHandler, String description, String imgPath) {
 		super(name, description, imgPath);
 		this.boundsHandler = boundsHandler;
 		this.templateCell = templateCell;
-		gameBoard = IntStream.range(0, rows).boxed()
-				.flatMap(i -> IntStream.range(0, columns).mapToObj(j -> new CoordinateTuple(i, j)))
-				.parallel()
-				.map(e -> e.convertToDimension(templateCell.dimension()))
-				.collect(Collectors.toMap(e -> e, e -> templateCell.copy().setLocation(e)));
+		this.gameBoard = gameBoard;
 	}
+
 
 	@Override
 	public ModifiableGameBoard copy() {
-		return new ModifiableGameBoard(getName(), getTemplateCell(), rows, columns, getBoundsHandler(), getDescription(), getImgPath());
+		return new ModifiableGameBoard(getName(), getTemplateCell(), gameBoard, getBoundsHandler(), getDescription(), getImgPath());
 	}
 
 	@Override
@@ -48,13 +49,13 @@ public class ModifiableGameBoard extends ModifiableVoogaObject<ModifiableGameBoa
 	}
 
 	@Override
-	public ModifiableGameBoard addCell(CoordinateTuple coordinateTuple, ModifiableCell cell) {
+	public ModifiableGameBoard setCell(CoordinateTuple coordinateTuple, ModifiableCell cell) {
 		gameBoard.put(coordinateTuple, cell.copy().setLocation(coordinateTuple));
 		return this;
 	}
 
 	@Override
-	public ModifiableCell getTemplateCell() {
+	public Cell getTemplateCell() {
 		return templateCell;
 	}
 
@@ -74,6 +75,37 @@ public class ModifiableGameBoard extends ModifiableVoogaObject<ModifiableGameBoa
 	public ModifiableGameBoard setColumns(int columns) {
 		this.columns = columns;
 		return this;
+	}
+
+	@Override
+	public GridBounds getBounds() {
+		return new GridBounds(findMinMax(gameBoard.keySet()));
+	}
+
+	@Override
+	public GridBounds getRectangularBounds() {
+		return new GridBounds(findMinMax(gameBoard.keySet().stream().map(CoordinateTuple::convertToRectangular).collect(Collectors.toList())));
+	}
+
+	private int[][] findMinMax(Collection<CoordinateTuple> tuples) {
+		int[][] minMax = new int[dimension()][2];
+		tuples.forEach(e -> {
+			for (int[] ints : minMax) {
+				ints[0] = Math.min(e.get(0), ints[0]);
+				ints[1] = Math.max(e.get(0), ints[1]);
+			}
+		});
+		return minMax;
+	}
+
+	private static Map<CoordinateTuple, Cell> generateGameBoard(Cell templateCell, int rows, int columns) {
+		return IntStream.range(0, rows).boxed()
+				.flatMap(i -> IntStream.range(0, columns).mapToObj(j -> new CoordinateTuple(i, j)))
+				.parallel()
+				.map(e -> e
+						.convertToDimension(templateCell
+								.dimension()))
+				.collect(Collectors.toMap(e -> e, e -> templateCell.copy().setLocation(e)));
 	}
 
 	@Override

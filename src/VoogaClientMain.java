@@ -2,6 +2,7 @@ import backend.player.Player;
 import backend.player.Team;
 import backend.util.ImmutableGameState;
 import backend.util.io.XMLSerializer;
+import javafx.application.Application;
 import javafx.stage.Stage;
 import util.net.ObservableClient;
 
@@ -11,10 +12,12 @@ import java.util.Scanner;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
+//import frontend.startup.StartupScreen;
+
 /**
  * @author Created by th174 on 4/4/2017.
  */
-public class VoogaClientMain {
+public class VoogaClientMain extends Application {
 	public static final int PORT = 10023;
 	public static final String HOST = ObservableClient.LOCALHOST;
 	public static final int TIMEOUT = 20;
@@ -29,12 +32,8 @@ public class VoogaClientMain {
 		client.addListener(state -> {
 			try {
 				System.out.printf(CHATBOX,
-						state.getTeamByName(teamName)
-								.get(name)
-								.getChatLog()
-								.parallelStream()
-								.map(Object::toString)
-								.collect(Collectors.joining("\n")));
+						state.getTeamByName(teamName).get(name).getChatLog().parallelStream()
+								.map(Object::toString).collect(Collectors.joining("\n")));
 			} catch (NullPointerException e) {
 			}
 		});
@@ -50,16 +49,14 @@ public class VoogaClientMain {
 		while (client.isActive()) {
 			String input = stdin.nextLine();
 			client.addToOutbox(state -> state
-					.messageAll(input, state
-							.getTeamByName(teamName)
-							.get(name)));
+					.messageAll(input + "\tN = " + state.random(), state.getTeamByName(teamName).get(name)));
 		}
 	}
 
-	//    @Override
+	@Override
 	public void start(Stage primaryStage) {
 //		primaryStage.setTitle(ResourceBundle.getBundle("resources/Selections", Locale.getDefault()).getString("Title"));
-//		UI userInterface = new UI();
+//		StartupScreen userInterface = new StartupScreen();
 //		primaryStage.setScene(userInterface.getPrimaryScene());
 //		primaryStage.setResizable(true);
 //		primaryStage.show();

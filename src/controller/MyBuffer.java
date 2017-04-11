@@ -11,6 +11,7 @@ import java.util.Queue;
  *
  * @param <T>
  */
+//TODO: Dude it's the year 2017, why do you still have a LinkedList? ArrayDeque is where its at man.
 public class MyBuffer<T> implements Buffer<T> {
 	private Queue<T> myBuffer;
 	private CommunicationController myListener;

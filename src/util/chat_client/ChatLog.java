@@ -2,6 +2,7 @@ package util.chat_client;
 
 import javafx.util.Pair;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
@@ -10,7 +11,7 @@ import java.util.stream.Collectors;
  *
  * @author Created by th174 on 4/1/2017.
  */
-public class ChatLog {
+public class ChatLog implements Serializable {
 	private String header;
 	private ArrayList<Pair<String, String>> log;
 

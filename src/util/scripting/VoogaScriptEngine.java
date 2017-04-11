@@ -65,7 +65,7 @@ public interface VoogaScriptEngine extends Serializer, Unserializer, Interaction
 
 	@Override
 	default void useAbility(Unit user, VoogaEntity target, ImmutableGameState gameState) {
-		eval(createBindings("abilityUser", user, "abilityTarget", target, "gameState", gameState));
+		eval(createBindings("user", user, "target", target, "gameState", gameState));
 	}
 
 	@Override

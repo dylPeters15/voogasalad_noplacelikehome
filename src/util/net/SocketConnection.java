@@ -51,7 +51,6 @@ public class SocketConnection {
 		try (ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream())) {
 			while (isActive()) {
 				Request request = (Request) inputStream.readObject();
-				System.out.println("Received:\n" + request);
 				executor.execute(() -> requestHandler.accept(request));
 			}
 		} catch (IOException e) {
@@ -70,7 +69,6 @@ public class SocketConnection {
 	 */
 	public synchronized boolean send(Request request) {
 		try {
-			System.out.println("Sent:\n" + request);
 			outputStream.writeObject(request);
 			return isActive();
 		} catch (IOException e) {

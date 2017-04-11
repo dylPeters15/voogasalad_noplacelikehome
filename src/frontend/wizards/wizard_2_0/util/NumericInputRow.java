@@ -25,16 +25,16 @@ public class NumericInputRow extends BaseUIManager<Region> {
 
 		myNameField = new Label(name);
 
-		myNumericalInputField = new TextField("0.0");
+		myNumericalInputField = new TextField("0");
 		myNumericalInputField.textProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
 				try {
 					if (!newValue.isEmpty()) {
-						Double.parseDouble(newValue);
+						Integer.parseInt(newValue);
 					}
 				} catch (Exception e) {
-					myNumericalInputField.setText("0.0");
+					myNumericalInputField.setText("0");
 				}
 			}
 		});
@@ -52,12 +52,12 @@ public class NumericInputRow extends BaseUIManager<Region> {
 		return myNameField.getText();
 	}
 
-	void setValue(Double value) {
+	void setValue(Integer value) {
 		myNumericalInputField.setText(value.toString());
 	}
 
-	public double getValue() {
-		return myNumericalInputField.getText().isEmpty() ? 0.0 : Double.parseDouble(myNumericalInputField.getText());
+	public Integer getValue() {
+		return myNumericalInputField.getText().isEmpty() ? 0 : Integer.parseInt(myNumericalInputField.getText());
 	}
 
 	void setLabel(String label) {

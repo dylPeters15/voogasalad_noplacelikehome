@@ -1,7 +1,7 @@
 /**
  * 
  */
-package frontend.wizards.new_game_wizard;
+package frontend.wizards.wizard_2_0.util;
 
 import java.util.ResourceBundle;
 
