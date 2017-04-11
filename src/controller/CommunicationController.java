@@ -42,6 +42,29 @@ public class CommunicationController extends Observable implements Controller  {
 	{
 		this.mGameState = gameState;
 	}
+	
+	public void addObserver(Observer obs)
+
+	public void deleteObserver(Observer obs)
+
+	public void deleteObservers()
+
+	public int countObservers()
+
+	protected void setChanged()
+
+
+
+	protected void clearChanged()
+
+	public boolean hasChanged()
+
+	public void notifyObservers()
+
+	
+
+	public void notifyObservers(Object obj)
+
 
 
 	

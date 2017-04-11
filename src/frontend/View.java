@@ -3,6 +3,8 @@
  */
 package frontend;
 
+import java.util.Observer;
+
 import backend.util.GameState;
 import controller.Controller;
 import controller.CommunicationController;
@@ -24,7 +26,7 @@ import util.net.ObservableClient;
  * @author Stone Mathers, Dylan Peters
  *         Created 4/3/2017
  */
-public class View extends BaseUIManager<Region> {
+public class View extends BaseUIManager<Region> implements Observer {
 
 	private boolean editable;
 	private BorderPane myBorder;
@@ -45,15 +47,17 @@ public class View extends BaseUIManager<Region> {
 		this.myController = (CommunicationController) myController;
 		//myClient = client;
 		//myController = controller;
-		myController.addListener(e -> update());
+		//myController.addListener(e -> update());
 		//client.addListener(e -> update());
+		myController.addObserver(this);
 		initBorderPane();
 	}
 	
 	/**
 	 * Updates the display of the GameState. This method is to be called by the GameState whenever changes are made.
 	 */
-	public void update(){
+	public void update(Observable obs, Object obj)
+	{
 		//worldView.updateGrid(myGameState.getGrid());
 		//tempPane.updateUnits(myGameState.getUnitTemplates());
 		worldView.updateGrid(myController.getGrid());
