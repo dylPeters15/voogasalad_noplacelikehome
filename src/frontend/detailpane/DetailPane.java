@@ -29,8 +29,20 @@ public class DetailPane extends BaseUIManager<Region>{
 		
 	}
 	
-	public void setUnitContent(ModifiableUnit unit) {
-		setGeneralContent(unit);
+	public void setContent(VoogaEntity sprite, String spriteType) {
+		clearContent();
+		addString("Name", sprite.getName());
+		addString("Description", sprite.getDescription());
+		if (spriteType.equals("unit")) {
+			setUnitContent((ModifiableUnit) sprite);
+		}
+		else {
+			setTerrainContent((ModifiableTerrain) sprite);
+		}
+		
+	}
+	
+	private void setUnitContent(ModifiableUnit unit) {
 		addMoveCosts(unit);
 		addCollection("Active Abilities", unit.getActiveAbilities());
 		addCollection("DefensiveModifiers", unit.getDefensiveModifiers());
@@ -39,17 +51,11 @@ public class DetailPane extends BaseUIManager<Region>{
 		addString("Legal Moves", unit.getMovePattern().toString());
 	}
 	
-	public void setTerrainContent(ModifiableTerrain terrain) {
-		setGeneralContent(terrain);
+	private void setTerrainContent(ModifiableTerrain terrain) {
 		addString("Default Move Cost", ((Integer) terrain.getDefaultMoveCost()).toString());
 		addString("Default Defense Modifier", ((Integer) terrain.getDefaultMoveCost()).toString());
 	}
 	
-	private void setGeneralContent(VoogaEntity sprite) {
-		clearContent();
-		addString("Name", sprite.getName());
-		addString("Description", sprite.getDescription());
-	}
 	
 	private void addCollection(String label, Collection<? extends VoogaEntity> collection) {
 		content += label + ": \n";

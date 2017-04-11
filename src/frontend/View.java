@@ -108,7 +108,7 @@ public class View extends BaseUIManager<Region> {
 		toolsPane.getRequests().passTo(this.getRequests());
 		detailPane = new DetailPane();
 		detailPane.getRequests().passTo(this.getRequests());
-		tempPane = new TemplatePane(myGameState.getUnitTemplates(), myGameState.getTerrains());
+		tempPane = new TemplatePane(myGameState.getUnitTemplates(), myGameState.getTerrains(), detailPane);
 		//tempPane = new TemplatePane(myController.getUnitTemplates(), myController.getModifiableCells());
 		tempPane.getRequests().passTo(this.getRequests());
 		
