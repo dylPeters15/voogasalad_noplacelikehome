@@ -8,9 +8,9 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.ResourceBundle;
 
+import backend.util.AuthoringGameState;
 import com.sun.javafx.collections.UnmodifiableObservableMap;
 
-import backend.util.GameState;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -52,7 +52,7 @@ public abstract class BaseUIManager<T extends Parent> extends Observable impleme
 
 	private ObjectProperty<ResourceBundle> language;
 	private ObjectProperty<String> styleSheet;
-	private ObservableQueue<Modifier<GameState>> requests;
+	private ObservableQueue<Modifier<AuthoringGameState>> requests;
 
 	/**
 	 * Creates a new SlogoBaseUIManager. Sets all values for the language and
@@ -72,11 +72,11 @@ public abstract class BaseUIManager<T extends Parent> extends Observable impleme
 		requests = new ObservableQueue<>();
 	}
 
-	public ObservableQueue<Modifier<GameState>> getRequests() {
+	public ObservableQueue<Modifier<AuthoringGameState>> getRequests() {
 		return requests;
 	}
 
-	public void addRequest(Modifier<GameState> request) {
+	public void addRequest(Modifier<AuthoringGameState> request) {
 		requests.add(request);
 	}
 

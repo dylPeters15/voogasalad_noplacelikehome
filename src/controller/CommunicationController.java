@@ -1,8 +1,8 @@
 package controller;
 
-
-import backend.util.GameState;
+import backend.util.AuthoringGameState;
 import frontend.View;
+
 
 /**
  * @author Created by ncp14
@@ -13,23 +13,23 @@ import frontend.View;
  */
 public class CommunicationController {
 	//front to back buffer for gamestate
-	private Buffer<GameState> frontToBackBuffer; 
-	
+	private Buffer<AuthoringGameState> frontToBackBuffer;
+
 	//GameRules buffer - should be groovy code
-	private Buffer<String> gameRulesCode; 
-	
+	private Buffer<String> gameRulesCode;
+
 	//end front to back buffer
-	private Buffer<GameState> backToFrontBuffer;
-	
+	private Buffer<AuthoringGameState> backToFrontBuffer;
+
 	private ModelGenerator mModelGenerator; //Touchdown class in backend
 	private View mView; //Touchdown class in frontend
-	
+
 	public CommunicationController() {
-		this.frontToBackBuffer = new MyBuffer<GameState>();
-		this.backToFrontBuffer = new MyBuffer<GameState>();
+		this.frontToBackBuffer = new MyBuffer<>();
+		this.backToFrontBuffer = new MyBuffer<>();
 		this.gameRulesCode = new MyBuffer<String>();
 	}
-	public CommunicationController(Buffer<GameState> frontToBackBuffer, Buffer<GameState> backToFrontBuffer, Buffer<String> gameRulesCode) {
+	public CommunicationController(Buffer<AuthoringGameState> frontToBackBuffer, Buffer<AuthoringGameState> backToFrontBuffer, Buffer<String> gameRulesCode) {
 		this.frontToBackBuffer = frontToBackBuffer;
 		this.backToFrontBuffer = backToFrontBuffer;
 		this.gameRulesCode = gameRulesCode;
@@ -61,7 +61,7 @@ public class CommunicationController {
 	 * 
 	 * @param newGameState
 	 */
-	public void passToBackend(GameState newGameState) {
+	public void passToBackend(AuthoringGameState newGameState) {
 		this.frontToBackBuffer.addToBuffer(newGameState);
 		this.updateBackend();
 	}
@@ -69,7 +69,7 @@ public class CommunicationController {
 	 * This method reads from buffer the incoming update of GameState inside
 	 * the buffer and updates the GameState according.
 	 */
-	public void passToFrontend(GameState newGameState) {
+	public void passToFrontend(AuthoringGameState newGameState) {
 		this.frontToBackBuffer.addToBuffer(newGameState);
 		this.updateFrontend();
 	}

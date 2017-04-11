@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import backend.unit.properties.ActiveAbility;
-import backend.util.GameState;
+import backend.util.AuthoringGameState;
 import frontend.wizards.wizard_2_0.util.SelectableInputRow;
 import frontend.wizards.wizard_2_0.util.VerticalTableInputView;
 import javafx.scene.image.Image;
@@ -17,7 +17,7 @@ public class AbilitiesAdderPage extends WizardPage {
 	private VerticalTableInputView table;
 	private Map<SelectableInputRow, ActiveAbility<?>> rowToAbility;
 
-	public AbilitiesAdderPage(GameState gameState) {
+	public AbilitiesAdderPage(AuthoringGameState gameState) {
 		initialize(gameState);
 	}
 
@@ -26,10 +26,10 @@ public class AbilitiesAdderPage extends WizardPage {
 		return table.getObject();
 	}
 
-	private void initialize(GameState gameState) {
+	private void initialize(AuthoringGameState gameState) {
 		table = new VerticalTableInputView();
 		rowToAbility = new HashMap<>();
-		gameState.getActiveAbilities().stream().forEachOrdered(ability -> {
+		gameState.getTemplateByCategory("ActiveAbility").forEach(ability -> {
 			Image image;
 			try {
 				image = new Image(ability.getImgPath());
@@ -38,14 +38,14 @@ public class AbilitiesAdderPage extends WizardPage {
 			}
 			SelectableInputRow row = new SelectableInputRow(image, ability.getName(),
 					ability.getDescription());
-			rowToAbility.put(row, ability);
+			rowToAbility.put(row, (ActiveAbility) ability);
 			table.getChildren().add(row);
 		});
 		canNextWritable().setValue(true);
 	}
 
 	public Collection<ActiveAbility<?>> getSelectedAbilities() {
-		return rowToAbility.keySet().stream().filter(row -> row.getSelected()).map(row -> rowToAbility.get(row)).collect(Collectors.toList());
+		return rowToAbility.keySet().stream().filter(SelectableInputRow::getSelected).map(row -> rowToAbility.get(row)).collect(Collectors.toList());
 	}
 
 }

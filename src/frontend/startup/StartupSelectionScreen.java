@@ -82,7 +82,7 @@ public class StartupSelectionScreen extends VBox {
 
 	private void createGame(GameplayState state, boolean editable) {
 		//Controller control = new CommunicationController();
-		View view = new View(state);
+		View view = new View(state,null);
 		//myClient.setGameState(state);
 		//control.setClient(myClient);
 		//control.setGameState(state);
@@ -118,7 +118,7 @@ public class StartupSelectionScreen extends VBox {
 
 			//this part probs doesn't work
 			Region pane = ui.getPrimaryPane();
-			((BorderPane) pane).setCenter(new View().getObject());
+			((BorderPane) pane).setCenter(new View(null,null).getObject());
 
 		} catch (IOException i) {
 

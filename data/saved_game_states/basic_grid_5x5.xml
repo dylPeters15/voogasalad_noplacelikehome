@@ -7184,7 +7184,7 @@
       </default>
     </java.util.Random>
   </random>
-  <currentObjectives class="list"/>
+  <objectives class="list"/>
   <turnActions/>
   <turnRequirements class="list">
     <java.util.function.BiPredicate resolves-to="serialized-lambda">

@@ -16,6 +16,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
+import util.net.ObservableClient;
 
 /**
  * @author Stone Mathers, Dylan Peters
@@ -30,15 +31,12 @@ public class View extends BaseUIManager<Region> {
 	private ToolsPane toolsPane;
 	private DetailPane detailPane;
 	private TemplatePane tempPane;
-	//private Controller myController;
-	private GameplayState myGameState;
-	//private ObservableClient<GameState> myClient;
-
-	public View() {
-		this(null);
-	}
-
-	public View(GameplayState gameState) {
+	private AuthoringGameState myGameState;
+	private ObservableClient<AuthoringGameState> myClient; //TODO: What should this generic be?
+	
+	
+	
+	public View(GameplayState gameState, ObservableClient client){
 		myGameState = gameState;
 		//myClient = client;
 		//myController = controller;

@@ -4,7 +4,10 @@ import backend.cell.Cell;
 import backend.cell.ModifiableCell;
 import backend.util.ModifiableVoogaObject;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -12,11 +15,24 @@ import java.util.stream.IntStream;
  * @author Created by th174 on 3/28/2017.
  */
 public class ModifiableGameBoard extends ModifiableVoogaObject<ModifiableGameBoard> implements GameBoard, GameBoardBuilder {
-	private final Map<CoordinateTuple, Cell> gameBoard;
+	public static final ModifiableGameBoard DEFAULT_GAME_BOARD = (ModifiableGameBoard) new ModifiableGameBoard("Plain Rectangular Flat Board - 5x5")
+			.setTemplateCell(ModifiableCell.BASIC_SQUARE_FLAT)
+			.setRows(10)
+			.setColumns(10).setBoundsHandler(BoundsHandler.FINITE_BOUNDS)
+			.setDescription("Default base game board for testing purposes")
+			.setImgPath("Duvall_lettuce.png")
+			.build();
+
+	private Map<CoordinateTuple, Cell> gameBoard;
 	private Cell templateCell;
 	private BoundsHandler boundsHandler;
 	private int rows;
 	private int columns;
+
+	//Constructor for building
+	public ModifiableGameBoard(String name) {
+		this(name, null, Collections.emptyMap(), null, "", "");
+	}
 
 	public ModifiableGameBoard(String name, Cell templateCell, int rows, int columns, BoundsHandler boundsHandler, String description, String imgPath) {
 		this(name, templateCell, generateGameBoard(templateCell, rows, columns), boundsHandler, description, imgPath);
@@ -30,7 +46,6 @@ public class ModifiableGameBoard extends ModifiableVoogaObject<ModifiableGameBoa
 		this.templateCell = templateCell;
 		this.gameBoard = gameBoard;
 	}
-
 
 	@Override
 	public ModifiableGameBoard copy() {
@@ -51,6 +66,12 @@ public class ModifiableGameBoard extends ModifiableVoogaObject<ModifiableGameBoa
 	@Override
 	public ModifiableGameBoard setCell(CoordinateTuple coordinateTuple, ModifiableCell cell) {
 		gameBoard.put(coordinateTuple, cell.copy().setLocation(coordinateTuple));
+		return this;
+	}
+
+	@Override
+	public GameBoard build() {
+		this.gameBoard = generateGameBoard(getTemplateCell(), rows, columns);
 		return this;
 	}
 
@@ -115,7 +136,7 @@ public class ModifiableGameBoard extends ModifiableVoogaObject<ModifiableGameBoa
 
 	@Override
 	public Cell get(CoordinateTuple coordinateTuple) {
-		return gameBoard.getOrDefault(boundsHandler.getMappedCoordinate(this, coordinateTuple), null);
+		return gameBoard.get(boundsHandler.getMappedCoordinate(this, coordinateTuple));
 	}
 
 	@Override
@@ -127,5 +148,10 @@ public class ModifiableGameBoard extends ModifiableVoogaObject<ModifiableGameBoa
 		InvalidGridException() {
 			super("Incorrect Grid parameters! Could not generate grid!");
 		}
+	}
+
+	@Deprecated
+	public static Collection<? extends GameBoard> getPredefinedGameBoards() {
+		return getPredefined(ModifiableGameBoard.class);
 	}
 }

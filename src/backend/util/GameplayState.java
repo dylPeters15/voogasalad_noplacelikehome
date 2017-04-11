@@ -11,6 +11,7 @@ import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author Created by th174 on 4/10/2017.
@@ -24,7 +25,7 @@ public class GameplayState extends ImmutableVoogaObject {
 	private Map<String, Team> teams;
 	private GameBoard grid;
 
-	private Collection<ResultQuadPredicate> currentObjectives;
+	private Collection<ResultQuadPredicate> objectives;
 	private Map<Event, Collection<BiConsumer<Player, GameplayState>>> turnActions;
 	private Collection<BiPredicate<Player, GameplayState>> turnRequirements;
 
@@ -37,7 +38,7 @@ public class GameplayState extends ImmutableVoogaObject {
 	}
 
 	private GameplayState(String name, GameBoard grid, int turnNumber, Collection<Team> teams,
-	                      Collection<ResultQuadPredicate> currentObjectives,
+	                      Collection<ResultQuadPredicate> objectives,
 	                      Map<Event, Collection<BiConsumer<Player, GameplayState>>> turnActions,
 	                      Collection<BiPredicate<Player, GameplayState>> turnRequirements,
 	                      String description, String imgPath, Random random) {
@@ -47,7 +48,7 @@ public class GameplayState extends ImmutableVoogaObject {
 		this.random = random;
 		this.turnNumber = turnNumber;
 		this.turnActions = turnActions.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> new ArrayList<>(e.getValue())));
-		this.currentObjectives = new HashSet<>(currentObjectives);
+		this.objectives = new HashSet<>(objectives);
 		this.turnRequirements = new HashSet<>(turnRequirements);
 	}
 
@@ -55,8 +56,22 @@ public class GameplayState extends ImmutableVoogaObject {
 		return playerList.get(playerNames.get(currentPlayerNumber));
 	}
 
+	public Player getPlayerByName(String name) {
+		return playerList.get(name);
+	}
+
+	GameplayState addTeam(Team team) {
+		teams.put(team.getName(), team);
+		return this;
+	}
+
 	public Team getTeamByName(String teamName) {
 		return teams.get(teamName);
+	}
+
+	GameplayState removeTeamByName(String name) {
+		teams.remove(name);
+		return this;
 	}
 
 	public Collection<Team> getTeams() {
@@ -88,20 +103,81 @@ public class GameplayState extends ImmutableVoogaObject {
 		return grid;
 	}
 
+	GameplayState setGrid(GameBoard grid) {
+		this.grid = grid;
+		return this;
+	}
+
 	public double random() {
 		return random.nextDouble();
 	}
 
-	public Collection<ResultQuadPredicate> getCurrentObjectives() {
-		return Collections.unmodifiableCollection(currentObjectives);
+	public Collection<ResultQuadPredicate> getObjectives() {
+		return Collections.unmodifiableCollection(objectives);
+	}
+
+	GameplayState addObjectives(ResultQuadPredicate... objectives) {
+		return addObjectives(Arrays.asList(objectives));
+	}
+
+	GameplayState addObjectives(Collection<ResultQuadPredicate> objectives) {
+		this.objectives.addAll(objectives);
+		return this;
+	}
+
+	GameplayState removeObjectives(ResultQuadPredicate... objectives) {
+		return removeObjectives(Arrays.asList(objectives));
+	}
+
+	GameplayState removeObjectives(Collection<ResultQuadPredicate> objectives) {
+		this.objectives.removeAll(objectives);
+		return this;
 	}
 
 	public Map<Event, Collection<BiConsumer<Player, GameplayState>>> getTurnActions() {
 		return Collections.unmodifiableMap(turnActions);
 	}
 
+	GameplayState addTurnActions(Event event, Collection<BiConsumer<Player, GameplayState>> actions) {
+		turnActions.merge(event, new ArrayList<>(actions), (oldActions, newActions) -> Stream.of(oldActions, newActions).flatMap(Collection::stream).collect(Collectors.toList()));
+		return this;
+	}
+
+	GameplayState addTurnActions(Event event, BiConsumer<Player, GameplayState>... actions) {
+		return addTurnActions(event, Arrays.asList(actions));
+	}
+
+	//TODO: Doesn't workbecause there's no way to getByName a collection of BiConsumers you want to remove
+	GameplayState removeTurnActions(Event event, Collection<BiConsumer<Player, GameplayState>> actions) {
+		turnActions.get(event).removeIf(actions::contains);
+		return this;
+	}
+
+	//TODO: Doesn't work
+	GameplayState removeTurnActions(Event event, BiConsumer<Player, GameplayState>... actions) {
+		return removeTurnActions(event, Arrays.asList(actions));
+	}
+
 	public Collection<BiPredicate<Player, GameplayState>> getTurnRequirements() {
 		return Collections.unmodifiableCollection(turnRequirements);
+	}
+
+	GameplayState addTurnRequirements(Collection<BiPredicate<Player, GameplayState>> turnRequirements) {
+		this.turnRequirements.addAll(turnRequirements);
+		return this;
+	}
+
+	GameplayState addTurnRequirements(BiPredicate<Player, GameplayState>... turnRequirements) {
+		return addTurnRequirements(Arrays.asList(turnRequirements));
+	}
+
+	GameplayState removeTurnRequirements(Collection<BiPredicate<Player, GameplayState>> turnRequirements) {
+		this.turnRequirements.removeAll(turnRequirements);
+		return this;
+	}
+
+	GameplayState removeTurnRequirements(BiPredicate<Player, GameplayState>... turnRequirements) {
+		return removeTurnRequirements(Arrays.asList(turnRequirements));
 	}
 
 	public boolean turnRequirementsSatisfied() {
@@ -128,13 +204,8 @@ public class GameplayState extends ImmutableVoogaObject {
 		return this;
 	}
 
-	public GameplayState addTeam(Team team) {
-		teams.put(team.getName(), team);
-		return this;
-	}
-
 	@Override
 	public GameplayState copy() {
-		return new GameplayState(getName(), getGrid(), turnNumber, getTeams(), currentObjectives, turnActions, turnRequirements, getDescription(), getImgPath(), random);
+		return new GameplayState(getName(), getGrid(), turnNumber, getTeams(), objectives, turnActions, turnRequirements, getDescription(), getImgPath(), random);
 	}
 }

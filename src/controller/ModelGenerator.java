@@ -1,15 +1,14 @@
 package controller;
 
 import backend.Model;
-import backend.util.GameState;
-import controller.CommunicationController;
+import backend.util.AuthoringGameState;
 
 public class ModelGenerator implements Model {
 
 	private CommunicationController controller;
-	private GameState gameState;
+	private AuthoringGameState gameState;
 	
-	public ModelGenerator(CommunicationController mController, GameState mGameState) {
+	public ModelGenerator(CommunicationController mController, AuthoringGameState mGameState) {
 		this.controller=mController;
 		this.gameState = mGameState;
 	}
@@ -18,7 +17,7 @@ public class ModelGenerator implements Model {
 
 	public ModelGenerator(CommunicationController myController) {
 		this.myController=myController;
-		generateGamestate();
+		generateGameState();
 	}
 
 	public void generateGameState()
@@ -28,19 +27,19 @@ public class ModelGenerator implements Model {
 		//This is basically just XML/JSON
 	}
 	
-	public void setGameState(GameState mGameState)
+	public void setGameState(AuthoringGameState mGameState)
 	{
 		this.gameState = mGameState;
 	}
 
 	@Override
-	public GameState getGameState() {
+	public AuthoringGameState getGameState() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public GameState setGameState() {
+	public AuthoringGameState setGameState() {
 		// TODO Auto-generated method stub
 		return null;
 	}

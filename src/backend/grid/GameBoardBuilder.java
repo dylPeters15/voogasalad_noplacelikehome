@@ -6,8 +6,6 @@ import backend.cell.ModifiableCell;
  * @author Created by th174 on 4/8/2017.
  */
 public interface GameBoardBuilder {
-	GameBoard copy();
-
 	GameBoardBuilder setTemplateCell(ModifiableCell cell);
 
 	GameBoardBuilder setRows(int rows);
@@ -17,4 +15,6 @@ public interface GameBoardBuilder {
 	GameBoardBuilder setBoundsHandler(BoundsHandler boundsHandler);
 
 	GameBoardBuilder setCell(CoordinateTuple coordinates, ModifiableCell cell);
+
+	GameBoard build();
 }

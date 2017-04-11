@@ -12,8 +12,6 @@ import java.util.List;
 public interface ImmutablePlayer extends VoogaEntity {
 	Team getTeam();
 
-	Faction getFaction();
-
 	Collection<Unit> getOwnedUnits(ModifiableGameBoard grid);
 
 	Collection<Cell> getVisibleCells();

@@ -6,6 +6,7 @@ import backend.unit.ModifiableUnit;
 import backend.unit.Unit;
 import backend.unit.properties.ActiveAbility;
 import backend.unit.properties.InteractionModifier;
+import backend.util.AuthoringGameState;
 import backend.util.GameplayState;
 import backend.util.io.XMLSerializer;
 import org.junit.Test;
@@ -34,11 +35,11 @@ public class BackendTests {
 
 	@Test
 	public void testAttack() {
-		GameState gameState = new GameState();
+		AuthoringGameState authoringGameState = new AuthoringGameState("test");
 		Unit unit1 = ModifiableUnit.SKELETON_ARCHER.copy();
 		Unit unit2 = ModifiableUnit.SKELETON_WARRIOR.copy();
 		double startingHP = unit2.getHitPoints().getCurrentValue();
-		unit1.useActiveAbility("Bow", unit2, gameState);
+		unit1.useActiveAbility("Bow", unit2, authoringGameState);
 		double endingHP = unit2.getHitPoints().getCurrentValue();
 		assertEquals(startingHP - endingHP, 14, .00001);
 	}
@@ -49,13 +50,13 @@ public class BackendTests {
 				"user:takeDamage(-5)\n" +
 				"target:takeDamage(5)";
 		VoogaScriptEngine engine = VoogaScriptEngineManager.read("Lua", script);
-		GameState gameState = new GameState();
+		AuthoringGameState authoringGameState = new AuthoringGameState("test");
 		Unit unit1 = ModifiableUnit.SKELETON_ARCHER.copy();
 		Unit unit2 = ModifiableUnit.SKELETON_WARRIOR.copy();
 		double startingHP1 = unit1.getHitPoints().getCurrentValue();
 		double startingHP2 = unit2.getHitPoints().getCurrentValue();
 		unit1.addActiveAbilities(new ActiveAbility<Unit>("Drain", engine, GridPattern.HEXAGONAL_ADJACENT, "", ""));
-		unit1.useActiveAbility("Drain", unit2, gameState);
+		unit1.useActiveAbility("Drain", unit2, authoringGameState);
 		double endingHP1 = unit1.getHitPoints().getCurrentValue();
 		double endingHP2 = unit2.getHitPoints().getCurrentValue();
 		assertEquals(5, startingHP2 - endingHP2, .0001);
@@ -86,11 +87,11 @@ public class BackendTests {
 	public void createAndSaveGrid() throws IOException {
 		Cell template = ModifiableCell.BASIC_SQUARE_FLAT;
 		ModifiableGameBoard board = new ModifiableGameBoard("testBoard", template, 5, 5, BoundsHandler.TOROIDAL_BOUNDS, "", "").copy();
-		GameplayState gameState = new GameState(board);
-		new CoordinateTuple(0, 0).getNeighbors().forEach(e -> board.get(e).arrive(ModifiableUnit.SKELETON_ARCHER.copy(), gameState));
-		XMLSerializer<GameState> serializer = new XMLSerializer<>();
-		gameState.addTurnRequirement((BiPredicate<Player, GameplayState> & Serializable) (player, immutableGameState) -> 3 < 5);
-		Files.write(Paths.get("data/saved_game_states/basic_grid_5x5.xml"), ((String) serializer.serialize(gameState)).getBytes());
+		AuthoringGameState authoringGameState = new AuthoringGameState("test").setGrid(board);
+		new CoordinateTuple(0, 0).getNeighbors().forEach(e -> board.get(e).arrive(ModifiableUnit.SKELETON_ARCHER.copy(), authoringGameState));
+		XMLSerializer<AuthoringGameState> serializer = new XMLSerializer<>();
+		authoringGameState.addTurnRequirements((BiPredicate<Player, GameplayState> & Serializable) (player, immutableAuthoringGameState) -> 3 < 5);
+		Files.write(Paths.get("data/saved_game_states/basic_grid_5x5.xml"), ((String) serializer.serialize(authoringGameState)).getBytes());
 		assertEquals(25, board.getCells().values().stream().filter(e -> e.getTerrain().equals(template.getTerrain())).count());
 		assertEquals(4, board.getUnits().size());
 		assertTrue(!board.get(new CoordinateTuple(0, 4)).getOccupants().isEmpty());
