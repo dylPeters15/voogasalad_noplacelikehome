@@ -12,6 +12,8 @@ import java.util.ResourceBundle;
 
 import backend.util.AuthoringGameState;
 import backend.util.GameplayState;
+import controller.CommunicationController;
+import controller.Controller;
 import frontend.View;
 import frontend.wizards.NewGameWizard;
 import javafx.geometry.Insets;
@@ -68,6 +70,10 @@ public class StartupSelectionScreen extends VBox {
 	private void play() {
 		read("play");
 	}
+	
+	private void edit() {
+		read("load");
+	}
 
 	private void create() {
 		NewGameWizard wiz = new NewGameWizard();
@@ -81,20 +87,13 @@ public class StartupSelectionScreen extends VBox {
 		});
 
 	}
-
-	private void edit() {
-		read("load");
-	}
-
 	private void createGame(AuthoringGameState state, boolean editable) {
-		//Controller control = new CommunicationController();
-		View view = new View(state,null);
+		View view = new View();
+		Controller control = new CommunicationController(state, view);
+		view.setController(control);
 		//myClient.setGameState(state);
 		//control.setClient(myClient);
-		//control.setGameState(state);
 		view.setEditable(editable);
-		//view.setController(control);
-		//control.setView(view);
 		Stage stage = new Stage();
 		Scene scene = new Scene(view.getObject());
 		stage.setScene(scene);
@@ -124,7 +123,7 @@ public class StartupSelectionScreen extends VBox {
 
 			//this part probs doesn't work
 			Region pane = ui.getPrimaryPane();
-			((BorderPane) pane).setCenter(new View(null,null).getObject());
+			((BorderPane) pane).setCenter(new View(null).getObject());
 
 		} catch (IOException i) {
 

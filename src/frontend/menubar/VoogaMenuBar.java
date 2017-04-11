@@ -6,15 +6,22 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+import backend.util.AuthoringGameState;
+import controller.CommunicationController;
+import controller.Controller;
 import frontend.View;
 import frontend.util.BaseUIManager;
+import frontend.wizards.NewGameWizard;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Menu;
@@ -24,6 +31,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import javafx.stage.Window;
 
 public class VoogaMenuBar extends BaseUIManager<MenuBar> {
@@ -68,6 +76,10 @@ public class VoogaMenuBar extends BaseUIManager<MenuBar> {
 		save = new MenuItem(getLanguage().getValue().getString("Save")){{
 			setOnAction(e -> save());
 		}};
+		
+		MenuItem newGameItem =  new MenuItem(getLanguage().getValue().getString("Create")){{
+			setOnAction(e -> create());
+		}};
 		quit = new MenuItem(getLanguage().getValue().getString("Quit"));
 		setLanguage = new Menu(getLanguage().getValue().getString("SetLanguage"));
 		setTheme = new Menu(getLanguage().getValue().getString("SetTheme"));
@@ -76,6 +88,7 @@ public class VoogaMenuBar extends BaseUIManager<MenuBar> {
 		file.getItems().add(load);
 		file.getItems().add(save);
 		file.getItems().add(quit);
+		file.getItems().add(newGameItem);
 
 		language.getItems().add(setLanguage);
 
@@ -193,6 +206,32 @@ public class VoogaMenuBar extends BaseUIManager<MenuBar> {
 
 			}
 		}
+	}
+	
+	private void create() {
+		NewGameWizard wiz = new NewGameWizard();
+		wiz.addObserver(new Observer() {
+
+			@Override
+			public void update(Observable o, Object arg) {
+				createGame((AuthoringGameState) arg, true);
+//				stage.close();
+			}
+		});
+
+	}
+	private void createGame(AuthoringGameState state, boolean editable) {
+		View view = new View();
+		Controller control = new CommunicationController(state, view);
+		view.setController(control);
+		//myClient.setGameState(state);
+		//control.setClient(myClient);
+		view.setEditable(editable);
+		Stage stage = new Stage();
+		Scene scene = new Scene(view.getObject());
+		stage.setScene(scene);
+		stage.show();
+
 	}
 
 }
