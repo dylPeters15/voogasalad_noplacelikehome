@@ -35,8 +35,8 @@ public class View extends BaseUIManager<Region> {
 	private DetailPane detailPane;
 	private TemplatePane tempPane;
 	private Controller myController;
-	private GameState myGameState;
-	private Client mClient;
+	//private GameState myGameState;
+	//private Client mClient;
 	//private ObservableClient<GameState> myClient;
 	
 	public View(){
@@ -45,10 +45,14 @@ public class View extends BaseUIManager<Region> {
 	
 	public View(CommunicationController myController){
 		this.myController = (CommunicationController) myController;
-		mClient = myController.getClient();
-		myGameState = myController.getGameState();
 		
-		//myController.addListener(e -> update()); Called from controller instead
+		
+		//Both of the following lines no longer needed, as can be accessed form controller.
+		//mClient = myController.getClient();
+		//myGameState = myController.getGameState();
+		
+		//Instead of using listners, the update() method is called from the controller; check it out.
+		//myController.addListener(e -> update()); 
 		//client.addListener(e -> update());
 		
 		initBorderPane();
@@ -106,14 +110,14 @@ public class View extends BaseUIManager<Region> {
 	private void initPanesAndListeners(){
 		menuBar = new VoogaMenuBar();
 		menuBar.getRequests().passTo(this.getRequests());
-		worldView = new WorldView(myGameState.getGrid());
+		worldView = new WorldView(myController.getGameState().getGrid());
 		//worldView = new WorldView(myController.getGrid());
 		worldView.getRequests().passTo(this.getRequests());
 		toolsPane = new ToolsPane();
 		toolsPane.getRequests().passTo(this.getRequests());
 		detailPane = new DetailPane();
 		detailPane.getRequests().passTo(this.getRequests());
-		tempPane = new TemplatePane(myGameState.getUnitTemplates(), myGameState.getTerrains());
+		tempPane = new TemplatePane(myController.getGameState().getUnitTemplates(), myController.getGameState().getTerrains());
 		//tempPane = new TemplatePane(myController.getUnitTemplates(), myController.getModifiableCells());
 		tempPane.getRequests().passTo(this.getRequests());
 		
@@ -149,10 +153,17 @@ public class View extends BaseUIManager<Region> {
 		return myBorder;
 	}
 	
+	/**
 	public void setGameState(GameState newGameState)
 	{
 		this.myGameState = newGameState;
 	}
+	
+	public GameState getGameState()
+	{
+		this.myGameState = myController.getGameState();
+	}
+	**/
 	
 	public void sendAlert(String s) {
 		Alert myAlert;
