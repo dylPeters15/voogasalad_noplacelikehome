@@ -4,6 +4,7 @@ import backend.grid.GameBoard;
 import backend.util.Client;
 import backend.util.AuthoringGameState;
 import frontend.View;
+import util.net.ObservableClient;
 
 /**
  * @author Created by ncp14
@@ -16,7 +17,7 @@ public class CommunicationController implements Controller  {
 	private MyBuffer<AuthoringGameState> gameStateHistory;
 	private AuthoringGameState mGameState;
 	private View mView;
-	private Client mClient;
+	private ObservableClient mClient;
 	
 	public CommunicationController(AuthoringGameState gameState, View view)
 	{
@@ -39,13 +40,13 @@ public class CommunicationController implements Controller  {
 		this.mView = view;
 	}
 	
-	public void setClient(Client client)
+	public void setClient(ObservableClient client)
 	{
 		this.mClient = client;
 		mView.update();
 	}
 	
-	public Client getClient()
+	public ObservableClient getClient()
 	{
 		return mClient; 
 	}

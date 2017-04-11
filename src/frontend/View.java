@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import backend.cell.ModifiableTerrain;
 import backend.unit.ModifiableUnit;
 import backend.util.AuthoringGameState;
+import controller.CommunicationController;
 import frontend.detailpane.DetailPane;
 import frontend.menubar.VoogaMenuBar;
 import frontend.templatepane.TemplatePane;
@@ -31,11 +32,14 @@ public class View extends BaseUIManager<Region> {
 	private ToolsPane toolsPane;
 	private DetailPane detailPane;
 	private TemplatePane tempPane;
-	private AuthoringGameState myGameState;
-	private ObservableClient<AuthoringGameState> myClient; // TODO: What should
+	//private AuthoringGameState myGameState;
+	//private ObservableClient<AuthoringGameState> myClient; // TODO: What should
 															// this generic be?
+	private CommunicationController mCommunicationController;
+	
 	public View(AuthoringGameState gameState, ObservableClient client) {
-		myGameState = gameState;
+		mCommunicationController = new CommunicationController(gameState, this);
+		mCommunicationController.setClient(client);
 		// myClient = client;
 		// myController = controller;
 		// controller.addListener(e -> update());
@@ -47,9 +51,9 @@ public class View extends BaseUIManager<Region> {
 	 * GameState whenever changes are made.
 	 */
 	public void update() {
-		worldView.updateGrid(myGameState.getGrid());
+		worldView.updateGrid(mCommunicationController.getGameState().getGrid());
 		@SuppressWarnings("unchecked")
-		Collection<ModifiableUnit> units = (Collection<ModifiableUnit>) myGameState
+		Collection<ModifiableUnit> units = (Collection<ModifiableUnit>) mCommunicationController.getGameState()
 				.getTemplateByCategory(AuthoringGameState.UNIT).getAll().stream()
 				.filter(voogaEntity -> voogaEntity instanceof ModifiableUnit).collect(Collectors.toList());
 		tempPane.updateUnits(units);
@@ -98,7 +102,7 @@ public class View extends BaseUIManager<Region> {
 	private void initPanesAndListeners() {
 		menuBar = new VoogaMenuBar();
 		menuBar.getRequests().passTo(this.getRequests());
-		worldView = new WorldView(myGameState.getGrid());
+		worldView = new WorldView(mCommunicationController.getGameState().getGrid());
 		// worldView = new WorldView(myController.getGrid());
 		worldView.getRequests().passTo(this.getRequests());
 		toolsPane = new ToolsPane();
@@ -106,11 +110,11 @@ public class View extends BaseUIManager<Region> {
 		detailPane = new DetailPane();
 		detailPane.getRequests().passTo(this.getRequests());
 		@SuppressWarnings("unchecked")
-		Collection<ModifiableUnit> units = (Collection<ModifiableUnit>) myGameState
+		Collection<ModifiableUnit> units = (Collection<ModifiableUnit>) mCommunicationController.getGameState()
 				.getTemplateByCategory(AuthoringGameState.UNIT).getAll().stream()
 				.filter(voogaEntity -> voogaEntity instanceof ModifiableUnit).collect(Collectors.toList());
 		@SuppressWarnings("unchecked")
-		Collection<ModifiableTerrain> terrains = (Collection<ModifiableTerrain>) myGameState
+		Collection<ModifiableTerrain> terrains = (Collection<ModifiableTerrain>) mCommunicationController.getGameState()
 				.getTemplateByCategory(AuthoringGameState.TERRAIN).getAll().stream()
 				.filter(voogaEntity -> voogaEntity instanceof ModifiableTerrain).collect(Collectors.toList());
 		tempPane = new TemplatePane(units, terrains, detailPane);
@@ -146,7 +150,7 @@ public class View extends BaseUIManager<Region> {
 		return myBorder;
 	}
 	public void setGameState(AuthoringGameState newGameState) {
-		this.myGameState = newGameState;
+		mCommunicationController.setGameState(newGameState);
 	}
 	public void sendAlert(String s) {
 		Alert myAlert;
