@@ -55,7 +55,7 @@ public class StartupMenuBar extends VBox {
 			setOnAction(e -> edit());
 		}};
 
-		this.loadItem = new MenuItem(SelectionProperties.getString("Load")){{
+		this.loadItem = new MenuItem(SelectionProperties.getString("EditGame")){{
 			setOnAction(e -> edit());
 		}};
 

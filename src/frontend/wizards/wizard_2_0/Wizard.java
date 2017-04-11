@@ -5,8 +5,8 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import frontend.util.BaseUIManager;
-import frontend.wizards.new_voogaobject_wizard.util.ButtonBar;
 import frontend.wizards.wizard_2_0.selection_strategies.WizardSelectionStrategy;
+import frontend.wizards.wizard_2_0.util.ButtonBar;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;

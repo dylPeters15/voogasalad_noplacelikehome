@@ -2,8 +2,8 @@ package frontend.templatepane;
 
 import java.util.Collection;
 
+import frontend.detailpane.DetailPane;
 import frontend.sprites.Sprite;
-import frontend.sprites.Terrain;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import backend.cell.Cell;
@@ -11,7 +11,9 @@ import backend.cell.ModifiableCell;
 import backend.unit.ModifiableUnit;
 import backend.unit.Unit;
 import backend.util.ModifiableVoogaObject;
+import backend.util.VoogaEntity;
 import backend.cell.ModifiableTerrain;
+import backend.cell.Terrain;
 import frontend.util.BaseUIManager;
 import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
@@ -32,30 +34,32 @@ import javafx.scene.text.Text;
 public class TemplatePane extends BaseUIManager<Region>{
 
 	Pane pane;
-	Collection<? extends ModifiableVoogaObject> units;
-	Collection<? extends ModifiableVoogaObject> terrains;
+	Collection<? extends ModifiableUnit> units;
+	Collection<? extends ModifiableTerrain> terrains;
+	DetailPane detailPane;
 	
 
-	public TemplatePane(Collection<ModifiableVoogaObject> availableUnits, 
-			Collection<ModifiableVoogaObject> availableTerrains) {
+	public TemplatePane(Collection<ModifiableUnit> availableUnits, 
+			Collection<ModifiableTerrain> availableTerrains, DetailPane detailPaneIn) {
 			units = availableUnits;
 			terrains = availableTerrains;
 			pane = new Pane();
+			detailPane = detailPaneIn;
 	
 	}
 	
-	private void createCollabsible(String label, Collection<? extends ModifiableVoogaObject> sprites) {
+	private void createCollabsible(String label, Collection<? extends VoogaEntity> sprites) {
 		TitledPane spritePane = new TitledPane();
 		spritePane.setText(label);
-		VBox content = createContent(sprites);
+		VBox content = createContent(sprites, label);
 		spritePane.setContent(content);
 		spritePane.setCollapsible(true);
 		pane.getChildren().add(spritePane);
 	}
 	
-	private VBox createContent(Collection<? extends ModifiableVoogaObject> sprites) {
+	private VBox createContent(Collection<? extends VoogaEntity> sprites, String spriteType) {
 		VBox contentPane = new VBox();
-		for (ModifiableVoogaObject sprite: sprites) {
+		for (VoogaEntity sprite: sprites) {
 			VBox spriteContent = new VBox();
 			// fix getName and getImage once communication sorted
 			Text spriteName = new Text(sprite.getName());
@@ -64,6 +68,7 @@ public class TemplatePane extends BaseUIManager<Region>{
 			ImageView spriteImage = new ImageView(tempImage); 
 			spriteContent.getChildren().add(spriteImage);
 			setOnDrag(spriteContent);
+			setOnClick(spriteContent, sprite, spriteType);
 			contentPane.getChildren().add(spriteContent);
 		}
 		return contentPane;
@@ -86,6 +91,15 @@ public class TemplatePane extends BaseUIManager<Region>{
 	                event.consume();
 	            }
 	        });
+	}
+	
+	private void setOnClick(Node o, VoogaEntity sprite, String spriteType) {
+		o.setOnMouseClicked(new EventHandler <MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				detailPane.setContent(sprite, spriteType);	
+			}		
+		});
 	}
 	
 	private void updatePane() {

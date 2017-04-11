@@ -8,20 +8,21 @@ public class NewGameSelectionStrategy extends BaseSelectionStrategy<GameState> {
 
 	private ImageNameDescriptionPage imageNameDescriptionPage;
 	private GridInstantiationPage gridInstantiationPage;
-	
-	public NewGameSelectionStrategy(){
+
+	public NewGameSelectionStrategy() {
 		initialize();
 	}
-	
+
 	@Override
 	public GameState finish() {
-		return new GameState(gridInstantiationPage.getGameBoard());
+		GameState gameState = new GameState(gridInstantiationPage.getGameBoard());
+		return gameState;
 	}
-	
-	private void initialize(){
+
+	private void initialize() {
 		imageNameDescriptionPage = new ImageNameDescriptionPage();
 		gridInstantiationPage = new GridInstantiationPage();
-		getPages().addAll(imageNameDescriptionPage,gridInstantiationPage);
+		getPages().addAll(imageNameDescriptionPage, gridInstantiationPage);
 	}
 
 }
