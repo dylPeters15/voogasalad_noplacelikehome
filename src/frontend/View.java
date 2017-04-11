@@ -3,8 +3,7 @@
  */
 package frontend;
 
-import java.util.Observer;
-
+import backend.util.Client;
 import backend.util.GameState;
 import controller.Controller;
 import controller.CommunicationController;
@@ -26,7 +25,7 @@ import util.net.ObservableClient;
  * @author Stone Mathers, Dylan Peters
  *         Created 4/3/2017
  */
-public class View extends BaseUIManager<Region> implements Observer {
+public class View extends BaseUIManager<Region> {
 
 	private boolean editable;
 	private BorderPane myBorder;
@@ -37,6 +36,7 @@ public class View extends BaseUIManager<Region> implements Observer {
 	private TemplatePane tempPane;
 	private Controller myController;
 	private GameState myGameState;
+	private Client mClient;
 	//private ObservableClient<GameState> myClient;
 	
 	public View(){
@@ -45,19 +45,19 @@ public class View extends BaseUIManager<Region> implements Observer {
 	
 	public View(CommunicationController myController){
 		this.myController = (CommunicationController) myController;
-		//myClient = client;
-		//myController = controller;
-		//myController.addListener(e -> update());
+		mClient = myController.getClient();
+		myGameState = myController.getGameState();
+		
+		//myController.addListener(e -> update()); Called from controller instead
 		//client.addListener(e -> update());
-		myController.addObserver(this);
+		
 		initBorderPane();
 	}
 	
 	/**
 	 * Updates the display of the GameState. This method is to be called by the GameState whenever changes are made.
 	 */
-	public void update(Observable obs, Object obj)
-	{
+	public void update(){
 		//worldView.updateGrid(myGameState.getGrid());
 		//tempPane.updateUnits(myGameState.getUnitTemplates());
 		worldView.updateGrid(myController.getGrid());
@@ -161,5 +161,10 @@ public class View extends BaseUIManager<Region> implements Observer {
 		myAlert.setHeaderText(null);
 		myAlert.setContentText(s);
 		myAlert.showAndWait();
+	}
+	
+	public void setController(Controller newController)
+	{
+		this.myController = newController;
 	}
 }
