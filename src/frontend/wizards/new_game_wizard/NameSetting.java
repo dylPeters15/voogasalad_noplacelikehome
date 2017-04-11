@@ -3,6 +3,7 @@
  */
 package frontend.wizards.new_game_wizard;
 
+import frontend.wizards.wizard_2_0.util.SettingNode;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;

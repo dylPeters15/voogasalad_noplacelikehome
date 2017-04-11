@@ -4,6 +4,7 @@
 package frontend.wizards.new_game_wizard;
 
 import frontend.util.GameType;
+import frontend.wizards.wizard_2_0.util.SettingNode;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ComboBox;
