@@ -3,6 +3,8 @@ package frontend.wizards.util;
 import frontend.util.BaseUIManager;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -71,6 +73,10 @@ public class NumericInputRow extends BaseUIManager<Region> {
 	@Override
 	public Region getObject() {
 		return myNumericInputRow;
+	}
+	
+	public void setOnAction(EventHandler<ActionEvent> eventHandler){
+		myNumericalInputField.setOnAction(eventHandler);
 	}
 
 }
