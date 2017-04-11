@@ -21,6 +21,8 @@ import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 
 public class AuthoringGameState extends GameplayState implements VoogaEntity {
+	public static final String TERRAIN = "Terrain", OFFENSIVE_MODIFIER = "OffensiveModifier", DEFENSIVE_MODIFIER = "DefensiveModifier", CELL = "Cell", CELL_TRIGGERED_EFFECT = "CellTriggeredEffect", UNIT_TRIGGERED_EFFECT = "UnitTriggeredEffect", ACTIVE_ABILITY = "ActiveAbility", UNIT = "Unit", UNIT_STAT = "UnitStat", GRID_PATTERN = "GridPattern", GAMEBOARD = "GameBoard";
+	
 	private Map<String, ModifiableVoogaCollection> templates;
 
 	public AuthoringGameState(String name) {

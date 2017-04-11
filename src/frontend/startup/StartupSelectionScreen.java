@@ -2,7 +2,7 @@ package frontend.startup;
 
 import backend.util.GameplayState;
 import frontend.View;
-import frontend.wizards.wizard_2_0.NewGameWizard;
+import frontend.wizards.NewGameWizard;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
