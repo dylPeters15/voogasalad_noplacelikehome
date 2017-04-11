@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 
@@ -13,6 +14,7 @@ import backend.cell.ModifiableCell;
 import backend.cell.ModifiableTerrain;
 import backend.game_engine.ResultQuadPredicate;
 import backend.game_rules.GameRule;
+import backend.grid.BoundsHandler;
 import backend.grid.ModifiableGameBoard;
 import backend.player.Player;
 import backend.player.Team;
@@ -79,15 +81,15 @@ public class GameState implements MutableGameState {
 		return modifiableCells;
 	}
 	
-	public List<GameRule> getRules()
-	{
-		return gameRules;
-	}
-	
-	public void updateGameRules(List<GameRule> mRules)
-	{
-		gameRules = mRules;
-	}
+//	public List<GameRule> getRules()
+//	{
+//		return gameRules;
+//	}
+//	
+//	public void updateGameRules(List<GameRule> mRules)
+//	{
+//		gameRules = mRules;
+//	}
 	
 
 	@Override

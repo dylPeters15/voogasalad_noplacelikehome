@@ -4,8 +4,6 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 
-	private StartupScreen userInterface;
-
 	public static void main(String[] args) {
 		launch(args);
 	}
@@ -13,8 +11,8 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 
-		this.userInterface = new StartupScreen(1200.0, 800.0);
-		primaryStage.setScene(userInterface.getPrimaryScene());
+		StartupScreen starter = new StartupScreen(primaryStage, 1200.0, 800.0);
+		primaryStage.setScene(starter.getPrimaryScene());
 		primaryStage.setResizable(true);
 		primaryStage.show();
 

@@ -33,12 +33,12 @@ import javafx.scene.text.Text;
 public class TemplatePane extends BaseUIManager<Region>{
 
 	Pane pane;
-	Collection<? extends VoogaEntity> units;
-	Collection<? extends VoogaEntity> terrains;
+	Collection<? extends ModifiableUnit> units;
+	Collection<? extends ModifiableTerrain> terrains;
 	
 
-	public TemplatePane(Collection<VoogaEntity> availableUnits, 
-			Collection<VoogaEntity> availableTerrains) {
+	public TemplatePane(Collection<ModifiableUnit> availableUnits, 
+			Collection<ModifiableTerrain> availableTerrains) {
 			units = availableUnits;
 			terrains = availableTerrains;
 			pane = new Pane();
@@ -95,13 +95,13 @@ public class TemplatePane extends BaseUIManager<Region>{
 		createCollabsible("Unit", units);
 	}
 	
-	public void updateUnits(Collection<Unit> unitsIn){
+	public void updateUnits(Collection<ModifiableUnit> unitsIn){
 		//sprites will (I am fairly certain) contain all available sprites, not just the new ones
 		units = unitsIn;
 		updatePane();
 	} 
 	
-	public void updateTerrains(Collection<Terrain> terrainsIn) {
+	public void updateTerrains(Collection<ModifiableTerrain> terrainsIn) {
 		terrains = terrainsIn;
 		updatePane();
 	}

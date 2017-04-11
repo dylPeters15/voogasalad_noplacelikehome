@@ -1,4 +1,4 @@
-package frontend.wizards.new_voogaobject_wizard.util;
+package frontend.wizards.wizard_2_0.util;
 
 import java.util.Collection;
 import java.util.HashMap;
