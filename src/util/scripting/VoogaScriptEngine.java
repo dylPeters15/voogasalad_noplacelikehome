@@ -1,6 +1,7 @@
 package util.scripting;
 
 import backend.game_engine.ResultQuadPredicate;
+import backend.player.ImmutablePlayer;
 import backend.player.Player;
 import backend.unit.Unit;
 import backend.unit.properties.ActiveAbility;
@@ -32,7 +33,7 @@ public interface VoogaScriptEngine extends Serializer, Unserializer, Interaction
 	Object eval(Map<String, Object> bindings) throws VoogaScriptException;
 
 	@Override
-	default ResultQuadPredicate.Result determine(Player player, GameplayState gameState) {
+	default ResultQuadPredicate.Result determine(ImmutablePlayer player, GameplayState gameState) {
 		try {
 			return ResultQuadPredicate.Result.valueOf((String) eval(createBindings("player", player, "gameState", gameState)));
 		} catch (ClassCastException e) {
