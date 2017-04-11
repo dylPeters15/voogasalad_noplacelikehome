@@ -43,6 +43,15 @@ public class View extends BaseUIManager<Region> {
 		this(null);
 	}
 	
+	public View(GameState mGameState)
+	{
+		myController = new CommunicationController(mGameState, this);
+		initBorderPane();
+	}
+	
+	
+	
+	/**
 	public View(CommunicationController myController){
 		this.myController = (CommunicationController) myController;
 		
@@ -57,6 +66,7 @@ public class View extends BaseUIManager<Region> {
 		
 		initBorderPane();
 	}
+	****/
 	
 	/**
 	 * Updates the display of the GameState. This method is to be called by the GameState whenever changes are made.
