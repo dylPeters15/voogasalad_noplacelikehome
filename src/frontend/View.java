@@ -24,6 +24,7 @@ import util.net.ObservableClient;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
+
 /**
  * @author Stone Mathers, Dylan Peters Created 4/3/2017
  */
@@ -36,15 +37,12 @@ public class View extends BaseUIManager<Region> {
 	private DetailPane detailPane;
 	private TemplatePane tempPane;
 	private Controller myController;
-	
-	public View(){
-		this(null);
-	}
-	
+
 	public View(Controller controller) {
 		myController = controller;
 		initBorderPane();
 	}
+
 	/**
 	 * Updates the display of the GameState. This method is to be called by the
 	 * GameState whenever changes are made.
@@ -60,11 +58,14 @@ public class View extends BaseUIManager<Region> {
 				.getTemplateByCategory(AuthoringGameState.TERRAIN).getAll().stream()
 				.filter(voogaEntity -> voogaEntity instanceof ModifiableTerrain).collect(Collectors.toList());
 		tempPane.updateTerrains(terrains);
-		//tempPane.updateUnits(myController.getUnits());  //TODO add this method to controller
-		//tempPane.updateTerrains(myController.getTerrains()); //TODO add this method to controller
+		// tempPane.updateUnits(myController.getUnits()); //TODO add this method
+		// to controller
+		// tempPane.updateTerrains(myController.getTerrains()); //TODO add this
+		// method to controller
 		worldView.updateGrid(myController.getGrid());
 
 	}
+
 	/**
 	 * Performs all necessary actions to convert the View into development mode.
 	 * If the View is already in development mode, then nothing visually
@@ -73,6 +74,7 @@ public class View extends BaseUIManager<Region> {
 	public void enterDevMode() {
 		addSidePanes();
 	}
+
 	/**
 	 * Performs all necessary actions to convert the View into play mode. If the
 	 * View is already in play mode, then nothing visually changes.
@@ -80,15 +82,19 @@ public class View extends BaseUIManager<Region> {
 	public void enterPlayMode() {
 		removeSidePanes();
 	}
-	
-	 /**
-	 * @param Controller to be used by the View to obtain data from the Model
-	 and send requests from the GUI.
+
+	/**
+	 * Sets Controller and updates View.
+	 * 
+	 * @param Controller
+	 *            to be used by the View to obtain data from the Model and send
+	 *            requests from the GUI.
 	 */
-	 public void setController(Controller controller){
-	 myController = controller;
-	 }
-	 
+	public void setController(Controller controller) {
+		myController = controller;
+		update();
+	}
+
 	/**
 	 * @param True
 	 *            if this View can be switched into "edit" mode, false if it
@@ -97,11 +103,13 @@ public class View extends BaseUIManager<Region> {
 	public void setEditable(boolean editable) {
 		this.editable = editable;
 	}
+
 	private void initBorderPane() {
 		initPanesAndListeners();
 		myBorder = new BorderPane(worldView.getObject(), menuBar.getObject(), tempPane.getObject(),
 				detailPane.getObject(), toolsPane.getObject());
 	}
+
 	/**
 	 * Initializes all panes in the GUI and makes View a listener to all
 	 * necessary panes.
@@ -138,7 +146,7 @@ public class View extends BaseUIManager<Region> {
 			}
 		});
 	}
-	
+
 	/**
 	 * Adds the ToolsPane and TemplatePane to the sides of the View's GUI.
 	 */
@@ -146,7 +154,7 @@ public class View extends BaseUIManager<Region> {
 		myBorder.setLeft(toolsPane.getObject());
 		myBorder.setRight(tempPane.getObject());
 	}
-	
+
 	/**
 	 * Removes the ToolsPane and TemplatePane from the sides of the View's GUI.
 	 */
@@ -154,16 +162,16 @@ public class View extends BaseUIManager<Region> {
 		myBorder.setLeft(null);
 		myBorder.setRight(null);
 	}
-	
+
 	@Override
 	public Region getObject() {
 		return myBorder;
 	}
-	
+
 	public void setGameState(AuthoringGameState newGameState) {
 		myController.setGameState(newGameState);
 	}
-	
+
 	public void sendAlert(String s) {
 		Alert myAlert;
 		myAlert = new Alert(AlertType.INFORMATION);

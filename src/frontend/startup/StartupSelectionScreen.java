@@ -88,9 +88,8 @@ public class StartupSelectionScreen extends VBox {
 
 	}
 	private void createGame(AuthoringGameState state, boolean editable) {
-		View view = new View();
-		Controller control = new CommunicationController(state, view);
-		view.setController(control);
+		Controller control = new CommunicationController(state, null);
+		View view = new View(control);
 		//myClient.setGameState(state);
 		//control.setClient(myClient);
 		view.setEditable(editable);
