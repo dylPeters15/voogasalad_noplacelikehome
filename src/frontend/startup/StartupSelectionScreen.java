@@ -5,8 +5,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
@@ -33,10 +31,10 @@ public class StartupSelectionScreen extends VBox{
 
 	private ResourceBundle SelectionProperties = ResourceBundle.getBundle("frontend/properties/SelectionProperties");
 	private StartupScreen ui;
-	ObservableClient<ImmutableGameState> myClient;
+	ObservableClient<GameplayState> myClient;
 
 
-	public StartupSelectionScreen(StartupScreen ui, ObservableClient<ImmutableGameState> client){ //should have some sort of parameter that is passing the UI
+	public StartupSelectionScreen(StartupScreen ui, ObservableClient<GameplayState> client){ //should have some sort of parameter that is passing the UI
 		myClient = client;
 		this.setUpPane();
 		this.ui = ui;

@@ -2,7 +2,7 @@ package backend.game_engine;
 
 import backend.game_engine.ResultQuadPredicate.Result;
 import backend.player.Player;
-import backend.util.MutableGameState;
+import backend.util.GameplayState;
 import util.io.Serializer;
 import util.io.Unserializer;
 import util.net.ObservableServer;
@@ -20,16 +20,16 @@ public class DieselEngine implements GameEngine {
 
 	private Serializer serializer = this::save;
 	private Unserializer unserializer = this::load;
-	private ObservableServer<MutableGameState> server;
-	private Consumer<MutableGameState> stateUpdateListener = this::checkGame;
+	private ObservableServer<GameplayState> server;
+	private Consumer<GameplayState> stateUpdateListener = this::checkGame;
 
-	public DieselEngine(ObservableServer<MutableGameState> s) {
+	public DieselEngine(ObservableServer<GameplayState> s) {
 		server = s;
 		server.addListener(stateUpdateListener);
 		Executors.newSingleThreadExecutor().submit(server);
 	}
 
-	private void checkGame(MutableGameState state) {
+	private void checkGame(GameplayState state) {
 		checkTurnRules(state);
 		checkTurnEvents(state);
 		checkObjectives(state);
@@ -51,19 +51,19 @@ public class DieselEngine implements GameEngine {
 		// TODO Auto-generated method stub
 	}
 
-	private void checkTurnRules(MutableGameState state) {
+	private void checkTurnRules(GameplayState state) {
 		if (!state.getTurnRequirements().parallelStream()
-				.allMatch(e -> e.test(state.getCurrentPlayer(), state)) && state.canEndTurn()) state.endTurn();
+				.allMatch(e -> e.test(state.getCurrentPlayer(), state)) && state.turnRequirementsSatisfied()) state.endTurn();
 	}
 
-	private void checkTurnEvents(MutableGameState state) {
+	private void checkTurnEvents(GameplayState state) {
 //		state.getTurnEvents().entrySet().stream()
 //										.filter(e -> state.getTurnState())
 //										.forEach(e -> e.getValue().stream().forEach(t -> t.accept(state.getCurrentPlayer(), state)));
 	}
 
-	private void checkObjectives(MutableGameState state) {
-		state.getObjectives().parallelStream().forEach(e -> {
+	private void checkObjectives(GameplayState state) {
+		state.getCurrentObjectives().parallelStream().forEach(e -> {
 			Result result = e.determine(state.getCurrentPlayer(), state);
 			result.accept(state.getCurrentPlayer(), state);
 		});

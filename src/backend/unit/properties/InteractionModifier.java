@@ -1,7 +1,7 @@
 package backend.unit.properties;
 
 import backend.unit.Unit;
-import backend.util.ImmutableGameState;
+import backend.util.GameplayState;
 import backend.util.ImmutableVoogaObject;
 
 import java.io.Serializable;
@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @author Created by th174 on 3/28/2017.
  */
-public class InteractionModifier<T> extends ImmutableVoogaObject<InteractionModifier<T>> {
+public class InteractionModifier<T>  extends ImmutableVoogaObject<InteractionModifier<T>> {
 	//TODO: ResourceBundlify all this shit
 	public static final InteractionModifier<?> DUMMY = new InteractionModifier<>("Dummy", (originalValue, agent, target, game) -> originalValue, "Dummy modifier that doesn't change anything", "Nothing.png");
 	public static final InteractionModifier<Double> NO_EFFECT = new InteractionModifier<>("No effect", (originalValue, agent, target, game) -> 0.0, "Literally nothing", "The_abyss_stares_back.png");
@@ -51,7 +51,7 @@ public class InteractionModifier<T> extends ImmutableVoogaObject<InteractionModi
 		this.modifier = modifier;
 	}
 
-	public T modify(T originalValue, Unit agent, Unit target, ImmutableGameState game) {
+	public T modify(T originalValue, Unit agent, Unit target, GameplayState game) {
 		return modifier.modify(originalValue, agent, target, game);
 	}
 
@@ -60,7 +60,7 @@ public class InteractionModifier<T> extends ImmutableVoogaObject<InteractionModi
 		return new InteractionModifier<>(getName(), modifier, getDescription(), getImgPath());
 	}
 
-	public static <T> T modifyAll(List<? extends InteractionModifier<T>> modifiers, T originalValue, Unit agent, Unit target, ImmutableGameState game) {
+	public static <T> T modifyAll(List<? extends InteractionModifier<T>> modifiers, T originalValue, Unit agent, Unit target, GameplayState game) {
 		for (InteractionModifier<T> op : modifiers) {
 			originalValue = op.modify(originalValue, agent, target, game);
 		}
@@ -96,6 +96,6 @@ public class InteractionModifier<T> extends ImmutableVoogaObject<InteractionModi
 		Modifier<Double> CRITICAL_STRIKE = (outgoingDamage, agent, target, game) -> Math.random() < .25 ? outgoingDamage * 2 : outgoingDamage;
 		Modifier<Double> STRONG_ATTACK = (outgoingDamage, agent, target, game) -> outgoingDamage * 1.5;
 
-		T modify(T originalValue, Unit agent, Unit target, ImmutableGameState game);
+		T modify(T originalValue, Unit agent, Unit target, GameplayState game);
 	}
 }

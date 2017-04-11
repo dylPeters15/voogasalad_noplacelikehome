@@ -1,6 +1,6 @@
 package frontend.startup;
 
-import backend.util.ImmutableGameState;
+import backend.util.GameplayState;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -19,13 +19,13 @@ public class StartupScreen {
     private double width, height;
     private StartupMenuBar fileMenu;
     private StartupSelectionScreen selectionScreen;
-    private ObservableClient<ImmutableGameState> myClient;
+    private ObservableClient<GameplayState> myClient;
 
-    public StartupScreen(ObservableClient<ImmutableGameState> client) {
+    public StartupScreen(ObservableClient<GameplayState> client) {
         this(client, Screen.getPrimary().getVisualBounds().getWidth(), Screen.getPrimary().getVisualBounds().getHeight());
     }
 
-    public StartupScreen(ObservableClient<ImmutableGameState> client, double width, double height) {
+    public StartupScreen(ObservableClient<GameplayState> client, double width, double height) {
     	myClient = client;
         this.initPrimaryScene();
         this.width = width;

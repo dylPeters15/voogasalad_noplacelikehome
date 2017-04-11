@@ -1,7 +1,6 @@
 package controller;
 
 
-import backend.ModelGenerator;
 import backend.util.GameState;
 import frontend.View;
 

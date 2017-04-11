@@ -1,7 +1,7 @@
 package backend.cell;
 
 import backend.grid.CoordinateTuple;
-import backend.grid.ModifiableGameBoard;
+import backend.grid.GameBoard;
 import backend.grid.Shape;
 import backend.unit.Unit;
 import backend.util.*;
@@ -118,7 +118,7 @@ public class ModifiableCell extends ModifiableVoogaObject implements Cell {
 		return getPredefined(ModifiableCell.class);
 	}
 
-	private void processTriggers(Event event, ImmutableGameState gameState) {
+	private void processTriggers(Event event, GameplayState gameState) {
 		occupants.values().forEach(unit -> abilities.forEach(ability -> ability.affect(unit, event, gameState)));
 		abilities.removeIf(TriggeredEffect::isExpired);
 	}
@@ -134,12 +134,12 @@ public class ModifiableCell extends ModifiableVoogaObject implements Cell {
 	}
 
 	@Override
-	public void startTurn(ImmutableGameState gameState) {
+	public void startTurn(GameplayState gameState) {
 		processTriggers(Event.TURN_START, gameState);
 	}
 
 	@Override
-	public void endTurn(ImmutableGameState gameState) {
+	public void endTurn(GameplayState gameState) {
 		processTriggers(Event.TURN_END, gameState);
 	}
 
@@ -169,7 +169,7 @@ public class ModifiableCell extends ModifiableVoogaObject implements Cell {
 	}
 
 	@Override
-	public Map<CoordinateTuple, Cell> getNeighbors(ModifiableGameBoard grid) {
+	public Map<CoordinateTuple, Cell> getNeighbors(GameBoard grid) {
 		return grid.getNeighbors(this);
 	}
 
@@ -206,15 +206,20 @@ public class ModifiableCell extends ModifiableVoogaObject implements Cell {
 	}
 
 	@Override
-	public void leave(Unit unit, ImmutableGameState gamestate) {
+	public void leave(Unit unit, GameplayState gamestate) {
 		abilities.forEach(ability -> ability.affect(unit, Event.UNIT_PRE_MOVEMENT, gamestate));
 		this.removeOccupants(unit);
 	}
 
 	@Override
-	public void arrive(Unit unit, ImmutableGameState gamestate) {
+	public void arrive(Unit unit, GameplayState gamestate) {
 		this.addOccupants(unit);
 		abilities.forEach(ability -> ability.affect(unit, Event.UNIT_POST_MOVEMENT, gamestate));
+	}
+
+	@Override
+	public String getImgPath() {
+		return (Objects.isNull(super.getImgPath()) || super.getImgPath().length() < 2) ? getTerrain().getImgPath() : super.getImgPath();
 	}
 
 	@Override

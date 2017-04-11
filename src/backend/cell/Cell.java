@@ -1,10 +1,10 @@
 package backend.cell;
 
 import backend.grid.CoordinateTuple;
-import backend.grid.ModifiableGameBoard;
+import backend.grid.GameBoard;
 import backend.grid.Shape;
 import backend.unit.Unit;
-import backend.util.ImmutableGameState;
+import backend.util.GameplayState;
 import backend.util.ModifiableTriggeredEffect;
 import backend.util.TriggeredEffect;
 import backend.util.VoogaEntity;
@@ -19,9 +19,9 @@ public interface Cell extends VoogaEntity {
 	@Override
 	ModifiableCell copy();
 
-	void startTurn(ImmutableGameState gameState);
+	void startTurn(GameplayState gameState);
 
-	void endTurn(ImmutableGameState gameState);
+	void endTurn(GameplayState gameState);
 
 	CoordinateTuple getLocation();
 
@@ -31,7 +31,7 @@ public interface Cell extends VoogaEntity {
 
 	Shape getShape();
 
-	Map<CoordinateTuple, Cell> getNeighbors(ModifiableGameBoard grid);
+	Map<CoordinateTuple, Cell> getNeighbors(GameBoard grid);
 
 	Terrain getTerrain();
 
@@ -43,7 +43,7 @@ public interface Cell extends VoogaEntity {
 
 	Collection<? extends Unit> getOccupants();
 
-	void leave(Unit unit, ImmutableGameState gamestate);
+	void leave(Unit unit, GameplayState gamestate);
 
-	void arrive(Unit unit, ImmutableGameState gamestate);
+	void arrive(Unit unit, GameplayState gamestate);
 }

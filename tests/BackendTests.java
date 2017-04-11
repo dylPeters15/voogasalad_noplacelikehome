@@ -1,17 +1,23 @@
 import backend.cell.Cell;
 import backend.cell.ModifiableCell;
 import backend.grid.*;
+import backend.player.Player;
 import backend.unit.ModifiableUnit;
 import backend.unit.Unit;
 import backend.unit.properties.ActiveAbility;
 import backend.unit.properties.InteractionModifier;
-import backend.util.GameState;
+import backend.util.GameplayState;
 import backend.util.io.XMLSerializer;
 import org.junit.Test;
 import util.scripting.VoogaScriptEngine;
 import util.scripting.VoogaScriptEngineManager;
 
+import java.io.IOException;
+import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.function.BiPredicate;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -21,7 +27,7 @@ import static org.junit.Assert.assertTrue;
  */
 public class BackendTests {
 
-	@org.junit.Test
+	@Test
 	public void testUnits() {
 		assertEquals("name", new ModifiableUnit("name").getName());
 	}
@@ -77,11 +83,14 @@ public class BackendTests {
 	}
 
 	@Test
-	public void createGrid() {
+	public void createAndSaveGrid() throws IOException {
 		Cell template = ModifiableCell.BASIC_SQUARE_FLAT;
 		ModifiableGameBoard board = new ModifiableGameBoard("testBoard", template, 5, 5, BoundsHandler.TOROIDAL_BOUNDS, "", "").copy();
-		GameState gameState = new GameState(board);
+		GameplayState gameState = new GameState(board);
 		new CoordinateTuple(0, 0).getNeighbors().forEach(e -> board.get(e).arrive(ModifiableUnit.SKELETON_ARCHER.copy(), gameState));
+		XMLSerializer<GameState> serializer = new XMLSerializer<>();
+		gameState.addTurnRequirement((BiPredicate<Player, GameplayState> & Serializable) (player, immutableGameState) -> 3 < 5);
+		Files.write(Paths.get("data/saved_game_states/basic_grid_5x5.xml"), ((String) serializer.serialize(gameState)).getBytes());
 		assertEquals(25, board.getCells().values().stream().filter(e -> e.getTerrain().equals(template.getTerrain())).count());
 		assertEquals(4, board.getUnits().size());
 		assertTrue(!board.get(new CoordinateTuple(0, 4)).getOccupants().isEmpty());
