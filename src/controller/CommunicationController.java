@@ -1,85 +1,71 @@
 package controller;
 
+import backend.grid.GameBoard;
+import backend.util.Client;
 import backend.util.AuthoringGameState;
 import frontend.View;
-
+import util.net.ObservableClient;
 
 /**
  * @author Created by ncp14
- * This class is the communication controller which communicates the information
- * in both directions.
+ * This class is the communication controller which communicates between the frontend and backend.
+ * The primary purpose of my controller is to hide implementation of backend structure, specifically how
+ * our networking works and how the GameState is structured.
  * 
- * myFrontBuffer passes from
  */
-public class CommunicationController {
-	//front to back buffer for gamestate
-	private Buffer<AuthoringGameState> frontToBackBuffer;
-
-	//GameRules buffer - should be groovy code
-	private Buffer<String> gameRulesCode;
-
-	//end front to back buffer
-	private Buffer<AuthoringGameState> backToFrontBuffer;
-
-	private ModelGenerator mModelGenerator; //Touchdown class in backend
-	private View mView; //Touchdown class in frontend
-
-	public CommunicationController() {
-		this.frontToBackBuffer = new MyBuffer<>();
-		this.backToFrontBuffer = new MyBuffer<>();
-		this.gameRulesCode = new MyBuffer<String>();
+public class CommunicationController implements Controller  {
+	private MyBuffer<AuthoringGameState> gameStateHistory;
+	private AuthoringGameState mGameState;
+	private View mView;
+	private ObservableClient mClient;
+	
+	public CommunicationController(AuthoringGameState gameState, View view)
+	{
+		this.mGameState = gameState;
+		this.mView = view;
 	}
-	public CommunicationController(Buffer<AuthoringGameState> frontToBackBuffer, Buffer<AuthoringGameState> backToFrontBuffer, Buffer<String> gameRulesCode) {
-		this.frontToBackBuffer = frontToBackBuffer;
-		this.backToFrontBuffer = backToFrontBuffer;
-		this.gameRulesCode = gameRulesCode;
+	
+	@Override
+	public GameBoard getGrid() {
+		return mGameState.getGrid();
 	}
 
-	/*
-	 * This method updates the front end by the information read from the buffer
-	 *
-	 */
-	public void updateFrontend() {
-		while (!this.backToFrontBuffer.isBufferEmpty()) {
-			mView.setGameState(this.backToFrontBuffer.getBufferHead());
-		}
+	@Override
+	public Object getUnitTemplates() {
+		return mGameState.getUnitTemplates();
 	}
-
-	/**
-	 * This method reads from buffer the incoming update in the buffer and
-	 * informs the backend command by command
-	 */
-	public void updateBackend() {
-		while (!this.frontToBackBuffer.isBufferEmpty()) {
-			ModelGenerator mModelGenerator = new ModelGenerator(this, this.frontToBackBuffer.getBufferHead());
-			mModelGenerator.generateGameState();
-		}
+	
+	public void setView(View view)
+	{
+		this.mView = view;
 	}
-	/**
-	 * This method adds the command to buffer queue without truly informing the
-	 * backend.
-	 * 
-	 * @param newGameState
-	 */
-	public void passToBackend(AuthoringGameState newGameState) {
-		this.frontToBackBuffer.addToBuffer(newGameState);
-		this.updateBackend();
+	
+	public void setClient(ObservableClient client)
+	{
+		this.mClient = client;
+		mView.update();
 	}
-	/**
-	 * This method reads from buffer the incoming update of GameState inside
-	 * the buffer and updates the GameState according.
-	 */
-	public void passToFrontend(AuthoringGameState newGameState) {
-		this.frontToBackBuffer.addToBuffer(newGameState);
-		this.updateFrontend();
+	
+	public ObservableClient getClient()
+	{
+		return mClient; 
 	}
-	/**
-	 * This method gives the backend the freedom to send alerts.
-	 * Not sure if this is necessary.
-	 * 
-	 * @param message
-	 */
-	public void alert(String message) {
-		this.mView.sendAlert(message);
+	
+	public void setGameState(AuthoringGameState gameState)
+	{
+		gameStateHistory.addToBuffer(gameState);
+		this.mGameState = gameState;
+		mView.update();
 	}
+	
+	public AuthoringGameState getGameState()
+	{
+		return mGameState; 
+	}
+	
+	public AuthoringGameState getMostRecentGameState()
+	{
+		return gameStateHistory.getBufferHead();
+	}
+	
 }
