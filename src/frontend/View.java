@@ -2,13 +2,12 @@
  *
  */
 package frontend;
-
 import java.util.Collection;
 import java.util.stream.Collectors;
-
 import backend.cell.ModifiableTerrain;
 import backend.unit.ModifiableUnit;
 import backend.util.AuthoringGameState;
+import controller.CommunicationController;
 import frontend.detailpane.DetailPane;
 import frontend.menubar.VoogaMenuBar;
 import frontend.templatepane.TemplatePane;
@@ -22,12 +21,10 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
 import util.net.ObservableClient;
-
 /**
  * @author Stone Mathers, Dylan Peters Created 4/3/2017
  */
 public class View extends BaseUIManager<Region> {
-
 	private boolean editable;
 	private BorderPane myBorder;
 	private VoogaMenuBar menuBar;
@@ -35,34 +32,34 @@ public class View extends BaseUIManager<Region> {
 	private ToolsPane toolsPane;
 	private DetailPane detailPane;
 	private TemplatePane tempPane;
-	private AuthoringGameState myGameState;
-	private ObservableClient<AuthoringGameState> myClient; // TODO: What should
+	//private AuthoringGameState myGameState;
+	//private ObservableClient<AuthoringGameState> myClient; // TODO: What should
 															// this generic be?
-
+	private CommunicationController mCommunicationController;
+	
 	public View(AuthoringGameState gameState, ObservableClient client) {
-		myGameState = gameState;
+		mCommunicationController = new CommunicationController(gameState, this);
+		mCommunicationController.setClient(client);
 		// myClient = client;
 		// myController = controller;
 		// controller.addListener(e -> update());
 		// client.addListener(e -> update());
 		initBorderPane();
 	}
-
 	/**
 	 * Updates the display of the GameState. This method is to be called by the
 	 * GameState whenever changes are made.
 	 */
 	public void update() {
-		worldView.updateGrid(myGameState.getGrid());
+		worldView.updateGrid(mCommunicationController.getGameState().getGrid());
 		@SuppressWarnings("unchecked")
-		Collection<ModifiableUnit> units = (Collection<ModifiableUnit>) myGameState
+		Collection<ModifiableUnit> units = (Collection<ModifiableUnit>) mCommunicationController.getGameState()
 				.getTemplateByCategory(AuthoringGameState.UNIT).getAll().stream()
 				.filter(voogaEntity -> voogaEntity instanceof ModifiableUnit).collect(Collectors.toList());
 		tempPane.updateUnits(units);
 		// worldView.updateGrid(myController.getGrid());
 		// tempPane.updateSprites(myController.getUnitTemplates());
 	}
-
 	/**
 	 * Performs all necessary actions to convert the View into development mode.
 	 * If the View is already in development mode, then nothing visually
@@ -71,7 +68,6 @@ public class View extends BaseUIManager<Region> {
 	public void enterDevMode() {
 		addSidePanes();
 	}
-
 	/**
 	 * Performs all necessary actions to convert the View into play mode. If the
 	 * View is already in play mode, then nothing visually changes.
@@ -79,7 +75,6 @@ public class View extends BaseUIManager<Region> {
 	public void enterPlayMode() {
 		removeSidePanes();
 	}
-
 	// /**
 	// * @param Controller to be used by the View to obtain data from the Model
 	// and send requests from the GUI.
@@ -87,7 +82,6 @@ public class View extends BaseUIManager<Region> {
 	// public void setController(Controller controller){
 	// myController = controller;
 	// }
-
 	/**
 	 * @param True
 	 *            if this View can be switched into "edit" mode, false if it
@@ -96,13 +90,11 @@ public class View extends BaseUIManager<Region> {
 	public void setEditable(boolean editable) {
 		this.editable = editable;
 	}
-
 	private void initBorderPane() {
 		initPanesAndListeners();
 		myBorder = new BorderPane(worldView.getObject(), menuBar.getObject(), tempPane.getObject(),
 				detailPane.getObject(), toolsPane.getObject());
 	}
-
 	/**
 	 * Initializes all panes in the GUI and makes View a listener to all
 	 * necessary panes.
@@ -110,7 +102,7 @@ public class View extends BaseUIManager<Region> {
 	private void initPanesAndListeners() {
 		menuBar = new VoogaMenuBar();
 		menuBar.getRequests().passTo(this.getRequests());
-		worldView = new WorldView(myGameState.getGrid());
+		worldView = new WorldView(mCommunicationController.getGameState().getGrid());
 		// worldView = new WorldView(myController.getGrid());
 		worldView.getRequests().passTo(this.getRequests());
 		toolsPane = new ToolsPane();
@@ -118,18 +110,17 @@ public class View extends BaseUIManager<Region> {
 		detailPane = new DetailPane();
 		detailPane.getRequests().passTo(this.getRequests());
 		@SuppressWarnings("unchecked")
-		Collection<ModifiableUnit> units = (Collection<ModifiableUnit>) myGameState
+		Collection<ModifiableUnit> units = (Collection<ModifiableUnit>) mCommunicationController.getGameState()
 				.getTemplateByCategory(AuthoringGameState.UNIT).getAll().stream()
 				.filter(voogaEntity -> voogaEntity instanceof ModifiableUnit).collect(Collectors.toList());
 		@SuppressWarnings("unchecked")
-		Collection<ModifiableTerrain> terrains = (Collection<ModifiableTerrain>) myGameState
+		Collection<ModifiableTerrain> terrains = (Collection<ModifiableTerrain>) mCommunicationController.getGameState()
 				.getTemplateByCategory(AuthoringGameState.TERRAIN).getAll().stream()
 				.filter(voogaEntity -> voogaEntity instanceof ModifiableTerrain).collect(Collectors.toList());
 		tempPane = new TemplatePane(myGameState, detailPane);
 		// tempPane = new TemplatePane(myController.getUnitTemplates(),
 		// myController.getModifiableCells());
 		tempPane.getRequests().passTo(this.getRequests());
-
 		getRequests().addListener(new InvalidationListener() {
 			@Override
 			public void invalidated(Observable observable) {
@@ -140,7 +131,6 @@ public class View extends BaseUIManager<Region> {
 			}
 		});
 	}
-
 	/**
 	 * Adds the ToolsPane and TemplatePane to the sides of the View's GUI.
 	 */
@@ -148,7 +138,6 @@ public class View extends BaseUIManager<Region> {
 		myBorder.setLeft(toolsPane.getObject());
 		myBorder.setRight(tempPane.getObject());
 	}
-
 	/**
 	 * Removes the ToolsPane and TemplatePane from the sides of the View's GUI.
 	 */
@@ -156,16 +145,13 @@ public class View extends BaseUIManager<Region> {
 		myBorder.setLeft(null);
 		myBorder.setRight(null);
 	}
-
 	@Override
 	public Region getObject() {
 		return myBorder;
 	}
-
 	public void setGameState(AuthoringGameState newGameState) {
-		this.myGameState = newGameState;
+		mCommunicationController.setGameState(newGameState);
 	}
-
 	public void sendAlert(String s) {
 		Alert myAlert;
 		myAlert = new Alert(AlertType.INFORMATION);
