@@ -4,6 +4,7 @@
 package frontend;
 
 import backend.util.GameState;
+import controller.Controller;
 import frontend.detailpane.DetailPane;
 import frontend.menubar.VoogaMenuBar;
 import frontend.templatepane.TemplatePane;
@@ -28,15 +29,20 @@ public class View extends BaseUIManager<Region> {
 	private ToolsPane toolsPane;
 	private DetailPane detailPane;
 	private TemplatePane tempPane;
-	private GameState myGameState;
-	private ObservableClient myClient; //TODO: What should this generic be?
+	private Controller myController;
+	//private GameState myGameState;
+	//private ObservableClient<GameState> myClient;
 	
+	public View(){
+		this(null);
+	}
 	
-	
-	public View(GameState gameState, ObservableClient client){
-		myGameState = gameState;
-		myClient = client;
-		client.addListener(e -> update());
+	public View(Controller controller){
+		//myGameState = gameState;
+		//myClient = client;
+		myController = controller;
+		controller.addListener(e -> update());
+		//client.addListener(e -> update());
 		initBorderPane();
 	}
 	
@@ -44,8 +50,10 @@ public class View extends BaseUIManager<Region> {
 	 * Updates the display of the GameState. This method is to be called by the GameState whenever changes are made.
 	 */
 	public void update(){
-		worldView.updateGrid(myGameState.getGrid());
-		tempPane.updateSprites(myGameState.getUnitTemplates());
+//		worldView.updateGrid(myGameState.getGrid());
+//		tempPane.updateSprites(myGameState.getUnitTemplates());
+		worldView.updateGrid(myController.getGrid());
+		tempPane.updateSprites(myController.getUnitTemplates());
 	}
 	
 	/**
@@ -64,6 +72,13 @@ public class View extends BaseUIManager<Region> {
 		removeSidePanes();
 	}
 	
+	/**
+	 * @param Controller to be used by the View to obtain data from the Model and send requests from the GUI.
+	 */
+	public void setController(Controller controller){
+		myController = controller;
+	}
+	
 	private void initBorderPane(){
 		initPanesAndListeners();
 		myBorder = new BorderPane(worldView.getObject(), menuBar.getObject(), tempPane.getObject(), 
@@ -76,20 +91,23 @@ public class View extends BaseUIManager<Region> {
 	private void initPanesAndListeners(){
 		menuBar = new VoogaMenuBar();
 		menuBar.getRequests().passTo(this.getRequests());
-		worldView = new WorldView(myGameState.getGrid());
+		//worldView = new WorldView(myGameState.getGrid());
+		worldView = new WorldView(myController.getGrid());
 		worldView.getRequests().passTo(this.getRequests());
 		toolsPane = new ToolsPane();
 		toolsPane.getRequests().passTo(this.getRequests());
 		detailPane = new DetailPane();
 		detailPane.getRequests().passTo(this.getRequests());
-		tempPane = new TemplatePane(myGameState.getUnitTemplates(), myGameState.getModifiableCells());
+		//tempPane = new TemplatePane(myGameState.getUnitTemplates(), myGameState.getModifiableCells());
+		tempPane = new TemplatePane(myController.getUnitTemplates(), myController.getModifiableCells());
 		tempPane.getRequests().passTo(this.getRequests());
 		
 		getRequests().addListener(new InvalidationListener() {
 			@Override
 			public void invalidated(Observable observable) {
 				while (!getRequests().isEmpty()) {
-					myClient.handleRequest(getRequests().poll());
+					//myClient.addToOutbox(getRequests().poll());
+					myController.sendRequest(getRequests().poll());
 				}
 			}
 		});
