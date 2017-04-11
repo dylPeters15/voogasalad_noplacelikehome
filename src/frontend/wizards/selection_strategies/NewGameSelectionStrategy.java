@@ -1,12 +1,15 @@
 package frontend.wizards.selection_strategies;
 
+import backend.grid.ModifiableGameBoard;
 import backend.util.AuthoringGameState;
 import frontend.wizards.wizard_pages.GridInstantiationPage;
 import frontend.wizards.wizard_pages.ImageNameDescriptionPage;
 
-public class NewGameSelectionStrategy extends BaseSelectionStrategy<AuthoringGameState> implements WizardSelectionStrategy<AuthoringGameState> {
+public class NewGameSelectionStrategy extends BaseSelectionStrategy<AuthoringGameState>
+		implements WizardSelectionStrategy<AuthoringGameState> {
 
-	private ImageNameDescriptionPage imageNameDescriptionPage;
+	private ImageNameDescriptionPage gameNamePage;
+	private ImageNameDescriptionPage boardNamePage;
 	private GridInstantiationPage gridInstantiationPage;
 
 	public NewGameSelectionStrategy() {
@@ -15,13 +18,24 @@ public class NewGameSelectionStrategy extends BaseSelectionStrategy<AuthoringGam
 
 	@Override
 	public AuthoringGameState finish() {
-		AuthoringGameState gameState = new AuthoringGameState("TestGameState").setGrid(gridInstantiationPage.getGameBoard());
+		ModifiableGameBoard boardBuilder = new ModifiableGameBoard(boardNamePage.getName());
+		boardBuilder.setDescription(boardNamePage.getDescription());
+		boardBuilder.setImgPath(boardNamePage.getImagePath());
+		boardBuilder.setRows(gridInstantiationPage.getRows());
+		boardBuilder.setColumns(gridInstantiationPage.getCols());
+		boardBuilder.setTemplateCell(gridInstantiationPage.getTemplateCell());
+		AuthoringGameState gameState = new AuthoringGameState(gameNamePage.getName());
+		gameState.setDescription(gameNamePage.getDescription());
+		gameState.setImgPath(gameNamePage.getImagePath());
+		gameState.setGrid(boardBuilder.build());
 		return gameState;
 	}
 
 	private void initialize() {
-		imageNameDescriptionPage = new ImageNameDescriptionPage("Create New Game","Enter the icon, name, and description");
+		gameNamePage = new ImageNameDescriptionPage("Create New Game", "Enter the icon, name, and description");
+		boardNamePage = new ImageNameDescriptionPage("Create New Board",
+				"Enter the background image, board name, and board description.");
 		gridInstantiationPage = new GridInstantiationPage();
-		getPages().addAll(imageNameDescriptionPage, gridInstantiationPage);
+		getPages().addAll(gameNamePage, boardNamePage, gridInstantiationPage);
 	}
 }
