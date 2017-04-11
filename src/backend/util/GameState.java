@@ -40,6 +40,8 @@ public class GameState implements MutableGameState {
 	private Collection<ResultQuadPredicate> currentObjectives;
 	private Map<Event, List<BiConsumer<Player, ImmutableGameState>>> turnActions;
 	private Collection<BiPredicate<Player, ImmutableGameState>> turnRequirements;
+	
+	
 
 	public GameState() {
 		this(null);
@@ -191,4 +193,6 @@ public class GameState implements MutableGameState {
 	public void setGrid(ModifiableGameBoard grid) {
 		gameGrid = grid;
 	}
+	
+	
 }

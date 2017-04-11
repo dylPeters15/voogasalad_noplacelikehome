@@ -1,29 +1,31 @@
 package controller;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Observable;
 
-import backend.ModelGenerator;
 import backend.grid.GameBoard;
 import backend.util.GameState;
 import frontend.View;
 
 /**
  * @author Created by ncp14
- * This class is the communication controller which communicates the information
- * in both directions.
+ * This class is the communication controller which communicates between the frontend and backend.
+ * The primary purpose of my controller is to hide implementation of backend structure, specifically how
+ * our networking works and how the GameState is structured.
  * 
- * myFrontBuffer passes from
  */
-public class CommunicationController implements Controller {
+public class CommunicationController extends Observable implements Controller  {
 	//front to back buffer for gamestate
 	private Buffer<GameState> gameStateHistory;
 	private GameState mGameState;
 	private View mView;
+	//private Client client;
 	
 	@Override
 	public GameBoard getGrid() {
 		return mGameState.getGrid();
 	}
-
 
 	@Override
 	public Object getUnitTemplates() {
@@ -40,6 +42,7 @@ public class CommunicationController implements Controller {
 	{
 		this.mGameState = gameState;
 	}
+
 
 	
 	

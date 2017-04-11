@@ -41,11 +41,11 @@ public class View extends BaseUIManager<Region> {
 		this(null);
 	}
 	
-	public View(Controller myController){
+	public View(CommunicationController myController){
 		this.myController = (CommunicationController) myController;
 		//myClient = client;
 		//myController = controller;
-		//controller.addListener(e -> update());
+		myController.addListener(e -> update());
 		//client.addListener(e -> update());
 		initBorderPane();
 	}
