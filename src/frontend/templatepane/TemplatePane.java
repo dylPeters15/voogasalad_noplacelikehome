@@ -48,10 +48,6 @@ public class TemplatePane extends BaseUIManager<Region>{
 		units = (Collection<? extends ModifiableUnit>) gameState.getTemplateByCategory(AuthoringGameState.UNIT).getAll();
 		terrains = (Collection<? extends ModifiableTerrain>) gameState.getTemplateByCategory(AuthoringGameState.TERRAIN).getAll();
 		detailPane = detailPaneIn;
-		Stage s = new Stage();
-		Scene sc = new Scene(pane);
-		s.setScene(sc);
-		s.show();
 		
 		createCollabsible("unit", units);
 		createCollabsible("terrain", terrains);
