@@ -1,10 +1,11 @@
 package backend.unit.properties;
 
 import backend.unit.Unit;
-import backend.util.ImmutableGameState;
+import backend.util.GameplayState;
 import backend.util.ImmutableVoogaObject;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -26,7 +27,6 @@ public class InteractionModifier<T> extends ImmutableVoogaObject<InteractionModi
 	public static final InteractionModifier<Double> CRITICAL_STRIKE = new InteractionModifier<>("Critical Strike", Modifier.CRITICAL_STRIKE, "Attacks have a chance to critical strike, hitting for extra damage.", "RNGesus.png");
 	public static final InteractionModifier<Double> BRAVERY = new InteractionModifier<>("Weakened", Modifier.BRAVERY, "Attacks do extra damage if the defender has more HP than the attacker.", "David&Goliath.png");
 	public static final InteractionModifier<Double> ASSASSIN = new InteractionModifier<>("Assassin", Modifier.ASSASSIN, "Attacks do extra damage to isolated units with no nearby allies", "Zabaniya.png");
-	public static final InteractionModifier<Double> STRONG_ATTACK = new InteractionModifier<>("Strong Attack", Modifier.STRONG_ATTACK, "All attacks do extra damage.");
 	//Defensive modifiers, can go on units only
 	public static final InteractionModifier<Double> INVULNERABILITY = new InteractionModifier<>("Invulnerability", Modifier.INVULNERABILITY, "This unit does not take damage.", "God.png");
 	public static final InteractionModifier<Double> FORMATION = new InteractionModifier<>("Formation", Modifier.FORMATION, "This unit takes less damage when near an allied unit of the same type.", "Phalanx.png");
@@ -51,7 +51,7 @@ public class InteractionModifier<T> extends ImmutableVoogaObject<InteractionModi
 		this.modifier = modifier;
 	}
 
-	public T modify(T originalValue, Unit agent, Unit target, ImmutableGameState game) {
+	public T modify(T originalValue, Unit agent, Unit target, GameplayState game) {
 		return modifier.modify(originalValue, agent, target, game);
 	}
 
@@ -60,7 +60,7 @@ public class InteractionModifier<T> extends ImmutableVoogaObject<InteractionModi
 		return new InteractionModifier<>(getName(), modifier, getDescription(), getImgPath());
 	}
 
-	public static <T> T modifyAll(List<? extends InteractionModifier<T>> modifiers, T originalValue, Unit agent, Unit target, ImmutableGameState game) {
+	public static <T> T modifyAll(List<? extends InteractionModifier<T>> modifiers, T originalValue, Unit agent, Unit target, GameplayState game) {
 		for (InteractionModifier<T> op : modifiers) {
 			originalValue = op.modify(originalValue, agent, target, game);
 		}
@@ -70,6 +70,16 @@ public class InteractionModifier<T> extends ImmutableVoogaObject<InteractionModi
 	@Deprecated
 	public static Collection<InteractionModifier> getPredefinedInteractionModifiers() {
 		return getPredefined(InteractionModifier.class);
+	}
+
+	@Deprecated
+	public static Collection<InteractionModifier> getPredefinedOffensiveModifiers() {
+		return Arrays.asList(CHAOTIC, LAWFUL, BLINDED, FIRST_BLOOD, EXECUTIONER, CRITICAL_STRIKE, BRAVERY, ASSASSIN);
+	}
+
+	@Deprecated
+	public static Collection<InteractionModifier> getPredefinedDefensiveModifiers() {
+		return Arrays.asList(INVULNERABILITY, FORMATION, EVASIVE, STALWART, HARDENED_SHIELDS, FEARFUL, THORNS);
 	}
 
 	@FunctionalInterface
@@ -96,6 +106,6 @@ public class InteractionModifier<T> extends ImmutableVoogaObject<InteractionModi
 		Modifier<Double> CRITICAL_STRIKE = (outgoingDamage, agent, target, game) -> Math.random() < .25 ? outgoingDamage * 2 : outgoingDamage;
 		Modifier<Double> STRONG_ATTACK = (outgoingDamage, agent, target, game) -> outgoingDamage * 1.5;
 
-		T modify(T originalValue, Unit agent, Unit target, ImmutableGameState game);
+		T modify(T originalValue, Unit agent, Unit target, GameplayState game);
 	}
 }

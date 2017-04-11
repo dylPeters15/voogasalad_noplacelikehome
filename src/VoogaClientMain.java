@@ -1,6 +1,6 @@
 import backend.player.Player;
-import backend.player.Team;
-import backend.util.ImmutableGameState;
+import backend.util.AuthoringGameState;
+import backend.util.GameplayState;
 import backend.util.io.XMLSerializer;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -25,23 +25,20 @@ public class VoogaClientMain extends Application {
 
 	public static void main(String[] args) throws IOException, InterruptedException {
 		String name = System.getProperty("user.name") + Math.random();
-		String teamName = name + "'s team";
-		XMLSerializer<ImmutableGameState> serializer = new XMLSerializer<>();
+		XMLSerializer<GameplayState> serializer = new XMLSerializer<>();
 //		JSONSerializer<ImmutableGameState> serializer = new JSONSerializer<>(GameState.class);
-		ObservableClient<ImmutableGameState> client = new ObservableClient<>(HOST, PORT, serializer, serializer, Duration.ofSeconds(TIMEOUT));
+		ObservableClient<GameplayState> client = new ObservableClient<>(HOST, PORT, serializer, serializer, Duration.ofSeconds(TIMEOUT));
 		client.addListener(state -> {
 			try {
 				System.out.printf(CHATBOX,
-						state.getTeamByName(teamName).get(name).getChatLog().parallelStream()
+						state.getPlayerByName(name).getChatLog().parallelStream()
 								.map(Object::toString).collect(Collectors.joining("\n")));
 			} catch (NullPointerException e) {
 			}
 		});
 		Executors.newSingleThreadExecutor().submit(client);
-		client.addToOutbox(state -> state
-				.addTeam(new Team(teamName, "us", "")));
 		client.addToOutbox(state -> {
-			state.getTeamByName(teamName).addAll(new Player(name, null, "It's me!", ""));
+			state.addPlayer(new Player(name, "It's me!", ""));
 			return state;
 		});
 		System.out.println("Client started successfully...");
@@ -49,7 +46,7 @@ public class VoogaClientMain extends Application {
 		while (client.isActive()) {
 			String input = stdin.nextLine();
 			client.addToOutbox(state -> state
-					.messageAll(input + "\tN = " + state.random(), state.getTeamByName(teamName).get(name)));
+					.messageAll(input + "\tN = " + state.random(), state.getPlayerByName(name)));
 		}
 	}
 

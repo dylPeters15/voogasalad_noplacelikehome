@@ -7,7 +7,7 @@ import java.util.stream.Stream;
  * @author Created by th174 on 4/8/2017.
  */
 public interface ImmutableVoogaCollection<T extends VoogaEntity> extends Iterable<T>, VoogaEntity {
-	T get(String name);
+	T getByName(String name);
 
 	int size();
 

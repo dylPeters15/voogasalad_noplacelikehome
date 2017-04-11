@@ -1,5 +1,7 @@
 package frontend.startup;
 
+import backend.util.GameplayState;
+
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;

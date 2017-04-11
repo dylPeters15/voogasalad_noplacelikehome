@@ -3,6 +3,7 @@ package backend.unit;
 import backend.cell.Cell;
 import backend.cell.Terrain;
 import backend.grid.CoordinateTuple;
+import backend.grid.GameBoard;
 import backend.grid.GridPattern;
 import backend.grid.ModifiableGameBoard;
 import backend.player.Player;
@@ -11,8 +12,7 @@ import backend.unit.properties.ActiveAbility;
 import backend.unit.properties.Faction;
 import backend.unit.properties.InteractionModifier;
 import backend.unit.properties.UnitStat;
-import backend.util.GameState;
-import backend.util.ImmutableGameState;
+import backend.util.GameplayState;
 import backend.util.TriggeredEffect;
 import backend.util.VoogaEntity;
 
@@ -28,11 +28,11 @@ public interface Unit extends VoogaEntity {
 	@Override
 	Unit copy();
 
-	void moveTo(Cell destinationCell, ImmutableGameState gameState);
+	void moveTo(Cell destinationCell, GameplayState gameState);
 
-	void startTurn(GameState gameState);
+	void startTurn(GameplayState gameState);
 
-	void endTurn(GameState gameState);
+	void endTurn(GameplayState gameState);
 
 	void takeDamage(double damage);
 
@@ -48,11 +48,11 @@ public interface Unit extends VoogaEntity {
 		return getUnitStat("Hitpoints");
 	}
 
-	default void useActiveAbility(String activeAbilityName, VoogaEntity target, ImmutableGameState gameState) {
+	default void useActiveAbility(String activeAbilityName, VoogaEntity target, GameplayState gameState) {
 		useActiveAbility(getActiveAbilityByName(activeAbilityName), target, gameState);
 	}
 
-	void useActiveAbility(ActiveAbility activeAbility, VoogaEntity target, ImmutableGameState gameState);
+	void useActiveAbility(ActiveAbility activeAbility, VoogaEntity target, GameplayState gameState);
 
 	ActiveAbility getActiveAbilityByName(String name);
 
@@ -73,11 +73,11 @@ public interface Unit extends VoogaEntity {
 
 	Map<Terrain, Integer> getTerrainMoveCosts();
 
-	default Collection<Unit> getAllNeighboringUnits(ModifiableGameBoard grid) {
+	default Collection<Unit> getAllNeighboringUnits(GameBoard grid) {
 		return getNeighboringUnits(grid).values().parallelStream().flatMap(Collection::stream).parallel().collect(Collectors.toSet());
 	}
 
-	default Map<CoordinateTuple, Collection<? extends Unit>> getNeighboringUnits(ModifiableGameBoard grid) {
+	default Map<CoordinateTuple, Collection<? extends Unit>> getNeighboringUnits(GameBoard grid) {
 		Map<CoordinateTuple, Collection<? extends Unit>> neighbors = getCurrentCell().getNeighbors(grid).entrySet().parallelStream()
 				.filter(e -> !e.getValue().getOccupants().isEmpty())
 				.collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getOccupants()));
@@ -101,7 +101,7 @@ public interface Unit extends VoogaEntity {
 
 	Unit removeOffensiveModifiers(Collection<InteractionModifier<Double>> modifiers);
 
-	default double applyAllOffensiveModifiers(Double originalValue, Unit target, ImmutableGameState gameState) {
+	default double applyAllOffensiveModifiers(Double originalValue, Unit target, GameplayState gameState) {
 		return InteractionModifier.modifyAll(getOffensiveModifiers(), originalValue, this, target, gameState);
 	}
 
@@ -119,7 +119,7 @@ public interface Unit extends VoogaEntity {
 
 	Unit removeDefensiveModifiers(Collection<InteractionModifier<Double>> modifiers);
 
-	default double applyAllDefensiveModifiers(Double originalValue, Unit agent, ImmutableGameState gameState) {
+	default double applyAllDefensiveModifiers(Double originalValue, Unit agent, GameplayState gameState) {
 		return InteractionModifier.modifyAll(getDefensiveModifiers(), originalValue, agent, this, gameState);
 	}
 

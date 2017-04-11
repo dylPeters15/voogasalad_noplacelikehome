@@ -3,7 +3,9 @@
  */
 package frontend.worldview.grid;
 
+import backend.grid.GameBoard;
 import frontend.sprites.Sprite;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
 
 /**
@@ -12,6 +14,13 @@ import javafx.scene.layout.Region;
  */
 public class SquareGridDisplay extends GridDisplay {
 
+	private GridPane gridPane;
+	//private ________ myGrid; //TODO
+	
+	public SquareGridDisplay(GameBoard grid){
+		//myGrid = new _______;
+		updateCells(grid);
+	}
 
 	@Override
 	public void placeInCell(Sprite sprite, Coordinates mouseCoord) {
@@ -20,15 +29,14 @@ public class SquareGridDisplay extends GridDisplay {
 	}
 
 	@Override
-	public void updateCells(GridDisplay grid) {
+	public void updateCells(GameBoard grid) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public Region getObject() {
-		// TODO Auto-generated method stub
-		return null;
+		return gridPane;
 	}
 
 }

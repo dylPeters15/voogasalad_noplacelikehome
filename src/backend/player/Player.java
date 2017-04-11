@@ -17,35 +17,29 @@ import java.util.stream.Collectors;
  *
  * @author Created by th174 on 3/28/2017.
  */
-public class Player extends ModifiableVoogaObject<Player> implements MutablePlayer {
-	private Faction faction;
+public class Player extends ModifiableVoogaObject<Player> implements ImmutablePlayer {
 	private Team team;
 	private List<ChatMessage> chatLog;
 
-	public Player(String name, Faction faction, String description, String imgPath) {
-		this(name, null, faction, description, imgPath);
+	public Player(String name, String description, String imgPath) {
+		this(name, new Team(name + "'s Team", "", imgPath), description, imgPath);
+		getTeam().addAll(this);
 	}
 
-	public Player(String name, Team team, Faction faction, String description, String imgPath) {
+	public Player(String name, Team team, String description, String imgPath) {
 		super(name, description, imgPath);
-		this.faction = faction;
 		chatLog = new ArrayList<>();
 		this.team = team;
 	}
 
 	@Override
 	public Player copy() {
-		return new Player(getName(), getTeam(), getFaction(), getDescription(), getImgPath());
+		return new Player(getName(), getTeam(), getDescription(), getImgPath());
 	}
 
 	@Override
 	public Team getTeam() {
 		return team;
-	}
-
-	@Override
-	public Faction getFaction() {
-		return faction;
 	}
 
 	@Override
@@ -63,7 +57,6 @@ public class Player extends ModifiableVoogaObject<Player> implements MutablePlay
 		return null;
 	}
 
-	@Override
 	public Player setTeam(Team team) {
 		this.team = team;
 		return this;

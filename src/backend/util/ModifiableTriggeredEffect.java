@@ -53,12 +53,6 @@ public class ModifiableTriggeredEffect extends ModifiableVoogaObject<ModifiableT
 			.setDescription("For the next two turns, units that move through this cell at the start of their turn take 8 damage.")
 			.setImgPath("My_mixtape.png")
 			.addActivationTriggers(Event.UNIT_POST_MOVEMENT);
-	public static final ModifiableTriggeredEffect STRONG_ATTACK = new ModifiableTriggeredEffect("Strong Attack")
-			.setEffect((occupant, event, game) -> occupant.addOffensiveModifiers(InteractionModifier.STRONG_ATTACK))
-			.setDuration(1)
-			.setDescription("For the next turn, units that move through this cell deal additional damage.")
-			.setImgPath("Extra_damage.png")
-			.addActivationTriggers(Event.UNIT_POST_MOVEMENT);
 
 	private static final int DEFAULT_DURATION = Integer.MAX_VALUE;
 	private Collection<Event> activationTriggers;
@@ -124,7 +118,7 @@ public class ModifiableTriggeredEffect extends ModifiableVoogaObject<ModifiableT
 	}
 
 	@Override
-	public final void affect(Unit unit, Event event, ImmutableGameState game) {
+	public final void affect(Unit unit, Event event, GameplayState game) {
 		if (getActivationTriggers().contains(event)) {
 			effect.affect(unit, event, game);
 		}
@@ -144,13 +138,13 @@ public class ModifiableTriggeredEffect extends ModifiableVoogaObject<ModifiableT
 	}
 
 	@Deprecated
-	public Collection<ModifiableTriggeredEffect> getPredefinedUnitPassives() {
-		return Stream.of(REGENERATION, HEALER, SHADOWSTALKER, POISONED).collect(Collectors.toList());
+	public static Collection<ModifiableTriggeredEffect> getPredefinedUnitPassives() {
+		return Arrays.asList(REGENERATION, HEALER, SHADOWSTALKER, POISONED);
 	}
 
 	@Deprecated
-	public Collection<ModifiableTriggeredEffect> getPredefinedCellPassives() {
-		return Stream.of(FULL_HEAL, POISON, ON_FIRE, STRONG_ATTACK).collect(Collectors.toList());
+	public static Collection<ModifiableTriggeredEffect> getPredefinedCellPassives() {
+		return Arrays.asList(FULL_HEAL, POISON, ON_FIRE);
 	}
 }
 

@@ -59,7 +59,7 @@ public class ModifiableUnit extends ModifiableVoogaObject<ModifiableUnit> implem
 		this.defensiveModifiers = new DefensiveModifierSet(defensiveModifiers);
 	}
 
-	private void processTriggers(Event event, ImmutableGameState gameState) {
+	private void processTriggers(Event event, GameplayState gameState) {
 		triggeredAbilities.forEach(e -> e.affect(this, event, gameState));
 		triggeredAbilities.removeIf(TriggeredEffect::isExpired);
 	}
@@ -70,7 +70,7 @@ public class ModifiableUnit extends ModifiableVoogaObject<ModifiableUnit> implem
 	}
 
 	@Override
-	public void moveTo(Cell destinationCell, ImmutableGameState gameState) {
+	public void moveTo(Cell destinationCell, GameplayState gameState) {
 		processTriggers(Event.UNIT_PRE_MOVEMENT, gameState);
 		currentCell.leave(this, gameState);
 		getMovePoints().setCurrentValue(getMovePoints().getCurrentValue() - getTerrainMoveCosts().get(destinationCell.getTerrain()));
@@ -80,12 +80,12 @@ public class ModifiableUnit extends ModifiableVoogaObject<ModifiableUnit> implem
 	}
 
 	@Override
-	public void startTurn(GameState gameState) {
+	public void startTurn(GameplayState gameState) {
 		processTriggers(Event.TURN_START, gameState);
 	}
 
 	@Override
-	public void endTurn(GameState gameState) {
+	public void endTurn(GameplayState gameState) {
 		processTriggers(Event.TURN_END, gameState);
 		getMovePoints().resetValue();
 	}
@@ -96,7 +96,7 @@ public class ModifiableUnit extends ModifiableVoogaObject<ModifiableUnit> implem
 	}
 
 	@Override
-	public void useActiveAbility(ActiveAbility activeAbility, VoogaEntity target, ImmutableGameState gameState) {
+	public void useActiveAbility(ActiveAbility activeAbility, VoogaEntity target, GameplayState gameState) {
 		processTriggers(Event.UNIT_PRE_ABILITY_USE, gameState);
 		activeAbility.affect(this, target, gameState);
 		processTriggers(Event.UNIT_POST_ABILITY_USE, gameState);
@@ -104,7 +104,7 @@ public class ModifiableUnit extends ModifiableVoogaObject<ModifiableUnit> implem
 
 	@Override
 	public final ActiveAbility getActiveAbilityByName(String name) {
-		return activeAbilities.get(name);
+		return activeAbilities.getByName(name);
 	}
 
 	@Override
@@ -242,7 +242,7 @@ public class ModifiableUnit extends ModifiableVoogaObject<ModifiableUnit> implem
 
 	@Override
 	public UnitStat getUnitStat(String name) {
-		return stats.get(name);
+		return stats.getByName(name);
 	}
 
 	@Override
@@ -278,6 +278,7 @@ public class ModifiableUnit extends ModifiableVoogaObject<ModifiableUnit> implem
 		this.currentCell = currentCell;
 	}
 
+	@Override
 	public final Collection<? extends UnitStat> getUnitStats() {
 		return stats.getAll();
 	}

@@ -10,9 +10,10 @@ import java.util.Observer;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-import backend.util.GameState;
+import backend.util.AuthoringGameState;
+import backend.util.GameplayState;
 import frontend.View;
-import frontend.wizards.wizard_2_0.NewGameWizard;
+import frontend.wizards.NewGameWizard;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -25,37 +26,37 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import util.net.ObservableClient;
 
-public class StartupSelectionScreen extends VBox{
+public class StartupSelectionScreen extends VBox {
 
 	private ResourceBundle SelectionProperties = ResourceBundle.getBundle("frontend/properties/SelectionProperties");
 	private StartupScreen ui;
 	//ObservableClient<ImmutableGameState> myClient;
 	private Stage stage;
 
-
-	public StartupSelectionScreen(Stage stage, StartupScreen ui){ //should have some sort of parameter that is passing the UI
+	public StartupSelectionScreen(Stage stage, StartupScreen ui) { //should have some sort of parameter that is passing the UI
 		this.stage = stage;
 		this.setUpPane();
 		this.ui = ui;
 		System.out.println(this.getChildren());
 	}
 
-	public void setUpPane(){
+	public void setUpPane() {
 
 //		System.out.println("setUpPane");
 //		Button play = new Button(SelectionProperties.getString("Play")){{
 //			this.setOnAction(e -> play());
 //		}};
 
-		Button create = new Button(SelectionProperties.getString("Create")){{
+		Button create = new Button(SelectionProperties.getString("Create")) {{
 			this.setOnAction(e -> create());
 		}};
-		
+
 //		Button edit = new Button(SelectionProperties.getString("EditGame")){{
 //			this.setOnAction(e -> edit());
 //		}};
-		
+
 		this.setPadding(new Insets(30, 10, 10, 10));
 		this.setSpacing(10);
 		this.setMinWidth(450);
@@ -64,30 +65,30 @@ public class StartupSelectionScreen extends VBox{
 		this.getChildren().add(create);
 	}
 
-	private void play(){
+	private void play() {
 		read("play");
 	}
 
-	private void create(){
+	private void create() {
 		NewGameWizard wiz = new NewGameWizard();
 		wiz.addObserver(new Observer() {
-			
+
 			@Override
 			public void update(Observable o, Object arg) {
-				createGame((GameState)arg, true);
+				createGame((AuthoringGameState) arg, true);
 				stage.close();
 			}
 		});
 
 	}
 
-	private void edit(){
+	private void edit() {
 		read("load");
 	}
-	
-	private void createGame(GameState state, boolean editable) {
+
+	private void createGame(AuthoringGameState state, boolean editable) {
 		//Controller control = new CommunicationController();
-		View view = new View(state);
+		View view = new View(state,null);
 		//myClient.setGameState(state);
 		//control.setClient(myClient);
 		//control.setGameState(state);
@@ -98,17 +99,16 @@ public class StartupSelectionScreen extends VBox{
 		Scene scene = new Scene(view.getObject());
 		stage.setScene(scene);
 		stage.show();
-		
+
 	}
 
-	private void read(String saveOrLoad){
+	private void read(String saveOrLoad) {
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(".xml Files", "*.xml"));
 		fileChooser.setTitle("Open Resource File");
 		Window stage = null;
 		File file = fileChooser.showOpenDialog(stage);
 		System.out.println(saveOrLoad);
-
 
 		try {
 
@@ -122,39 +122,38 @@ public class StartupSelectionScreen extends VBox{
 
 			fileIn.close();
 
-
 			//this part probs doesn't work
 			Region pane = ui.getPrimaryPane();
-			((BorderPane) pane).setCenter(new View().getObject());
+			((BorderPane) pane).setCenter(new View(null,null).getObject());
 
-		}catch(IOException i) {
+		} catch (IOException i) {
 
 			i.printStackTrace();
 
 			return;
 
-		} catch (NullPointerException e){
+		} catch (NullPointerException e) {
 			e.printStackTrace();
 
 			Alert alert = new Alert(AlertType.CONFIRMATION);
 
 			alert.setTitle("No file selected");
-			
+
 //			alert.setGraphic(graphic); //insert DuvallSalad
-			
-			if (Objects.equals(saveOrLoad, "save")){
+
+			if (Objects.equals(saveOrLoad, "save")) {
 				alert.setHeaderText("Current game will not save");
 			}
-			if (Objects.equals(saveOrLoad, "load") || Objects.equals(saveOrLoad, "play")){
+			if (Objects.equals(saveOrLoad, "load") || Objects.equals(saveOrLoad, "play")) {
 				alert.setHeaderText("Failed to load game");
 			}
-			
+
 			alert.setContentText("Would you like to try again?");
 
 			Optional<ButtonType> result = alert.showAndWait();
-			if (result.get() == new ButtonType("okay")){
+			if (result.get() == new ButtonType("okay")) {
 				read(saveOrLoad);
-			} else{
+			} else {
 				return;
 
 			}

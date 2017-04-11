@@ -2,7 +2,6 @@ package frontend.menubar;
 
 import java.util.ResourceBundle;
 
-import frontend.wizards.new_voogaobject_wizard.util.ButtonManager;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -20,19 +19,8 @@ public class VoogaMenuBarTest extends Application {
 		ButtonManager buttonManager = new ButtonManager();
 //		buttonManager.getLanguage().bind(voogaMenuBar.getLanguage());
 //		buttonManager.getStyleSheet().bind(voogaMenuBar.getStyleSheet());
-		voogaMenuBar.getLanguage().addListener(new ChangeListener<ResourceBundle>() {
-			@Override
-			public void changed(ObservableValue<? extends ResourceBundle> observable, ResourceBundle oldValue,
-					ResourceBundle newValue) {
-				buttonManager.getLanguage().setValue(newValue);
-			}
-		});
-		voogaMenuBar.getStyleSheet().addListener(new ChangeListener<String>() {
-			@Override
-			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-				buttonManager.getStyleSheet().setValue(newValue);
-			}
-		});
+		voogaMenuBar.getLanguage().addListener((observable, oldValue, newValue) -> buttonManager.setLanguage(newValue));
+		voogaMenuBar.getStyleSheet().addListener((observable, oldValue, newValue) -> buttonManager.setStyleSheet(newValue));
 		bp.setCenter(buttonManager.getObject());
 		primaryStage.setScene(new Scene(bp));
 		primaryStage.show();

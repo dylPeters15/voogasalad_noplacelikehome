@@ -47,6 +47,7 @@ public class BoundsHandler extends ImmutableVoogaObject<BoundsHandler> {
 		return new BoundsHandler(getName(), boundsGetter, getDescription(), getImgPath());
 	}
 
+	@Deprecated
 	public static Collection<BoundsHandler> getPredefinedBoundsHandlers() {
 		return getPredefined(BoundsHandler.class);
 	}

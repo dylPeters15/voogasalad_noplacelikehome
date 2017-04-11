@@ -1,14 +1,14 @@
 package backend.game_engine;
 
 import backend.player.Player;
-import backend.util.MutableGameState;
+import backend.util.GameplayState;
 
+import java.io.Serializable;
 import java.util.function.BiConsumer;
 
 @FunctionalInterface
-public interface ResultQuadPredicate {
-
-	Result determine(Player player, MutableGameState state);
+public interface ResultQuadPredicate extends Serializable {
+	Result determine(Player player, GameplayState state);
 
 	enum Result {
 		//        WIN((player, gameState) -> state.handleWin(player)),
@@ -16,13 +16,13 @@ public interface ResultQuadPredicate {
 //        TIE((player, gameState) -> state.handleTie()),
 		NONE((player, gameState) -> doNothing());
 
-		private BiConsumer<Player, MutableGameState> toExecute;
+		private BiConsumer<Player, GameplayState> toExecute;
 
-		Result(BiConsumer<Player, MutableGameState> executeThis) {
+		Result(BiConsumer<Player, GameplayState> executeThis) {
 			toExecute = executeThis;
 		}
 
-		public void accept(Player player, MutableGameState state) {
+		public void accept(Player player, GameplayState state) {
 			toExecute.accept(player, state);
 		}
 

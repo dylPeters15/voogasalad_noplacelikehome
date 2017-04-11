@@ -54,6 +54,7 @@ public class GridPattern extends ModifiableVoogaObject<GridPattern> implements V
 		return new GridPattern(getName(), getDescription(), getImgPath(), getCoordinates());
 	}
 
+	@Deprecated
 	public static Collection<GridPattern> getPredefinedGridPatterns() {
 		return getPredefined(GridPattern.class);
 	}
