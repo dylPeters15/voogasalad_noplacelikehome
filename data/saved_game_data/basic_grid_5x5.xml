@@ -13622,8 +13622,8 @@
               <description>This unit is poisoned, and will lose 4 damage at the run and end of each turn, to a minimum of 1 HP. Lasts for 6 turns</description>
               <imgPath>Drink_bleach.png</imgPath>
               <activationTriggers class="set">
-                <backend.util.Event>TURN_END</backend.util.Event>
                 <backend.util.Event>TURN_START</backend.util.Event>
+                <backend.util.Event>TURN_END</backend.util.Event>
               </activationTriggers>
               <effect resolves-to="serialized-lambda">
                 <capturingClass>backend.util.ModifiableTriggeredEffect</capturingClass>
@@ -13673,12 +13673,12 @@
               <description>This unit hides in the shadows, rendering it invisible in nighttime</description>
               <imgPath>Ninja.png</imgPath>
               <activationTriggers class="set">
-                <backend.util.Event>TURN_END</backend.util.Event>
-                <backend.util.Event>UNIT_POST_ABILITY_USE</backend.util.Event>
-                <backend.util.Event>TURN_START</backend.util.Event>
-                <backend.util.Event>UNIT_PRE_MOVEMENT</backend.util.Event>
                 <backend.util.Event>UNIT_PRE_ABILITY_USE</backend.util.Event>
+                <backend.util.Event>UNIT_PRE_MOVEMENT</backend.util.Event>
                 <backend.util.Event>UNIT_POST_MOVEMENT</backend.util.Event>
+                <backend.util.Event>TURN_START</backend.util.Event>
+                <backend.util.Event>UNIT_POST_ABILITY_USE</backend.util.Event>
+                <backend.util.Event>TURN_END</backend.util.Event>
               </activationTriggers>
               <effect resolves-to="serialized-lambda">
                 <capturingClass>backend.util.ModifiableTriggeredEffect</capturingClass>

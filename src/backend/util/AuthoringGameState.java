@@ -41,6 +41,16 @@ public class AuthoringGameState extends GameplayState implements VoogaEntity {
 	}
 
 	@Override
+	public AuthoringGameState addPlayer(Player newPlayer) {
+		return (AuthoringGameState) super.addPlayer(newPlayer);
+	}
+
+	@Override
+	public AuthoringGameState addPlayer(Player newPlayer, Team team) {
+		return (AuthoringGameState) super.addPlayer(newPlayer, team);
+	}
+
+	@Override
 	public AuthoringGameState setDescription(String description) {
 		return (AuthoringGameState) super.setDescription(description);
 	}
