@@ -2,6 +2,7 @@ import backend.cell.Cell;
 import backend.cell.ModifiableCell;
 import backend.cell.ModifiableTerrain;
 import backend.grid.*;
+import backend.player.ImmutablePlayer;
 import backend.player.Player;
 import backend.player.Team;
 import backend.unit.ModifiableUnit;
@@ -49,9 +50,9 @@ public class BackendTests {
 	@Test
 	public void testScriptingAbiity() {
 		String script = "" +
-				"user:takeDamage(-5)\n" +
-				"target:takeDamage(5)";
-		VoogaScriptEngine engine = VoogaScriptEngineManager.read("Lua", script);
+				"user.takeDamage(-5)\n" +
+				"target.takeDamage(5)";
+		VoogaScriptEngine engine = VoogaScriptEngineManager.read("Javascript", script);
 		AuthoringGameState authoringGameState = new AuthoringGameState("test");
 		Unit unit1 = ModifiableUnit.SKELETON_ARCHER.copy();
 		Unit unit2 = ModifiableUnit.SKELETON_WARRIOR.copy();
@@ -92,7 +93,7 @@ public class BackendTests {
 		AuthoringGameState authoringGameState = new AuthoringGameState("test").setGrid(board);
 		new CoordinateTuple(0, 0).getNeighbors().forEach(e -> board.get(e).arrive(ModifiableUnit.SKELETON_ARCHER.copy(), authoringGameState));
 		XMLSerializer<AuthoringGameState> serializer = new XMLSerializer<>();
-		authoringGameState.addTurnRequirements((BiPredicate<Player, GameplayState> & Serializable) (player, immutableAuthoringGameState) -> 3 < 5);
+		authoringGameState.addTurnRequirements((BiPredicate<ImmutablePlayer, GameplayState> & Serializable) (player, immutableAuthoringGameState) -> 3 < 5);
 		Files.write(Paths.get("data/saved_game_data/basic_grid_5x5.xml"), ((String) serializer.serialize(authoringGameState)).getBytes());
 		assertEquals(25, board.getCells().values().stream().filter(e -> e.getTerrain().equals(ModifiableTerrain.FLAT)).count());
 		assertEquals(4, board.getUnits().size());

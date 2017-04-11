@@ -2,8 +2,7 @@
  *
  */
 package frontend;
-import java.util.Collection;
-import java.util.stream.Collectors;
+
 import backend.cell.ModifiableTerrain;
 import backend.unit.ModifiableUnit;
 import backend.util.AuthoringGameState;
@@ -22,6 +21,9 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
 import util.net.ObservableClient;
+
+import java.util.Collection;
+import java.util.stream.Collectors;
 /**
  * @author Stone Mathers, Dylan Peters Created 4/3/2017
  */
