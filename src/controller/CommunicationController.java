@@ -2,7 +2,7 @@ package controller;
 
 import backend.grid.GameBoard;
 import backend.util.Client;
-import backend.util.GameState;
+import backend.util.AuthoringGameState;
 import frontend.View;
 
 /**
@@ -13,12 +13,12 @@ import frontend.View;
  * 
  */
 public class CommunicationController implements Controller  {
-	private MyBuffer<GameState> gameStateHistory;
-	private GameState mGameState;
+	private MyBuffer<AuthoringGameState> gameStateHistory;
+	private AuthoringGameState mGameState;
 	private View mView;
 	private Client mClient;
 	
-	public CommunicationController(GameState gameState, View view)
+	public CommunicationController(AuthoringGameState gameState, View view)
 	{
 		this.mGameState = gameState;
 		this.mView = view;
@@ -50,19 +50,19 @@ public class CommunicationController implements Controller  {
 		return mClient; 
 	}
 	
-	public void setGameState(GameState gameState)
+	public void setGameState(AuthoringGameState gameState)
 	{
 		gameStateHistory.addToBuffer(gameState);
 		this.mGameState = gameState;
 		mView.update();
 	}
 	
-	public GameState getGameState()
+	public AuthoringGameState getGameState()
 	{
 		return mGameState; 
 	}
 	
-	public GameState getMostRecentGameState()
+	public AuthoringGameState getMostRecentGameState()
 	{
 		return gameStateHistory.getBufferHead();
 	}

@@ -31,11 +31,7 @@ public class ModelGenerator implements Model {
 	{
 		this.gameState = mGameState;
 	}
-<<<<<<< HEAD:src/backend/ModelGenerator.java
 	
-=======
->>>>>>> 4dcba5864b8070aaf38e143724eb67492276ceab:src/controller/ModelGenerator.java
-
 	@Override
 	public AuthoringGameState getGameState() {
 		// TODO Auto-generated method stub
