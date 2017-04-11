@@ -155,12 +155,9 @@ public class StartupMenuBar extends VBox {
 //			
 //			alert.setGraphic(graphic); //insert DuvallSalad
 
-			if (saveOrLoad.equals("save")) {
-				alert.setHeaderText("Current game will not save");
-			}
-			if (saveOrLoad.equals("load") || saveOrLoad.equals("play")) {
+
 				alert.setHeaderText("Failed to load game");
-			}
+			
 
 			alert.setContentText("Would you like to try again?");
 
