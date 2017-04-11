@@ -2,6 +2,7 @@ package frontend.templatepane;
 
 import java.util.Collection;
 
+import frontend.detailpane.DetailPane;
 import frontend.sprites.Sprite;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
@@ -35,26 +36,28 @@ public class TemplatePane extends BaseUIManager<Region>{
 	Pane pane;
 	Collection<? extends ModifiableUnit> units;
 	Collection<? extends ModifiableTerrain> terrains;
+	DetailPane detailPane;
 	
 
 	public TemplatePane(Collection<ModifiableUnit> availableUnits, 
-			Collection<ModifiableTerrain> availableTerrains) {
+			Collection<ModifiableTerrain> availableTerrains, DetailPane detailPaneIn) {
 			units = availableUnits;
 			terrains = availableTerrains;
 			pane = new Pane();
+			detailPane = detailPaneIn;
 	
 	}
 	
 	private void createCollabsible(String label, Collection<? extends VoogaEntity> sprites) {
 		TitledPane spritePane = new TitledPane();
 		spritePane.setText(label);
-		VBox content = createContent(sprites);
+		VBox content = createContent(sprites, label);
 		spritePane.setContent(content);
 		spritePane.setCollapsible(true);
 		pane.getChildren().add(spritePane);
 	}
 	
-	private VBox createContent(Collection<? extends VoogaEntity> sprites) {
+	private VBox createContent(Collection<? extends VoogaEntity> sprites, String spriteType) {
 		VBox contentPane = new VBox();
 		for (VoogaEntity sprite: sprites) {
 			VBox spriteContent = new VBox();
@@ -65,6 +68,7 @@ public class TemplatePane extends BaseUIManager<Region>{
 			ImageView spriteImage = new ImageView(tempImage); 
 			spriteContent.getChildren().add(spriteImage);
 			setOnDrag(spriteContent);
+			setOnClick(spriteContent, sprite, spriteType);
 			contentPane.getChildren().add(spriteContent);
 		}
 		return contentPane;
@@ -87,6 +91,15 @@ public class TemplatePane extends BaseUIManager<Region>{
 	                event.consume();
 	            }
 	        });
+	}
+	
+	private void setOnClick(Node o, VoogaEntity sprite, String spriteType) {
+		o.setOnMouseClicked(new EventHandler <MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				detailPane.setContent(sprite, spriteType);	
+			}		
+		});
 	}
 	
 	private void updatePane() {
