@@ -4,6 +4,7 @@
  */
 package frontend.worldview.grid;
 
+import backend.grid.GameBoard;
 import frontend.sprites.Sprite;
 import frontend.util.BaseUIManager;
 import javafx.scene.layout.Region;
@@ -24,7 +25,7 @@ public abstract class GridDisplay extends BaseUIManager<Region> {
 	public abstract void placeInCell(Sprite sprite, Coordinates mouseCoord);
 	
 	/**
-	 * Updates all cells in the grid using the given GridDisplay.
+	 * Updates all cells in the grid using the given GameBoard.
 	 */
-	public abstract void updateCells(GridDisplay grid);
+	public abstract void updateCells(GameBoard grid);
 }
