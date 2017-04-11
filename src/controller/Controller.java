@@ -16,5 +16,7 @@ public interface Controller {
 
 	Object getUnitTemplates();
 
+	void setGameState(AuthoringGameState newGameState);
+
 
 }

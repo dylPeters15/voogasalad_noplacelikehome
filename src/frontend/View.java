@@ -8,6 +8,7 @@ import backend.cell.ModifiableTerrain;
 import backend.unit.ModifiableUnit;
 import backend.util.AuthoringGameState;
 import controller.CommunicationController;
+import controller.Controller;
 import frontend.detailpane.DetailPane;
 import frontend.menubar.VoogaMenuBar;
 import frontend.templatepane.TemplatePane;
@@ -32,18 +33,14 @@ public class View extends BaseUIManager<Region> {
 	private ToolsPane toolsPane;
 	private DetailPane detailPane;
 	private TemplatePane tempPane;
-	//private AuthoringGameState myGameState;
-	//private ObservableClient<AuthoringGameState> myClient; // TODO: What should
-															// this generic be?
-	private CommunicationController mCommunicationController;
+	private Controller myController;
 	
-	public View(AuthoringGameState gameState, ObservableClient client) {
-		mCommunicationController = new CommunicationController(gameState, this);
-		mCommunicationController.setClient(client);
-		// myClient = client;
-		// myController = controller;
-		// controller.addListener(e -> update());
-		// client.addListener(e -> update());
+	public View(){
+		this(null);
+	}
+	
+	public View(Controller controller) {
+		myController = controller;
 		initBorderPane();
 	}
 	/**
@@ -51,14 +48,20 @@ public class View extends BaseUIManager<Region> {
 	 * GameState whenever changes are made.
 	 */
 	public void update() {
-		worldView.updateGrid(mCommunicationController.getGameState().getGrid());
 		@SuppressWarnings("unchecked")
-		Collection<ModifiableUnit> units = (Collection<ModifiableUnit>) mCommunicationController.getGameState()
+		Collection<ModifiableUnit> units = (Collection<ModifiableUnit>) myController.getGameState()
 				.getTemplateByCategory(AuthoringGameState.UNIT).getAll().stream()
 				.filter(voogaEntity -> voogaEntity instanceof ModifiableUnit).collect(Collectors.toList());
 		tempPane.updateUnits(units);
-		// worldView.updateGrid(myController.getGrid());
-		// tempPane.updateSprites(myController.getUnitTemplates());
+		@SuppressWarnings("unchecked")
+		Collection<ModifiableTerrain> terrains = (Collection<ModifiableTerrain>) myController.getGameState()
+				.getTemplateByCategory(AuthoringGameState.TERRAIN).getAll().stream()
+				.filter(voogaEntity -> voogaEntity instanceof ModifiableTerrain).collect(Collectors.toList());
+		tempPane.updateTerrains(terrains);
+		//tempPane.updateUnits(myController.getUnits());  //TODO add this method to controller
+		//tempPane.updateTerrains(myController.getTerrains()); //TODO add this method to controller
+		worldView.updateGrid(myController.getGrid());
+
 	}
 	/**
 	 * Performs all necessary actions to convert the View into development mode.
@@ -75,13 +78,15 @@ public class View extends BaseUIManager<Region> {
 	public void enterPlayMode() {
 		removeSidePanes();
 	}
-	// /**
-	// * @param Controller to be used by the View to obtain data from the Model
-	// and send requests from the GUI.
-	// */
-	// public void setController(Controller controller){
-	// myController = controller;
-	// }
+	
+	 /**
+	 * @param Controller to be used by the View to obtain data from the Model
+	 and send requests from the GUI.
+	 */
+	 public void setController(Controller controller){
+	 myController = controller;
+	 }
+	 
 	/**
 	 * @param True
 	 *            if this View can be switched into "edit" mode, false if it
@@ -102,7 +107,7 @@ public class View extends BaseUIManager<Region> {
 	private void initPanesAndListeners() {
 		menuBar = new VoogaMenuBar();
 		menuBar.getRequests().passTo(this.getRequests());
-		worldView = new WorldView(mCommunicationController.getGameState().getGrid());
+		worldView = new WorldView(myController.getGameState().getGrid());
 		// worldView = new WorldView(myController.getGrid());
 		worldView.getRequests().passTo(this.getRequests());
 		toolsPane = new ToolsPane();
@@ -110,14 +115,14 @@ public class View extends BaseUIManager<Region> {
 		detailPane = new DetailPane();
 		detailPane.getRequests().passTo(this.getRequests());
 		@SuppressWarnings("unchecked")
-		Collection<ModifiableUnit> units = (Collection<ModifiableUnit>) mCommunicationController.getGameState()
+		Collection<ModifiableUnit> units = (Collection<ModifiableUnit>) myController.getGameState()
 				.getTemplateByCategory(AuthoringGameState.UNIT).getAll().stream()
 				.filter(voogaEntity -> voogaEntity instanceof ModifiableUnit).collect(Collectors.toList());
 		@SuppressWarnings("unchecked")
-		Collection<ModifiableTerrain> terrains = (Collection<ModifiableTerrain>) mCommunicationController.getGameState()
+		Collection<ModifiableTerrain> terrains = (Collection<ModifiableTerrain>) myController.getGameState()
 				.getTemplateByCategory(AuthoringGameState.TERRAIN).getAll().stream()
 				.filter(voogaEntity -> voogaEntity instanceof ModifiableTerrain).collect(Collectors.toList());
-		tempPane = new TemplatePane(myGameState, detailPane);
+		tempPane = new TemplatePane(myController.getGameState(), detailPane);
 		// tempPane = new TemplatePane(myController.getUnitTemplates(),
 		// myController.getModifiableCells());
 		tempPane.getRequests().passTo(this.getRequests());
@@ -131,6 +136,7 @@ public class View extends BaseUIManager<Region> {
 			}
 		});
 	}
+	
 	/**
 	 * Adds the ToolsPane and TemplatePane to the sides of the View's GUI.
 	 */
@@ -138,6 +144,7 @@ public class View extends BaseUIManager<Region> {
 		myBorder.setLeft(toolsPane.getObject());
 		myBorder.setRight(tempPane.getObject());
 	}
+	
 	/**
 	 * Removes the ToolsPane and TemplatePane from the sides of the View's GUI.
 	 */
@@ -145,13 +152,16 @@ public class View extends BaseUIManager<Region> {
 		myBorder.setLeft(null);
 		myBorder.setRight(null);
 	}
+	
 	@Override
 	public Region getObject() {
 		return myBorder;
 	}
+	
 	public void setGameState(AuthoringGameState newGameState) {
-		mCommunicationController.setGameState(newGameState);
+		myController.setGameState(newGameState);
 	}
+	
 	public void sendAlert(String s) {
 		Alert myAlert;
 		myAlert = new Alert(AlertType.INFORMATION);
