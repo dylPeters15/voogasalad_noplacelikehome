@@ -3,7 +3,7 @@ package frontend.wizards.wizard_2_0.test;
 import java.util.Observable;
 import java.util.Observer;
 
-import backend.util.GameState;
+import backend.util.AuthorGameState;
 import frontend.wizards.wizard_2_0.NewUnitWizard;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -12,7 +12,7 @@ public class NewUnitWizardTest extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		NewUnitWizard newUnitWizard = new NewUnitWizard(primaryStage, new GameState());
+		NewUnitWizard newUnitWizard = new NewUnitWizard(primaryStage, new AuthorGameState());
 		newUnitWizard.addObserver(new Observer() {
 			@Override
 			public void update(Observable observable, Object object) {

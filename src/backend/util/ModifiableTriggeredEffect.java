@@ -124,7 +124,7 @@ public class ModifiableTriggeredEffect extends ModifiableVoogaObject<ModifiableT
 	}
 
 	@Override
-	public final void affect(Unit unit, Event event, ImmutableGameState game) {
+	public final void affect(Unit unit, Event event, NonAuthoringGameState game) {
 		if (getActivationTriggers().contains(event)) {
 			effect.affect(unit, event, game);
 		}

@@ -16,7 +16,7 @@ import java.util.function.BiPredicate;
 /**
  * @author Created by th174 on 4/7/2017.
  */
-public interface VoogaScriptEngine extends Serializer, Unserializer, InteractionModifier.Modifier, TriggeredEffect.Effect, ActiveAbility.AbilityEffect, ResultQuadPredicate, BiPredicate<Player, ImmutableGameState> {
+public interface VoogaScriptEngine extends Serializer, Unserializer, InteractionModifier.Modifier, TriggeredEffect.Effect, ActiveAbility.AbilityEffect, ResultQuadPredicate, BiPredicate<Player, NonAuthoringGameState> {
 	ResourceBundle RESOURCES = ResourceBundle.getBundle("resources/Scripting", Locale.US);
 
 	VoogaScriptEngine setScript(String script) throws VoogaScriptException;
@@ -32,7 +32,7 @@ public interface VoogaScriptEngine extends Serializer, Unserializer, Interaction
 	Object eval(Map<String, Object> bindings) throws VoogaScriptException;
 
 	@Override
-	default ResultQuadPredicate.Result determine(Player player, MutableGameState gameState) {
+	default ResultQuadPredicate.Result determine(Player player, AuthoringGameState gameState) {
 		try {
 			return ResultQuadPredicate.Result.valueOf((String) eval(createBindings("player", player, "gameState", gameState)));
 		} catch (ClassCastException e) {
@@ -59,22 +59,22 @@ public interface VoogaScriptEngine extends Serializer, Unserializer, Interaction
 	}
 
 	@Override
-	default void affect(Unit unit, Event event, ImmutableGameState gameState) {
+	default void affect(Unit unit, Event event, NonAuthoringGameState gameState) {
 		eval(createBindings("unit", unit, "event", event, "gameState", gameState));
 	}
 
 	@Override
-	default void useAbility(Unit user, VoogaEntity target, ImmutableGameState gameState) {
+	default void useAbility(Unit user, VoogaEntity target, NonAuthoringGameState gameState) {
 		eval(createBindings("user", user, "target", target, "gameState", gameState));
 	}
 
 	@Override
-	default Object modify(Object originalValue, Unit agent, Unit target, ImmutableGameState gameState) {
+	default Object modify(Object originalValue, Unit agent, Unit target, NonAuthoringGameState gameState) {
 		return eval(createBindings("originalValue", originalValue, "agent", agent, "target", target, "gameState", gameState));
 	}
 
 	@Override
-	default boolean test(Player player, ImmutableGameState immutableGameState) {
+	default boolean test(Player player, NonAuthoringGameState immutableGameState) {
 		Object nonBooleanValue = eval(createBindings("player", player, "gameState", immutableGameState));
 		if (nonBooleanValue instanceof String) {
 			return !nonBooleanValue.equals("");

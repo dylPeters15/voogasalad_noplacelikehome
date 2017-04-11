@@ -3,7 +3,7 @@ package backend.unit.properties;
 import backend.cell.Cell;
 import backend.grid.GridPattern;
 import backend.unit.Unit;
-import backend.util.ImmutableGameState;
+import backend.util.NonAuthoringGameState;
 import backend.util.ImmutableVoogaObject;
 import backend.util.ModifiableTriggeredEffect;
 import backend.util.VoogaEntity;
@@ -47,7 +47,7 @@ public class ActiveAbility<T extends VoogaEntity> extends ImmutableVoogaObject<A
 		return range;
 	}
 
-	public void affect(Unit user, T target, ImmutableGameState game) {
+	public void affect(Unit user, T target, NonAuthoringGameState game) {
 		effect.useAbility(user, target, game);
 	}
 
@@ -63,6 +63,6 @@ public class ActiveAbility<T extends VoogaEntity> extends ImmutableVoogaObject<A
 
 	@FunctionalInterface
 	public interface AbilityEffect<T extends VoogaEntity> extends Serializable {
-		void useAbility(Unit user, T target, ImmutableGameState game);
+		void useAbility(Unit user, T target, NonAuthoringGameState game);
 	}
 }

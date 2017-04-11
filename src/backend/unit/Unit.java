@@ -11,8 +11,8 @@ import backend.unit.properties.ActiveAbility;
 import backend.unit.properties.Faction;
 import backend.unit.properties.InteractionModifier;
 import backend.unit.properties.UnitStat;
-import backend.util.GameState;
-import backend.util.ImmutableGameState;
+import backend.util.AuthorGameState;
+import backend.util.NonAuthoringGameState;
 import backend.util.TriggeredEffect;
 import backend.util.VoogaEntity;
 
@@ -28,11 +28,11 @@ public interface Unit extends VoogaEntity {
 	@Override
 	Unit copy();
 
-	void moveTo(Cell destinationCell, ImmutableGameState gameState);
+	void moveTo(Cell destinationCell, NonAuthoringGameState gameState);
 
-	void startTurn(GameState gameState);
+	void startTurn(AuthorGameState gameState);
 
-	void endTurn(GameState gameState);
+	void endTurn(AuthorGameState gameState);
 
 	void takeDamage(double damage);
 
@@ -48,11 +48,11 @@ public interface Unit extends VoogaEntity {
 		return getUnitStat("Hitpoints");
 	}
 
-	default void useActiveAbility(String activeAbilityName, VoogaEntity target, ImmutableGameState gameState) {
+	default void useActiveAbility(String activeAbilityName, VoogaEntity target, NonAuthoringGameState gameState) {
 		useActiveAbility(getActiveAbilityByName(activeAbilityName), target, gameState);
 	}
 
-	void useActiveAbility(ActiveAbility activeAbility, VoogaEntity target, ImmutableGameState gameState);
+	void useActiveAbility(ActiveAbility activeAbility, VoogaEntity target, NonAuthoringGameState gameState);
 
 	ActiveAbility getActiveAbilityByName(String name);
 
@@ -101,7 +101,7 @@ public interface Unit extends VoogaEntity {
 
 	Unit removeOffensiveModifiers(Collection<InteractionModifier<Double>> modifiers);
 
-	default double applyAllOffensiveModifiers(Double originalValue, Unit target, ImmutableGameState gameState) {
+	default double applyAllOffensiveModifiers(Double originalValue, Unit target, NonAuthoringGameState gameState) {
 		return InteractionModifier.modifyAll(getOffensiveModifiers(), originalValue, this, target, gameState);
 	}
 
@@ -119,7 +119,7 @@ public interface Unit extends VoogaEntity {
 
 	Unit removeDefensiveModifiers(Collection<InteractionModifier<Double>> modifiers);
 
-	default double applyAllDefensiveModifiers(Double originalValue, Unit agent, ImmutableGameState gameState) {
+	default double applyAllDefensiveModifiers(Double originalValue, Unit agent, NonAuthoringGameState gameState) {
 		return InteractionModifier.modifyAll(getDefensiveModifiers(), originalValue, agent, this, gameState);
 	}
 

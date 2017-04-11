@@ -1,7 +1,7 @@
 package frontend.wizards.new_voogaobject_wizard;
 
 import backend.unit.ModifiableUnit;
-import backend.util.GameState;
+import backend.util.AuthorGameState;
 import frontend.util.BaseUIManager;
 import frontend.wizards.new_voogaobject_wizard.util.AbilitiesAdder;
 import frontend.wizards.new_voogaobject_wizard.util.CancelSaveView;
@@ -32,7 +32,7 @@ public class NewUnitPane extends BaseUIManager<Region> {
 	private CancelSaveView cancelSaveView;
 	private AbilitiesAdder abilitiesAdder;
 
-	public NewUnitPane(GameState gameState) {
+	public NewUnitPane(AuthorGameState gameState) {
 		initialize(gameState);
 	}
 
@@ -45,7 +45,7 @@ public class NewUnitPane extends BaseUIManager<Region> {
 //		imageNamePairView.getRequests().passTo(getRequests());
 //		movePointView.getRequests().passTo(getRequests());
 //		abilitiesAdder.getRequests().passTo(getRequests());
-		Modifier<GameState> modifier = gameState -> {gameState.getUnitTemplates().add(new ModifiableUnit("NewUnitName"));
+		Modifier<AuthorGameState> modifier = gameState -> {gameState.getUnitTemplates().add(new ModifiableUnit("NewUnitName"));
 		return gameState;
 		};
 		getRequests().add(modifier);
@@ -60,7 +60,7 @@ public class NewUnitPane extends BaseUIManager<Region> {
 
 	}
 
-	private void initialize(GameState gameState) {
+	private void initialize(AuthorGameState gameState) {
 
 		anchorPane = new AnchorPane();
 		imageNamePairView = new ImageNamePairView();

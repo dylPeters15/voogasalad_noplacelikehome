@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import backend.cell.Terrain;
-import backend.util.GameState;
+import backend.util.AuthorGameState;
 import frontend.wizards.wizard_2_0.util.NumericInputRow;
 import frontend.wizards.wizard_2_0.util.VerticalTableInputView;
 import javafx.scene.image.Image;
@@ -16,7 +16,7 @@ public class TerrainMovePointPage extends WizardPage {
 	private VerticalTableInputView table;
 	private Map<NumericInputRow, Terrain> rowToTerrain;
 
-	public TerrainMovePointPage(GameState gameState) {
+	public TerrainMovePointPage(AuthorGameState gameState) {
 		initialize(gameState);
 	}
 
@@ -25,7 +25,7 @@ public class TerrainMovePointPage extends WizardPage {
 		return table.getObject();
 	}
 
-	private void initialize(GameState gameState) {
+	private void initialize(AuthorGameState gameState) {
 		table = new VerticalTableInputView();
 		rowToTerrain = new HashMap<>();
 		gameState.getTerrains().stream().forEachOrdered(terrain -> {

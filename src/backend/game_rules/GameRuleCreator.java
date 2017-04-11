@@ -1,14 +1,14 @@
 package backend.game_rules;
 
-import backend.util.GameState;
+import backend.util.AuthorGameState;
 
 public class GameRuleCreator {
 	
-	GameState gameState;
+	AuthorGameState gameState;
 	String inputCode;
 	String codeType;
 	
-	public void GameRuleCreator(GameState mGameState, String inputCode, String codeType)
+	public void GameRuleCreator(AuthorGameState mGameState, String inputCode, String codeType)
 	{
 		this.gameState = mGameState;
 		this.inputCode = inputCode;

@@ -1,6 +1,6 @@
 package controller;
 
-import backend.util.GameState;
+import backend.util.AuthorGameState;
 
 /**
  * @author Created by ncp14
@@ -10,8 +10,8 @@ import backend.util.GameState;
  * myFrontBuffer passes from
  */
 public class CommunicationController {
-	private Buffer<GameState> frontToBackBuffer; 
-	private Buffer<GameState> backToFrontBuffer;
+	private Buffer<AuthorGameState> frontToBackBuffer; 
+	private Buffer<AuthorGameState> backToFrontBuffer;
 	private Buffer<String> gameCode;
 	//private InternalController myGUIController;
 	private Translate myBackend;

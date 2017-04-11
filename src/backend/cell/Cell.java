@@ -4,7 +4,7 @@ import backend.grid.CoordinateTuple;
 import backend.grid.ModifiableGameBoard;
 import backend.grid.Shape;
 import backend.unit.Unit;
-import backend.util.ImmutableGameState;
+import backend.util.NonAuthoringGameState;
 import backend.util.ModifiableTriggeredEffect;
 import backend.util.TriggeredEffect;
 import backend.util.VoogaEntity;
@@ -19,9 +19,9 @@ public interface Cell extends VoogaEntity {
 	@Override
 	ModifiableCell copy();
 
-	void startTurn(ImmutableGameState gameState);
+	void startTurn(NonAuthoringGameState gameState);
 
-	void endTurn(ImmutableGameState gameState);
+	void endTurn(NonAuthoringGameState gameState);
 
 	CoordinateTuple getLocation();
 
@@ -43,7 +43,7 @@ public interface Cell extends VoogaEntity {
 
 	Collection<? extends Unit> getOccupants();
 
-	void leave(Unit unit, ImmutableGameState gamestate);
+	void leave(Unit unit, NonAuthoringGameState gamestate);
 
-	void arrive(Unit unit, ImmutableGameState gamestate);
+	void arrive(Unit unit, NonAuthoringGameState gamestate);
 }

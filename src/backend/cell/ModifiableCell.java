@@ -118,7 +118,7 @@ public class ModifiableCell extends ModifiableVoogaObject implements Cell {
 		return getPredefined(ModifiableCell.class);
 	}
 
-	private void processTriggers(Event event, ImmutableGameState gameState) {
+	private void processTriggers(Event event, NonAuthoringGameState gameState) {
 		occupants.values().forEach(unit -> abilities.forEach(ability -> ability.affect(unit, event, gameState)));
 		abilities.removeIf(TriggeredEffect::isExpired);
 	}
@@ -134,12 +134,12 @@ public class ModifiableCell extends ModifiableVoogaObject implements Cell {
 	}
 
 	@Override
-	public void startTurn(ImmutableGameState gameState) {
+	public void startTurn(NonAuthoringGameState gameState) {
 		processTriggers(Event.TURN_START, gameState);
 	}
 
 	@Override
-	public void endTurn(ImmutableGameState gameState) {
+	public void endTurn(NonAuthoringGameState gameState) {
 		processTriggers(Event.TURN_END, gameState);
 	}
 
@@ -206,13 +206,13 @@ public class ModifiableCell extends ModifiableVoogaObject implements Cell {
 	}
 
 	@Override
-	public void leave(Unit unit, ImmutableGameState gamestate) {
+	public void leave(Unit unit, NonAuthoringGameState gamestate) {
 		abilities.forEach(ability -> ability.affect(unit, Event.UNIT_PRE_MOVEMENT, gamestate));
 		this.removeOccupants(unit);
 	}
 
 	@Override
-	public void arrive(Unit unit, ImmutableGameState gamestate) {
+	public void arrive(Unit unit, NonAuthoringGameState gamestate) {
 		this.addOccupants(unit);
 		abilities.forEach(ability -> ability.affect(unit, Event.UNIT_POST_MOVEMENT, gamestate));
 	}

@@ -1,5 +1,5 @@
-import backend.util.GameState;
-import backend.util.ImmutableGameState;
+import backend.util.AuthorGameState;
+import backend.util.NonAuthoringGameState;
 import backend.util.io.XMLSerializer;
 import util.net.ObservableServer;
 
@@ -15,9 +15,9 @@ public class VoogaServerMain {
 
 	public static void main(String[] args) throws Exception {
 		//TODO
-		XMLSerializer<ImmutableGameState> serializer = new XMLSerializer<>();
+		XMLSerializer<NonAuthoringGameState> serializer = new XMLSerializer<>();
 //		JSONSerializer<ImmutableGameState> serializer = new JSONSerializer<>(GameState.class);
-		ObservableServer<ImmutableGameState> voogaServer = new ObservableServer<>(new GameState(), PORT, serializer, serializer, Duration.ofSeconds(TIMEOUT));
+		ObservableServer<NonAuthoringGameState> voogaServer = new ObservableServer<>(new AuthorGameState(), PORT, serializer, serializer, Duration.ofSeconds(TIMEOUT));
 		Executors.newSingleThreadExecutor().submit(voogaServer);
 		System.out.println("Server started successfully...");
 	}

@@ -3,7 +3,7 @@
  */
 package frontend;
 
-import backend.util.GameState;
+import backend.util.AuthorGameState;
 import frontend.detailpane.DetailPane;
 import frontend.menubar.VoogaMenuBar;
 import frontend.templatepane.TemplatePane;
@@ -28,12 +28,12 @@ public class View extends BaseUIManager<Region> {
 	private ToolsPane toolsPane;
 	private DetailPane detailPane;
 	private TemplatePane tempPane;
-	private GameState myGameState;
+	private AuthorGameState myGameState;
 	private ObservableClient myClient; //TODO: What should this generic be?
 	
 	
 	
-	public View(GameState gameState, ObservableClient client){
+	public View(AuthorGameState gameState, ObservableClient client){
 		myGameState = gameState;
 		myClient = client;
 		client.addListener(e -> update());

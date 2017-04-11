@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 import backend.unit.ModifiableUnit;
 import backend.unit.Unit;
-import backend.util.GameState;
+import backend.util.AuthorGameState;
 import frontend.wizards.wizard_2_0.wizard_pages.AbilitiesAdderPage;
 import frontend.wizards.wizard_2_0.wizard_pages.ImageNameDescriptionPage;
 import frontend.wizards.wizard_2_0.wizard_pages.TerrainMovePointPage;
@@ -15,7 +15,7 @@ public class NewUnitSelectionStrategy extends BaseSelectionStrategy<Unit> {
 	private AbilitiesAdderPage abilitiesAdderPage;
 	private TerrainMovePointPage terrainMovePointPage;
 
-	public NewUnitSelectionStrategy(GameState gameState) {
+	public NewUnitSelectionStrategy(AuthorGameState gameState) {
 		initialize(gameState);
 	}
 
@@ -40,7 +40,7 @@ public class NewUnitSelectionStrategy extends BaseSelectionStrategy<Unit> {
 		// imageNamePairView.getImage(), abilitiesAdder.getAbilities());"
 	}
 
-	private void initialize(GameState gameState) {
+	private void initialize(AuthorGameState gameState) {
 		imageNameDescriptionPage = new ImageNameDescriptionPage();
 		abilitiesAdderPage = new AbilitiesAdderPage(gameState);
 		terrainMovePointPage = new TerrainMovePointPage(gameState);

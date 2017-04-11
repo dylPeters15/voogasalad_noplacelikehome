@@ -1,16 +1,18 @@
 package backend.game_engine;
 
 import backend.player.Player;
+import backend.util.AuthorGameState;
 
+import java.io.File;
 import java.io.Serializable;
 
 /**
  * @author Alexander Zapata
  */
 public interface GameEngine {
-	void messagePlayer(Player from, Player to, String message);
+	
+	void save(AuthorGameState gameState);
 
-	Serializable save(Object gameEngine);
-
-	Object load(Object gameEngine);
+	AuthorGameState load(File gameStateFile);
+	
 }

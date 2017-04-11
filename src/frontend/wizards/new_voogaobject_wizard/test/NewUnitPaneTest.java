@@ -1,6 +1,6 @@
 package frontend.wizards.new_voogaobject_wizard.test;
 
-import backend.util.GameState;
+import backend.util.AuthorGameState;
 import frontend.wizards.new_voogaobject_wizard.ModalNewUnitPane;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -12,7 +12,7 @@ public class NewUnitPaneTest extends Application {
 //		primaryStage.setScene(new Scene(new NewUnitPane(null).getObject()));
 //		primaryStage.show();
 //		
-		new ModalNewUnitPane(new GameState());
+		new ModalNewUnitPane(new AuthorGameState());
 	}
 
 	public static void main(String[] args){

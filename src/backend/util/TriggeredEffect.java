@@ -11,7 +11,7 @@ import java.util.Collection;
 public interface TriggeredEffect extends VoogaEntity {
 	int getRemainingTurns();
 
-	void affect(Unit unit, Event event, ImmutableGameState game);
+	void affect(Unit unit, Event event, NonAuthoringGameState game);
 
 	Collection<Event> getActivationTriggers();
 
@@ -19,6 +19,6 @@ public interface TriggeredEffect extends VoogaEntity {
 
 	@FunctionalInterface
 	interface Effect extends Serializable{
-		void affect(Unit unit, Event event, ImmutableGameState game);
+		void affect(Unit unit, Event event, NonAuthoringGameState game);
 	}
 }

@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import backend.unit.properties.ActiveAbility;
-import backend.util.GameState;
+import backend.util.AuthorGameState;
 import frontend.wizards.wizard_2_0.util.SelectableInputRow;
 import frontend.wizards.wizard_2_0.util.VerticalTableInputView;
 import javafx.scene.image.Image;
@@ -17,7 +17,7 @@ public class AbilitiesAdderPage extends WizardPage {
 	private VerticalTableInputView table;
 	private Map<SelectableInputRow, ActiveAbility<?>> rowToAbility;
 
-	public AbilitiesAdderPage(GameState gameState) {
+	public AbilitiesAdderPage(AuthorGameState gameState) {
 		initialize(gameState);
 	}
 
@@ -26,7 +26,7 @@ public class AbilitiesAdderPage extends WizardPage {
 		return table.getObject();
 	}
 
-	private void initialize(GameState gameState) {
+	private void initialize(AuthorGameState gameState) {
 		table = new VerticalTableInputView();
 		rowToAbility = new HashMap<>();
 		gameState.getActiveAbilities().stream().forEachOrdered(ability -> {

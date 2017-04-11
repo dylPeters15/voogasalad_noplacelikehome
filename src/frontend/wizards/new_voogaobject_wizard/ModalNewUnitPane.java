@@ -1,6 +1,6 @@
 package frontend.wizards.new_voogaobject_wizard;
 
-import backend.util.GameState;
+import backend.util.AuthorGameState;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -8,7 +8,7 @@ public class ModalNewUnitPane extends NewUnitPane {
 
 	private Stage stage;
 
-	public ModalNewUnitPane(GameState gameState) {
+	public ModalNewUnitPane(AuthorGameState gameState) {
 		super(gameState);
 		initialize();
 	}

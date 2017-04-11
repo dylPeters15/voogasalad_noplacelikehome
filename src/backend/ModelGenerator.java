@@ -1,6 +1,6 @@
 package backend;
 
-import backend.util.GameState;
+import backend.util.AuthorGameState;
 import controller.CommunicationController;
 
 public class ModelGenerator implements Model {
@@ -28,13 +28,13 @@ public class ModelGenerator implements Model {
 
 
 	@Override
-	public GameState getGameState() {
+	public AuthorGameState getGameState() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public GameState setGameState() {
+	public AuthorGameState setGameState() {
 		// TODO Auto-generated method stub
 		return null;
 	}
