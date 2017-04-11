@@ -1,8 +1,19 @@
 package frontend.startup;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.util.Objects;
+import java.util.Observable;
+import java.util.Observer;
+import java.util.Optional;
+import java.util.ResourceBundle;
+
+import backend.util.AuthoringGameState;
 import backend.util.GameplayState;
 import frontend.View;
-import frontend.wizards.wizard_2_0.NewGameWizard;
+import frontend.wizards.NewGameWizard;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -15,12 +26,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.util.*;
+import util.net.ObservableClient;
 
 public class StartupSelectionScreen extends VBox {
 
@@ -69,7 +75,7 @@ public class StartupSelectionScreen extends VBox {
 
 			@Override
 			public void update(Observable o, Object arg) {
-				createGame((GameplayState) arg, true);
+				createGame((AuthoringGameState) arg, true);
 				stage.close();
 			}
 		});
@@ -80,7 +86,7 @@ public class StartupSelectionScreen extends VBox {
 		read("load");
 	}
 
-	private void createGame(GameplayState state, boolean editable) {
+	private void createGame(AuthoringGameState state, boolean editable) {
 		//Controller control = new CommunicationController();
 		View view = new View(state,null);
 		//myClient.setGameState(state);

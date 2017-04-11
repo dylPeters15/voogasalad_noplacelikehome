@@ -10,10 +10,10 @@ public class Main extends Application {
 		launch(args);
 	}
 
-	@SuppressWarnings("unused")
 	@Override
 	public void start(Stage primaryStage) {
-		new CoordinateTuple(1,2,3);
+		new CoordinateTuple(1, 2, 3);
+		@SuppressWarnings("unused")
 		GridPattern pattern = GridPattern.HEXAGONAL_ADJACENT;
 		StartupScreen starter = new StartupScreen(primaryStage, 1200.0, 800.0);
 		primaryStage.setScene(starter.getPrimaryScene());
