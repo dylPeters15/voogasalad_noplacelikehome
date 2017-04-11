@@ -1,12 +1,12 @@
 package backend.grid;
 
-import backend.cell.ModifiableCell;
+import backend.cell.Cell;
 
 /**
  * @author Created by th174 on 4/8/2017.
  */
 public interface GameBoardBuilder {
-	GameBoardBuilder setTemplateCell(ModifiableCell cell);
+	GameBoardBuilder setTemplateCell(Cell cell);
 
 	GameBoardBuilder setRows(int rows);
 
@@ -14,7 +14,7 @@ public interface GameBoardBuilder {
 
 	GameBoardBuilder setBoundsHandler(BoundsHandler boundsHandler);
 
-	GameBoardBuilder setCell(CoordinateTuple coordinates, ModifiableCell cell);
+	GameBoardBuilder setCell(CoordinateTuple coordinates, Cell cell);
 
 	GameBoard build();
 }

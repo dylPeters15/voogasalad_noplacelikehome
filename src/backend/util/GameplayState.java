@@ -16,46 +16,45 @@ import java.util.stream.Stream;
 /**
  * @author Created by th174 on 4/10/2017.
  */
-public class GameplayState extends ImmutableVoogaObject {
+public class GameplayState extends ImmutableVoogaObject implements ReadonlyGameplayState {
 	private final Random random;
 	private int turnNumber;
 	private int currentPlayerNumber;
-	private List<String> playerNames;
-	private Map<String, Player> playerList;
-	private Map<String, Team> teams;
+	private final List<String> playerNames;
+	private final Map<String, Player> playerList;
+	private final Map<String, Team> teams;
 	private GameBoard grid;
-
-	private Collection<ResultQuadPredicate> objectives;
-	private Map<Event, Collection<BiConsumer<Player, GameplayState>>> turnActions;
-	private Collection<BiPredicate<Player, GameplayState>> turnRequirements;
+	private final Collection<ResultQuadPredicate> objectives;
+	private final Map<Event, Collection<BiConsumer<Player, GameplayState>>> turnActions;
+	private final Collection<BiPredicate<Player, GameplayState>> turnRequirements;
 
 	public GameplayState(String name, GameBoard grid, String description, String imgPath) {
-		super(name, description, imgPath);
-		teams = new HashMap<>();
-		this.grid = grid;
-		this.random = new Random(7);
-		this.turnNumber = 0;
+		this(name, grid, 0, Collections.emptyMap(), Collections.emptyList(), Collections.emptyMap(), Collections.emptyList(), description, imgPath, new Random(7));
 	}
 
-	private GameplayState(String name, GameBoard grid, int turnNumber, Collection<Team> teams,
+	private GameplayState(String name, GameBoard grid, int turnNumber, Map<String, Team> teams,
 	                      Collection<ResultQuadPredicate> objectives,
 	                      Map<Event, Collection<BiConsumer<Player, GameplayState>>> turnActions,
 	                      Collection<BiPredicate<Player, GameplayState>> turnRequirements,
 	                      String description, String imgPath, Random random) {
 		super(name, description, imgPath);
-		this.grid = grid.copy();
-		this.teams = teams.stream().map(Team::copy).collect(Collectors.toMap(Team::getName, e -> e));
+		this.grid = grid;
+		this.teams = new HashMap<>(teams);
 		this.random = random;
 		this.turnNumber = turnNumber;
-		this.turnActions = turnActions.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> new ArrayList<>(e.getValue())));
+		this.turnActions = new HashMap<>(turnActions);
 		this.objectives = new HashSet<>(objectives);
 		this.turnRequirements = new HashSet<>(turnRequirements);
+		this.playerList = new HashMap<>();
+		this.playerNames = new ArrayList<>();
 	}
 
+	@Override
 	public Player getCurrentPlayer() {
 		return playerList.get(playerNames.get(currentPlayerNumber));
 	}
 
+	@Override
 	public Player getPlayerByName(String name) {
 		return playerList.get(name);
 	}
@@ -65,6 +64,7 @@ public class GameplayState extends ImmutableVoogaObject {
 		return this;
 	}
 
+	@Override
 	public Team getTeamByName(String teamName) {
 		return teams.get(teamName);
 	}
@@ -74,6 +74,7 @@ public class GameplayState extends ImmutableVoogaObject {
 		return this;
 	}
 
+	@Override
 	public Collection<Team> getTeams() {
 		return Collections.unmodifiableCollection(teams.values());
 	}
@@ -84,6 +85,7 @@ public class GameplayState extends ImmutableVoogaObject {
 		return this;
 	}
 
+	@Override
 	public int getTurnNumber() {
 		return turnNumber;
 	}
@@ -99,6 +101,7 @@ public class GameplayState extends ImmutableVoogaObject {
 		return this;
 	}
 
+	@Override
 	public GameBoard getGrid() {
 		return grid;
 	}
@@ -108,10 +111,12 @@ public class GameplayState extends ImmutableVoogaObject {
 		return this;
 	}
 
+	@Override
 	public double random() {
 		return random.nextDouble();
 	}
 
+	@Override
 	public Collection<ResultQuadPredicate> getObjectives() {
 		return Collections.unmodifiableCollection(objectives);
 	}
@@ -134,6 +139,7 @@ public class GameplayState extends ImmutableVoogaObject {
 		return this;
 	}
 
+	@Override
 	public Map<Event, Collection<BiConsumer<Player, GameplayState>>> getTurnActions() {
 		return Collections.unmodifiableMap(turnActions);
 	}
@@ -158,6 +164,7 @@ public class GameplayState extends ImmutableVoogaObject {
 		return removeTurnActions(event, Arrays.asList(actions));
 	}
 
+	@Override
 	public Collection<BiPredicate<Player, GameplayState>> getTurnRequirements() {
 		return Collections.unmodifiableCollection(turnRequirements);
 	}
@@ -180,6 +187,7 @@ public class GameplayState extends ImmutableVoogaObject {
 		return removeTurnRequirements(Arrays.asList(turnRequirements));
 	}
 
+	@Override
 	public boolean turnRequirementsSatisfied() {
 		return turnRequirements.stream().allMatch(e -> e.test(getCurrentPlayer(), this));
 	}
@@ -206,6 +214,6 @@ public class GameplayState extends ImmutableVoogaObject {
 
 	@Override
 	public GameplayState copy() {
-		return new GameplayState(getName(), getGrid(), turnNumber, getTeams(), objectives, turnActions, turnRequirements, getDescription(), getImgPath(), random);
+		return new GameplayState(getName(), getGrid(), turnNumber, getTeams().stream().map(Team::copy).collect(Collectors.toMap(Team::getName, e -> e)), objectives, turnActions.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> new ArrayList<>(e.getValue()))), turnRequirements, getDescription(), getImgPath(), random);
 	}
 }

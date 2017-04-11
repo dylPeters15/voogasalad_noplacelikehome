@@ -15,13 +15,13 @@ import java.util.stream.IntStream;
  * @author Created by th174 on 3/28/2017.
  */
 public class ModifiableGameBoard extends ModifiableVoogaObject<ModifiableGameBoard> implements GameBoard, GameBoardBuilder {
-	public static final ModifiableGameBoard DEFAULT_GAME_BOARD = (ModifiableGameBoard) new ModifiableGameBoard("Plain Rectangular Flat Board - 5x5")
-			.setTemplateCell(ModifiableCell.BASIC_SQUARE_FLAT)
-			.setRows(10)
-			.setColumns(10).setBoundsHandler(BoundsHandler.FINITE_BOUNDS)
-			.setDescription("Default base game board for testing purposes")
-			.setImgPath("Duvall_lettuce.png")
-			.build();
+//	public static final ModifiableGameBoard DEFAULT_GAME_BOARD = (ModifiableGameBoard) new ModifiableGameBoard("Plain Rectangular Flat Board - 5x5")
+//			.setTemplateCell(ModifiableCell.BASIC_SQUARE_FLAT)
+//			.setRows(10)
+//			.setColumns(10).setBoundsHandler(BoundsHandler.FINITE_BOUNDS)
+//			.setDescription("Default base game board for testing purposes")
+//			.setImgPath("Duvall_lettuce.png")
+//			.build();
 
 	private Map<CoordinateTuple, Cell> gameBoard;
 	private Cell templateCell;
@@ -64,7 +64,7 @@ public class ModifiableGameBoard extends ModifiableVoogaObject<ModifiableGameBoa
 	}
 
 	@Override
-	public ModifiableGameBoard setCell(CoordinateTuple coordinateTuple, ModifiableCell cell) {
+	public ModifiableGameBoard setCell(CoordinateTuple coordinateTuple, Cell cell) {
 		gameBoard.put(coordinateTuple, cell.copy().setLocation(coordinateTuple));
 		return this;
 	}
@@ -81,7 +81,7 @@ public class ModifiableGameBoard extends ModifiableVoogaObject<ModifiableGameBoa
 	}
 
 	@Override
-	public ModifiableGameBoard setTemplateCell(ModifiableCell cell) {
+	public ModifiableGameBoard setTemplateCell(Cell cell) {
 		this.templateCell = cell;
 		return this;
 	}

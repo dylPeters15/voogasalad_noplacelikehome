@@ -85,8 +85,11 @@ public class BackendTests {
 
 	@Test
 	public void createAndSaveGrid() throws IOException {
+		GridPattern pattern = GridPattern.HEXAGONAL_ADJACENT;
 		Cell template = ModifiableCell.BASIC_SQUARE_FLAT;
-		ModifiableGameBoard board = new ModifiableGameBoard("testBoard", template, 5, 5, BoundsHandler.TOROIDAL_BOUNDS, "", "").copy();
+		Shape shape = Shape.HEXAGONAL;
+		GameBoard board = new ModifiableGameBoard("testBoard")
+				.setTemplateCell(template).setRows(5).setColumns(5).setBoundsHandler(BoundsHandler.TOROIDAL_BOUNDS).build();
 		AuthoringGameState authoringGameState = new AuthoringGameState("test").setGrid(board);
 		new CoordinateTuple(0, 0).getNeighbors().forEach(e -> board.get(e).arrive(ModifiableUnit.SKELETON_ARCHER.copy(), authoringGameState));
 		XMLSerializer<AuthoringGameState> serializer = new XMLSerializer<>();
