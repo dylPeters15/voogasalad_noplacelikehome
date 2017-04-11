@@ -4,8 +4,6 @@ import java.util.Arrays;
 
 import backend.cell.ModifiableCell;
 import backend.grid.BoundsHandler;
-import backend.grid.CoordinateTuple;
-import backend.grid.GridPattern;
 import backend.grid.ModifiableGameBoard;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;

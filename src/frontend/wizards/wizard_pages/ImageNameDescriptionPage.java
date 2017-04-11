@@ -22,6 +22,8 @@ import javafx.stage.FileChooser.ExtensionFilter;
 public class ImageNameDescriptionPage extends WizardPage {
 	private static final String DEFAULT_TITLE = "Set Image, Name, and Description";
 	private static final String DEFAULT_DESCRIPTION = "You must choose a file for the image and set the name. The description is optional.";
+	private static final double DEFAULT_INSETS = 10;
+	private static final double DEFAULT_SPACING = 10;
 
 	private HBox hbox;
 	private Button uploadButton;
@@ -67,8 +69,8 @@ public class ImageNameDescriptionPage extends WizardPage {
 	private void initialize() {
 		hbox = new HBox();
 		hbox.setAlignment(Pos.CENTER);
-		hbox.setPadding(new Insets(10));
-		hbox.setSpacing(10);
+		hbox.setPadding(new Insets(DEFAULT_INSETS));
+		hbox.setSpacing(DEFAULT_SPACING);
 		uploadButton = new Button("Upload Image");
 		imageView = new ImageView();
 		nameField = new TextField();

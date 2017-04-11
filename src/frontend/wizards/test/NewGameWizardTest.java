@@ -1,15 +1,12 @@
 package frontend.wizards.test;
 
-import java.util.Observable;
-import java.util.Observer;
-
 import backend.grid.CoordinateTuple;
 import backend.grid.GridPattern;
 import frontend.wizards.NewGameWizard;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
-public class NewGameWizardTest extends Application{
+public class NewGameWizardTest extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
@@ -26,5 +23,5 @@ public class NewGameWizardTest extends Application{
 	public static void main(String[] args) {
 		launch(args);
 	}
-	
+
 }
