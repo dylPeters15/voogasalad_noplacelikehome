@@ -6,10 +6,12 @@ import frontend.detailpane.DetailPane;
 import frontend.sprites.Sprite;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import backend.cell.Cell;
 import backend.cell.ModifiableCell;
 import backend.unit.ModifiableUnit;
 import backend.unit.Unit;
+import backend.util.AuthoringGameState;
 import backend.util.ModifiableVoogaObject;
 import backend.util.VoogaEntity;
 import backend.cell.ModifiableTerrain;
@@ -25,6 +27,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
 /**
  * @author Faith Rodriguez
@@ -33,18 +36,26 @@ import javafx.scene.text.Text;
 
 public class TemplatePane extends BaseUIManager<Region>{
 
-	Pane pane;
+	VBox pane = new VBox();
 	Collection<? extends ModifiableUnit> units;
 	Collection<? extends ModifiableTerrain> terrains;
 	DetailPane detailPane;
 	
 
-	public TemplatePane(Collection<ModifiableUnit> availableUnits, 
-			Collection<ModifiableTerrain> availableTerrains, DetailPane detailPaneIn) {
-			units = availableUnits;
-			terrains = availableTerrains;
-			pane = new Pane();
-			detailPane = detailPaneIn;
+	public TemplatePane(AuthoringGameState gameState, DetailPane detailPaneIn) {
+		
+	
+		units = (Collection<? extends ModifiableUnit>) gameState.getTemplateByCategory(AuthoringGameState.UNIT).getAll();
+		terrains = (Collection<? extends ModifiableTerrain>) gameState.getTemplateByCategory(AuthoringGameState.TERRAIN).getAll();
+		detailPane = detailPaneIn;
+		Stage s = new Stage();
+		Scene sc = new Scene(pane);
+		s.setScene(sc);
+		s.show();
+		
+		createCollabsible("unit", units);
+		createCollabsible("terrain", terrains);
+	
 	
 	}
 	
@@ -64,9 +75,9 @@ public class TemplatePane extends BaseUIManager<Region>{
 			// fix getName and getImage once communication sorted
 			Text spriteName = new Text(sprite.getName());
 			spriteContent.getChildren().add(spriteName);
-			Image tempImage = new Image(sprite.getImgPath());
-			ImageView spriteImage = new ImageView(tempImage); 
-			spriteContent.getChildren().add(spriteImage);
+			//Image tempImage = new Image(sprite.getImgPath());
+		//	ImageView spriteImage = new ImageView(tempImage); 
+			//spriteContent.getChildren().add(spriteImage);
 			setOnDrag(spriteContent);
 			setOnClick(spriteContent, sprite, spriteType);
 			contentPane.getChildren().add(spriteContent);
