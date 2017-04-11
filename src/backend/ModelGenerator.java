@@ -32,25 +32,7 @@ public class ModelGenerator implements Model {
 		this.gameState = mGameState;
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-=======
 
-
-
-
-
-
-
-
-
->>>>>>> 47c3f2afac411cab22c43c48263a62e6ed3af7e3
 	@Override
 	public GameState getGameState() {
 		// TODO Auto-generated method stub

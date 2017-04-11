@@ -5,6 +5,7 @@ package frontend;
 
 import backend.util.GameState;
 import controller.Controller;
+import controller.CommunicationController;
 import frontend.detailpane.DetailPane;
 import frontend.menubar.VoogaMenuBar;
 import frontend.templatepane.TemplatePane;
@@ -32,7 +33,7 @@ public class View extends BaseUIManager<Region> {
 	private ToolsPane toolsPane;
 	private DetailPane detailPane;
 	private TemplatePane tempPane;
-	//private Controller myController;
+	private Controller myController;
 	private GameState myGameState;
 	//private ObservableClient<GameState> myClient;
 	
@@ -40,8 +41,8 @@ public class View extends BaseUIManager<Region> {
 		this(null);
 	}
 	
-	public View(GameState gameState){
-		myGameState = gameState;
+	public View(Controller myController){
+		this.myController = (CommunicationController) myController;
 		//myClient = client;
 		//myController = controller;
 		//controller.addListener(e -> update());
@@ -53,10 +54,10 @@ public class View extends BaseUIManager<Region> {
 	 * Updates the display of the GameState. This method is to be called by the GameState whenever changes are made.
 	 */
 	public void update(){
-		worldView.updateGrid(myGameState.getGrid());
-		tempPane.updateUnits(myGameState.getUnitTemplates());
-//		worldView.updateGrid(myController.getGrid());
-//		tempPane.updateSprites(myController.getUnitTemplates());
+		//worldView.updateGrid(myGameState.getGrid());
+		//tempPane.updateUnits(myGameState.getUnitTemplates());
+		worldView.updateGrid(myController.getGrid());
+		tempPane.updateSprites(myController.getUnitTemplates());
 	}
 	
 	/**
