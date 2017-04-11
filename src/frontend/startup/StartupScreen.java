@@ -1,6 +1,5 @@
 package frontend.startup;
 
-import backend.util.ImmutableGameState;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -10,7 +9,7 @@ import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Screen;
-import util.net.ObservableClient;
+import javafx.stage.Stage;
 
 
 public class StartupScreen {
@@ -19,14 +18,15 @@ public class StartupScreen {
     private double width, height;
     private StartupMenuBar fileMenu;
     private StartupSelectionScreen selectionScreen;
-    private ObservableClient<ImmutableGameState> myClient;
+    //private ObservableClient<ImmutableGameState> myClient;
+    private Stage stage;
 
-    public StartupScreen(ObservableClient<ImmutableGameState> client) {
-        this(client, Screen.getPrimary().getVisualBounds().getWidth(), Screen.getPrimary().getVisualBounds().getHeight());
+    public StartupScreen() {
+        this(new Stage(),Screen.getPrimary().getVisualBounds().getWidth(), Screen.getPrimary().getVisualBounds().getHeight());
     }
 
-    public StartupScreen(ObservableClient<ImmutableGameState> client, double width, double height) {
-    	myClient = client;
+    public StartupScreen(Stage stage, double width, double height) {
+    	this.stage = stage;
         this.initPrimaryScene();
         this.width = width;
         this.height = height;
@@ -39,7 +39,7 @@ public class StartupScreen {
     private BorderPane initPrimaryPane() {
         System.out.println("here");
         this.fileMenu = new StartupMenuBar(this);
-        this.selectionScreen = new StartupSelectionScreen(this, myClient);
+        this.selectionScreen = new StartupSelectionScreen(stage,this);
         BackgroundImage bi = new BackgroundImage(new Image("frontend/properties/Screen Shot 2017-04-07 at 3.22.00 PM.png"), 
         		BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, null, new BackgroundSize(width, height, false, false, true, true));
         Background imgv = new Background(bi);

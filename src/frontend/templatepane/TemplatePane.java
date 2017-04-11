@@ -32,12 +32,12 @@ import javafx.scene.text.Text;
 public class TemplatePane extends BaseUIManager<Region>{
 
 	Pane pane;
-	Collection<? extends ModifiableVoogaObject> units;
-	Collection<? extends ModifiableVoogaObject> terrains;
+	Collection<? extends ModifiableUnit> units;
+	Collection<? extends ModifiableTerrain> terrains;
 	
 
-	public TemplatePane(Collection<ModifiableVoogaObject> availableUnits, 
-			Collection<ModifiableVoogaObject> availableTerrains) {
+	public TemplatePane(Collection<ModifiableUnit> availableUnits, 
+			Collection<ModifiableTerrain> availableTerrains) {
 			units = availableUnits;
 			terrains = availableTerrains;
 			pane = new Pane();

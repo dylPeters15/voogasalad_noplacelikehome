@@ -1,24 +1,5 @@
 package frontend.startup;
 
-import javafx.geometry.Insets;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
-import javafx.stage.FileChooser;
-import javafx.stage.Window;
-import util.net.ObservableClient;
-import backend.util.*;
-import controller.CommunicationController;
-import controller.Controller;
-import frontend.View;
-import frontend.wizards.new_game_wizard.NewGameWizard;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -29,15 +10,32 @@ import java.util.Observer;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+import backend.util.GameState;
+import frontend.View;
+import frontend.wizards.wizard_2_0.NewGameWizard;
+import javafx.geometry.Insets;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import javafx.stage.Window;
+
 public class StartupSelectionScreen extends VBox{
 
 	private ResourceBundle SelectionProperties = ResourceBundle.getBundle("frontend/properties/SelectionProperties");
 	private StartupScreen ui;
-	ObservableClient<ImmutableGameState> myClient;
+	//ObservableClient<ImmutableGameState> myClient;
+	private Stage stage;
 
 
-	public StartupSelectionScreen(StartupScreen ui, ObservableClient<ImmutableGameState> client){ //should have some sort of parameter that is passing the UI
-		myClient = client;
+	public StartupSelectionScreen(Stage stage, StartupScreen ui){ //should have some sort of parameter that is passing the UI
+		this.stage = stage;
 		this.setUpPane();
 		this.ui = ui;
 		System.out.println(this.getChildren());
@@ -45,26 +43,28 @@ public class StartupSelectionScreen extends VBox{
 
 	public void setUpPane(){
 
-		System.out.println("setUpPane");
-		Button play = new Button(SelectionProperties.getString("Play")){{
-			this.setOnAction(e -> play());
-		}};
+//		System.out.println("setUpPane");
+//		Button play = new Button(SelectionProperties.getString("Play")){{
+//			this.setOnAction(e -> play());
+//		}};
 
 		Button create = new Button(SelectionProperties.getString("Create")){{
 			this.setOnAction(e -> create());
 		}};
-		Button load = new Button(SelectionProperties.getString("Load")){{
-			this.setOnAction(e -> edit());
-		}};
+		
+//		Button edit = new Button(SelectionProperties.getString("EditGame")){{
+//			this.setOnAction(e -> edit());
+//		}};
+		
 		this.setPadding(new Insets(30, 10, 10, 10));
 		this.setSpacing(10);
 		this.setMinWidth(450);
 		this.setMinHeight(400);
-		this.getChildren().addAll(play, create, load);
+		//this.getChildren().addAll(play, create, edit);
+		this.getChildren().add(create);
 	}
 
 	private void play(){
-		System.out.println("you can load and save files, but it won't do anything");
 		read("play");
 	}
 
@@ -75,27 +75,29 @@ public class StartupSelectionScreen extends VBox{
 			@Override
 			public void update(Observable o, Object arg) {
 				createGame((GameState)arg, true);
+				stage.close();
 			}
 		});
-		System.out.println("you clicked 'create.' I haven't gotten that far");
 
 	}
 
 	private void edit(){
-		System.out.println("you can load and save files, but it won't do anything");
 		read("load");
 	}
 	
 	private void createGame(GameState state, boolean editable) {
-		Controller control = new CommunicationController();
-		View view = new View();
-		myClient.setGameState(state);
-		control.setClient(myClient);
-		control.setGameState(state);
+		//Controller control = new CommunicationController();
+		View view = new View(state);
+		//myClient.setGameState(state);
+		//control.setClient(myClient);
+		//control.setGameState(state);
 		view.setEditable(editable);
-		view.setController(control);
-		control.setView(view);
-		return view.show();
+		//view.setController(control);
+		//control.setView(view);
+		Stage stage = new Stage();
+		Scene scene = new Scene(view.getObject());
+		stage.setScene(scene);
+		stage.show();
 		
 	}
 
