@@ -3,7 +3,6 @@ package frontend.templatepane;
 import java.util.Collection;
 
 import frontend.sprites.Sprite;
-import frontend.sprites.Terrain;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import backend.cell.Cell;
@@ -11,7 +10,9 @@ import backend.cell.ModifiableCell;
 import backend.unit.ModifiableUnit;
 import backend.unit.Unit;
 import backend.util.ModifiableVoogaObject;
+import backend.util.VoogaEntity;
 import backend.cell.ModifiableTerrain;
+import backend.cell.Terrain;
 import frontend.util.BaseUIManager;
 import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
@@ -44,7 +45,7 @@ public class TemplatePane extends BaseUIManager<Region>{
 	
 	}
 	
-	private void createCollabsible(String label, Collection<? extends ModifiableVoogaObject> sprites) {
+	private void createCollabsible(String label, Collection<? extends VoogaEntity> sprites) {
 		TitledPane spritePane = new TitledPane();
 		spritePane.setText(label);
 		VBox content = createContent(sprites);
@@ -53,9 +54,9 @@ public class TemplatePane extends BaseUIManager<Region>{
 		pane.getChildren().add(spritePane);
 	}
 	
-	private VBox createContent(Collection<? extends ModifiableVoogaObject> sprites) {
+	private VBox createContent(Collection<? extends VoogaEntity> sprites) {
 		VBox contentPane = new VBox();
-		for (ModifiableVoogaObject sprite: sprites) {
+		for (VoogaEntity sprite: sprites) {
 			VBox spriteContent = new VBox();
 			// fix getName and getImage once communication sorted
 			Text spriteName = new Text(sprite.getName());
