@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.util.Observable;
 
 import backend.grid.GameBoard;
+import backend.util.Client;
 import backend.util.GameState;
 import frontend.View;
 
@@ -15,12 +16,17 @@ import frontend.View;
  * our networking works and how the GameState is structured.
  * 
  */
-public class CommunicationController extends Observable implements Controller  {
-	//front to back buffer for gamestate
-	private Buffer<GameState> gameStateHistory;
+public class CommunicationController implements Controller  {
+	private MyBuffer<GameState> gameStateHistory;
 	private GameState mGameState;
 	private View mView;
-	//private Client client;
+	private Client mClient;
+	
+	public CommunicationController(GameState gameState, View view)
+	{
+		this.mGameState = gameState;
+		this.mView = view;
+	}
 	
 	@Override
 	public GameBoard getGrid() {
@@ -37,38 +43,32 @@ public class CommunicationController extends Observable implements Controller  {
 		this.mView = view;
 	}
 	
+	public void setClient(Client client)
+	{
+		this.mClient = client;
+		mView.update();
+	}
+	
+	public Client getClient()
+	{
+		return mClient; 
+	}
 	
 	public void setGameState(GameState gameState)
 	{
+		gameStateHistory.addToBuffer(gameState);
 		this.mGameState = gameState;
+		mView.update();
 	}
 	
-	public void addObserver(Observer obs)
-
-	public void deleteObserver(Observer obs)
-
-	public void deleteObservers()
-
-	public int countObservers()
-
-	protected void setChanged()
-
-
-
-	protected void clearChanged()
-
-	public boolean hasChanged()
-
-	public void notifyObservers()
-
+	public GameState getGameState()
+	{
+		return mGameState; 
+	}
 	
-
-	public void notifyObservers(Object obj)
-
-
-
-	
-	
-	
+	public GameState getMostRecentGameState()
+	{
+		return gameStateHistory.getBufferHead();
+	}
 	
 }
