@@ -1,7 +1,9 @@
 import backend.cell.Cell;
 import backend.cell.ModifiableCell;
+import backend.cell.ModifiableTerrain;
 import backend.grid.*;
 import backend.player.Player;
+import backend.player.Team;
 import backend.unit.ModifiableUnit;
 import backend.unit.Unit;
 import backend.unit.properties.ActiveAbility;
@@ -85,21 +87,58 @@ public class BackendTests {
 
 	@Test
 	public void createAndSaveGrid() throws IOException {
-		GridPattern pattern = GridPattern.HEXAGONAL_ADJACENT;
-		Cell template = ModifiableCell.BASIC_SQUARE_FLAT;
-		Shape shape = Shape.HEXAGONAL;
 		GameBoard board = new ModifiableGameBoard("testBoard")
-				.setTemplateCell(template).setRows(5).setColumns(5).setBoundsHandler(BoundsHandler.TOROIDAL_BOUNDS).build();
+				.setTemplateCell(ModifiableCell.BASIC_SQUARE_FLAT).setRows(5).setColumns(5).setBoundsHandler(BoundsHandler.TOROIDAL_BOUNDS).build();
 		AuthoringGameState authoringGameState = new AuthoringGameState("test").setGrid(board);
 		new CoordinateTuple(0, 0).getNeighbors().forEach(e -> board.get(e).arrive(ModifiableUnit.SKELETON_ARCHER.copy(), authoringGameState));
 		XMLSerializer<AuthoringGameState> serializer = new XMLSerializer<>();
 		authoringGameState.addTurnRequirements((BiPredicate<Player, GameplayState> & Serializable) (player, immutableAuthoringGameState) -> 3 < 5);
-		Files.write(Paths.get("data/saved_game_states/basic_grid_5x5.xml"), ((String) serializer.serialize(authoringGameState)).getBytes());
-		assertEquals(25, board.getCells().values().stream().filter(e -> e.getTerrain().equals(template.getTerrain())).count());
+		Files.write(Paths.get("data/saved_game_data/basic_grid_5x5.xml"), ((String) serializer.serialize(authoringGameState)).getBytes());
+		assertEquals(25, board.getCells().values().stream().filter(e -> e.getTerrain().equals(ModifiableTerrain.FLAT)).count());
 		assertEquals(4, board.getUnits().size());
 		assertTrue(!board.get(new CoordinateTuple(0, 4)).getOccupants().isEmpty());
 		assertTrue(!board.get(new CoordinateTuple(4, 0)).getOccupants().isEmpty());
 		assertTrue(!board.get(new CoordinateTuple(1, 0)).getOccupants().isEmpty());
 		assertTrue(!board.get(new CoordinateTuple(0, 1)).getOccupants().isEmpty());
+	}
+
+	@Test
+	public void testRectangularBounds(){
+		GridPattern pattern = GridPattern.HEXAGONAL_ADJACENT;
+		ModifiableCell template = ModifiableCell.BASIC_SQUARE_FLAT;
+		GameBoard board = new ModifiableGameBoard("testBoard")
+				.setTemplateCell(ModifiableCell.BASIC_SQUARE_FLAT).setRows(5).setColumns(5).setBoundsHandler(BoundsHandler.TOROIDAL_BOUNDS).build();
+		assertEquals(4,board.getRectangularBounds().getMax(0));
+		assertEquals(4,board.getRectangularBounds().getMax(1));
+		assertEquals(4,board.getBounds().getMax(0));
+		assertEquals(4,board.getBounds().getMax(1));
+		assertEquals(0,board.getRectangularBounds().getMin(0));
+		assertEquals(0,board.getRectangularBounds().getMin(1));
+		assertEquals(0,board.getBounds().getMin(0));
+		assertEquals(0,board.getBounds().getMin(1));
+
+	}
+
+	@Test
+	public void createAndSaveGameState() {
+		GridPattern gridPattern = GridPattern.HEXAGONAL_ADJACENT;
+		ModifiableGameBoard DEFAULT_GAME_BOARD = (ModifiableGameBoard) new ModifiableGameBoard("Plain Rectangular Flat Board - 5x5")
+				.setTemplateCell(ModifiableCell.BASIC_SQUARE_FLAT)
+				.setRows(10)
+				.setColumns(10).setBoundsHandler(BoundsHandler.FINITE_BOUNDS)
+				.setDescription("Default base game board for testing purposes")
+				.setImgPath("Duvall_lettuce.png")
+				.build();
+		AuthoringGameState authoringGameState = new AuthoringGameState("test").setGrid(DEFAULT_GAME_BOARD)
+				.setDescription("This is just a test gamestate").setImgPath("").addTeam(new Team("Team 1", "Test team 1", ""))
+				.addPlayer(new Player("Player 1", "Test player 1", ""));
+		XMLSerializer<AuthoringGameState> serializer = new XMLSerializer<>();
+		try {
+			Files.write(Paths.get("data/saved_game_data/test_base_gamestate.xml"), ((String) serializer.serialize(authoringGameState)).getBytes());
+			AuthoringGameState loadedGameState = serializer.unserialize(new String(Files.readAllBytes(Paths.get("data/saved_game_data/test_base_gamestate.xml"))));
+			assertTrue(loadedGameState.getGrid().getTemplateCell().getTerrain().equals(ModifiableTerrain.FLAT));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

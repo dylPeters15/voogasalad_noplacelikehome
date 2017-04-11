@@ -17,12 +17,9 @@ public class NewGameWizardTest extends Application{
 		@SuppressWarnings("unused")
 		GridPattern pattern = GridPattern.HEXAGONAL_ADJACENT;
 		NewGameWizard newGameWizard = new NewGameWizard(primaryStage);
-		newGameWizard.addObserver(new Observer() {
-			@Override
-			public void update(Observable observable, Object object) {
-				System.out.println("Observable: " + observable.toString());
-				System.out.println("Object: " + object.toString());
-			}
+		newGameWizard.addObserver((observable, object) -> {
+			System.out.println("Observable: " + observable.toString());
+			System.out.println("Object: " + object.toString());
 		});
 	}
 

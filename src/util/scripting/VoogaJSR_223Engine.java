@@ -17,10 +17,6 @@ public abstract class VoogaJSR_223Engine implements VoogaScriptEngine {
 
 	protected abstract String getEngineName();
 
-	protected ScriptEngine getEngine() {
-		return engine;
-	}
-
 	@Override
 	public VoogaJSR_223Engine setScript(String script) throws VoogaScriptException {
 		try {
@@ -29,10 +25,6 @@ public abstract class VoogaJSR_223Engine implements VoogaScriptEngine {
 			throw new VoogaScriptException(e);
 		}
 		return this;
-	}
-
-	protected CompiledScript getCompiledScript() {
-		return compiledScript;
 	}
 
 	@Override
