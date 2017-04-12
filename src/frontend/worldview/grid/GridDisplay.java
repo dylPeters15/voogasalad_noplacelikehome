@@ -5,7 +5,6 @@
 package frontend.worldview.grid;
 
 import backend.grid.GameBoard;
-import frontend.sprites.Sprite;
 import frontend.util.BaseUIManager;
 import javafx.scene.layout.Region;
 
