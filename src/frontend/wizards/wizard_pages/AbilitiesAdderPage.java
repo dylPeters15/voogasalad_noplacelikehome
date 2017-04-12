@@ -43,7 +43,7 @@ public class AbilitiesAdderPage extends WizardPage {
 		canNextWritable().setValue(true);
 	}
 
-	public Collection<ActiveAbility<?>> getSelectedAbilities() {
+	public Collection<ActiveAbility> getSelectedAbilities() {
 		return rowToAbility.keySet().stream().filter(SelectableInputRow::getSelected).map(row -> rowToAbility.get(row))
 				.collect(Collectors.toList());
 	}

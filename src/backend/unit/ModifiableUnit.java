@@ -126,6 +126,13 @@ public class ModifiableUnit extends ModifiableVoogaObject<ModifiableUnit> implem
 	public final Map<Terrain, Integer> getTerrainMoveCosts() {
 		return Collections.unmodifiableMap(terrainMoveCosts);
 	}
+	
+	public final ModifiableUnit setTerrainMoveCosts(Map<Terrain, Integer> terrainMoveCosts) {
+		this.terrainMoveCosts.clear();
+		terrainMoveCosts.keySet().stream()
+				.forEach(terrain -> this.terrainMoveCosts.put(terrain, terrainMoveCosts.get(terrain)));
+		return this;
+	}
 
 	@Override
 	@SafeVarargs

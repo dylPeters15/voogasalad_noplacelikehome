@@ -17,6 +17,7 @@ import backend.util.VoogaEntity;
 import backend.cell.ModifiableTerrain;
 import backend.cell.Terrain;
 import frontend.util.BaseUIManager;
+import frontend.worldview.WorldView;
 import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -40,18 +41,16 @@ public class TemplatePane extends BaseUIManager<Region>{
 	Collection<? extends ModifiableUnit> units;
 	Collection<? extends ModifiableTerrain> terrains;
 	DetailPane detailPane;
+	WorldView worldView;
 	
 
-	public TemplatePane(AuthoringGameState gameState, DetailPane detailPaneIn) {
+	public TemplatePane(AuthoringGameState gameState, DetailPane detailPaneIn, WorldView worldViewIn) {
 		
 	
 		units = (Collection<? extends ModifiableUnit>) gameState.getTemplateByCategory(AuthoringGameState.UNIT).getAll();
 		terrains = (Collection<? extends ModifiableTerrain>) gameState.getTemplateByCategory(AuthoringGameState.TERRAIN).getAll();
 		detailPane = detailPaneIn;
-		Stage s = new Stage();
-		Scene sc = new Scene(pane);
-		s.setScene(sc);
-		s.show();
+		worldView = worldViewIn;
 		
 		createCollabsible("unit", units);
 		createCollabsible("terrain", terrains);
@@ -78,28 +77,18 @@ public class TemplatePane extends BaseUIManager<Region>{
 			//Image tempImage = new Image(sprite.getImgPath());
 		//	ImageView spriteImage = new ImageView(tempImage); 
 			//spriteContent.getChildren().add(spriteImage);
-			setOnDrag(spriteContent);
+			setOnDrag(spriteContent, sprite, spriteType);
 			setOnClick(spriteContent, sprite, spriteType);
 			contentPane.getChildren().add(spriteContent);
 		}
 		return contentPane;
 	}
 	
-	private void setOnDrag(Node o) {
+	private void setOnDrag(Node o, VoogaEntity sprite, String spriteType) {
 		//ImageView spriteImage = new ImageView(getImage(o));   
 		 o.setOnDragDetected(new EventHandler <MouseEvent>() {
 	            public void handle(MouseEvent event) {
-	                /* drag was detected, run drag-and-drop gesture*/
-	                System.out.println("onDragDetected");
-	                
-	                /* create dragboard */
-	                Dragboard db = (Dragboard) Dragboard.getSystemClipboard();
-	                
-	                /* put an image on dragboard */
-	                ClipboardContent content = new ClipboardContent();
-	                content.putString(o.toString());
-	                db.setContent(content);
-	                event.consume();
+	               worldView.addSprite(sprite, spriteType);
 	            }
 	        });
 	}

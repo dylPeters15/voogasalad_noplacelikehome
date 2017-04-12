@@ -15,7 +15,7 @@ public class HexagonalGridDisplay extends GridDisplay {
 
 
 	@Override
-	public void placeInCell(Sprite sprite, Coordinates mouseCoord) {
+	public void placeInCell(Sprite sprite, DisplayCoordinates mouseCoord) {
 		// TODO Auto-generated method stub
 
 	}
