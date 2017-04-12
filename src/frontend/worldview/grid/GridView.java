@@ -4,6 +4,8 @@
  */
 package frontend.worldview.grid;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Map;
 
 import backend.cell.Cell;
@@ -20,35 +22,41 @@ import javafx.scene.layout.Region;
  * Created 3/29/2017
  */
 public class GridView extends BaseUIManager<Region> {
+	private static final double MIN = 10, MAX = 100, SCALE = 50;
 
 	private ScrollPane myScrollPane;
-	private Group cellViews;
+	private Group cellViewObjects;
 	private LayoutManager myLayoutManager;
+	private Collection<CellView> cellViews;
 	
 	public GridView(GameBoard gameBoard){
 		initialize(gameBoard);
+		update(gameBoard);
 	}
 
 	private void initialize(GameBoard gameBoard) {
 		myScrollPane = new ScrollPane();
-		cellViews = new Group();
-		
+		cellViewObjects = new Group();
+		cellViews = new ArrayList<CellView>();
+	}
+	
+	public void update(GameBoard gameBoard){
+
 		if (gameBoard.dimension() == 2){
 			myLayoutManager = new SquareLayout();
 		} else {
-			myLayoutManager = new HexagonalLayout();
+			//myLayoutManager = new HexagonalLayout();
 		}
 		
 		Map<CoordinateTuple, Cell> backendCells = gameBoard.getCells();
 		backendCells.values().stream().forEach(cell -> {
-			cellViews.getChildren().add(new CellView(cell).getObject());
+			CellView cl = new CellView(cell);
+			cellViewObjects.getChildren().add(cl.getObject());
+			myLayoutManager.layoutCell(cl, SCALE, MIN, MAX);
+			cellViews.add(cl);
 		});
 		
-		myScrollPane.setContent(cellViews);
-	}
-	
-	public void update(GameBoard gameBoard){
-		cellViews.getChildren();
+		myScrollPane.setContent(cellViewObjects);
 	}
 
 	@Override
