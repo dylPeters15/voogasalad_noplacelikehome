@@ -3,12 +3,16 @@
  */
 package frontend.worldview.grid;
 
+import java.util.function.Consumer;
+
 import backend.cell.Cell;
 import backend.grid.CoordinateTuple;
+import backend.util.VoogaEntity;
 import frontend.util.BaseUIManager;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Polygon;
@@ -26,8 +30,6 @@ public class CellView extends BaseUIManager<Parent>{
 	public CellView(Cell cellModel){
 		this.cellModel = cellModel;
 		polygon = new Polygon();
-		polygon.setOnDragDropped(event -> System.out.println("Cellview drag drop" + event));
-		polygon.setOnMouseClicked(event -> System.out.println("CellView click" + event));
 		group = new Group();
 		update(cellModel);
 	}
@@ -79,6 +81,16 @@ public class CellView extends BaseUIManager<Parent>{
 		});
 	}
 
+	public void setOnCellClick(Consumer<CellView> consumer){
+		polygon.setOnMouseClicked(event -> consumer.accept(this));
+	}
+	
+	public void add(VoogaEntity sprite){
+		ImageView imageView = new ImageView(new Image(sprite.getImgPath()));
+		imageView.setX(0);
+		imageView.setY(0);
+		group.getChildren().add(imageView);
+	}
 	
 	@Override
 	public Parent getObject() {
