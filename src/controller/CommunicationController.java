@@ -18,16 +18,23 @@ public class CommunicationController implements Controller {
 	private MyBuffer<AuthoringGameState> gameStateHistory;
 	private AuthoringGameState mGameState;
 	private View mView;
-	private ObservableClient mClient;
+	private ObservableClient<AuthoringGameState> mClient;
 
 	public CommunicationController(AuthoringGameState gameState, View view) {
 		this.mGameState = gameState;
 		this.mView = view;
+		mClient.addListener(e -> updateGameState(e));
 	}
 
 	@Override
 	public GameBoard getGrid() {
 		return mGameState.getGrid();
+	}
+	
+	public void updateGameState(AuthoringGameState newGameState)
+	{
+		mGameState = newGameState;
+		mView.update();
 	}
 
 	@Override
@@ -54,27 +61,36 @@ public class CommunicationController implements Controller {
 		mView.update();
 	}
 
-	@Override
-	public void sendModifier(Modifier<GameplayState> modifier) {
-
+	public AuthoringGameState getGameState() {
+		return mGameState;
 	}
 
+	public AuthoringGameState getMostRecentGameState() {
+		return gameStateHistory.getBufferHead();
+	}
+
+	@Override
 	public AuthoringGameState getAuthoringGameState() {
-		return mGameState;
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
 	public GameplayState getGameplayState() {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public ImmutablePlayer getPlayer(String name) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public AuthoringGameState getMostRecentGameState() {
-		return gameStateHistory.getBufferHead();
+	@Override
+	public void sendModifier(Modifier<GameplayState> modifier) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

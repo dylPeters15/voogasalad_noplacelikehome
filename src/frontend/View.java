@@ -134,7 +134,7 @@ public class View extends BaseUIManager<Region> {
 		// tempPane = new TemplatePane(myController.getUnitTemplates(),
 		// myController.getModifiableCells());
 		tempPane.getRequests().passTo(this.getRequests());
-		getRequests().addListener(new InvalidationListener() {
+		getRequests().addListener(new InvalidationListener() { 
 			@Override
 			public void invalidated(Observable observable) {
 				while (!getRequests().isEmpty()) {

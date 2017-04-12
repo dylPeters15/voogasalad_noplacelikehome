@@ -3,8 +3,8 @@ package controller;
 import backend.grid.GameBoard;
 import backend.player.ImmutablePlayer;
 import backend.util.AuthoringGameState;
-import backend.util.GameplayState;
 import frontend.View;
+import backend.util.GameplayState;
 import util.net.Modifier;
 
 /**
@@ -13,7 +13,9 @@ import util.net.Modifier;
 public interface Controller {
 
 	GameBoard getGrid();
-
+	
+	AuthoringGameState getGameState();
+	
 	AuthoringGameState getAuthoringGameState();
 
 	GameplayState getGameplayState();
