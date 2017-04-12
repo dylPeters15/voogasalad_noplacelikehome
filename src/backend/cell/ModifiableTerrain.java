@@ -15,7 +15,7 @@ public class ModifiableTerrain extends ModifiableVoogaObject<ModifiableTerrain> 
 			.setDefaultMoveCost(IMPASSABLE)
 			.setDefaultDefenseModifier(InteractionModifier.NO_EFFECT)
 			.setDescription("Literally nothing")
-			.setImgPath("black_void_of_the_abyss.png");
+			.setImgPath("resources/images/testImage.jpg");
 	public static final Terrain FLAT = new ModifiableTerrain("Flat")
 			.setDefaultMoveCost(1)
 			.setDefaultDefenseModifier(new InteractionModifier<>("Default Flat Terrain Defense", (originalValue, agent, target, game) -> game.random() < .7 ? originalValue : 0, "Units have 30% evasion on Flat terrain by default."))
