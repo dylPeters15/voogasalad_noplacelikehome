@@ -48,12 +48,12 @@ public class View extends BaseUIManager<Region> {
 	 */
 	public void update() {
 		@SuppressWarnings("unchecked")
-		Collection<ModifiableUnit> units = (Collection<ModifiableUnit>) myController.getGameState()
+		Collection<ModifiableUnit> units = (Collection<ModifiableUnit>) myController.getAuthoringGameState()
 				.getTemplateByCategory(AuthoringGameState.UNIT).getAll().stream()
 				.filter(ModifiableUnit.class::isInstance).collect(Collectors.toList());
 		tempPane.updateUnits(units);
 		@SuppressWarnings("unchecked")
-		Collection<Terrain> terrains = (Collection<Terrain>) myController.getGameState()
+		Collection<Terrain> terrains = (Collection<Terrain>) myController.getAuthoringGameState()
 				.getTemplateByCategory(AuthoringGameState.TERRAIN).getAll().stream()
 				.filter(ModifiableTerrain.class::isInstance).collect(Collectors.toList());
 		tempPane.updateTerrains(terrains);
@@ -114,7 +114,7 @@ public class View extends BaseUIManager<Region> {
 	 * necessary panes.
 	 */
 	private void initPanesAndListeners() {
-		menuBar = new VoogaMenuBar(myController.getGameState());
+		menuBar = new VoogaMenuBar(myController.getAuthoringGameState());
 		menuBar.getRequests().passTo(this.getRequests());
 		 worldView = new WorldView(myController.getGrid());
 		worldView.getRequests().passTo(this.getRequests());
@@ -123,14 +123,14 @@ public class View extends BaseUIManager<Region> {
 		detailPane = new DetailPane(worldView);
 		detailPane.getRequests().passTo(this.getRequests());
 		@SuppressWarnings("unchecked")
-		Collection<ModifiableUnit> units = (Collection<ModifiableUnit>) myController.getGameState()
+		Collection<ModifiableUnit> units = (Collection<ModifiableUnit>) myController.getAuthoringGameState()
 				.getTemplateByCategory(AuthoringGameState.UNIT).getAll().stream()
 				.filter(voogaEntity -> voogaEntity instanceof ModifiableUnit).collect(Collectors.toList());
 		@SuppressWarnings("unchecked")
-		Collection<ModifiableTerrain> terrains = (Collection<ModifiableTerrain>) myController.getGameState()
+		Collection<ModifiableTerrain> terrains = (Collection<ModifiableTerrain>) myController.getAuthoringGameState()
 				.getTemplateByCategory(AuthoringGameState.TERRAIN).getAll().stream()
 				.filter(voogaEntity -> voogaEntity instanceof ModifiableTerrain).collect(Collectors.toList());
-		tempPane = new TemplatePane(myController.getGameState(), detailPane, worldView);
+		tempPane = new TemplatePane(myController.getAuthoringGameState(), detailPane, worldView);
 		// tempPane = new TemplatePane(myController.getUnitTemplates(),
 		// myController.getModifiableCells());
 		tempPane.getRequests().passTo(this.getRequests());
