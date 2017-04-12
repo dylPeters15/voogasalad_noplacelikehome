@@ -115,7 +115,7 @@ public class View extends BaseUIManager<Region> {
 	 * necessary panes.
 	 */
 	private void initPanesAndListeners() {
-		menuBar = new VoogaMenuBar();
+		menuBar = new VoogaMenuBar(myController.getGameState());
 		menuBar.getRequests().passTo(this.getRequests());
 		 worldView = new WorldView(myController.getGrid());
 		worldView.getRequests().passTo(this.getRequests());

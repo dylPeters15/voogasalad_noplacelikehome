@@ -1,6 +1,5 @@
 package frontend.startup;
 
-import backend.util.GameplayState;
 
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -18,7 +17,6 @@ public class StartupScreen {
     private Scene primaryScene;
     private BorderPane primaryPane;
     private double width, height;
-    private StartupMenuBar fileMenu;
     private StartupSelectionScreen selectionScreen;
     //private ObservableClient<ImmutableGameState> myClient;
     private Stage stage;
@@ -29,9 +27,9 @@ public class StartupScreen {
 
     public StartupScreen(Stage stage, double width, double height) {
     	this.stage = stage;
-        this.initPrimaryScene();
         this.width = width;
         this.height = height;
+        this.initPrimaryScene();
     }
 
     private void initPrimaryScene() {
@@ -39,20 +37,16 @@ public class StartupScreen {
     }
 
     private BorderPane initPrimaryPane() {
-        System.out.println("here");
-        this.fileMenu = new StartupMenuBar(this);
         this.selectionScreen = new StartupSelectionScreen(stage,this);
         BackgroundImage bi = new BackgroundImage(new Image("frontend/properties/Screen Shot 2017-04-07 at 3.22.00 PM.png"), 
         		BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, null, new BackgroundSize(width, height, false, false, true, true));
         Background imgv = new Background(bi);
         this.primaryPane = new BorderPane() {{
-            resize(width, height);
-//            setTop(fileMenu);
+            setMinSize(width, height);
             setBottom(selectionScreen);
             selectionScreen.setAlignment(Pos.CENTER);
             setBackground(imgv);
         }};
-//        System.out.println(selectionScreen.getChildren());
         return primaryPane;
     }
     
