@@ -22,7 +22,7 @@ import javafx.scene.layout.Region;
  * Created 3/29/2017
  */
 public class GridView extends BaseUIManager<Region> {
-	private static final double MIN = 10, MAX = 100, SCALE = 50;
+	private static final double MIN = 10, MAX = 100, SCALE = 0.50;
 
 	private ScrollPane myScrollPane;
 	private Group cellViewObjects;
@@ -41,6 +41,7 @@ public class GridView extends BaseUIManager<Region> {
 	}
 	
 	public void update(GameBoard gameBoard){
+		cellViewObjects.getChildren().clear();
 
 		if (gameBoard.dimension() == 2){
 			myLayoutManager = new SquareLayout();
