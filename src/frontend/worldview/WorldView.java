@@ -2,14 +2,17 @@ package frontend.worldview;
 import backend.grid.GameBoard;
 import backend.util.VoogaEntity;
 import frontend.util.BaseUIManager;
-import frontend.worldview.grid.GridDisplay;
+import frontend.worldview.grid.GridView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
 public class WorldView extends BaseUIManager<Region> {
-	private GridDisplay myGrid;
+
+
+	private GridView myGrid;
 	private BorderPane borderPane;
 	public WorldView(GameBoard gameBoard) {
 		initialize(gameBoard);
+		update(gameBoard);
 	}
 	public void update(GameBoard grid) {
 		myGrid.update(grid);
@@ -25,7 +28,7 @@ public class WorldView extends BaseUIManager<Region> {
 	}
 	private void initialize(GameBoard gameBoard) {
 		borderPane = new BorderPane();
-		myGrid = new GridDisplay(gameBoard);
+		myGrid = new GridView(gameBoard);
 		borderPane.setCenter(myGrid.getObject());
 	}
 }
