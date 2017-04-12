@@ -17,7 +17,6 @@ import backend.cell.ModifiableTerrain;
 import backend.cell.Terrain;
 import frontend.util.BaseUIManager;
 import frontend.worldview.WorldView;
-import frontend.worldview.grid.Sprite;
 import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
