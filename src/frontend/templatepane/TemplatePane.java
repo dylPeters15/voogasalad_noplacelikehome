@@ -87,7 +87,7 @@ public class TemplatePane extends BaseUIManager<Region>{
 		//ImageView spriteImage = new ImageView(getImage(o));   
 		 o.setOnDragDetected(new EventHandler <MouseEvent>() {
 	            public void handle(MouseEvent event) {
-	               worldView.addSprite(sprite, spriteType);
+//	               worldView.addSprite(sprite, spriteType);
 	            }
 	        });
 	}
