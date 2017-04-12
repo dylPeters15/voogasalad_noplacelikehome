@@ -31,6 +31,7 @@ public class SquareLayout implements LayoutManager {
 		size = scaleFactor * difference + min;
 		ObservableList<Double> vertices = shape.getPoints();
 		vertices.clear();
+		System.out.println(cellPosition[0] + ", " + cellPosition[1]);
 
 		vertices.add(cellPosition[0] - size / 2);
 		vertices.add(cellPosition[1] - size / 2);
