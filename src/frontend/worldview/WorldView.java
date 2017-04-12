@@ -4,7 +4,6 @@ import backend.grid.GameBoard;
 import backend.util.VoogaEntity;
 import frontend.util.BaseUIManager;
 import frontend.worldview.grid.GridDisplay;
-import frontend.worldview.grid.SquareGridDisplay;
 import javafx.scene.layout.Region;
 
 public class WorldView extends BaseUIManager<Region>{
@@ -26,7 +25,7 @@ public class WorldView extends BaseUIManager<Region>{
 	}
 	
 	private GridDisplay initGrid(GameBoard grid){
-		return new SquareGridDisplay(grid);
+		return new GridDisplay();
 		// TODO create a GridDisplay using the backend ImmutableGrid structure and return it.
 				//Don't forget to account for the cell shape.
 				//"grid.getTemplateCell().getShape()" will return the cell shape being used by this particular grid.
