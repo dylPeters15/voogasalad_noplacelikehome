@@ -2,6 +2,7 @@ package frontend.menubar;
 
 import java.util.ResourceBundle;
 
+import backend.util.AuthoringGameState;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -14,7 +15,7 @@ public class VoogaMenuBarTest extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		BorderPane bp = new BorderPane();
-		VoogaMenuBar voogaMenuBar = new VoogaMenuBar();
+		VoogaMenuBar voogaMenuBar = new VoogaMenuBar(new AuthoringGameState(""));
 		bp.setTop(voogaMenuBar.getObject());
 		ButtonManager buttonManager = new ButtonManager();
 //		buttonManager.getLanguage().bind(voogaMenuBar.getLanguage());

@@ -1,41 +1,45 @@
 package frontend.worldview;
 
+import java.util.function.Consumer;
+
 import backend.grid.GameBoard;
 import backend.util.VoogaEntity;
 import frontend.util.BaseUIManager;
-import frontend.worldview.grid.GridDisplay;
-import frontend.worldview.grid.SquareGridDisplay;
+import frontend.worldview.grid.CellView;
+import frontend.worldview.grid.GridView;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
 
-public class WorldView extends BaseUIManager<Region>{
+public class WorldView extends BaseUIManager<Region> {
 
-	private GridDisplay myGrid;
-	
-	public WorldView(GameBoard grid){
-		myGrid = initGrid(grid);
+	private GridView myGrid;
+	private BorderPane borderPane;
+
+	public WorldView(GameBoard gameBoard) {
+		initialize(gameBoard);
+		update(gameBoard);
 	}
-	
-	
-	public void updateGrid(GameBoard grid){
-		myGrid.updateCells(grid);
+
+	public void update(GameBoard grid) {
+		myGrid.update(grid);
 	}
 
 	@Override
 	public Region getObject() {
-		return myGrid.getObject();
+		return borderPane;
 	}
-	
-	private GridDisplay initGrid(GameBoard grid){
-		return new SquareGridDisplay(grid);
-		// TODO create a GridDisplay using the backend ImmutableGrid structure and return it.
-				//Don't forget to account for the cell shape.
-				//"grid.getTemplateCell().getShape()" will return the cell shape being used by this particular grid.
+
+	public void setOnCellClick(Consumer<CellView> consumer) {
+		myGrid.setOnCellClick(consumer);
 	}
-	
-	public void addSprite(VoogaEntity sprite, String spriteType) {
-		//TODO add sprite to cell that it is dragged over
-		// spriteType will either be "unit" or "terrain"
-		System.out.print(sprite.getName());
+
+	private void initialize(GameBoard gameBoard) {
+		borderPane = new BorderPane();
+		myGrid = new GridView(gameBoard);
+		borderPane.setCenter(myGrid.getObject());
+		// borderPane.setOnDragDetected(event -> System.out.println("WorldView
+		// drag drop" + event));
+		// borderPane.setOnMouseClicked(event -> System.out.println("WorldView
+		// click" + event));
 	}
-	
 }

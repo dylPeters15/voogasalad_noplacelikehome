@@ -56,9 +56,6 @@ public class TemplatePane extends BaseUIManager<Region> {
 			// fix getName and getImage once communication sorted
 			Text spriteName = new Text(sprite.getName());
 			spriteContent.getChildren().add(spriteName);
-			//Image tempImage = new Image(sprite.getImgPath());
-			//	ImageView spriteImage = new ImageView(tempImage);
-			//spriteContent.getChildren().add(spriteImage);
 			setOnDrag(spriteContent, sprite, spriteType);
 			setOnClick(spriteContent, sprite, spriteType);
 			contentPane.getChildren().add(spriteContent);
@@ -67,8 +64,10 @@ public class TemplatePane extends BaseUIManager<Region> {
 	}
 
 	private void setOnDrag(Node o, VoogaEntity sprite, String spriteType) {
-		//ImageView spriteImage = new ImageView(getImage(o));   
-		o.setOnDragDetected(event -> worldView.addSprite(sprite, spriteType));
+		//ImageView spriteImage = new ImageView(getImage(o));
+		o.setOnDragDetected(event -> {
+			//	               worldView.addSprite(sprite, spriteType);
+		});
 	}
 
 	private void setOnClick(Node o, VoogaEntity sprite, String spriteType) {

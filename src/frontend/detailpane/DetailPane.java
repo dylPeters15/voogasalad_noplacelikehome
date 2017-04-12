@@ -8,6 +8,8 @@ import backend.cell.Terrain;
 import backend.unit.ModifiableUnit;
 import backend.util.VoogaEntity;
 import frontend.util.BaseUIManager;
+import frontend.worldview.WorldView;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
@@ -18,8 +20,10 @@ public class DetailPane extends BaseUIManager<Region>{
 	VBox pane = new VBox();
 	Label spriteInfo;
 	String content = "";
+	WorldView worldView;
 	
-	public DetailPane() {
+	public DetailPane(WorldView worldView) {
+		this.worldView = worldView;
 		pane.setFillWidth(true);
 		Text title = new Text("Sprite Details");
 		pane.getChildren().add(title);
@@ -43,6 +47,11 @@ public class DetailPane extends BaseUIManager<Region>{
 		pane.getChildren().remove(spriteInfo);
 		spriteInfo = newSpriteInfo;
 		setLabel();
+		Button addButton = new Button("Add");
+		pane.getChildren().add(addButton);
+		addButton.setOnAction(event -> worldView.setOnCellClick(cellView -> {
+			cellView.add(sprite);
+		}));
 		
 	}
 
