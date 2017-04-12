@@ -36,6 +36,8 @@ public class WorldView extends BaseUIManager<Region> {
 		borderPane = new BorderPane();
 		myGrid = new GridView(gameBoard);
 		borderPane.setCenter(myGrid.getObject());
+		borderPane.setOnDragDetected(event -> System.out.println("WorldView drag drop" + event));
+		borderPane.setOnMouseClicked(event -> System.out.println("WorldView click" + event));
 	}
 
 }

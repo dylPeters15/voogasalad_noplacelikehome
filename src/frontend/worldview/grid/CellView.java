@@ -27,6 +27,8 @@ public class CellView extends BaseUIManager<Parent>{
 	public CellView(Cell cellModel){
 		this.cellModel = cellModel;
 		polygon = new Polygon();
+		polygon.setOnDragDropped(event -> System.out.println("Cellview drag drop" + event));
+		polygon.setOnMouseClicked(event -> System.out.println("CellView click" + event));
 		group = new Group();
 		update(cellModel);
 	}
