@@ -20,9 +20,9 @@ public abstract class GridDisplay extends BaseUIManager<Region> {
 	 * Place a Sprite in the cell that contains the given coordinates.
 	 * 
 	 * @param Sprite to be placed in the cell.
-	 * @param Coordinates that the mouse is located at.
+	 * @param DisplayCoordinates that the mouse is located at.
 	 */
-	public abstract void placeInCell(Sprite sprite, Coordinates mouseCoord);
+	public abstract void placeInCell(Sprite sprite, DisplayCoordinates mouseCoord);
 	
 	/**
 	 * Updates all cells in the grid using the given GameBoard.

@@ -9,7 +9,7 @@ import java.util.List;
  * @author Stone Mathers
  * Created 3/29/2017
  */
-public interface Coordinates {
+public interface DisplayCoordinates {
 
 	/**
 	 * Returns a list of coordinates, as they could be on any coordinate system.

@@ -3,7 +3,7 @@
  */
 package frontend.sprites;
 
-import frontend.worldview.grid.Coordinates;
+import frontend.worldview.grid.DisplayCoordinates;
 import javafx.scene.layout.Region;
 
 /**
@@ -14,7 +14,7 @@ public class CellView extends Sprite {
 	/**
 	 * @return Relative Coordinates at which the SpriteCell is located.
 	 */
-	Coordinates getCoordinates() {
+	DisplayCoordinates getCoordinates() {
 		return null;
 	}
 
