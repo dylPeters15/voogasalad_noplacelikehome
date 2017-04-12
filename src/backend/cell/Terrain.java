@@ -5,6 +5,7 @@ import backend.util.TriggeredEffect;
 import backend.util.VoogaEntity;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.function.Predicate;
 
 /**
@@ -50,13 +51,13 @@ public interface Terrain extends VoogaEntity {
 
 	ModifiableTerrain removeTriggeredAbilitiesIf(Predicate<TriggeredEffect> predicate);
 
-	Collection<? extends InteractionModifier<Double>> getOffensiveModifiers();
+	List<? extends InteractionModifier<Double>> getOffensiveModifiers();
 
 	Terrain addOffensiveModifiers(InteractionModifier<Double>... offensiveModifiers);
 
 	Terrain removeOffensiveModifiers(InteractionModifier<Double>... offensiveModifiers);
 
-	Collection<? extends InteractionModifier<Double>> getDefensiveModifiers();
+	List<? extends InteractionModifier<Double>> getDefensiveModifiers();
 
 	Terrain addDefensiveModifiers(InteractionModifier<Double>... defensiveModifiers);
 

@@ -9,6 +9,7 @@ import backend.util.TriggeredEffect;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -59,7 +60,7 @@ public class ModifiableTerrain extends ModifiableVoogaObject<ModifiableTerrain> 
 	}
 
 	@Override
-	public Collection<? extends InteractionModifier<Double>> getOffensiveModifiers() {
+	public List<? extends InteractionModifier<Double>> getOffensiveModifiers() {
 		return offensiveModifiers.getAll();
 	}
 
@@ -78,7 +79,7 @@ public class ModifiableTerrain extends ModifiableVoogaObject<ModifiableTerrain> 
 	}
 
 	@Override
-	public Collection<? extends InteractionModifier<Double>> getDefensiveModifiers() {
+	public List<? extends InteractionModifier<Double>> getDefensiveModifiers() {
 		return defensiveModifiers.getAll();
 	}
 
