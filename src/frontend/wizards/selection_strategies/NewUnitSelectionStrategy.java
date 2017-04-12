@@ -21,12 +21,14 @@ public class NewUnitSelectionStrategy extends BaseSelectionStrategy<Unit> {
 
 	@Override
 	public Unit finish() {
-		System.out.println("Image: " + imageNameDescriptionPage.getImage());
-		System.out.println("Name: " + imageNameDescriptionPage.getName());
-		System.out.println("Description: " + imageNameDescriptionPage.getDescription());
-		System.out.println("Abilities: " + abilitiesAdderPage.getSelectedAbilities());
-		System.out.println("Terrain Move Points: " + terrainMovePointPage.getTerrainMovePoints());
-		return new ModifiableUnit(imageNameDescriptionPage.getName());
+		ModifiableUnit unit = new ModifiableUnit(imageNameDescriptionPage.getName());
+		unit.setDescription(imageNameDescriptionPage.getDescription());
+		unit.setImgPath(imageNameDescriptionPage.getImagePath());
+		unit.removeActiveAbilities(unit.getActiveAbilities());
+		unit.addActiveAbilities(abilitiesAdderPage.getSelectedAbilities());
+		unit.setTerrainMoveCosts(terrainMovePointPage.getTerrainMovePoints());
+		System.out.println(unit.toString());
+		return unit;
 	}
 
 	private void initialize(AuthoringGameState gameState) {

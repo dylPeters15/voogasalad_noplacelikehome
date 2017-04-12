@@ -6,12 +6,17 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.nio.file.Paths;
+import java.nio.file.Files;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+
+
 import backend.util.AuthoringGameState;
+import backend.util.io.XMLSerializer;
 import controller.CommunicationController;
 import controller.Controller;
 import frontend.View;
@@ -39,8 +44,10 @@ public class VoogaMenuBar extends BaseUIManager<MenuBar> {
 	private MenuBar menuBar;
 	private Menu file, language, theme, help, setLanguage, setTheme;
 	private MenuItem load, save, quit, helpItem;
+	private AuthoringGameState myGameState;
 
-	public VoogaMenuBar() {
+	public VoogaMenuBar(AuthoringGameState gameState) {
+		myGameState = gameState;
 		menuBar = new MenuBar();
 		populateMenuBar();
 		getLanguage().addListener(new ChangeListener<ResourceBundle>() {
@@ -121,20 +128,12 @@ public class VoogaMenuBar extends BaseUIManager<MenuBar> {
 
 	}
 	private void save() {
-		System.out.println("you can load and save files, but it won't do anything");
 		try {
-			System.out.println("here");
 			FileChooser chooser = new FileChooser();
 			chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(".xml Files", "*.xml"));
 			Window ownerWindow = null;
 			File file = chooser.showSaveDialog(ownerWindow);
-			FileOutputStream fileOut =
-					new FileOutputStream(file);
-			ObjectOutputStream out = new ObjectOutputStream(fileOut);
-			out.writeObject(new Object());  //need to pass in an object
-			out.close();
-			fileOut.close();
-			System.out.printf("Serialized data is saved in " + file);
+			Files.write(Paths.get(file.getPath()), ((String) new XMLSerializer<AuthoringGameState>().serialize(myGameState)).getBytes());
 
 		} catch (IOException i) {
 			i.printStackTrace();
@@ -221,9 +220,8 @@ public class VoogaMenuBar extends BaseUIManager<MenuBar> {
 
 	}
 	private void createGame(AuthoringGameState state, boolean editable) {
-		View view = new View();
-		Controller control = new CommunicationController(state, view);
-		view.setController(control);
+		Controller control = new CommunicationController(state, null);
+		View view = new View(control);
 		//myClient.setGameState(state);
 		//control.setClient(myClient);
 		view.setEditable(editable);

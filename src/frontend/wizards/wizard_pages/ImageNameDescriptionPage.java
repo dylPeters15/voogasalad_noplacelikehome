@@ -112,7 +112,7 @@ public class ImageNameDescriptionPage extends WizardPage {
 				checkIfCanNext();
 			}
 		});
-
+		checkIfCanNext();
 	}
 
 	private void setImage() {
@@ -127,7 +127,7 @@ public class ImageNameDescriptionPage extends WizardPage {
 	}
 
 	private void checkIfCanNext() {
-		canNextWritable().setValue(imageView.getImage() != null && !nameField.getText().isEmpty());
+		canNextWritable().setValue(true);//imageView.getImage() != null && !nameField.getText().isEmpty());
 	}
 
 }

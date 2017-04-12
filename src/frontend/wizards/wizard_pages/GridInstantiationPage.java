@@ -1,13 +1,14 @@
 package frontend.wizards.wizard_pages;
 
-import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
+import backend.cell.Cell;
 import backend.cell.ModifiableCell;
-import backend.grid.BoundsHandler;
-import backend.grid.ModifiableGameBoard;
+import backend.util.AuthoringGameState;
+import frontend.wizards.util.NumericInputRow;
 import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.ComboBox;
 import javafx.scene.layout.Region;
@@ -18,7 +19,9 @@ public class GridInstantiationPage extends WizardPage {
 	private static final String DEFAULT_DESCRIPTION = "Choose the default cell type for the grid.";
 
 	private VBox vbox;
+	private NumericInputRow rows, cols;
 	private ComboBox<String> cellChooser;
+	private Map<String, ModifiableCell> cellMap;
 
 	public GridInstantiationPage() {
 		this(DEFAULT_TITLE);
@@ -38,35 +41,36 @@ public class GridInstantiationPage extends WizardPage {
 		return vbox;
 	}
 
-	public ModifiableGameBoard getGameBoard() {
-		System.out.println("Cell: " + getCell().toString());
-		return new ModifiableGameBoard("Game Board Name", getCell(), 100, 100, BoundsHandler.FINITE_BOUNDS,
-				"Game Board Description", "");
+	public int getRows() {
+		return rows.getValue();
 	}
 
-	private ModifiableCell getCell() {
-		for (ModifiableCell cell : ModifiableCell.getPredefined(ModifiableCell.class)) {
-			if (cell.getName().equals(cellChooser.getValue())) {
-				return cell;
-			}
-		}
-		return null;
+	public int getCols() {
+		return cols.getValue();
+	}
+
+	public Cell getTemplateCell() {
+		return cellMap.get(cellChooser.getValue());
 	}
 
 	private void initialize() {
 		vbox = new VBox();
 		vbox.setAlignment(Pos.CENTER);
-		cellChooser = new ComboBox<String>(FXCollections.observableArrayList(
-				Arrays.asList(ModifiableCell.BASIC_SQUARE_EMPTY.getName(), ModifiableCell.BASIC_SQUARE_FLAT.getName(),
-						ModifiableCell.BASIC_SQUARE_FOREST.getName(), ModifiableCell.BASIC_SQUARE_FORTIFIED.getName(),
-						ModifiableCell.BASIC_SQUARE_MOUNTAIN.getName(), ModifiableCell.BASIC_SQUARE_WATER.getName())));
-		cellChooser.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				canNextWritable().setValue(!cellChooser.getValue().isEmpty());
-			}
-		});
-		vbox.getChildren().add(cellChooser);
+		rows = new NumericInputRow(null, "Number of Grid Rows: ", "");
+		cols = new NumericInputRow(null, "Number of Grid Columns: ", "");
+		Collection<ModifiableCell> cells = AuthoringGameState.getPredefined(ModifiableCell.class);
+		cellMap = new HashMap<>();
+		cells.forEach(cell -> cellMap.put(cell.getTerrain().getName(), cell));
+
+		cellChooser = new ComboBox<String>(FXCollections.observableArrayList(cellMap.keySet()));
+		cellChooser.setOnAction(event -> checkCanNext());
+		rows.setOnAction(event -> checkCanNext());
+		cols.setOnAction(event -> checkCanNext());
+		vbox.getChildren().addAll(rows.getObject(), cols.getObject(), cellChooser);
+	}
+
+	private void checkCanNext() {
+		canNextWritable().setValue(!cellChooser.getValue().isEmpty() && rows.getValue() != 0 && cols.getValue() != 0);
 	}
 
 }

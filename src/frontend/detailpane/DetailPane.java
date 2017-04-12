@@ -6,30 +6,24 @@ import java.util.Map;
 import backend.cell.ModifiableTerrain;
 import backend.cell.Terrain;
 import backend.unit.ModifiableUnit;
-import backend.unit.properties.ActiveAbility;
 import backend.util.VoogaEntity;
 import frontend.util.BaseUIManager;
-import javafx.geometry.Insets;
-import javafx.scene.Scene;
+import frontend.worldview.WorldView;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 
 public class DetailPane extends BaseUIManager<Region>{
 
 	VBox pane = new VBox();
 	Label spriteInfo;
 	String content = "";
+	WorldView worldView;
 	
-	public DetailPane() {
+	public DetailPane(WorldView worldView) {
+		this.worldView = worldView;
 		pane.setFillWidth(true);
 		Text title = new Text("Sprite Details");
 		pane.getChildren().add(title);
@@ -53,6 +47,11 @@ public class DetailPane extends BaseUIManager<Region>{
 		pane.getChildren().remove(spriteInfo);
 		spriteInfo = newSpriteInfo;
 		setLabel();
+		Button addButton = new Button("Add");
+		pane.getChildren().add(addButton);
+		addButton.setOnAction(event -> worldView.setOnCellClick(cellView -> {
+			cellView.add(sprite);
+		}));
 		
 	}
 

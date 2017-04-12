@@ -1,8 +1,11 @@
 package controller;
 
 import backend.grid.GameBoard;
+import backend.player.ImmutablePlayer;
 import backend.util.AuthoringGameState;
+import backend.util.GameplayState;
 import frontend.View;
+import util.net.Modifier;
 import util.net.ObservableClient;
 
 /**
@@ -58,8 +61,23 @@ public class CommunicationController implements Controller {
 		mView.update();
 	}
 
-	public AuthoringGameState getGameState() {
+	@Override
+	public void sendModifier(Modifier<GameplayState> modifier) {
+
+	}
+
+	public AuthoringGameState getAuthoringGameState() {
 		return mGameState;
+	}
+
+	@Override
+	public GameplayState getGameplayState() {
+		return null;
+	}
+
+	@Override
+	public ImmutablePlayer getPlayer(String name) {
+		return null;
 	}
 
 	public AuthoringGameState getMostRecentGameState() {
