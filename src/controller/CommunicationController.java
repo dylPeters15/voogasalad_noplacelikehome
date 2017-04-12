@@ -15,16 +15,23 @@ public class CommunicationController implements Controller {
 	private MyBuffer<AuthoringGameState> gameStateHistory;
 	private AuthoringGameState mGameState;
 	private View mView;
-	private ObservableClient mClient;
+	private ObservableClient<AuthoringGameState> mClient;
 
 	public CommunicationController(AuthoringGameState gameState, View view) {
 		this.mGameState = gameState;
 		this.mView = view;
+		mClient.addListener(e -> updateGameState(e));
 	}
 
 	@Override
 	public GameBoard getGrid() {
 		return mGameState.getGrid();
+	}
+	
+	public void updateGameState(AuthoringGameState newGameState)
+	{
+		mGameState = newGameState;
+		mView.update();
 	}
 
 	@Override
