@@ -4,9 +4,9 @@
 package frontend;
 
 import backend.cell.ModifiableTerrain;
+import backend.cell.Terrain;
 import backend.unit.ModifiableUnit;
 import backend.util.AuthoringGameState;
-import controller.CommunicationController;
 import controller.Controller;
 import frontend.detailpane.DetailPane;
 import frontend.menubar.VoogaMenuBar;
@@ -20,7 +20,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
-import util.net.ObservableClient;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -51,12 +50,12 @@ public class View extends BaseUIManager<Region> {
 		@SuppressWarnings("unchecked")
 		Collection<ModifiableUnit> units = (Collection<ModifiableUnit>) myController.getGameState()
 				.getTemplateByCategory(AuthoringGameState.UNIT).getAll().stream()
-				.filter(voogaEntity -> voogaEntity instanceof ModifiableUnit).collect(Collectors.toList());
+				.filter(ModifiableUnit.class::isInstance).collect(Collectors.toList());
 		tempPane.updateUnits(units);
 		@SuppressWarnings("unchecked")
-		Collection<ModifiableTerrain> terrains = (Collection<ModifiableTerrain>) myController.getGameState()
+		Collection<Terrain> terrains = (Collection<Terrain>) myController.getGameState()
 				.getTemplateByCategory(AuthoringGameState.TERRAIN).getAll().stream()
-				.filter(voogaEntity -> voogaEntity instanceof ModifiableTerrain).collect(Collectors.toList());
+				.filter(ModifiableTerrain.class::isInstance).collect(Collectors.toList());
 		tempPane.updateTerrains(terrains);
 		// tempPane.updateUnits(myController.getUnits()); //TODO add this method
 		// to controller

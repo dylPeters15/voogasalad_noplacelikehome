@@ -7,7 +7,6 @@ import backend.unit.Unit;
 import backend.util.*;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @author Created by th174 on 3/31/2017.
@@ -33,7 +32,8 @@ public class ModifiableCell extends ModifiableVoogaObject implements Cell {
 			.setShape(Shape.HEXAGONAL)
 			.setTerrain(ModifiableTerrain.FORTIFIED);
 	public static final ModifiableCell HEALING_HEXAGONAL_EMPTY = new ModifiableCell("Healing Hexagonal Empty Cell")
-			.setShape(Shape.HEXAGONAL).setTerrain(ModifiableTerrain.EMPTY)
+			.setShape(Shape.HEXAGONAL)
+			.setTerrain(ModifiableTerrain.EMPTY)
 			.addTriggeredAbility(ModifiableTriggeredEffect.FULL_HEAL);
 	public static final ModifiableCell HEALING_HEXAGONAL_FLAT = new ModifiableCell("Healing Hexagonal Flat Cell")
 			.setShape(Shape.HEXAGONAL)
@@ -74,7 +74,6 @@ public class ModifiableCell extends ModifiableVoogaObject implements Cell {
 			.setShape(Shape.SQUARE)
 			.setTerrain(ModifiableTerrain.FORTIFIED);
 
-	private final List<ModifiableTriggeredEffect> abilities;
 	private final Map<String, Unit> occupants;
 	private Shape shape;
 	private Terrain terrain;
@@ -84,26 +83,21 @@ public class ModifiableCell extends ModifiableVoogaObject implements Cell {
 		this(name, null, null, null, "", "");
 	}
 
-	public ModifiableCell(String name, CoordinateTuple location, Shape shape, Terrain terrain, String description, String imgPath, ModifiableTriggeredEffect... abilities) {
-		this(name, location, shape, terrain, description, imgPath, Arrays.asList(abilities));
-	}
-
-	public ModifiableCell(String name, CoordinateTuple location, Shape shape, Terrain terrain, String description, String imgPath, Collection<ModifiableTriggeredEffect> abilities) {
+	public ModifiableCell(String name, CoordinateTuple location, Shape shape, Terrain terrain, String description, String imgPath) {
 		super(name, description, imgPath);
 		this.shape = shape;
 		this.terrain = terrain;
-		this.abilities = abilities.stream().map(ModifiableTriggeredEffect::copy).collect(Collectors.toList());
 		this.coordinates = location;
 		occupants = new HashMap<>();
 	}
 
 	public ModifiableCell addTriggeredAbility(ModifiableTriggeredEffect modifiableTriggeredEffect) {
-		abilities.add(modifiableTriggeredEffect);
+		getTerrain().addTriggeredAbilities(modifiableTriggeredEffect);
 		return this;
 	}
 
 	public ModifiableCell removeTriggeredAbility(ModifiableTriggeredEffect modifiableTriggeredEffect) {
-		abilities.remove(modifiableTriggeredEffect);
+		getTerrain().removeTriggeredAbilities(modifiableTriggeredEffect);
 		return this;
 	}
 
@@ -112,8 +106,8 @@ public class ModifiableCell extends ModifiableVoogaObject implements Cell {
 	}
 
 	private void processTriggers(Event event, GameplayState gameState) {
-		occupants.values().forEach(unit -> abilities.forEach(ability -> ability.affect(unit, event, gameState)));
-		abilities.removeIf(TriggeredEffect::isExpired);
+		occupants.values().forEach(unit -> getTerrain().getTriggeredAbilities().forEach(ability -> ability.affect(unit, event, gameState)));
+		getTerrain().removeTriggeredAbilitiesIf(TriggeredEffect::isExpired);
 	}
 
 	public ModifiableCell addOccupants(Unit... units) {
@@ -177,19 +171,19 @@ public class ModifiableCell extends ModifiableVoogaObject implements Cell {
 	}
 
 	@Override
-	public Collection<ModifiableTriggeredEffect> getTriggeredAbilities() {
-		return Collections.unmodifiableCollection(abilities);
+	public Collection<? extends TriggeredEffect> getTriggeredAbilities() {
+		return getTerrain().getTriggeredAbilities();
 	}
 
 	@Override
-	public ModifiableCell addTriggeredAbilities(ModifiableTriggeredEffect... cellAbilities) {
-		Arrays.stream(cellAbilities).forEach(e -> abilities.add(e.copy()));
+	public ModifiableCell addTriggeredAbilities(ModifiableTriggeredEffect... triggeredAbilities) {
+		getTerrain().addTriggeredAbilities(triggeredAbilities);
 		return this;
 	}
 
 	@Override
-	public ModifiableCell removeTriggeredAbilities(ModifiableTriggeredEffect... cellAbilities) {
-		abilities.removeAll(Arrays.asList(cellAbilities));
+	public ModifiableCell removeTriggeredAbilities(ModifiableTriggeredEffect... triggeredAbilities) {
+		getTerrain().removeTriggeredAbilities(triggeredAbilities);
 		return this;
 	}
 
@@ -200,14 +194,14 @@ public class ModifiableCell extends ModifiableVoogaObject implements Cell {
 
 	@Override
 	public void leave(Unit unit, GameplayState gamestate) {
-		abilities.forEach(ability -> ability.affect(unit, Event.UNIT_PRE_MOVEMENT, gamestate));
+		getTerrain().getTriggeredAbilities().forEach(ability -> ability.affect(unit, Event.UNIT_PRE_MOVEMENT, gamestate));
 		this.removeOccupants(unit);
 	}
 
 	@Override
 	public void arrive(Unit unit, GameplayState gamestate) {
 		this.addOccupants(unit);
-		abilities.forEach(ability -> ability.affect(unit, Event.UNIT_POST_MOVEMENT, gamestate));
+		getTerrain().getTriggeredAbilities().forEach(ability -> ability.affect(unit, Event.UNIT_POST_MOVEMENT, gamestate));
 	}
 
 	@Override
@@ -217,7 +211,7 @@ public class ModifiableCell extends ModifiableVoogaObject implements Cell {
 
 	@Override
 	public ModifiableCell copy() {
-		return new ModifiableCell(getName(), getLocation(), getShape(), getTerrain(), getDescription(), getImgPath(), getTriggeredAbilities().stream().map(ModifiableTriggeredEffect::copy).collect(Collectors.toList()));
+		return new ModifiableCell(getName(), getLocation(), getShape(), getTerrain(), getDescription(), getImgPath());
 	}
 
 	@Deprecated
