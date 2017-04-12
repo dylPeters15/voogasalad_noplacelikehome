@@ -3,7 +3,7 @@
  * or terrain. Can also be acted upon with mouse click and drags. A Sprite is composed of a List of SpriteCells so
  * that it can take up multiple Cells on the grid, but still is represented with one image.
  */
-package frontend.sprites;
+package frontend.worldview.grid;
 
 import java.util.List;
 
