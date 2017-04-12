@@ -3,43 +3,77 @@
  */
 package frontend.worldview.grid;
 
+import backend.cell.Cell;
 import backend.grid.CoordinateTuple;
+import backend.grid.GameBoard;
+import frontend.util.BaseUIManager;
+import javafx.scene.Group;
+import javafx.scene.Parent;
 import javafx.scene.image.Image;
+import javafx.scene.paint.ImagePattern;
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.Polygon;
 
 /**
  * @author Stone Mathers
  * Created 3/29/2017
  */
-public interface CellView {
+public class CellView extends BaseUIManager<Parent>{
+	
+	Cell cellModel;
+	Polygon polygon;
+	Group group;
+	
+	public CellView(Cell cellModel){
+		this.cellModel = cellModel;
+		polygon = new Polygon();
+		group = new Group();
+		update(cellModel);
+	}
 	
 	/**
 	 * @return DisplayCoordinates at which the CellView is displayed.
 	 */
-	DisplayCoordinates getDisplayCoordinates();
+	public CoordinateTuple getCoordinateTuple(){
+		return cellModel.getLocation();
+	}
 	
-	/**
-	 * @param DisplayCoordinates at which the CellView is displayed.
-	 */
-	void setDisplayCoordinates(DisplayCoordinates coordinates);
+	public double getX(){
+		return polygon.getLayoutX();
+	}
 	
-	/**
-	 * @return CoordinateTuple at which the CellView is held.
-	 */
-	CoordinateTuple getCoordinateTuple();
+	public void setX(double x){
+		polygon.setLayoutX(x);
+	}
 	
-	/**
-	 * @param CoordinateTuple at which the CellView is held.
-	 */
-	void setCoordinateTuple(CoordinateTuple coordinates);
+	public double getY(){
+		return polygon.getLayoutY();
+	}
 	
-	/**
-	 * @return Image representing the CellView.
-	 */
-	Image getImage();
+	public void setY(double y){
+		polygon.setLayoutY(y);
+	}
 	
-	/**
-	 * @param Image representing the CellView.
-	 */
-	void setImage(Image image);
+	public Polygon getPolygon(){
+		return polygon;
+	}
+	
+	public void update(Cell cellModel){
+		cellModel = cellModel;
+		group.getChildren().clear();
+		group.getChildren().add(polygon);
+		Image polygonImage = new Image(cellModel.getImgPath());
+		Paint polygonFill = new ImagePattern(polygonImage);
+		polygon.setFill(polygonFill);
+		cellModel.getOccupants().stream().forEach(unit -> {
+			group.getChildren().add(new UnitView(unit).getObject());
+		});
+	}
+
+	
+	@Override
+	public Parent getObject() {
+		return group;
+	}
 	
 }

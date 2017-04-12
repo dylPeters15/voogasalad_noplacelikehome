@@ -3,7 +3,6 @@ package frontend.templatepane;
 import java.util.Collection;
 
 import frontend.detailpane.DetailPane;
-import frontend.sprites.Sprite;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -74,9 +73,9 @@ public class TemplatePane extends BaseUIManager<Region>{
 			// fix getName and getImage once communication sorted
 			Text spriteName = new Text(sprite.getName());
 			spriteContent.getChildren().add(spriteName);
-			//Image tempImage = new Image(sprite.getImgPath());
-		//	ImageView spriteImage = new ImageView(tempImage); 
-			//spriteContent.getChildren().add(spriteImage);
+//			Image tempImage = new Image(sprite.getImgPath());
+//			ImageView spriteImage = new ImageView(tempImage); 
+//			spriteContent.getChildren().add(spriteImage);
 			setOnDrag(spriteContent, sprite, spriteType);
 			setOnClick(spriteContent, sprite, spriteType);
 			contentPane.getChildren().add(spriteContent);
