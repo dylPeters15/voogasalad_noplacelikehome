@@ -7,6 +7,7 @@ package frontend.worldview.grid;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import backend.cell.Cell;
 import backend.grid.CoordinateTuple;
@@ -58,6 +59,10 @@ public class GridView extends BaseUIManager<Region> {
 		});
 		
 		myScrollPane.setContent(cellViewObjects);
+	}
+	
+	public void setOnCellClick(Consumer<CellView> consumer){
+		cellViews.stream().forEach(cellView -> cellView.setOnCellClick(consumer));
 	}
 
 	@Override

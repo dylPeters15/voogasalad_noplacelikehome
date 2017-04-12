@@ -121,7 +121,7 @@ public class View extends BaseUIManager<Region> {
 		worldView.getRequests().passTo(this.getRequests());
 		toolsPane = new ToolsPane();
 		toolsPane.getRequests().passTo(this.getRequests());
-		detailPane = new DetailPane();
+		detailPane = new DetailPane(worldView);
 		detailPane.getRequests().passTo(this.getRequests());
 		@SuppressWarnings("unchecked")
 		Collection<ModifiableUnit> units = (Collection<ModifiableUnit>) myController.getGameState()
