@@ -62,7 +62,7 @@ public class View extends BaseUIManager<Region> {
 		// to controller
 		// tempPane.updateTerrains(myController.getTerrains()); //TODO add this
 		// method to controller
-		worldView.updateGrid(myController.getGrid());
+		worldView.update(myController.getGrid());
 
 	}
 
@@ -117,8 +117,7 @@ public class View extends BaseUIManager<Region> {
 	private void initPanesAndListeners() {
 		menuBar = new VoogaMenuBar();
 		menuBar.getRequests().passTo(this.getRequests());
-		worldView = new WorldView(myController.getGameState().getGrid());
-		// worldView = new WorldView(myController.getGrid());
+		 worldView = new WorldView(myController.getGrid());
 		worldView.getRequests().passTo(this.getRequests());
 		toolsPane = new ToolsPane();
 		toolsPane.getRequests().passTo(this.getRequests());
