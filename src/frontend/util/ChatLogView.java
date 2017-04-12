@@ -5,17 +5,16 @@ import controller.Controller;
 import javafx.collections.FXCollections;
 import javafx.geometry.Pos;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 
 import java.util.stream.Collectors;
-
 
 /**
  * @author Created by th174 on 3/31/2017.
@@ -32,7 +31,6 @@ public class ChatLogView extends BaseUIManager {
 		textArea = initTextArea();
 		pane.setCenter(textArea);
 		pane.setBottom(initTextInputBox());
-		pane.setBackground(Background.EMPTY);
 		this.playerName = playerName;
 		this.controller = controller;
 	}
@@ -45,11 +43,8 @@ public class ChatLogView extends BaseUIManager {
 	private TextArea initTextArea() {
 		TextArea textArea = new TextArea("\n\n\n\n\n\n\n\n\n\n\n\n\n------------TEST GAME STATE CHAT LOG------------");
 		textArea.setEditable(false);
-		//TODO: this doesn't workg
-		textArea.setBackground(Background.EMPTY);
 		return textArea;
 	}
-
 
 	public void update(Controller controller) {
 		textArea.setText(textArea.getText() + "\n" + controller.getGameplayState().getPlayerByName(playerName).getChatLog().stream().map(Object::toString).collect(Collectors.joining("\n")));
@@ -57,26 +52,27 @@ public class ChatLogView extends BaseUIManager {
 
 	private HBox initTextInputBox() {
 		HBox bottomBox = new HBox();
+		bottomBox.getStyleClass().add("hbox");
 		bottomBox.setAlignment(Pos.BASELINE_CENTER);
-		bottomBox.setBackground(Background.EMPTY);
 		ComboBox<ChatMessage.AccessLevel> chatModeChooser = new ComboBox<>(FXCollections.observableArrayList(ChatMessage.AccessLevel.values()));
-		chatModeChooser.setBackground(Background.EMPTY);
-		chatModeChooser.setMinWidth(120);
-		TextField messageRecipientField = new TextField("Player name...");
-		messageRecipientField.setMinWidth(150);
-		messageRecipientField.setBackground(Background.EMPTY);
+		chatModeChooser.setMinWidth(110);
+		chatModeChooser.setValue(ChatMessage.AccessLevel.ALL);
+		Label label1 = new Label("To:");
+		label1.setMinWidth(30);
+		TextField messageRecipientField = new TextField();
+		messageRecipientField.setMinWidth(80);
 		chatModeChooser.setOnAction(event -> {
 			if (chatModeChooser.getValue().equals(ChatMessage.AccessLevel.WHISPER)) {
 				bottomBox.getChildren().add(1, messageRecipientField);
+				bottomBox.getChildren().add(1, label1);
 			} else {
+				bottomBox.getChildren().remove(label1);
 				bottomBox.getChildren().remove(messageRecipientField);
 				messageRecipientField.clear();
 			}
 		});
-		TextField textContentInputField = new TextField("Your message...");
-		textContentInputField.setBackground(Background.EMPTY);
-		textContentInputField.setPrefWidth(1000);
-		textContentInputField.setBackground(Background.EMPTY);
+		TextField textContentInputField = new TextField();
+		textContentInputField.setPrefWidth(600);
 		textContentInputField.setOnKeyPressed((KeyEvent evt) -> {
 			if (evt.getCode() == KeyCode.ENTER) {
 				controller.sendModifier(chatModeChooser.getValue().getSendMessageModifier(textContentInputField.getText(), playerName));

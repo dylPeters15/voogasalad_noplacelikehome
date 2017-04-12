@@ -7,7 +7,9 @@ import frontend.View;
 import frontend.util.ChatLogView;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.stage.Stage;
 import util.net.Modifier;
 import util.net.ObservableClient;
@@ -97,7 +99,9 @@ public class VoogaClientMain extends Application {
 
 			}
 		});
-		primaryStage.setScene(new Scene(chatLogView.getObject(),500,500, Color.AQUA));
+		Scene scene = new Scene(chatLogView.getObject(), 500, 500, new ImagePattern(new Image("resources/images/testImage.jpg")));
+		scene.getStylesheets().add("resources/styles/notheme.css");
+		primaryStage.setScene(scene);
 		primaryStage.setResizable(true);
 		primaryStage.show();
 	}

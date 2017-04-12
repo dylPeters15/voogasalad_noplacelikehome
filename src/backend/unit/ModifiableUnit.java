@@ -27,7 +27,7 @@ public class ModifiableUnit extends ModifiableVoogaObject<ModifiableUnit> implem
 			.addUnitStats(ModifiableUnitStat.MOVEPOINTS.setMaxValue(6))
 			.setMovePattern(GridPattern.HEXAGONAL_ADJACENT)
 			.setImgPath("resources/images/skeleton.jpg")
-			.setDescription("The skeletal corpse of an impoverished serf left to starve, reanimated by necromancy. Now, bow and arrow in hand, he enacts his revenge on the living.")
+			.setDescription("The skeletal corpse of an impoverished serf left to starve, reanimated by necromancy. Now, bow and arrow in hand, he pursues his revenge on the living.")
 			.addOffensiveModifiers(InteractionModifier.CHAOTIC)
 			.addActiveAbilities(ActiveAbility.BOW);
 
