@@ -61,27 +61,36 @@ public class CommunicationController implements Controller {
 		mView.update();
 	}
 
-	@Override
-	public void sendModifier(Modifier<GameplayState> modifier) {
-
+	public AuthoringGameState getGameState() {
+		return mGameState;
 	}
 
+	public AuthoringGameState getMostRecentGameState() {
+		return gameStateHistory.getBufferHead();
+	}
+
+	@Override
 	public AuthoringGameState getAuthoringGameState() {
-		return mGameState;
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
 	public GameplayState getGameplayState() {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public ImmutablePlayer getPlayer(String name) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public AuthoringGameState getMostRecentGameState() {
-		return gameStateHistory.getBufferHead();
+	@Override
+	public void sendModifier(Modifier<GameplayState> modifier) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
