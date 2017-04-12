@@ -9,7 +9,7 @@ import java.util.List;
  * @author Stone Mathers
  *
  */
-public class TriCoordinates implements Coordinates {
+public class TriCoordinates implements DisplayCoordinates {
 
 	@Override
 	public List<Integer> getCoordinates() {

@@ -9,7 +9,7 @@ import java.util.List;
  * @author 
  *
  */
-public class CartesianCoordinates implements Coordinates {
+public class CartesianCoordinates implements DisplayCoordinates {
 
 	
 	@Override
