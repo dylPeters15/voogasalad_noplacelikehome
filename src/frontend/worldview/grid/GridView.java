@@ -46,15 +46,15 @@ public class GridView extends BaseUIManager<Region> {
 		if (gameBoard.dimension() == 2){
 			myLayoutManager = new SquareLayout();
 		} else {
-			//myLayoutManager = new HexagonalLayout();
+			myLayoutManager = new HexagonalManager();
 		}
 		
 		Map<CoordinateTuple, Cell> backendCells = gameBoard.getCells();
 		backendCells.values().stream().forEach(cell -> {
 			CellView cl = new CellView(cell);
-			cellViewObjects.getChildren().add(cl.getObject());
 			myLayoutManager.layoutCell(cl, SCALE, MIN, MAX);
 			cellViews.add(cl);
+			cellViewObjects.getChildren().add(cl.getObject());
 		});
 		
 		myScrollPane.setContent(cellViewObjects);

@@ -5,7 +5,6 @@ package frontend.worldview.grid;
 
 import backend.cell.Cell;
 import backend.grid.CoordinateTuple;
-import backend.grid.GameBoard;
 import frontend.util.BaseUIManager;
 import javafx.scene.Group;
 import javafx.scene.Parent;
@@ -60,8 +59,16 @@ public class CellView extends BaseUIManager<Parent>{
 		return polygon;
 	}
 	
+	public void setPolygon(Polygon polygon){
+		if (group.getChildren().contains(polygon)){
+			group.getChildren().remove(polygon);
+		}
+		this.polygon = polygon;
+		update(cellModel);
+	}
+	
 	public void update(Cell cellModel){
-		cellModel = cellModel;
+		this.cellModel = cellModel;
 		group.getChildren().clear();
 		group.getChildren().add(polygon);
 		Image polygonImage = new Image(cellModel.getImgPath());
