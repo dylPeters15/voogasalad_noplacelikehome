@@ -28,6 +28,7 @@ public class CellView extends BaseUIManager<Parent>{
 		this.cellModel = cellModel;
 		polygon = new Polygon();
 		group = new Group();
+		update(cellModel);
 	}
 	
 	/**
@@ -57,8 +58,8 @@ public class CellView extends BaseUIManager<Parent>{
 		return polygon;
 	}
 	
-	public void update(GameBoard grid){
-		cellModel = grid.get(cellModel.getLocation());
+	public void update(Cell cellModel){
+		cellModel = cellModel;
 		group.getChildren().clear();
 		group.getChildren().add(polygon);
 		Image polygonImage = new Image(cellModel.getImgPath());
