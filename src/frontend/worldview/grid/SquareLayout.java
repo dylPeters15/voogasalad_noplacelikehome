@@ -16,13 +16,13 @@ public class SquareLayout implements LayoutManager {
 	@Override
 	public void layoutCell(CellView cellIn, double scaleFactor, double min, double max) {
 
-		cellIn.getPolygon().getPoints().clear();
-		cellIn.getPolygon().getPoints().setAll(FXCollections.observableArrayList(Arrays.asList(0.0,0.0,100.0,0.0,100.0,100.0,0.0,100.0)));
+//		cellIn.getPolygon().getPoints().clear();
+//		cellIn.getPolygon().getPoints().addAll(FXCollections.observableArrayList(Arrays.asList(0.0,0.0,100.0,0.0,100.0,100.0,0.0,100.0)));
 
-		// cell = cellIn;
-		// shape = cell.getPolygon();
-		// setCoordinates();
-		// setCellSize(scaleFactor, min, max);
+		cell = cellIn;
+		shape = cell.getPolygon();
+		setCoordinates();
+		setCellSize(scaleFactor, min, max);
 
 	}
 
