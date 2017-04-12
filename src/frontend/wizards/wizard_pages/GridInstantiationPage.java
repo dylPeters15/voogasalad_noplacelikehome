@@ -60,7 +60,7 @@ public class GridInstantiationPage extends WizardPage {
 		cols = new NumericInputRow(null, "Number of Grid Columns: ", "");
 		Collection<ModifiableCell> cells = AuthoringGameState.getPredefined(ModifiableCell.class);
 		cellMap = new HashMap<>();
-		cells.stream().forEach(cell -> cellMap.put(cell.getName(), cell));
+		cells.forEach(cell -> cellMap.put(cell.getTerrain().getName(), cell));
 
 		cellChooser = new ComboBox<String>(FXCollections.observableArrayList(cellMap.keySet()));
 		cellChooser.setOnAction(event -> checkCanNext());

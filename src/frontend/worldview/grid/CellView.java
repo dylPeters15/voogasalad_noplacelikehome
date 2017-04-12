@@ -73,7 +73,7 @@ public class CellView extends BaseUIManager<Parent>{
 		this.cellModel = cellModel;
 		group.getChildren().clear();
 		group.getChildren().add(polygon);
-		Image polygonImage = new Image(cellModel.getImgPath());
+		Image polygonImage = new Image(cellModel.getTerrain().getImgPath());
 		Paint polygonFill = new ImagePattern(polygonImage);
 		polygon.setFill(polygonFill);
 		cellModel.getOccupants().stream().forEach(unit -> {
