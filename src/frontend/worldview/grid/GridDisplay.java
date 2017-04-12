@@ -13,7 +13,7 @@ import javafx.scene.layout.Region;
  * @author Stone Mathers
  * Created 3/29/2017
  */
-public abstract class GridDisplay extends BaseUIManager<Region> {
+public class GridDisplay extends BaseUIManager<Region> {
 
 	
 	/**
@@ -22,10 +22,19 @@ public abstract class GridDisplay extends BaseUIManager<Region> {
 	 * @param Sprite to be placed in the cell.
 	 * @param DisplayCoordinates that the mouse is located at.
 	 */
-	public abstract void placeInCell(Sprite sprite, DisplayCoordinates mouseCoord);
+	public void placeInCell(Sprite sprite, DisplayCoordinates mouseCoord) {
+		
+	};
 	
 	/**
 	 * Updates all cells in the grid using the given GameBoard.
 	 */
-	public abstract void updateCells(GameBoard grid);
+	public void updateCells(GameBoard grid) {;
+}
+
+	@Override
+	public Region getObject() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
