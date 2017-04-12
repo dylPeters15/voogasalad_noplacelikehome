@@ -17,7 +17,6 @@ import backend.cell.ModifiableTerrain;
 import backend.cell.Terrain;
 import frontend.util.BaseUIManager;
 import frontend.worldview.WorldView;
-import frontend.worldview.grid.Sprite;
 import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -74,9 +73,9 @@ public class TemplatePane extends BaseUIManager<Region>{
 			// fix getName and getImage once communication sorted
 			Text spriteName = new Text(sprite.getName());
 			spriteContent.getChildren().add(spriteName);
-			//Image tempImage = new Image(sprite.getImgPath());
-		//	ImageView spriteImage = new ImageView(tempImage); 
-			//spriteContent.getChildren().add(spriteImage);
+//			Image tempImage = new Image(sprite.getImgPath());
+//			ImageView spriteImage = new ImageView(tempImage); 
+//			spriteContent.getChildren().add(spriteImage);
 			setOnDrag(spriteContent, sprite, spriteType);
 			setOnClick(spriteContent, sprite, spriteType);
 			contentPane.getChildren().add(spriteContent);
