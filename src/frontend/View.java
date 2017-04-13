@@ -57,12 +57,9 @@ public class View extends BaseUIManager<Region> {
 				.getTemplateByCategory(AuthoringGameState.TERRAIN).getAll().stream()
 				.filter(ModifiableTerrain.class::isInstance).collect(Collectors.toList());
 		tempPane.updateTerrains(terrains);
-		// tempPane.updateUnits(myController.getUnits()); //TODO add this method
-		// to controller
-		// tempPane.updateTerrains(myController.getTerrains()); //TODO add this
-		// method to controller
+		tempPane.updateUnits(myController.getUnits()); 
+		tempPane.updateTerrains(myController.getTerrains()); 
 		worldView.update(myController.getGrid());
-
 	}
 
 	/**
@@ -131,15 +128,14 @@ public class View extends BaseUIManager<Region> {
 				.getTemplateByCategory(AuthoringGameState.TERRAIN).getAll().stream()
 				.filter(voogaEntity -> voogaEntity instanceof ModifiableTerrain).collect(Collectors.toList());
 		tempPane = new TemplatePane(myController.getAuthoringGameState(), detailPane, worldView);
-		// tempPane = new TemplatePane(myController.getUnitTemplates(),
-		// myController.getModifiableCells());
+		tempPane = new TemplatePane(myController.getUnitTemplates());
+		myController.getModifiableCells();
 		tempPane.getRequests().passTo(this.getRequests());
-		getRequests().addListener(new InvalidationListener() {
+		getRequests().addListener(new InvalidationListener() { 
 			@Override
 			public void invalidated(Observable observable) {
 				while (!getRequests().isEmpty()) {
-					// myClient.addToOutbox(getRequests().poll());
-					// myController.sendRequest(getRequests().poll());
+					myController.sendModifier(getRequests().poll());
 				}
 			}
 		});

@@ -1,10 +1,15 @@
 package controller;
 
+import java.util.Collection;
+
+import backend.cell.Terrain;
 import backend.grid.GameBoard;
+import backend.grid.ModifiableGameBoard;
 import backend.player.ImmutablePlayer;
+import backend.unit.Unit;
 import backend.util.AuthoringGameState;
-import backend.util.GameplayState;
 import frontend.View;
+import backend.util.GameplayState;
 import util.net.Modifier;
 
 /**
@@ -13,7 +18,9 @@ import util.net.Modifier;
 public interface Controller {
 
 	GameBoard getGrid();
-
+	
+	AuthoringGameState getGameState();
+	
 	AuthoringGameState getAuthoringGameState();
 
 	GameplayState getGameplayState();
@@ -25,6 +32,25 @@ public interface Controller {
 	Object getUnitTemplates();
 
 	void setGameState(AuthoringGameState newGameState);
+	
+	ModifiableGameBoard getModifiableCells();
+	
+	void sendModifier(Modifier<AuthoringGameState> modifier);
 
-	void sendModifier(Modifier<GameplayState> modifier);
+	Collection<? extends Unit> getUnits();
+
+	Collection<? extends Terrain> getTerrains();
+	
+	Collection<? extends Unit> getUnitTemplate();
+
+	Collection<? extends Terrain> getTerrainTemplate();
+	
+
+	
+	
+	
+	
+	
+	
+	
 }
