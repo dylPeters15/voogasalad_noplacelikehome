@@ -137,7 +137,7 @@ public class VoogaClientMain extends Application {
 
 			@Override
 			public void addToUpdated(Updatable objectToUpdate) {
-				
+
 			}
 
 			@Override

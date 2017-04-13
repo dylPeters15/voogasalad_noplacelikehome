@@ -68,7 +68,7 @@ public class StartupSelectionScreen extends VBox {
 	private void play() {
 		read("play");
 	}
-	
+
 	private void edit() {
 		read("load");
 	}
@@ -85,6 +85,7 @@ public class StartupSelectionScreen extends VBox {
 		});
 
 	}
+
 	private void createGame(AuthoringGameState state, boolean editable) {
 		Controller control = new CommunicationController(state,null);
 		View view = new View(control);
