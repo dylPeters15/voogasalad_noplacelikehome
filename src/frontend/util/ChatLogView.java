@@ -26,6 +26,7 @@ public class ChatLogView extends BaseUIManager {
 	private final TextArea textArea;
 	private final String playerName;
 	private final Controller<GameplayState> controller;
+	private final String header = "\n\n\n\n\n\n\n\n\n\n\n\n\n------------TEST GAME STATE CHAT LOG------------";
 
 	public ChatLogView(String playerName, Controller<GameplayState> controller) {
 		pane = new BorderPane();
@@ -42,13 +43,13 @@ public class ChatLogView extends BaseUIManager {
 	}
 
 	private TextArea initTextArea() {
-		TextArea textArea = new TextArea("\n\n\n\n\n\n\n\n\n\n\n\n\n------------TEST GAME STATE CHAT LOG------------");
+		TextArea textArea = new TextArea();
 		textArea.setEditable(false);
 		return textArea;
 	}
 
 	public void update() {
-		textArea.setText(textArea.getText() + "\n" + controller.getGameState()
+		textArea.setText(header+ "\n" + controller.getGameState()
 				.getPlayerByName(playerName)
 				.getChatLog()
 				.stream()

@@ -51,7 +51,6 @@ public class VoogaClientMain extends Application {
 				gameplayState = state;
 				chatLogView.update();
 			} catch (NullPointerException e) {
-				e.printStackTrace();
 			}
 		});
 		Executors.newSingleThreadExecutor().submit(client);
@@ -70,7 +69,7 @@ public class VoogaClientMain extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		primaryStage.setTitle(ResourceBundle.getBundle("resources/Selections", Locale.getDefault()).getString("Title"));
-		ChatLogView chatLogView = new ChatLogView(System.getProperty("user.name"), new Controller<GameplayState>() {
+		chatLogView = new ChatLogView(System.getProperty("user.name"), new Controller<GameplayState>() {
 			@Override
 			public GameBoard getGrid() {
 				return null;
@@ -108,7 +107,6 @@ public class VoogaClientMain extends Application {
 
 			@Override
 			public void sendModifier(Modifier<GameplayState> modifier) {
-				System.out.println("test");
 				client.addToOutbox(modifier);
 			}
 
