@@ -21,9 +21,7 @@ import util.net.ObservableClient;
 
 import java.io.IOException;
 import java.time.Duration;
-import java.util.Collection;
-import java.util.Locale;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
@@ -37,12 +35,24 @@ public class VoogaClientMain extends Application {
 	public static final String HOST = ObservableClient.LOCALHOST;
 	public static final int TIMEOUT = 20;
 	public static final String CHATBOX = "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n------------TEST GAME STATE CHAT LOG------------\n\n%s\n\n >>  ";
-	private static ObservableClient<GameplayState> client;
-	private static GameplayState gameplayState;
-	private static ChatLogView chatLogView;
+	private ObservableClient<GameplayState> client;
+	private GameplayState gameplayState;
+	private ChatLogView chatLogView;
 
 	public static void main(String[] args) throws IOException, InterruptedException {
-		String name = System.getProperty("user.name");
+		launch(args);
+//		Scanner stdin = new Scanner(System.in);
+//		String pName = name;
+//		while (client.isActive()) {
+//			String input = stdin.nextLine();
+//			client.addToOutbox(state -> state.messageAll(input, state.getPlayerByName(pName)));
+//		}
+	}
+
+	@Override
+	public void start(Stage primaryStage) throws IOException {
+		primaryStage.setTitle(ResourceBundle.getBundle("resources/Selections", Locale.getDefault()).getString("Title"));
+		String name = System.getProperty("user.name") + new Random().nextInt(10);
 		XMLSerializer<GameplayState> serializer = new XMLSerializer<>();
 		client = new ObservableClient<>(HOST, PORT, serializer, serializer, Duration.ofSeconds(TIMEOUT));
 		client.addListener(state -> {
@@ -58,18 +68,7 @@ public class VoogaClientMain extends Application {
 			state.addPlayer(new Player(name, "It's me!", ""));
 			return state;
 		});
-		launch(args);
-//		Scanner stdin = new Scanner(System.in);
-//		while (client.isActive()) {
-//			String input = stdin.nextLine();
-//			client.addToOutbox(state -> state.messageAll(input, state.getPlayerByName(name)));
-//		}
-	}
-
-	@Override
-	public void start(Stage primaryStage) {
-		primaryStage.setTitle(ResourceBundle.getBundle("resources/Selections", Locale.getDefault()).getString("Title"));
-		chatLogView = new ChatLogView(System.getProperty("user.name"), new Controller<GameplayState>() {
+		chatLogView = new ChatLogView(name, new Controller<GameplayState>() {
 			@Override
 			public GameBoard getGrid() {
 				return null;
@@ -108,6 +107,7 @@ public class VoogaClientMain extends Application {
 			@Override
 			public void sendModifier(Modifier<GameplayState> modifier) {
 				client.addToOutbox(modifier);
+				System.out.println(name);
 			}
 
 			@Override
@@ -140,7 +140,7 @@ public class VoogaClientMain extends Application {
 
 			}
 		});
-		Scene scene = new Scene(chatLogView.getObject(), 500, 500, new ImagePattern(new Image("resources/images/testImage.jpg")));
+		Scene scene = new Scene(chatLogView.getObject(), 500, 500, new ImagePattern(new Image("resources/images/splash.png")));
 		scene.getStylesheets().add("resources/styles/notheme.css");
 		primaryStage.setScene(scene);
 		primaryStage.setResizable(true);

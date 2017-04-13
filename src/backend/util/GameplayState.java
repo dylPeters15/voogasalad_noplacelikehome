@@ -220,6 +220,7 @@ public class GameplayState extends ImmutableVoogaObject implements ReadonlyGamep
 
 	public GameplayState messagePlayer(String message, ImmutablePlayer sender, ImmutablePlayer recipient) {
 		ChatMessage chatMessage = new ChatMessage(ChatMessage.AccessLevel.WHISPER, sender, message);
+		System.out.println("Receiver: " + recipient);
 		sender.receiveMessage(chatMessage);
 		recipient.receiveMessage(chatMessage);
 		return this;

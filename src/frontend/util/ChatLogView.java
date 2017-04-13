@@ -25,16 +25,14 @@ public class ChatLogView extends BaseUIManager {
 	private final BorderPane pane;
 	private final TextArea textArea;
 	private final String playerName;
-	private final Controller<GameplayState> controller;
-	private final String header = "\n\n\n\n\n\n\n\n\n\n\n\n\n------------TEST GAME STATE CHAT LOG------------";
 
 	public ChatLogView(String playerName, Controller<GameplayState> controller) {
+		super(controller);
 		pane = new BorderPane();
 		textArea = initTextArea();
 		pane.setCenter(textArea);
 		pane.setBottom(initTextInputBox());
 		this.playerName = playerName;
-		this.controller = controller;
 	}
 
 	@Override
@@ -49,7 +47,8 @@ public class ChatLogView extends BaseUIManager {
 	}
 
 	public void update() {
-		textArea.setText(header+ "\n" + controller.getGameState()
+		String header = "\n\n\n\n\n\n\n\n\n\n\n\n\n------------TEST GAME STATE CHAT LOG------------";
+		textArea.setText(header + "\n" + getController().getGameState()
 				.getPlayerByName(playerName)
 				.getChatLog()
 				.stream()
@@ -69,7 +68,7 @@ public class ChatLogView extends BaseUIManager {
 		chatModeChooser.setOnAction(event -> showOrHideRecipientField(bottomBox, chatModeChooser, label1, messageRecipientField));
 		TextField textContentInputField = new TextField();
 		textContentInputField.setPrefWidth(600);
-		textContentInputField.setOnKeyPressed(evt -> submitMessage(evt, chatModeChooser, textContentInputField));
+		textContentInputField.setOnKeyPressed(evt -> submitMessage(evt, chatModeChooser, textContentInputField, messageRecipientField));
 		bottomBox.getChildren().addAll(chatModeChooser, textContentInputField);
 		return bottomBox;
 	}
@@ -92,9 +91,9 @@ public class ChatLogView extends BaseUIManager {
 		}
 	}
 
-	private void submitMessage(KeyEvent evt, ComboBox<ChatMessage.AccessLevel> chatModeChooser, TextField textContentInputField) {
+	private void submitMessage(KeyEvent evt, ComboBox<ChatMessage.AccessLevel> chatModeChooser, TextField textContentInputField, TextField messageRecipientField) {
 		if (evt.getCode() == KeyCode.ENTER) {
-			controller.sendModifier(chatModeChooser.getValue().getSendMessageModifier(textContentInputField.getText(), playerName));
+			getController().sendModifier(chatModeChooser.getValue().getSendMessageModifier(textContentInputField.getText(), playerName,messageRecipientField.getText()));
 			try {
 				Thread.sleep(300);
 			} catch (InterruptedException e) {
