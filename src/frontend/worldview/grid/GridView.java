@@ -46,6 +46,9 @@ public class GridView extends BaseUIManager<Region> {
 	public void update(){
 		cellViewObjects.getChildren().clear();
 
+		getController();
+		getController().getGrid();
+		getController().getGrid().dimension();
 		if (getController().getGrid().dimension() == 2){
 			myLayoutManager = new SquareLayout();
 		} else {
@@ -54,7 +57,7 @@ public class GridView extends BaseUIManager<Region> {
 		
 		Map<CoordinateTuple, Cell> backendCells = getController().getGrid().getCells();
 		backendCells.values().stream().forEach(cell -> {
-			CellView cl = new CellView(cell);
+			CellView cl = new CellView(cell,getController());
 			myLayoutManager.layoutCell(cl, SCALE, MIN, MAX);
 			cellViews.add(cl);
 			cellViewObjects.getChildren().add(cl.getObject());
