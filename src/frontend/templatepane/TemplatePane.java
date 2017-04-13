@@ -28,15 +28,15 @@ public class TemplatePane extends BaseUIManager<Region> {
 	Collection<? extends Terrain> terrains;
 	DetailPane detailPane;
 	WorldView worldView;
-	Controller myController;
 	
 	public TemplatePane(DetailPane detailPaneIn, WorldView worldViewIn, Controller controller) {
-
-		units = (Collection<? extends Unit>) getController().getAuthoringGameState().getTemplateByCategory(AuthoringGameState.UNIT).getAll();
-		terrains = (Collection<? extends Terrain>) getController().getAuthoringGameState().getTemplateByCategory(AuthoringGameState.TERRAIN).getAll();
+		super(controller);
+		//units = (Collection<? extends Unit>) getController().getAuthoringGameState().getTemplateByCategory(AuthoringGameState.UNIT).getAll();
+		//terrains = (Collection<? extends Terrain>) getController().getAuthoringGameState().getTemplateByCategory(AuthoringGameState.TERRAIN).getAll();
+		units = getController().getUnitTemplates();
+		terrains = getController().getTerrainTemplates();
 		detailPane = detailPaneIn;
 		worldView = worldViewIn;
-		myController = controller;
 
 		createCollabsible("unit", units);
 		createCollabsible("terrain", terrains);
@@ -94,8 +94,8 @@ public class TemplatePane extends BaseUIManager<Region> {
 	
 	@Override
 	public void update(){
-		updateTerrains(myController.getTerrainTemplates());
-		updateUnits(myController.getUnitTemplates());
+		updateTerrains(getController().getTerrainTemplates());
+		updateUnits(getController().getUnitTemplates());
 		updatePane();
 	}
 

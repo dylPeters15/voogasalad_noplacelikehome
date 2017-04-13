@@ -33,10 +33,9 @@ public class View extends BaseUIManager<Region> {
 	private ToolsPane toolsPane;
 	private DetailPane detailPane;
 	private TemplatePane tempPane;
-	private Controller myController;
 
 	public View(Controller controller) {
-		myController = controller;
+		super(controller);
 		initBorderPane();
 	}
 
@@ -55,18 +54,6 @@ public class View extends BaseUIManager<Region> {
 	 */
 	public void enterPlayMode() {
 		removeSidePanes();
-	}
-
-	/**
-	 * Sets Controller and updates View.
-	 * 
-	 * @param Controller
-	 *            to be used by the View to obtain data from the Model and send
-	 *            requests from the GUI.
-	 */
-	public void setController(Controller controller) {
-		myController = controller;
-		update();
 	}
 
 	/**
@@ -93,9 +80,7 @@ public class View extends BaseUIManager<Region> {
 		worldView = new WorldView();
 		toolsPane = new ToolsPane();
 		detailPane = new DetailPane(worldView);
-		tempPane = new TemplatePane(detailPane, worldView, myController);
-		// tempPane = new TemplatePane(myController.getUnitTemplates(),
-		// myController.getModifiableCells());
+		tempPane = new TemplatePane(detailPane, worldView, getController());
 	}
 
 	/**
@@ -120,7 +105,7 @@ public class View extends BaseUIManager<Region> {
 	}
 
 	public void setGameState(AuthoringGameState newGameState) {
-		myController.setGameState(newGameState);
+		getController().setGameState(newGameState);
 	}
 
 	public void sendAlert(String s) {

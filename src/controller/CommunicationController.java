@@ -1,7 +1,9 @@
 package controller;
 
+import java.time.Duration;
 import java.util.Collection;
 
+import backend.cell.ModifiableTerrain;
 import backend.cell.Terrain;
 import backend.grid.GameBoard;
 import backend.grid.ModifiableGameBoard;
@@ -10,6 +12,7 @@ import backend.unit.ModifiableUnit;
 import backend.unit.Unit;
 import backend.util.AuthoringGameState;
 import backend.util.GameplayState;
+import backend.util.io.XMLSerializer;
 import frontend.View;
 import util.net.Modifier;
 import util.net.ObservableClient;
@@ -29,7 +32,12 @@ public class CommunicationController implements Controller {
 	public CommunicationController(AuthoringGameState gameState, View view) {
 		this.mGameState = gameState;
 		this.mView = view;
-		mClient.addListener(e -> updateGameState(e));
+		try{
+			mClient = new ObservableClient<AuthoringGameState>("127.0.0.1", 10023, new XMLSerializer<AuthoringGameState>(), new XMLSerializer<AuthoringGameState>(), Duration.ofSeconds(60));
+			mClient.addListener(e -> updateGameState(e));
+		}catch(Exception e){
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
@@ -47,12 +55,12 @@ public class CommunicationController implements Controller {
 		this.mView = view;
 	}
 
-	public void setClient(ObservableClient client) {
+	public void setClient(ObservableClient<AuthoringGameState> client) {
 		this.mClient = client;
 		mView.update();
 	}
 
-	public ObservableClient getClient() {
+	public ObservableClient<AuthoringGameState> getClient() {
 		return mClient;
 	}
 
@@ -113,8 +121,7 @@ public class CommunicationController implements Controller {
 
 	@Override
 	public Collection<? extends Terrain> getTerrainTemplates() {
-		//return ModifiableUnit.getPredefinedTerrain(); TOTO
-		return null;
+		return ModifiableTerrain.getPredefinedTerrain();
 	}
 
 }
