@@ -125,6 +125,7 @@ public class ModifiableGameBoard extends ModifiableVoogaObject<ModifiableGameBoa
 
 	@Override
 	public Cell get(CoordinateTuple coordinateTuple) {
+		System.out.println(gameBoard);
 		return gameBoard.get(boundsHandler.getMappedCoordinate(this, coordinateTuple));
 	}
 

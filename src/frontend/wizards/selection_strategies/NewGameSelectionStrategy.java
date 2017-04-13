@@ -1,5 +1,6 @@
 package frontend.wizards.selection_strategies;
 
+import backend.grid.BoundsHandler;
 import backend.grid.ModifiableGameBoard;
 import backend.util.AuthoringGameState;
 import frontend.wizards.wizard_pages.GridInstantiationPage;
@@ -24,10 +25,12 @@ public class NewGameSelectionStrategy extends BaseSelectionStrategy<AuthoringGam
 		boardBuilder.setRows(gridInstantiationPage.getRows());
 		boardBuilder.setColumns(gridInstantiationPage.getCols());
 		boardBuilder.setTemplateCell(gridInstantiationPage.getTemplateCell());
+		boardBuilder.setBoundsHandler(BoundsHandler.FINITE_BOUNDS);
 		AuthoringGameState gameState = new AuthoringGameState(gameNamePage.getName());
 		gameState.setDescription(gameNamePage.getDescription());
 		gameState.setImgPath(gameNamePage.getImagePath());
 		gameState.setGrid(boardBuilder.build());
+		System.out.println(boardBuilder.build());
 		return gameState;
 	}
 

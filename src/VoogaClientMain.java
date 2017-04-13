@@ -99,11 +99,6 @@ public class VoogaClientMain extends Application {
 			}
 
 			@Override
-			public void setView(View view) {
-
-			}
-
-			@Override
 			public void setGameState(GameplayState newGameState) {
 
 			}
