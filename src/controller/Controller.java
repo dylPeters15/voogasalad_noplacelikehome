@@ -28,9 +28,6 @@ public interface Controller<T extends ReadonlyGameplayState> {
 	T getGameState();
 
 	ImmutablePlayer getPlayer(String name);
-
-	void setView(View view);
-
 	void setGameState(T newGameState);
 	
 	ModifiableGameBoard getModifiableCells();

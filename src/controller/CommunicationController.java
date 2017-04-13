@@ -3,6 +3,7 @@ package controller;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.concurrent.Executors;
 
 import backend.cell.ModifiableTerrain;
 import backend.cell.Terrain;
@@ -29,24 +30,23 @@ import util.net.ObservableClient;
 public class CommunicationController<T extends ReadonlyGameplayState> implements Controller<T> {
 	private MyBuffer<AuthoringGameState> gameStateHistory;
 	private T mGameState;
-	private View mView;
 	private ObservableClient<T> mClient;
 	private Collection<Updatable> thingsToUpdate;
 
-	public CommunicationController(T gameState, View view, Collection<Updatable> thingsToUpdate) {
+	public CommunicationController(T gameState, Collection<Updatable> thingsToUpdate) {
 		this.mGameState = gameState;
-		this.mView = view;
-		mClient.addListener(this::updateGameState);
-		this.thingsToUpdate = new ArrayList<Updatable>();
-		if (thingsToUpdate != null){
-			this.thingsToUpdate.addAll(thingsToUpdate);
-		}
 		try{
-			mClient = new ObservableClient<T>("127.0.0.1", 10023, new XMLSerializer<T>(), new XMLSerializer<T>(), Duration.ofSeconds(60));
+		mClient = new ObservableClient<T>("127.0.0.1", 10023, new XMLSerializer<T>(), new XMLSerializer<T>(), Duration.ofSeconds(60));
 			mClient.addListener(e -> updateGameState(e));
 		}catch(Exception e){
 			throw new RuntimeException(e);
 		}
+		Executors.newSingleThreadExecutor().submit(mClient);
+		this.thingsToUpdate = new ArrayList<Updatable>();
+		if (thingsToUpdate != null){
+			this.thingsToUpdate.addAll(thingsToUpdate);
+		}
+		
 	}
 
 	@Override
@@ -60,10 +60,6 @@ public class CommunicationController<T extends ReadonlyGameplayState> implements
 		updateAll();
 	}
 
-	public void setView(View view) {
-		this.mView = view;
-	}
-
 	public void setClient(ObservableClient<T> client) {
 		this.mClient = client;
 		updateAll();
@@ -75,7 +71,6 @@ public class CommunicationController<T extends ReadonlyGameplayState> implements
 
 	public void setGameState(T gameState) {
 		this.mGameState = gameState;
-		mView.update();
 		updateAll();
 	}
 
