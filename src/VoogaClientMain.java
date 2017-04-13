@@ -33,7 +33,8 @@ import java.util.concurrent.Executors;
  */
 public class VoogaClientMain extends Application {
 	public static final int PORT = 10023;
-	public static final String HOST = ObservableClient.LOCALHOST;
+	//	public static final String HOST = ObservableClient.LOCALHOST;
+	public static final String HOST = "25.4.129.184";
 	public static final int TIMEOUT = 20;
 	private ObservableClient<GameplayState> client;
 	private GameplayState gameplayState;
@@ -41,12 +42,6 @@ public class VoogaClientMain extends Application {
 
 	public static void main(String[] args) throws IOException, InterruptedException {
 		launch(args);
-//		Scanner stdin = new Scanner(System.in);
-//		String pName = name;
-//		while (client.isActive()) {
-//			String input = stdin.nextLine();
-//			client.addToOutbox(state -> state.messageAll(input, state.getPlayerByName(pName)));
-//		}
 	}
 
 	@Override

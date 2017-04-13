@@ -5,13 +5,20 @@ import backend.util.GameplayState;
 import controller.Controller;
 import javafx.collections.FXCollections;
 import javafx.geometry.Pos;
-import javafx.scene.control.*;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.stream.Collectors;
 
 /**
@@ -19,13 +26,14 @@ import java.util.stream.Collectors;
  */
 public class ChatLogView extends BaseUIManager {
 	//TODO ResourceBundlify
-	private static final String HEADER = "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t--------------Welcome to [No place like 127.0.0.1]'s chat room!--------------";
+	private final String HEADER;
 	private final BorderPane pane;
 	private final TextArea textArea;
 	private final String playerName;
 
 	public ChatLogView(String playerName, Controller<GameplayState> controller) {
 		super(controller);
+		HEADER = String.format("Joined [No place like 127.0.0.1]'s chat room!\n\n--%s--\n\n", Instant.now().atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG)));
 		pane = new BorderPane();
 		textArea = initTextArea();
 		pane.setCenter(textArea);
@@ -47,7 +55,7 @@ public class ChatLogView extends BaseUIManager {
 	}
 
 	public void update() {
-		textArea.setText(HEADER + "\n" + getController().getGameState().getPlayerByName(playerName).getChatLog().stream().map(Object::toString).collect(Collectors.joining("\n")));
+		textArea.setText(HEADER + getController().getGameState().getPlayerByName(playerName).getChatLog().stream().map(Object::toString).collect(Collectors.joining("\n\n")));
 		textArea.positionCaret(textArea.getText().length());
 	}
 
