@@ -10,6 +10,7 @@ import backend.unit.ModifiableUnit;
 import backend.unit.Unit;
 import backend.util.AuthoringGameState;
 import backend.util.GameplayState;
+import backend.util.ReadonlyGameplayState;
 import frontend.View;
 import util.net.Modifier;
 import util.net.ObservableClient;
@@ -22,7 +23,7 @@ import util.net.ObservableClient;
  */
 public class CommunicationController implements Controller {
 	private MyBuffer<AuthoringGameState> gameStateHistory;
-	private AuthoringGameState mGameState;
+	private ReadonlyGameplayState mGameState;
 	private View mView;
 	private ObservableClient<AuthoringGameState> mClient;
 
@@ -43,11 +44,6 @@ public class CommunicationController implements Controller {
 		mView.update();
 	}
 
-	@Override
-	public Object getUnitTemplates() {
-		return mGameState.getTemplateByCategory("unit");
-	}
-
 	public void setView(View view) {
 		this.mView = view;
 	}
@@ -61,14 +57,14 @@ public class CommunicationController implements Controller {
 		return mClient;
 	}
 
-	public void setGameState(AuthoringGameState gameState) {
+	public void setGameState(ReadonlyGameplayState gameState) {
 		gameStateHistory.addToBuffer(gameState);
 		this.mGameState = gameState;
 		mView.update();
 	}
 
 	public AuthoringGameState getGameState() {
-		return mGameState;
+		return (AuthoringGameState) mGameState;
 	}
 
 	public AuthoringGameState getMostRecentGameState() {
@@ -77,12 +73,12 @@ public class CommunicationController implements Controller {
 
 	@Override
 	public AuthoringGameState getAuthoringGameState() {
-		return mGameState;
+		return (AuthoringGameState) mGameState;
 	}
 
 	@Override
 	public GameplayState getGameplayState() {
-		return mGameState;
+		return (GameplayState) mGameState;
 	}
 
 	@Override
@@ -92,11 +88,11 @@ public class CommunicationController implements Controller {
 
 	@Override
 	public ModifiableGameBoard getModifiableCells() {
-		return mGameState.getGrid();
+		return (ModifiableGameBoard) mGameState.getGrid();
 	}
 
 	@Override
-	public void sendModifier(Modifier<AuthoringGameState> modifier) {
+	public void sendModifier(Modifier<ReadonlyGameplayState> modifier) {
 		mClient.addToOutbox(modifier);	
 	}
 
