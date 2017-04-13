@@ -1,7 +1,10 @@
 package controller;
 
+import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Collection;
 
+import backend.cell.ModifiableTerrain;
 import backend.cell.Terrain;
 import backend.grid.GameBoard;
 import backend.grid.ModifiableGameBoard;
@@ -10,8 +13,10 @@ import backend.unit.ModifiableUnit;
 import backend.unit.Unit;
 import backend.util.AuthoringGameState;
 import backend.util.GameplayState;
+import backend.util.io.XMLSerializer;
 import backend.util.ReadonlyGameplayState;
 import frontend.View;
+import frontend.util.Updatable;
 import util.net.Modifier;
 import util.net.ObservableClient;
 
@@ -26,11 +31,22 @@ public class CommunicationController<T extends ReadonlyGameplayState> implements
 	private T mGameState;
 	private View mView;
 	private ObservableClient<T> mClient;
+	private Collection<Updatable> thingsToUpdate;
 
-	public CommunicationController(T gameState, View view) {
+	public CommunicationController(T gameState, View view, Collection<Updatable> thingsToUpdate) {
 		this.mGameState = gameState;
 		this.mView = view;
 		mClient.addListener(this::updateGameState);
+		this.thingsToUpdate = new ArrayList<Updatable>();
+		if (thingsToUpdate != null){
+			this.thingsToUpdate.addAll(thingsToUpdate);
+		}
+		try{
+			mClient = new ObservableClient<T>("127.0.0.1", 10023, new XMLSerializer<T>(), new XMLSerializer<T>(), Duration.ofSeconds(60));
+			mClient.addListener(e -> updateGameState(e));
+		}catch(Exception e){
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
@@ -41,7 +57,7 @@ public class CommunicationController<T extends ReadonlyGameplayState> implements
 	public void updateGameState(T newGameState)
 	{
 		mGameState = newGameState;
-		mView.update();
+		updateAll();
 	}
 
 	public void setView(View view) {
@@ -50,17 +66,17 @@ public class CommunicationController<T extends ReadonlyGameplayState> implements
 
 	public void setClient(ObservableClient<T> client) {
 		this.mClient = client;
-		mView.update();
+		updateAll();
 	}
 
-	public ObservableClient getClient() {
+	public ObservableClient<? extends ReadonlyGameplayState> getClient() {
 		return mClient;
 	}
 
 	public void setGameState(T gameState) {
-		gameStateHistory.addToBuffer(gameState);
 		this.mGameState = gameState;
 		mView.update();
+		updateAll();
 	}
 
 	@Override
@@ -109,14 +125,29 @@ public class CommunicationController<T extends ReadonlyGameplayState> implements
 	}
 
 	@Override
-	public Collection<? extends Unit> getUnitTemplate() {
+	public Collection<? extends Unit> getUnitTemplates() {
 		return ModifiableUnit.getPredefinedUnits();
 	}
 
 	@Override
-	public Collection<? extends Terrain> getTerrainTemplate() {
-		//return ModifiableUnit.getPredefinedTerrain(); TOTO
-		return null;
+	public Collection<? extends Terrain> getTerrainTemplates() {
+		return Terrain.getPredefinedTerrain();
+	}
+	
+	public void addToUpdated(Updatable updatable){
+		if (!thingsToUpdate.contains(updatable)){
+			thingsToUpdate.add(updatable);
+		}
+	}
+	
+	public void removeFromUpdated(Updatable updatable){
+		if (thingsToUpdate.contains(updatable)){
+			thingsToUpdate.remove(updatable);
+		}
+	}
+	
+	private void updateAll(){
+		thingsToUpdate.stream().forEach(updatable -> updatable.update());
 	}
 
 }

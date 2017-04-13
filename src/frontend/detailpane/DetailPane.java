@@ -20,6 +20,7 @@ public class DetailPane extends BaseUIManager<Region>{
 	VBox pane = new VBox();
 	Label spriteInfo;
 	String content = "";
+	Button addButton;
 	WorldView worldView;
 	
 	public DetailPane(WorldView worldView) {
@@ -28,11 +29,18 @@ public class DetailPane extends BaseUIManager<Region>{
 		Text title = new Text("Sprite Details");
 		pane.getChildren().add(title);
 		spriteInfo = new Label(content);
+		addButton = new Button("Add");
 		setLabel();
 		clearContent();
 		
 	}
 	
+	private void setAddButton(VoogaEntity sprite) {
+		addButton.setOnAction(event -> worldView.setOnCellClick(cellView -> {
+			cellView.add(sprite);
+		}));
+	}
+
 	public void setContent(VoogaEntity sprite, String spriteType) {
 		clearContent();
 		addString("Name", sprite.getName());
@@ -44,15 +52,10 @@ public class DetailPane extends BaseUIManager<Region>{
 		else {
 			newSpriteInfo = new Label(setTerrainContent((ModifiableTerrain) sprite));
 		}
-		pane.getChildren().remove(spriteInfo);
 		spriteInfo = newSpriteInfo;
 		setLabel();
-		Button addButton = new Button("Add");
+		setAddButton(sprite);
 		pane.getChildren().add(addButton);
-		addButton.setOnAction(event -> worldView.setOnCellClick(cellView -> {
-			cellView.add(sprite);
-		}));
-		
 	}
 
 	private void setLabel() {
@@ -98,6 +101,8 @@ public class DetailPane extends BaseUIManager<Region>{
 	
 	private void clearContent() {
 		content = "";
+		pane.getChildren().remove(spriteInfo);
+		pane.getChildren().remove(addButton);
 	}
 	
 	@Override

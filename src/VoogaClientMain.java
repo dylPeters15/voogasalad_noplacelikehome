@@ -11,6 +11,7 @@ import backend.util.io.XMLSerializer;
 import controller.Controller;
 import frontend.View;
 import frontend.util.ChatLogView;
+import frontend.util.Updatable;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -125,13 +126,23 @@ public class VoogaClientMain extends Application {
 			}
 
 			@Override
-			public Collection<? extends Unit> getUnitTemplate() {
+			public Collection<? extends Unit> getUnitTemplates() {
 				return null;
 			}
 
 			@Override
-			public Collection<? extends Terrain> getTerrainTemplate() {
+			public Collection<? extends Terrain> getTerrainTemplates() {
 				return null;
+			}
+
+			@Override
+			public void addToUpdated(Updatable objectToUpdate) {
+				
+			}
+
+			@Override
+			public void removeFromUpdated(Updatable objectToUpdate) {
+
 			}
 		});
 		Scene scene = new Scene(chatLogView.getObject(), 500, 500, new ImagePattern(new Image("resources/images/testImage.jpg")));
