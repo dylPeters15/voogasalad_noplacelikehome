@@ -25,7 +25,7 @@ public class CommunicationController implements Controller {
 	private MyBuffer<AuthoringGameState> gameStateHistory;
 	private ReadonlyGameplayState mGameState;
 	private View mView;
-	private ObservableClient<AuthoringGameState> mClient;
+	private ObservableClient<? extends ReadonlyGameplayState> mClient;
 
 	public CommunicationController(AuthoringGameState gameState, View view) {
 		this.mGameState = gameState;
@@ -38,7 +38,7 @@ public class CommunicationController implements Controller {
 		return mGameState.getGrid();
 	}
 	
-	public void updateGameState(AuthoringGameState newGameState)
+	public void updateGameState(ReadonlyGameplayState newGameState)
 	{
 		mGameState = newGameState;
 		mView.update();
@@ -59,15 +59,15 @@ public class CommunicationController implements Controller {
 
 	public void setGameState(ReadonlyGameplayState gameState) {
 		gameStateHistory.addToBuffer(gameState);
-		this.mGameState = gameState;
+		this.mGameState = (AuthoringGameState) gameState;
 		mView.update();
 	}
 
-	public AuthoringGameState getGameState() {
+	public ReadonlyGameplayState getGameState() {
 		return (AuthoringGameState) mGameState;
 	}
 
-	public AuthoringGameState getMostRecentGameState() {
+	public ReadonlyGameplayState getMostRecentGameState() {
 		return gameStateHistory.getBufferHead();
 	}
 
@@ -92,7 +92,7 @@ public class CommunicationController implements Controller {
 	}
 
 	@Override
-	public void sendModifier(Modifier<ReadonlyGameplayState> modifier) {
+	public void sendModifier(Modifier modifier) {
 		mClient.addToOutbox(modifier);	
 	}
 

@@ -90,12 +90,12 @@ public class VoogaClientMain extends Application {
 			}
 
 			@Override
-			public void setGameState(AuthoringGameState newGameState) {
+			public void setGameState(ReadonlyGameplayState newGameState) {
 
 			}
 
 			@Override
-			public void sendModifier(Modifier<GameplayState> modifier) {
+			public void sendModifier(Modifier<? extends GameplayState> modifier) {
 
 			}
 		});

@@ -20,7 +20,7 @@ public interface Controller {
 
 	GameBoard getGrid();
 	
-	AuthoringGameState getGameState();
+	ReadonlyGameplayState getGameState();
 	
 	AuthoringGameState getAuthoringGameState();
 
@@ -34,7 +34,7 @@ public interface Controller {
 	
 	ModifiableGameBoard getModifiableCells();
 	
-	void sendModifier(Modifier<ReadonlyGameplayState> modifier);
+	void sendModifier(Modifier<? extends ReadonlyGameplayState> modifier);
 
 	Collection<? extends Unit> getUnits();
 
