@@ -120,8 +120,5 @@ public class ModifiableTerrain extends ModifiableVoogaObject<ModifiableTerrain> 
 		);
 	}
 
-	@Deprecated
-	public static Collection<? extends Terrain> getPredefinedTerrain() {
-		return getPredefined(ModifiableTerrain.class);
-	}
+
 }

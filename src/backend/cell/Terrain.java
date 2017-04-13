@@ -8,6 +8,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
 
+import static backend.util.ImmutableVoogaObject.getPredefined;
+
 /**
  * @author Created by th174 on 4/12/2017.
  */
@@ -67,4 +69,9 @@ public interface Terrain extends VoogaEntity {
 
 	@Override
 	ModifiableTerrain copy();
+
+	@Deprecated
+	static Collection<? extends Terrain> getPredefinedTerrain() {
+		return getPredefined(Terrain.class);
+	}
 }
