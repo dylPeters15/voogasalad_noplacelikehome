@@ -1,7 +1,13 @@
 package controller;
 
+import java.util.Collection;
+
+import backend.cell.Terrain;
 import backend.grid.GameBoard;
+import backend.grid.ModifiableGameBoard;
 import backend.player.ImmutablePlayer;
+import backend.unit.ModifiableUnit;
+import backend.unit.Unit;
 import backend.util.AuthoringGameState;
 import backend.util.GameplayState;
 import frontend.View;
@@ -71,26 +77,49 @@ public class CommunicationController implements Controller {
 
 	@Override
 	public AuthoringGameState getAuthoringGameState() {
-		// TODO Auto-generated method stub
-		return null;
+		return mGameState;
 	}
 
 	@Override
 	public GameplayState getGameplayState() {
-		// TODO Auto-generated method stub
-		return null;
+		return mGameState;
 	}
 
 	@Override
 	public ImmutablePlayer getPlayer(String name) {
-		// TODO Auto-generated method stub
+		return mGameState.getPlayerByName(name);
+	}
+
+	@Override
+	public ModifiableGameBoard getModifiableCells() {
+		return mGameState.getGrid();
+	}
+
+	@Override
+	public void sendModifier(Modifier<AuthoringGameState> modifier) {
+		mClient.addToOutbox(modifier);	
+	}
+
+	@Override
+	public Collection<? extends Unit> getUnits() {
+		return mGameState.getGrid().getUnits();
+	}
+
+	@Override
+	public Collection<? extends Terrain> getTerrains() {
+		//Todo
 		return null;
 	}
 
 	@Override
-	public void sendModifier(Modifier<GameplayState> modifier) {
-		// TODO Auto-generated method stub
-		
+	public Collection<? extends Unit> getUnitTemplate() {
+		return ModifiableUnit.getPredefinedUnits();
+	}
+
+	@Override
+	public Collection<? extends Terrain> getTerrainTemplate() {
+		//return ModifiableUnit.getPredefinedTerrain(); TOTO
+		return null;
 	}
 
 }
