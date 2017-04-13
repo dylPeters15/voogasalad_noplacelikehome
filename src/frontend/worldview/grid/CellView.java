@@ -7,15 +7,18 @@ import java.util.function.Consumer;
 
 import backend.cell.Cell;
 import backend.grid.CoordinateTuple;
+import backend.unit.Unit;
+import backend.util.GameplayState;
 import backend.util.VoogaEntity;
+import controller.Controller;
 import frontend.util.BaseUIManager;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Polygon;
+import util.net.Modifier;
 
 /**
  * @author Stone Mathers
@@ -27,7 +30,8 @@ public class CellView extends BaseUIManager<Parent>{
 	Polygon polygon;
 	Group group;
 	
-	public CellView(Cell cellModel){
+	public CellView(Cell cellModel, Controller controller){
+		setController(controller);
 		this.cellModel = cellModel;
 		polygon = new Polygon();
 		group = new Group();
@@ -76,8 +80,10 @@ public class CellView extends BaseUIManager<Parent>{
 		Image polygonImage = new Image(cellModel.getTerrain().getImgPath());
 		Paint polygonFill = new ImagePattern(polygonImage);
 		polygon.setFill(polygonFill);
+		polygon.setStrokeWidth(10);
 		cellModel.getOccupants().stream().forEach(unit -> {
 			group.getChildren().add(new UnitView(unit).getObject());
+			System.out.println("added unit");
 		});
 	}
 
@@ -86,10 +92,13 @@ public class CellView extends BaseUIManager<Parent>{
 	}
 	
 	public void add(VoogaEntity sprite){
-		ImageView imageView = new ImageView(new Image(sprite.getImgPath()));
-		imageView.setX(0);
-		imageView.setY(0);
-		group.getChildren().add(imageView);
+		System.out.println("Creating modifier");
+		Modifier<GameplayState> toSend = game -> {
+			game.getGrid().get(cellModel.getLocation()).arrive((Unit) sprite.copy(), game);
+			System.out.println("Executing modifier");
+			return game;
+		};
+		getController().sendModifier(toSend);
 	}
 	
 	@Override

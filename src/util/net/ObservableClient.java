@@ -11,6 +11,8 @@ import java.time.Duration;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import backend.util.ReadonlyGameplayState;
+
 /**
  * This class provides a simple implementation of a client that connects to a server with a given server name and port.
  * <p>

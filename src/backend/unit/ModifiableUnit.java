@@ -30,6 +30,8 @@ public class ModifiableUnit extends ModifiableVoogaObject<ModifiableUnit> implem
 			.setDescription("The skeletal corpse of an impoverished serf left to starve, reanimated by necromancy. Now, bow and arrow in hand, he pursues his revenge on the living.")
 			.addOffensiveModifiers(InteractionModifier.CHAOTIC)
 			.addActiveAbilities(ActiveAbility.BOW);
+	
+	
 
 	private final ActiveAbilitySet activeAbilities;
 	private final TriggeredAbilitySet triggeredAbilities;

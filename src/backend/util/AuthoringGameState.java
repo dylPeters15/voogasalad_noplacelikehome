@@ -1,7 +1,6 @@
 package backend.util;
 
-import backend.cell.ModifiableCell;
-import backend.cell.ModifiableTerrain;
+import backend.cell.Terrain;
 import backend.game_engine.ResultQuadPredicate;
 import backend.grid.BoundsHandler;
 import backend.grid.GameBoard;
@@ -24,14 +23,14 @@ import java.util.function.BiPredicate;
 
 public class AuthoringGameState extends GameplayState implements VoogaEntity {
 	public static final String BOUNDS_HANDLER = "boundshandler", TERRAIN = "terrain", OFFENSIVE_MODIFIER = "offensivemodifier", DEFENSIVE_MODIFIER = "defensivemodifier", CELL_TRIGGERED_EFFECT = "celltriggeredeffect", UNIT_TRIGGERED_EFFECT = "unittriggeredeffect", ACTIVE_ABILITY = "activeabilities", UNIT = "unit", UNIT_STAT = "unitstat", GRID_PATTERN = "gridpattern", GAMEBOARD = "gameboard";
-	
+
 	private Map<String, ModifiableVoogaCollection> templates;
 
 	public AuthoringGameState(String name) {
 		super(name, null, "", "");
 		templates = new HashMap<>();
 		templates.put(GAMEBOARD, new ModifiableVoogaCollection<>("GameBoards", "", "", ModifiableGameBoard.getPredefinedGameBoards()));
-		templates.put(TERRAIN, new ModifiableVoogaCollection<>("Terrain", "", "", ModifiableTerrain.getPredefinedTerrain()));
+		templates.put(TERRAIN, new ModifiableVoogaCollection<>("Terrain", "", "", Terrain.getPredefinedTerrain()));
 		templates.put(UNIT, new ModifiableVoogaCollection<>("Units", "", "", ModifiableUnit.getPredefinedUnits()));
 		templates.put(UNIT_TRIGGERED_EFFECT, new ModifiableVoogaCollection<>("Unit Passive/Triggered Abilities", "", "", ModifiableTriggeredEffect.getPredefinedUnitPassives()));
 		templates.put(CELL_TRIGGERED_EFFECT, new ModifiableVoogaCollection<>("Cell Passive/Triggered Abilities", "", "", ModifiableTriggeredEffect.getPredefinedCellPassives()));
@@ -165,7 +164,7 @@ public class AuthoringGameState extends GameplayState implements VoogaEntity {
 
 	//Name can be Terrain, OffensiveModifier, DefensiveModifier, Cell, CellTriggeredEffect, UnitTriggeredEffect, ActiveAbility, Unit, UnitStat, GridPattern, GameBoard
 	//Case and space character insensitive
-	public ModifiableVoogaCollection<VoogaEntity,?> getTemplateByCategory(String categoryName) {
+	public ModifiableVoogaCollection<VoogaEntity, ?> getTemplateByCategory(String categoryName) {
 		return templates.get(categoryName.replaceAll(" ", "")/*.replaceAll("s$", "")*/.toLowerCase());
 	}
 }

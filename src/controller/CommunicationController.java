@@ -1,7 +1,11 @@
 package controller;
 
+import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.concurrent.Executors;
 
+import backend.cell.ModifiableTerrain;
 import backend.cell.Terrain;
 import backend.grid.GameBoard;
 import backend.grid.ModifiableGameBoard;
@@ -10,7 +14,10 @@ import backend.unit.ModifiableUnit;
 import backend.unit.Unit;
 import backend.util.AuthoringGameState;
 import backend.util.GameplayState;
+import backend.util.io.XMLSerializer;
+import backend.util.ReadonlyGameplayState;
 import frontend.View;
+import frontend.util.Updatable;
 import util.net.Modifier;
 import util.net.ObservableClient;
 
@@ -20,16 +27,30 @@ import util.net.ObservableClient;
  *         The primary purpose of my controller is to hide implementation of backend structure, specifically how
  *         our networking works and how the GameState is structured.
  */
-public class CommunicationController implements Controller {
+public class CommunicationController<T extends ReadonlyGameplayState> implements Controller<T> {
 	private MyBuffer<AuthoringGameState> gameStateHistory;
-	private AuthoringGameState mGameState;
-	private View mView;
-	private ObservableClient<AuthoringGameState> mClient;
+	private T mGameState;
+	private ObservableClient<T> mClient;
+	private Collection<Updatable> thingsToUpdate;
 
-	public CommunicationController(AuthoringGameState gameState, View view) {
+	public CommunicationController(T gameState, Collection<Updatable> thingsToUpdate) {
 		this.mGameState = gameState;
-		this.mView = view;
-		mClient.addListener(e -> updateGameState(e));
+		this.thingsToUpdate = new ArrayList<Updatable>();
+		if (thingsToUpdate != null){
+			this.thingsToUpdate.addAll(thingsToUpdate);
+		}
+		try{
+		mClient = new ObservableClient<T>("127.0.0.1", 10023, new XMLSerializer<T>(), new XMLSerializer<T>(), Duration.ofSeconds(60));
+			mClient.addListener(e -> updateGameState(e));
+		}catch(Exception e){
+			throw new RuntimeException(e);
+		}
+		Executors.newSingleThreadExecutor().submit(mClient);
+		this.thingsToUpdate = new ArrayList<Updatable>();
+		if (thingsToUpdate != null){
+			this.thingsToUpdate.addAll(thingsToUpdate);
+		}
+		
 	}
 
 	@Override
@@ -37,51 +58,42 @@ public class CommunicationController implements Controller {
 		return mGameState.getGrid();
 	}
 	
-	public void updateGameState(AuthoringGameState newGameState)
+	public void updateGameState(T newGameState)
 	{
 		mGameState = newGameState;
-		mView.update();
+		updateAll();
 	}
 
-	@Override
-	public Object getUnitTemplates() {
-		return mGameState.getTemplateByCategory("unit");
-	}
-
-	public void setView(View view) {
-		this.mView = view;
-	}
-
-	public void setClient(ObservableClient client) {
+	public void setClient(ObservableClient<T> client) {
 		this.mClient = client;
-		mView.update();
+		updateAll();
 	}
 
-	public ObservableClient getClient() {
+	public ObservableClient<? extends ReadonlyGameplayState> getClient() {
 		return mClient;
 	}
 
-	public void setGameState(AuthoringGameState gameState) {
-		gameStateHistory.addToBuffer(gameState);
+	public void setGameState(T gameState) {
 		this.mGameState = gameState;
-		mView.update();
+		updateAll();
 	}
 
-	public AuthoringGameState getGameState() {
+	@Override
+	public ReadonlyGameplayState getReadOnlyGameState() {
 		return mGameState;
 	}
 
-	public AuthoringGameState getMostRecentGameState() {
+	public ReadonlyGameplayState getMostRecentGameState() {
 		return gameStateHistory.getBufferHead();
 	}
 
 	@Override
 	public AuthoringGameState getAuthoringGameState() {
-		return mGameState;
+		return (AuthoringGameState) mGameState;
 	}
 
 	@Override
-	public GameplayState getGameplayState() {
+	public T getGameState() {
 		return mGameState;
 	}
 
@@ -92,12 +104,12 @@ public class CommunicationController implements Controller {
 
 	@Override
 	public ModifiableGameBoard getModifiableCells() {
-		return mGameState.getGrid();
+		return (ModifiableGameBoard) mGameState.getGrid();
 	}
 
 	@Override
-	public void sendModifier(Modifier<AuthoringGameState> modifier) {
-		mClient.addToOutbox(modifier);	
+	public void sendModifier(Modifier<T> modifier) {
+		mClient.addToOutbox(modifier);
 	}
 
 	@Override
@@ -112,14 +124,29 @@ public class CommunicationController implements Controller {
 	}
 
 	@Override
-	public Collection<? extends Unit> getUnitTemplate() {
+	public Collection<? extends Unit> getUnitTemplates() {
 		return ModifiableUnit.getPredefinedUnits();
 	}
 
 	@Override
-	public Collection<? extends Terrain> getTerrainTemplate() {
-		//return ModifiableUnit.getPredefinedTerrain(); TOTO
-		return null;
+	public Collection<? extends Terrain> getTerrainTemplates() {
+		return Terrain.getPredefinedTerrain();
+	}
+	
+	public void addToUpdated(Updatable updatable){
+		if (!thingsToUpdate.contains(updatable)){
+			thingsToUpdate.add(updatable);
+		}
+	}
+	
+	public void removeFromUpdated(Updatable updatable){
+		if (thingsToUpdate.contains(updatable)){
+			thingsToUpdate.remove(updatable);
+		}
+	}
+	
+	private void updateAll(){
+		thingsToUpdate.stream().forEach(updatable -> updatable.update());
 	}
 
 }

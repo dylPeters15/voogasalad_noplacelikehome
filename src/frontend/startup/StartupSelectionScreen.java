@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.Locale;
+import java.util.Collection;
 import java.util.Objects;
 import java.util.Observable;
 import java.util.Observer;
@@ -12,7 +13,6 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 import backend.util.AuthoringGameState;
-import backend.util.GameplayState;
 import controller.CommunicationController;
 import controller.Controller;
 import frontend.View;
@@ -29,7 +29,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-import util.net.ObservableClient;
 
 public class StartupSelectionScreen extends VBox {
 
@@ -70,7 +69,7 @@ public class StartupSelectionScreen extends VBox {
 	private void play() {
 		read("play");
 	}
-	
+
 	private void edit() {
 		read("load");
 	}
@@ -87,9 +86,11 @@ public class StartupSelectionScreen extends VBox {
 		});
 
 	}
+
 	private void createGame(AuthoringGameState state, boolean editable) {
-		Controller control = new CommunicationController(state, null);
+		Controller control = new CommunicationController(state,null);
 		View view = new View(control);
+		control.addToUpdated(view);
 		//myClient.setGameState(state);
 		//control.setClient(myClient);
 		view.setEditable(editable);

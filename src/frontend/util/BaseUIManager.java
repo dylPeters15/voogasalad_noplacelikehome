@@ -8,16 +8,15 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.ResourceBundle;
 
-import backend.util.AuthoringGameState;
 import com.sun.javafx.collections.UnmodifiableObservableMap;
 
+import controller.Controller;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.scene.Parent;
-import util.net.Modifier;
 
 /**
  * SlogoBaseUIManager is the base class for every front end class in the Slogo
@@ -42,7 +41,7 @@ import util.net.Modifier;
  * @author Dylan Peters
  *
  */
-public abstract class BaseUIManager<T extends Parent> extends Observable implements ObjectManager<T> {
+public abstract class BaseUIManager<T extends Parent> extends Observable implements ObjectManager<T>, Updatable {
 	private static final String LANGUAGE_RESOURCE_POINTER = "resources.languages/LanguagePointer";
 	private static final String LANGUAGE_RESOURCE_LIST = "resources.languages/LanguageFileList";
 	private static final String DEFAULT_LANGUAGE_KEY = "DefaultLanguageResource";
@@ -52,13 +51,18 @@ public abstract class BaseUIManager<T extends Parent> extends Observable impleme
 
 	private ObjectProperty<ResourceBundle> language;
 	private ObjectProperty<String> styleSheet;
-	private ObservableQueue<Modifier<AuthoringGameState>> requests;
+	private Controller controller;
+//	private ObservableQueue<Modifier<AuthoringGameState>> requests;
 
 	/**
 	 * Creates a new SlogoBaseUIManager. Sets all values for the language and
 	 * stylesheet to default. The default language is English.
 	 */
 	public BaseUIManager() {
+		this(null);
+	}
+	
+	public BaseUIManager(Controller controller){
 		language = new SimpleObjectProperty<ResourceBundle>();
 		language.setValue(createDefaultResourceBundle());
 		styleSheet = new SimpleObjectProperty<String>();
@@ -69,16 +73,25 @@ public abstract class BaseUIManager<T extends Parent> extends Observable impleme
 				getObject().getStylesheets().add(newValue);
 			}
 		});
-		requests = new ObservableQueue<>();
+//		requests = new ObservableQueue<>();
+		setController(controller);
+	}
+	
+	public void setController(Controller controller){
+		this.controller = controller;
+	}
+	
+	public Controller getController(){
+		return controller;
 	}
 
-	public ObservableQueue<Modifier<AuthoringGameState>> getRequests() {
-		return requests;
-	}
-
-	public void addRequest(Modifier<AuthoringGameState> request) {
-		requests.add(request);
-	}
+//	public ObservableQueue<Modifier<AuthoringGameState>> getRequests() {
+//		return requests;
+//	}
+//
+//	public void addRequest(Modifier<AuthoringGameState> request) {
+//		requests.add(request);
+//	}
 
 	/**
 	 * Gets an ObjectProperty containing the ResourceBundle that this class uses
@@ -169,6 +182,10 @@ public abstract class BaseUIManager<T extends Parent> extends Observable impleme
 	 */
 	protected String createDefaultStyleSheet() {
 		return ResourceBundle.getBundle(STYLESHEET_RESOURCE_POINTER).getString(DEFAULT_STYLE_KEY);
+	}
+	
+	public void update(){
+		
 	}
 
 }
