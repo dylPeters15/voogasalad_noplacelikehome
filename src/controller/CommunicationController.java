@@ -33,7 +33,10 @@ public class CommunicationController implements Controller {
 	private ObservableClient<? extends ReadonlyGameplayState> mClient;
 
 	public CommunicationController(AuthoringGameState gameState, Collection<Updatable> thingsToUpdate) {
-		this.thingsToUpdate = new ArrayList<Updatable>(thingsToUpdate);
+		this.thingsToUpdate = new ArrayList<Updatable>();
+		if (thingsToUpdate != null){
+			this.thingsToUpdate.addAll(thingsToUpdate);
+		}
 		this.mGameState = gameState;
 		try{
 			mClient = new ObservableClient<AuthoringGameState>("127.0.0.1", 10023, new XMLSerializer<AuthoringGameState>(), new XMLSerializer<AuthoringGameState>(), Duration.ofSeconds(60));
@@ -120,7 +123,7 @@ public class CommunicationController implements Controller {
 
 	@Override
 	public Collection<? extends Terrain> getTerrainTemplates() {
-		return ModifiableTerrain.getPredefinedTerrain();
+		return Terrain.getPredefinedTerrain();
 	}
 	
 	public void addToUpdated(Updatable updatable){
