@@ -7,6 +7,7 @@ import backend.cell.ModifiableTerrain;
 import backend.cell.Terrain;
 import backend.unit.ModifiableUnit;
 import backend.util.VoogaEntity;
+import controller.Controller;
 import frontend.util.BaseUIManager;
 import frontend.worldview.WorldView;
 import javafx.scene.control.Button;

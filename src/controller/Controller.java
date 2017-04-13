@@ -8,8 +8,8 @@ import backend.grid.ModifiableGameBoard;
 import backend.player.ImmutablePlayer;
 import backend.unit.Unit;
 import backend.util.AuthoringGameState;
-import frontend.View;
 import backend.util.GameplayState;
+import frontend.util.Updatable;
 import backend.util.ReadonlyGameplayState;
 import util.net.Modifier;
 
@@ -28,8 +28,6 @@ public interface Controller {
 
 	ImmutablePlayer getPlayer(String name);
 
-	void setView(View view);
-
 	void setGameState(ReadonlyGameplayState newGameState);
 	
 	ModifiableGameBoard getModifiableCells();
@@ -40,9 +38,13 @@ public interface Controller {
 
 	Collection<? extends Terrain> getTerrains();
 	
-	Collection<? extends Unit> getUnitTemplate();
+	Collection<? extends Unit> getUnitTemplates();
 
-	Collection<? extends Terrain> getTerrainTemplate();
+	Collection<? extends Terrain> getTerrainTemplates();
+	
+	void addToUpdated(Updatable objectToUpdate);
+	
+	void removeFromUpdated(Updatable objectToUpdate);
 	
 
 	

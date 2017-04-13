@@ -1,9 +1,12 @@
 package frontend.templatepane;
 
+import java.util.Collection;
+
 import backend.cell.Terrain;
 import backend.unit.Unit;
 import backend.util.AuthoringGameState;
 import backend.util.VoogaEntity;
+import controller.Controller;
 import frontend.detailpane.DetailPane;
 import frontend.util.BaseUIManager;
 import frontend.worldview.WorldView;
@@ -12,8 +15,6 @@ import javafx.scene.control.TitledPane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-
-import java.util.Collection;
 
 /**
  * @author Faith Rodriguez
@@ -27,11 +28,13 @@ public class TemplatePane extends BaseUIManager<Region> {
 	Collection<? extends Terrain> terrains;
 	DetailPane detailPane;
 	WorldView worldView;
-
-	public TemplatePane(AuthoringGameState gameState, DetailPane detailPaneIn, WorldView worldViewIn) {
-
-		units = (Collection<? extends Unit>) gameState.getTemplateByCategory(AuthoringGameState.UNIT).getAll();
-		terrains = (Collection<? extends Terrain>) gameState.getTemplateByCategory(AuthoringGameState.TERRAIN).getAll();
+	
+	public TemplatePane(DetailPane detailPaneIn, WorldView worldViewIn, Controller controller) {
+		super(controller);
+		//units = (Collection<? extends Unit>) getController().getAuthoringGameState().getTemplateByCategory(AuthoringGameState.UNIT).getAll();
+		//terrains = (Collection<? extends Terrain>) getController().getAuthoringGameState().getTemplateByCategory(AuthoringGameState.TERRAIN).getAll();
+		units = getController().getUnitTemplates();
+		terrains = getController().getTerrainTemplates();
 		detailPane = detailPaneIn;
 		worldView = worldViewIn;
 
@@ -87,11 +90,16 @@ public class TemplatePane extends BaseUIManager<Region> {
 	public void updateUnits(Collection<? extends Unit> unitsIn) {
 		//sprites will (I am fairly certain) contain all available sprites, not just the new ones
 		units = unitsIn;
-		updatePane();
 	}
 
 	public void updateTerrains(Collection<? extends Terrain> terrainsIn) {
 		terrains = terrainsIn;
+	}
+	
+	@Override
+	public void update(){
+		updateTerrains(getController().getTerrainTemplates());
+		updateUnits(getController().getUnitTemplates());
 		updatePane();
 	}
 
