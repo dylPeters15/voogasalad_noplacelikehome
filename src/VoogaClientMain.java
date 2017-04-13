@@ -1,22 +1,26 @@
 import backend.grid.GameBoard;
 import backend.player.ImmutablePlayer;
+import backend.player.Player;
 import backend.util.AuthoringGameState;
 import backend.util.GameplayState;
+import backend.util.io.XMLSerializer;
 import controller.Controller;
 import frontend.View;
 import frontend.util.ChatLogView;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.stage.Stage;
 import util.net.Modifier;
 import util.net.ObservableClient;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 //import frontend.startup.StartupScreen;
 
@@ -28,31 +32,27 @@ public class VoogaClientMain extends Application {
 	public static final String HOST = ObservableClient.LOCALHOST;
 	public static final int TIMEOUT = 20;
 	public static final String CHATBOX = "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n------------TEST GAME STATE CHAT LOG------------\n\n%s\n\n >>  ";
+	private static ObservableClient<GameplayState> client;
 
 	public static void main(String[] args) throws IOException, InterruptedException {
+		String name = System.getProperty("user.name") + Math.random();
+		XMLSerializer<GameplayState> serializer = new XMLSerializer<>();
+		client = new ObservableClient<>(HOST, PORT, serializer, serializer, Duration.ofSeconds(TIMEOUT));
+		client.addListener(state -> {
+			try {
+				System.out.printf(CHATBOX,
+						state.getPlayerByName(name).getChatLog().parallelStream()
+								.map(Object::toString).collect(Collectors.joining("\n")));
+			} catch (NullPointerException e) {
+			}
+		});
+		Executors.newSingleThreadExecutor().submit(client);
+		client.addToOutbox(state -> {
+			state.addPlayer(new Player(name, "It's me!", ""));
+			return state;
+		});
 		launch(args);
-//		String name = System.getProperty("user.name") + Math.random();
-//		XMLSerializer<GameplayState> serializer = new XMLSerializer<>();
-//		ObservableClient<GameplayState> client = new ObservableClient<>(HOST, PORT, serializer, serializer, Duration.ofSeconds(TIMEOUT));
-//		client.addListener(state -> {
-//			try {
-//				System.out.printf(CHATBOX,
-//						state.getPlayerByName(name).getChatLog().parallelStream()
-//								.map(Object::toString).collect(Collectors.joining("\n")));
-//			} catch (NullPointerException e) {
-//			}
-//		});
-//		Executors.newSingleThreadExecutor().submit(client);
-//		client.addToOutbox(state -> {
-//			state.addPlayer(new Player(name, "It's me!", ""));
-//			return state;
-//		});
-//		System.out.println("Client started successfully...");
-//		Scanner stdin = new Scanner(System.in);
-//		while (client.isActive()) {
-//			String input = stdin.nextLine();
-//			client.addToOutbox(state -> state.messageAll(input, state.getPlayerByName(name)));
-//		}
+
 	}
 
 	@Override
@@ -96,7 +96,8 @@ public class VoogaClientMain extends Application {
 
 			@Override
 			public void sendModifier(Modifier<GameplayState> modifier) {
-
+				System.out.println(modifier);
+				client.addToOutbox(modifier);
 			}
 		});
 		Scene scene = new Scene(chatLogView.getObject(), 500, 500, new ImagePattern(new Image("resources/images/testImage.jpg")));

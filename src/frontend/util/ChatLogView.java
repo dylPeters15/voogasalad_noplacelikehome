@@ -54,32 +54,41 @@ public class ChatLogView extends BaseUIManager {
 		HBox bottomBox = new HBox();
 		bottomBox.getStyleClass().add("hbox");
 		bottomBox.setAlignment(Pos.BASELINE_CENTER);
-		ComboBox<ChatMessage.AccessLevel> chatModeChooser = new ComboBox<>(FXCollections.observableArrayList(ChatMessage.AccessLevel.values()));
-		chatModeChooser.setMinWidth(110);
-		chatModeChooser.setValue(ChatMessage.AccessLevel.ALL);
+		ComboBox<ChatMessage.AccessLevel> chatModeChooser = initComboBox();
 		Label label1 = new Label("To:");
 		label1.setMinWidth(30);
 		TextField messageRecipientField = new TextField();
 		messageRecipientField.setMinWidth(80);
-		chatModeChooser.setOnAction(event -> {
-			if (chatModeChooser.getValue().equals(ChatMessage.AccessLevel.WHISPER)) {
-				bottomBox.getChildren().add(1, messageRecipientField);
-				bottomBox.getChildren().add(1, label1);
-			} else {
-				bottomBox.getChildren().remove(label1);
-				bottomBox.getChildren().remove(messageRecipientField);
-				messageRecipientField.clear();
-			}
-		});
+		chatModeChooser.setOnAction(event -> showOrHideRecipientField(bottomBox, chatModeChooser, label1, messageRecipientField));
 		TextField textContentInputField = new TextField();
 		textContentInputField.setPrefWidth(600);
-		textContentInputField.setOnKeyPressed((KeyEvent evt) -> {
-			if (evt.getCode() == KeyCode.ENTER) {
-				controller.sendModifier(chatModeChooser.getValue().getSendMessageModifier(textContentInputField.getText(), playerName));
-				textContentInputField.clear();
-			}
-		});
+		textContentInputField.setOnKeyPressed(evt -> submitMessage(evt, chatModeChooser, textContentInputField));
 		bottomBox.getChildren().addAll(chatModeChooser, textContentInputField);
 		return bottomBox;
+	}
+
+	private ComboBox<ChatMessage.AccessLevel> initComboBox() {
+		ComboBox<ChatMessage.AccessLevel> chatModeChooser = new ComboBox<>(FXCollections.observableArrayList(ChatMessage.AccessLevel.values()));
+		chatModeChooser.setMinWidth(110);
+		chatModeChooser.setValue(ChatMessage.AccessLevel.ALL);
+		return chatModeChooser;
+	}
+
+	private void showOrHideRecipientField(HBox bottomBox, ComboBox<ChatMessage.AccessLevel> chatModeChooser, Label toLabel, TextField messageRecipientField) {
+		if (chatModeChooser.getValue().equals(ChatMessage.AccessLevel.WHISPER)) {
+			bottomBox.getChildren().add(1, messageRecipientField);
+			bottomBox.getChildren().add(1, toLabel);
+		} else {
+			bottomBox.getChildren().remove(toLabel);
+			bottomBox.getChildren().remove(messageRecipientField);
+			messageRecipientField.clear();
+		}
+	}
+
+	private void submitMessage(KeyEvent evt, ComboBox<ChatMessage.AccessLevel> chatModeChooser, TextField textContentInputField) {
+		if (evt.getCode() == KeyCode.ENTER) {
+			controller.sendModifier(chatModeChooser.getValue().getSendMessageModifier(textContentInputField.getText(), playerName));
+			textContentInputField.clear();
+		}
 	}
 }
