@@ -1,6 +1,7 @@
 package controller;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Collection;
 
 import backend.cell.ModifiableTerrain;
@@ -14,6 +15,7 @@ import backend.util.AuthoringGameState;
 import backend.util.GameplayState;
 import backend.util.io.XMLSerializer;
 import frontend.View;
+import frontend.util.Updatable;
 import util.net.Modifier;
 import util.net.ObservableClient;
 
@@ -26,12 +28,12 @@ import util.net.ObservableClient;
 public class CommunicationController implements Controller {
 	private MyBuffer<AuthoringGameState> gameStateHistory;
 	private AuthoringGameState mGameState;
-	private View mView;
 	private ObservableClient<AuthoringGameState> mClient;
+	private Collection<Updatable> thingsToUpdate;
 
-	public CommunicationController(AuthoringGameState gameState, View view) {
+	public CommunicationController(AuthoringGameState gameState, Collection<Updatable> thingsToUpdate) {
+		this.thingsToUpdate = new ArrayList<Updatable>(thingsToUpdate);
 		this.mGameState = gameState;
-		this.mView = view;
 		try{
 			mClient = new ObservableClient<AuthoringGameState>("127.0.0.1", 10023, new XMLSerializer<AuthoringGameState>(), new XMLSerializer<AuthoringGameState>(), Duration.ofSeconds(60));
 			mClient.addListener(e -> updateGameState(e));
@@ -48,16 +50,12 @@ public class CommunicationController implements Controller {
 	public void updateGameState(AuthoringGameState newGameState)
 	{
 		mGameState = newGameState;
-		mView.update();
-	}
-
-	public void setView(View view) {
-		this.mView = view;
+		updateAll();
 	}
 
 	public void setClient(ObservableClient<AuthoringGameState> client) {
 		this.mClient = client;
-		mView.update();
+		updateAll();
 	}
 
 	public ObservableClient<AuthoringGameState> getClient() {
@@ -67,7 +65,7 @@ public class CommunicationController implements Controller {
 	public void setGameState(AuthoringGameState gameState) {
 		gameStateHistory.addToBuffer(gameState);
 		this.mGameState = gameState;
-		mView.update();
+		updateAll();
 	}
 
 	public AuthoringGameState getGameState() {
@@ -122,6 +120,22 @@ public class CommunicationController implements Controller {
 	@Override
 	public Collection<? extends Terrain> getTerrainTemplates() {
 		return ModifiableTerrain.getPredefinedTerrain();
+	}
+	
+	public void addToUpdated(Updatable updatable){
+		if (!thingsToUpdate.contains(updatable)){
+			thingsToUpdate.add(updatable);
+		}
+	}
+	
+	public void removeFromUpdated(Updatable updatable){
+		if (thingsToUpdate.contains(updatable)){
+			thingsToUpdate.remove(updatable);
+		}
+	}
+	
+	private void updateAll(){
+		thingsToUpdate.stream().forEach(updatable -> updatable.update());
 	}
 
 }
