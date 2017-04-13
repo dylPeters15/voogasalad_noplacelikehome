@@ -41,29 +41,6 @@ public class View extends BaseUIManager<Region> {
 	}
 
 	/**
-	 * Updates the display of the GameState. This method is to be called by the
-	 * GameState whenever changes are made.
-	 */
-	public void update() {
-		@SuppressWarnings("unchecked")
-		Collection<ModifiableUnit> units = (Collection<ModifiableUnit>) myController.getAuthoringGameState()
-				.getTemplateByCategory(AuthoringGameState.UNIT).getAll().stream()
-				.filter(ModifiableUnit.class::isInstance).collect(Collectors.toList());
-		tempPane.updateUnits(units);
-		@SuppressWarnings("unchecked")
-		Collection<Terrain> terrains = (Collection<Terrain>) myController.getAuthoringGameState()
-				.getTemplateByCategory(AuthoringGameState.TERRAIN).getAll().stream()
-				.filter(ModifiableTerrain.class::isInstance).collect(Collectors.toList());
-		tempPane.updateTerrains(terrains);
-		// tempPane.updateUnits(myController.getUnits()); //TODO add this method
-		// to controller
-		// tempPane.updateTerrains(myController.getTerrains()); //TODO add this
-		// method to controller
-		worldView.update(myController.getGrid());
-
-	}
-
-	/**
 	 * Performs all necessary actions to convert the View into development mode.
 	 * If the View is already in development mode, then nothing visually
 	 * changes.
@@ -115,8 +92,8 @@ public class View extends BaseUIManager<Region> {
 		menuBar = new VoogaMenuBar();
 		worldView = new WorldView();
 		toolsPane = new ToolsPane();
-		detailPane = new DetailPane();
-		tempPane = new TemplatePane(detailPane, worldView);
+		detailPane = new DetailPane(worldView);
+		tempPane = new TemplatePane(detailPane, worldView, myController);
 		// tempPane = new TemplatePane(myController.getUnitTemplates(),
 		// myController.getModifiableCells());
 	}

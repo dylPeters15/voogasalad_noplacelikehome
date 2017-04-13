@@ -7,6 +7,7 @@ import backend.cell.ModifiableTerrain;
 import backend.cell.Terrain;
 import backend.unit.ModifiableUnit;
 import backend.util.VoogaEntity;
+import controller.Controller;
 import frontend.util.BaseUIManager;
 import frontend.worldview.WorldView;
 import javafx.scene.control.Button;
@@ -22,16 +23,16 @@ public class DetailPane extends BaseUIManager<Region>{
 	String content = "";
 	WorldView worldView;
 	
-//	public DetailPane(WorldView worldView) {
-//		this.worldView = worldView;
-//		pane.setFillWidth(true);
-//		Text title = new Text("Sprite Details");
-//		pane.getChildren().add(title);
-//		spriteInfo = new Label(content);
-//		setLabel();
-//		clearContent();
-//		
-//	}
+	public DetailPane(WorldView worldView) {
+		this.worldView = worldView;
+		pane.setFillWidth(true);
+		Text title = new Text("Sprite Details");
+		pane.getChildren().add(title);
+		spriteInfo = new Label(content);
+		setLabel();
+		clearContent();
+		
+	}
 	
 	public void setContent(VoogaEntity sprite, String spriteType) {
 		clearContent();

@@ -6,6 +6,7 @@ import backend.cell.Terrain;
 import backend.unit.Unit;
 import backend.util.AuthoringGameState;
 import backend.util.VoogaEntity;
+import controller.Controller;
 import frontend.detailpane.DetailPane;
 import frontend.util.BaseUIManager;
 import frontend.worldview.WorldView;
@@ -27,13 +28,15 @@ public class TemplatePane extends BaseUIManager<Region> {
 	Collection<? extends Terrain> terrains;
 	DetailPane detailPane;
 	WorldView worldView;
+	Controller myController;
 	
-	public TemplatePane(DetailPane detailPaneIn, WorldView worldViewIn) {
+	public TemplatePane(DetailPane detailPaneIn, WorldView worldViewIn, Controller controller) {
 
 		units = (Collection<? extends Unit>) getController().getAuthoringGameState().getTemplateByCategory(AuthoringGameState.UNIT).getAll();
 		terrains = (Collection<? extends Terrain>) getController().getAuthoringGameState().getTemplateByCategory(AuthoringGameState.TERRAIN).getAll();
 		detailPane = detailPaneIn;
 		worldView = worldViewIn;
+		myController = controller;
 
 		createCollabsible("unit", units);
 		createCollabsible("terrain", terrains);
@@ -83,11 +86,16 @@ public class TemplatePane extends BaseUIManager<Region> {
 	public void updateUnits(Collection<? extends Unit> unitsIn) {
 		//sprites will (I am fairly certain) contain all available sprites, not just the new ones
 		units = unitsIn;
-		updatePane();
 	}
 
 	public void updateTerrains(Collection<? extends Terrain> terrainsIn) {
 		terrains = terrainsIn;
+	}
+	
+	@Override
+	public void update(){
+		updateTerrains(myController.getTerrainTemplates());
+		updateUnits(myController.getUnitTemplates());
 		updatePane();
 	}
 
