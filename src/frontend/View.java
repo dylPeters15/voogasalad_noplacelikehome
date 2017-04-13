@@ -128,7 +128,7 @@ public class View extends BaseUIManager<Region> {
 				.getTemplateByCategory(AuthoringGameState.TERRAIN).getAll().stream()
 				.filter(voogaEntity -> voogaEntity instanceof ModifiableTerrain).collect(Collectors.toList());
 		tempPane = new TemplatePane(myController.getAuthoringGameState(), detailPane, worldView);
-		tempPane = new TemplatePane(myController.getUnitTemplates());
+		tempPane = new TemplatePane(myController.getUnitTemplate());
 		myController.getModifiableCells();
 		tempPane.getRequests().passTo(this.getRequests());
 		getRequests().addListener(new InvalidationListener() { 

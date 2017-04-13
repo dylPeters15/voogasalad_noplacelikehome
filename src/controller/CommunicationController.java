@@ -10,6 +10,7 @@ import backend.unit.ModifiableUnit;
 import backend.unit.Unit;
 import backend.util.AuthoringGameState;
 import backend.util.GameplayState;
+import backend.util.ReadonlyGameplayState;
 import frontend.View;
 import util.net.Modifier;
 import util.net.ObservableClient;
@@ -22,9 +23,9 @@ import util.net.ObservableClient;
  */
 public class CommunicationController implements Controller {
 	private MyBuffer<AuthoringGameState> gameStateHistory;
-	private AuthoringGameState mGameState;
+	private ReadonlyGameplayState mGameState;
 	private View mView;
-	private ObservableClient<AuthoringGameState> mClient;
+	private ObservableClient<? extends ReadonlyGameplayState> mClient;
 
 	public CommunicationController(AuthoringGameState gameState, View view) {
 		this.mGameState = gameState;
@@ -37,15 +38,10 @@ public class CommunicationController implements Controller {
 		return mGameState.getGrid();
 	}
 	
-	public void updateGameState(AuthoringGameState newGameState)
+	public void updateGameState(ReadonlyGameplayState newGameState)
 	{
 		mGameState = newGameState;
 		mView.update();
-	}
-
-	@Override
-	public Object getUnitTemplates() {
-		return mGameState.getTemplateByCategory("unit");
 	}
 
 	public void setView(View view) {
@@ -61,28 +57,28 @@ public class CommunicationController implements Controller {
 		return mClient;
 	}
 
-	public void setGameState(AuthoringGameState gameState) {
+	public void setGameState(ReadonlyGameplayState gameState) {
 		gameStateHistory.addToBuffer(gameState);
-		this.mGameState = gameState;
+		this.mGameState = (AuthoringGameState) gameState;
 		mView.update();
 	}
 
-	public AuthoringGameState getGameState() {
-		return mGameState;
+	public ReadonlyGameplayState getGameState() {
+		return (AuthoringGameState) mGameState;
 	}
 
-	public AuthoringGameState getMostRecentGameState() {
+	public ReadonlyGameplayState getMostRecentGameState() {
 		return gameStateHistory.getBufferHead();
 	}
 
 	@Override
 	public AuthoringGameState getAuthoringGameState() {
-		return mGameState;
+		return (AuthoringGameState) mGameState;
 	}
 
 	@Override
 	public GameplayState getGameplayState() {
-		return mGameState;
+		return (GameplayState) mGameState;
 	}
 
 	@Override
@@ -92,11 +88,11 @@ public class CommunicationController implements Controller {
 
 	@Override
 	public ModifiableGameBoard getModifiableCells() {
-		return mGameState.getGrid();
+		return (ModifiableGameBoard) mGameState.getGrid();
 	}
 
 	@Override
-	public void sendModifier(Modifier<AuthoringGameState> modifier) {
+	public void sendModifier(Modifier modifier) {
 		mClient.addToOutbox(modifier);	
 	}
 
