@@ -14,7 +14,11 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.util.Duration;
 
+import java.nio.file.Paths;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -30,6 +34,7 @@ public class ChatLogView extends BaseUIManager {
 	private final BorderPane pane;
 	private final TextArea textArea;
 	private final String playerName;
+	private final MediaPlayer mediaPlayer;
 
 	public ChatLogView(String playerName, Controller<GameplayState> controller) {
 		super(controller);
@@ -39,6 +44,7 @@ public class ChatLogView extends BaseUIManager {
 		pane.setCenter(textArea);
 		pane.setBottom(initTextInputBox());
 		this.playerName = playerName;
+		mediaPlayer = new MediaPlayer(new Media(Paths.get("src/resources/steam_message_sound.mp3").toUri().toString()));
 	}
 
 	@Override
@@ -57,6 +63,8 @@ public class ChatLogView extends BaseUIManager {
 	public void update() {
 		textArea.setText(HEADER + getController().getGameState().getPlayerByName(playerName).getChatLog().stream().map(Object::toString).collect(Collectors.joining("\n\n")));
 		textArea.positionCaret(textArea.getText().length());
+		mediaPlayer.seek(Duration.ZERO);
+		mediaPlayer.play();
 	}
 
 	private HBox initTextInputBox() {

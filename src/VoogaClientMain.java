@@ -1,5 +1,6 @@
 import backend.cell.Terrain;
 import backend.grid.GameBoard;
+import backend.grid.GridPattern;
 import backend.grid.ModifiableGameBoard;
 import backend.player.ImmutablePlayer;
 import backend.player.Player;
@@ -32,6 +33,7 @@ import java.util.concurrent.Executors;
  * @author Created by th174 on 4/4/2017.
  */
 public class VoogaClientMain extends Application {
+	
 	public static final int PORT = 10023;
 	//	public static final String HOST = ObservableClient.LOCALHOST;
 	public static final String HOST = "25.4.129.184";
@@ -41,6 +43,8 @@ public class VoogaClientMain extends Application {
 	private ChatLogView chatLogView;
 
 	public static void main(String[] args) throws IOException, InterruptedException {
+		@SuppressWarnings("unused")
+		GridPattern pattern = GridPattern.HEXAGONAL_ADJACENT;
 		launch(args);
 	}
 
