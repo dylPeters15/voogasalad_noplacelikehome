@@ -1,5 +1,6 @@
 import backend.cell.Terrain;
 import backend.grid.GameBoard;
+import backend.grid.GridPattern;
 import backend.grid.ModifiableGameBoard;
 import backend.player.ImmutablePlayer;
 import backend.player.Player;
@@ -34,6 +35,7 @@ import java.util.stream.Collectors;
  * @author Created by th174 on 4/4/2017.
  */
 public class VoogaClientMain extends Application {
+	
 	public static final int PORT = 10023;
 	public static final String HOST = ObservableClient.LOCALHOST;
 	public static final int TIMEOUT = 20;
@@ -42,6 +44,8 @@ public class VoogaClientMain extends Application {
 	private static GameplayState gameplayState;
 
 	public static void main(String[] args) throws IOException, InterruptedException {
+		@SuppressWarnings("unused")
+		GridPattern pattern = GridPattern.HEXAGONAL_ADJACENT;
 		String name = System.getProperty("user.name");
 		XMLSerializer<GameplayState> serializer = new XMLSerializer<>();
 		client = new ObservableClient<>(HOST, PORT, serializer, serializer, Duration.ofSeconds(TIMEOUT));

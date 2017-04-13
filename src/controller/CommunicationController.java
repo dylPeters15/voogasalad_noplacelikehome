@@ -42,6 +42,7 @@ public class CommunicationController<T extends ReadonlyGameplayState> implements
 			throw new RuntimeException(e);
 		}
 		Executors.newSingleThreadExecutor().submit(mClient);
+		mClient.addToOutbox(gameState);
 		this.thingsToUpdate = new ArrayList<Updatable>();
 		if (thingsToUpdate != null){
 			this.thingsToUpdate.addAll(thingsToUpdate);
