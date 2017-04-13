@@ -22,16 +22,16 @@ public class DetailPane extends BaseUIManager<Region>{
 	String content = "";
 	WorldView worldView;
 	
-	public DetailPane(WorldView worldView) {
-		this.worldView = worldView;
-		pane.setFillWidth(true);
-		Text title = new Text("Sprite Details");
-		pane.getChildren().add(title);
-		spriteInfo = new Label(content);
-		setLabel();
-		clearContent();
-		
-	}
+//	public DetailPane(WorldView worldView) {
+//		this.worldView = worldView;
+//		pane.setFillWidth(true);
+//		Text title = new Text("Sprite Details");
+//		pane.getChildren().add(title);
+//		spriteInfo = new Label(content);
+//		setLabel();
+//		clearContent();
+//		
+//	}
 	
 	public void setContent(VoogaEntity sprite, String spriteType) {
 		clearContent();

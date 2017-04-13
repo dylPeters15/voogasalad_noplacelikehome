@@ -15,10 +15,10 @@ public class WorldView extends BaseUIManager<Region> {
 	private GridView myGrid;
 	private BorderPane borderPane;
 
-	public WorldView(GameBoard gameBoard) {
-		initialize(gameBoard);
-		update(gameBoard);
-	}
+//	public WorldView(GameBoard gameBoard) {
+//		initialize(gameBoard);
+//		update(gameBoard);
+//	}
 
 	public void update(GameBoard grid) {
 		myGrid.update(grid);

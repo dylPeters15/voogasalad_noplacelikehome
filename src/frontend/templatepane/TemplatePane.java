@@ -1,5 +1,7 @@
 package frontend.templatepane;
 
+import java.util.Collection;
+
 import backend.cell.Terrain;
 import backend.unit.Unit;
 import backend.util.AuthoringGameState;
@@ -13,8 +15,6 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
-import java.util.Collection;
-
 /**
  * @author Faith Rodriguez
  *         Created 3/29/2017
@@ -27,11 +27,11 @@ public class TemplatePane extends BaseUIManager<Region> {
 	Collection<? extends Terrain> terrains;
 	DetailPane detailPane;
 	WorldView worldView;
+	
+	public TemplatePane(DetailPane detailPaneIn, WorldView worldViewIn) {
 
-	public TemplatePane(AuthoringGameState gameState, DetailPane detailPaneIn, WorldView worldViewIn) {
-
-		units = (Collection<? extends Unit>) gameState.getTemplateByCategory(AuthoringGameState.UNIT).getAll();
-		terrains = (Collection<? extends Terrain>) gameState.getTemplateByCategory(AuthoringGameState.TERRAIN).getAll();
+		units = (Collection<? extends Unit>) getController().getAuthoringGameState().getTemplateByCategory(AuthoringGameState.UNIT).getAll();
+		terrains = (Collection<? extends Terrain>) getController().getAuthoringGameState().getTemplateByCategory(AuthoringGameState.TERRAIN).getAll();
 		detailPane = detailPaneIn;
 		worldView = worldViewIn;
 

@@ -3,6 +3,9 @@
  */
 package frontend;
 
+import java.util.Collection;
+import java.util.stream.Collectors;
+
 import backend.cell.ModifiableTerrain;
 import backend.cell.Terrain;
 import backend.unit.ModifiableUnit;
@@ -14,15 +17,10 @@ import frontend.templatepane.TemplatePane;
 import frontend.toolspane.ToolsPane;
 import frontend.util.BaseUIManager;
 import frontend.worldview.WorldView;
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
-
-import java.util.Collection;
-import java.util.stream.Collectors;
 
 /**
  * @author Stone Mathers, Dylan Peters Created 4/3/2017
@@ -114,35 +112,13 @@ public class View extends BaseUIManager<Region> {
 	 * necessary panes.
 	 */
 	private void initPanesAndListeners() {
-		menuBar = new VoogaMenuBar(myController.getAuthoringGameState());
-		menuBar.getRequests().passTo(this.getRequests());
-		 worldView = new WorldView(myController.getGrid());
-		worldView.getRequests().passTo(this.getRequests());
+		menuBar = new VoogaMenuBar();
+		worldView = new WorldView();
 		toolsPane = new ToolsPane();
-		toolsPane.getRequests().passTo(this.getRequests());
-		detailPane = new DetailPane(worldView);
-		detailPane.getRequests().passTo(this.getRequests());
-		@SuppressWarnings("unchecked")
-		Collection<ModifiableUnit> units = (Collection<ModifiableUnit>) myController.getAuthoringGameState()
-				.getTemplateByCategory(AuthoringGameState.UNIT).getAll().stream()
-				.filter(voogaEntity -> voogaEntity instanceof ModifiableUnit).collect(Collectors.toList());
-		@SuppressWarnings("unchecked")
-		Collection<ModifiableTerrain> terrains = (Collection<ModifiableTerrain>) myController.getAuthoringGameState()
-				.getTemplateByCategory(AuthoringGameState.TERRAIN).getAll().stream()
-				.filter(voogaEntity -> voogaEntity instanceof ModifiableTerrain).collect(Collectors.toList());
-		tempPane = new TemplatePane(myController.getAuthoringGameState(), detailPane, worldView);
+		detailPane = new DetailPane();
+		tempPane = new TemplatePane(detailPane, worldView);
 		// tempPane = new TemplatePane(myController.getUnitTemplates(),
 		// myController.getModifiableCells());
-		tempPane.getRequests().passTo(this.getRequests());
-		getRequests().addListener(new InvalidationListener() { 
-			@Override
-			public void invalidated(Observable observable) {
-				while (!getRequests().isEmpty()) {
-					// myClient.addToOutbox(getRequests().poll());
-					// myController.sendRequest(getRequests().poll());
-				}
-			}
-		});
 	}
 
 	/**

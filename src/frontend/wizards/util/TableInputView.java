@@ -29,8 +29,8 @@ public abstract class TableInputView extends BaseUIManager<Region> {
 					javafx.collections.ListChangeListener.Change<? extends BaseUIManager<? extends Parent>> change) {
 				if (change.next()) {
 					if (change.wasAdded()) {
-						change.getAddedSubList().stream()
-								.forEachOrdered(child -> child.getRequests().passTo(getRequests()));
+//						change.getAddedSubList().stream()
+//								.forEachOrdered(child -> child.getRequests().passTo(getRequests()));
 					}
 				}
 			}
