@@ -5,10 +5,7 @@ import backend.util.GameplayState;
 import controller.Controller;
 import javafx.collections.FXCollections;
 import javafx.geometry.Pos;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
@@ -22,18 +19,18 @@ import java.util.stream.Collectors;
  */
 public class ChatLogView extends BaseUIManager {
 	//TODO ResourceBundlify
+	private static final String HEADER = "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t--------------Welcome to [No place like 127.0.0.1]'s chat room!--------------";
 	private final BorderPane pane;
 	private final TextArea textArea;
 	private final String playerName;
-	private final Controller<GameplayState> controller;
 
 	public ChatLogView(String playerName, Controller<GameplayState> controller) {
+		super(controller);
 		pane = new BorderPane();
 		textArea = initTextArea();
 		pane.setCenter(textArea);
 		pane.setBottom(initTextInputBox());
 		this.playerName = playerName;
-		this.controller = controller;
 	}
 
 	@Override
@@ -42,18 +39,16 @@ public class ChatLogView extends BaseUIManager {
 	}
 
 	private TextArea initTextArea() {
-		TextArea textArea = new TextArea("\n\n\n\n\n\n\n\n\n\n\n\n\n------------TEST GAME STATE CHAT LOG------------");
+		TextArea textArea = new TextArea(HEADER);
 		textArea.setEditable(false);
+		textArea.setWrapText(true);
+		textArea.positionCaret(textArea.getText().length());
 		return textArea;
 	}
 
 	public void update() {
-		textArea.setText(textArea.getText() + "\n" + controller.getGameState()
-				.getPlayerByName(playerName)
-				.getChatLog()
-				.stream()
-				.map(Object::toString)
-				.collect(Collectors.joining("\n")));
+		textArea.setText(HEADER + "\n" + getController().getGameState().getPlayerByName(playerName).getChatLog().stream().map(Object::toString).collect(Collectors.joining("\n")));
+		textArea.positionCaret(textArea.getText().length());
 	}
 
 	private HBox initTextInputBox() {
@@ -68,7 +63,7 @@ public class ChatLogView extends BaseUIManager {
 		chatModeChooser.setOnAction(event -> showOrHideRecipientField(bottomBox, chatModeChooser, label1, messageRecipientField));
 		TextField textContentInputField = new TextField();
 		textContentInputField.setPrefWidth(600);
-		textContentInputField.setOnKeyPressed(evt -> submitMessage(evt, chatModeChooser, textContentInputField));
+		textContentInputField.setOnKeyPressed(evt -> submitMessage(evt, chatModeChooser, textContentInputField, messageRecipientField));
 		bottomBox.getChildren().addAll(chatModeChooser, textContentInputField);
 		return bottomBox;
 	}
@@ -91,9 +86,9 @@ public class ChatLogView extends BaseUIManager {
 		}
 	}
 
-	private void submitMessage(KeyEvent evt, ComboBox<ChatMessage.AccessLevel> chatModeChooser, TextField textContentInputField) {
+	private void submitMessage(KeyEvent evt, ComboBox<ChatMessage.AccessLevel> chatModeChooser, TextField textContentInputField, TextField messageRecipientField) {
 		if (evt.getCode() == KeyCode.ENTER) {
-			controller.sendModifier(chatModeChooser.getValue().getSendMessageModifier(textContentInputField.getText(), playerName));
+			getController().sendModifier(chatModeChooser.getValue().getSendMessageModifier(textContentInputField.getText(), playerName, messageRecipientField.getText()));
 			try {
 				Thread.sleep(300);
 			} catch (InterruptedException e) {
