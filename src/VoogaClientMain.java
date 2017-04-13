@@ -9,7 +9,6 @@ import backend.util.GameplayState;
 import backend.util.ReadonlyGameplayState;
 import backend.util.io.XMLSerializer;
 import controller.Controller;
-import frontend.View;
 import frontend.util.ChatLogView;
 import frontend.util.Updatable;
 import javafx.application.Application;
@@ -95,11 +94,6 @@ public class VoogaClientMain extends Application {
 			@Override
 			public ImmutablePlayer getPlayer(String name) {
 				return null;
-			}
-
-			@Override
-			public void setView(View view) {
-
 			}
 
 			@Override
