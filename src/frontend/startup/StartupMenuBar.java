@@ -168,6 +168,8 @@ public class StartupMenuBar extends VBox {
 				return;
 
 			}
+			
+			//changing something for an example
 		}
 	}
 }
