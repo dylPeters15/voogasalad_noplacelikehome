@@ -61,6 +61,7 @@ public class GridView extends BaseUIManager<Region> {
 			myLayoutManager.layoutCell(cl, SCALE, MIN, MAX);
 			cellViews.add(cl);
 			cellViewObjects.getChildren().add(cl.getObject());
+			getController().addToUpdated(cl);
 		});
 		
 		myScrollPane.setContent(cellViewObjects);

@@ -30,7 +30,6 @@ public class NewGameSelectionStrategy extends BaseSelectionStrategy<AuthoringGam
 		gameState.setDescription(gameNamePage.getDescription());
 		gameState.setImgPath(gameNamePage.getImagePath());
 		gameState.setGrid(boardBuilder.build());
-		System.out.println(boardBuilder.build());
 		return gameState;
 	}
 

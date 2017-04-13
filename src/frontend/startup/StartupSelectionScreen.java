@@ -82,7 +82,6 @@ public class StartupSelectionScreen extends VBox {
 	}
 
 	private void createGame(AuthoringGameState state, boolean editable) {
-		System.out.println(state);
 		Controller control = new CommunicationController(state, null);
 		View view = new View(control);
 		control.addToUpdated(view);
@@ -102,7 +101,6 @@ public class StartupSelectionScreen extends VBox {
 		fileChooser.setTitle("Open Resource File");
 		Window stage = null;
 		File file = fileChooser.showOpenDialog(stage);
-		System.out.println(saveOrLoad);
 
 		try {
 

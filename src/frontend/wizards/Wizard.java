@@ -42,7 +42,6 @@ public class Wizard<T> extends BaseUIManager<Region> {
 	}
 
 	protected void finish() {
-		System.out.println("45");
 		setChanged();
 		notifyObservers(selectionStrategy.finish());
 //		clearChanged();

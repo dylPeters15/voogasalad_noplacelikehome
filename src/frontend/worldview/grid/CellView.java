@@ -12,9 +12,10 @@ import backend.util.GameplayState;
 import backend.util.VoogaEntity;
 import controller.Controller;
 import frontend.util.BaseUIManager;
-import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Polygon;
@@ -28,13 +29,16 @@ public class CellView extends BaseUIManager<Parent>{
 	
 	Cell cellModel;
 	Polygon polygon;
-	Group group;
+	StackPane group;
 	
 	public CellView(Cell cellModel, Controller controller){
 		setController(controller);
 		this.cellModel = cellModel;
 		polygon = new Polygon();
-		group = new Group();
+		group = new StackPane();
+		group.layoutXProperty().bind(polygon.layoutXProperty());
+		group.layoutYProperty().bind(polygon.layoutYProperty());
+		
 		update(cellModel);
 	}
 	
@@ -73,18 +77,29 @@ public class CellView extends BaseUIManager<Parent>{
 		update(cellModel);
 	}
 	
+	public void update(){
+		update(getController().getAuthoringGameState().getGrid().get(cellModel.getLocation()));
+	}
+	
 	public void update(Cell cellModel){
 		this.cellModel = cellModel;
 		group.getChildren().clear();
-		group.getChildren().add(polygon);
 		Image polygonImage = new Image(cellModel.getTerrain().getImgPath());
 		Paint polygonFill = new ImagePattern(polygonImage);
 		polygon.setFill(polygonFill);
 		polygon.setStrokeWidth(10);
+		group.getChildren().add(polygon);
 		cellModel.getOccupants().stream().forEach(unit -> {
-			group.getChildren().add(new UnitView(unit).getObject());
-			System.out.println("added unit");
+			ImageView imageView = new ImageView(new Image("resources/images/skeleton.jpg"));
+			imageView.setFitWidth(50);
+			imageView.setFitHeight(50);
+			imageView.setX(0);
+			imageView.setY(0);
+			imageView.xProperty().bind(polygon.layoutXProperty());
+			imageView.yProperty().bind(polygon.layoutYProperty());
+			group.getChildren().add(imageView);
 		});
+
 	}
 
 	public void setOnCellClick(Consumer<CellView> consumer){
@@ -92,10 +107,8 @@ public class CellView extends BaseUIManager<Parent>{
 	}
 	
 	public void add(VoogaEntity sprite){
-		System.out.println("Creating modifier");
 		Modifier<GameplayState> toSend = game -> {
 			game.getGrid().get(cellModel.getLocation()).arrive((Unit) sprite.copy(), game);
-			System.out.println("Executing modifier");
 			return game;
 		};
 		getController().sendModifier(toSend);

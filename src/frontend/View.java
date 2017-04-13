@@ -71,7 +71,6 @@ public class View extends BaseUIManager<Region> {
 	 */
 	private void initPanesAndListeners() {
 		menuBar = new VoogaMenuBar();
-		System.out.println(getController());
 		worldView = new WorldView(getController());
 		toolsPane = new ToolsPane();
 		detailPane = new DetailPane(worldView);
