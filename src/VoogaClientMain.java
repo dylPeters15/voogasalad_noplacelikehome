@@ -21,9 +21,10 @@ import util.net.ObservableClient;
 
 import java.io.IOException;
 import java.time.Duration;
-import java.util.*;
+import java.util.Collection;
+import java.util.Locale;
+import java.util.ResourceBundle;
 import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
 
 //import frontend.startup.StartupScreen;
 
@@ -51,7 +52,7 @@ public class VoogaClientMain extends Application {
 	@Override
 	public void start(Stage primaryStage) throws IOException {
 		primaryStage.setTitle(ResourceBundle.getBundle("resources/Selections", Locale.getDefault()).getString("Title"));
-		String name = System.getProperty("user.name") + new Random().nextInt(10);
+		String name = System.getProperty("user.name");
 		XMLSerializer<GameplayState> serializer = new XMLSerializer<>();
 		client = new ObservableClient<>(HOST, PORT, serializer, serializer, Duration.ofSeconds(TIMEOUT));
 		client.addListener(state -> {
