@@ -57,12 +57,12 @@ public class CommunicationController implements Controller {
 		updateAll();
 	}
 	
-	public void setClient(ObservableClient client) {
+	public void setClient(ObservableClient<? extends ReadonlyGameplayState> client) {
 		this.mClient = client;
 		updateAll();
 	}
 
-	public ObservableClient<AuthoringGameState> getClient() {
+	public ObservableClient<? extends ReadonlyGameplayState> getClient() {
 		return mClient;
 	}
 
