@@ -34,7 +34,6 @@ public class VoogaClientMain extends Application {
 	public static final int PORT = 10023;
 	public static final String HOST = ObservableClient.LOCALHOST;
 	public static final int TIMEOUT = 20;
-	public static final String CHATBOX = "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n------------TEST GAME STATE CHAT LOG------------\n\n%s\n\n >>  ";
 	private ObservableClient<GameplayState> client;
 	private GameplayState gameplayState;
 	private ChatLogView chatLogView;
@@ -57,7 +56,6 @@ public class VoogaClientMain extends Application {
 		client = new ObservableClient<>(HOST, PORT, serializer, serializer, Duration.ofSeconds(TIMEOUT));
 		client.addListener(state -> {
 			try {
-				System.out.printf(CHATBOX, state.getPlayerByName(name).getChatLog().parallelStream().map(Object::toString).collect(Collectors.joining("\n")));
 				gameplayState = state;
 				chatLogView.update();
 			} catch (NullPointerException e) {
@@ -107,7 +105,6 @@ public class VoogaClientMain extends Application {
 			@Override
 			public void sendModifier(Modifier<GameplayState> modifier) {
 				client.addToOutbox(modifier);
-				System.out.println(name);
 			}
 
 			@Override
@@ -140,7 +137,7 @@ public class VoogaClientMain extends Application {
 
 			}
 		});
-		Scene scene = new Scene(chatLogView.getObject(), 500, 500, new ImagePattern(new Image("resources/images/splash.png")));
+		Scene scene = new Scene(chatLogView.getObject(), 700, 700, new ImagePattern(new Image("resources/images/splash.png")));
 		scene.getStylesheets().add("resources/styles/notheme.css");
 		primaryStage.setScene(scene);
 		primaryStage.setResizable(true);
