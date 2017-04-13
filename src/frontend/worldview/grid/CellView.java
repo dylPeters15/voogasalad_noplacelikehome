@@ -12,10 +12,10 @@ import backend.util.GameplayState;
 import backend.util.VoogaEntity;
 import controller.Controller;
 import frontend.util.BaseUIManager;
+import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Polygon;
@@ -29,15 +29,15 @@ public class CellView extends BaseUIManager<Parent>{
 	
 	Cell cellModel;
 	Polygon polygon;
-	StackPane group;
+	Group group;
 	
 	public CellView(Cell cellModel, Controller controller){
 		setController(controller);
 		this.cellModel = cellModel;
 		polygon = new Polygon();
-		group = new StackPane();
-		group.layoutXProperty().bind(polygon.layoutXProperty());
-		group.layoutYProperty().bind(polygon.layoutYProperty());
+		group = new Group();
+		group.translateXProperty().bind(polygon.translateXProperty());
+		group.translateYProperty().bind(polygon.translateYProperty());
 		
 		update(cellModel);
 	}
@@ -93,10 +93,10 @@ public class CellView extends BaseUIManager<Parent>{
 			ImageView imageView = new ImageView(new Image("resources/images/skeleton.jpg"));
 			imageView.setFitWidth(50);
 			imageView.setFitHeight(50);
-			imageView.setX(0);
-			imageView.setY(0);
-			imageView.xProperty().bind(polygon.layoutXProperty());
-			imageView.yProperty().bind(polygon.layoutYProperty());
+			if (polygon.getPoints().size() >= 2){
+				imageView.setX(polygon.getPoints().get(0));
+				imageView.setY(polygon.getPoints().get(1));
+			}
 			group.getChildren().add(imageView);
 		});
 

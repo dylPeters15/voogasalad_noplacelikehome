@@ -71,7 +71,7 @@ public interface Terrain extends VoogaEntity {
 	ModifiableTerrain copy();
 
 	@Deprecated
-	static Collection<? extends Terrain> getPredefinedTerrain() {
+	public static Collection<? extends Terrain> getPredefinedTerrain() {
 		return getPredefined(Terrain.class);
 	}
 }
