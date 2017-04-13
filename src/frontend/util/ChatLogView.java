@@ -33,7 +33,7 @@ public class ChatLogView extends BaseUIManager {
 
 	public ChatLogView(String playerName, Controller<GameplayState> controller) {
 		super(controller);
-		HEADER = String.format("Joined [No place like 127.0.0.1]'s chat room!\n\n--%s--\n\n", Instant.now().atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG)));
+		HEADER = String.format("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n----Joined [No place like 127.0.0.1]'s chat room!----\n\n---%s----\n\n", Instant.now().atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG)));
 		pane = new BorderPane();
 		textArea = initTextArea();
 		pane.setCenter(textArea);
