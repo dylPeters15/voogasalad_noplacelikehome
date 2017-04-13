@@ -41,7 +41,6 @@ public class StartupSelectionScreen extends VBox {
 		this.stage = stage;
 		this.setUpPane();
 		this.ui = ui;
-		System.out.println(this.getChildren());
 	}
 
 	public void setUpPane() {

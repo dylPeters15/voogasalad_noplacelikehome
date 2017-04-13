@@ -18,7 +18,7 @@ public class ModifiableUnit extends ModifiableVoogaObject<ModifiableUnit> implem
 	public static final Unit SKELETON_WARRIOR = new ModifiableUnit("Skeleton Warrior")
 			.addUnitStats(ModifiableUnitStat.HITPOINTS.setMaxValue(39.0), ModifiableUnitStat.MOVEPOINTS.setMaxValue(5))
 			.setDescription("Once a noble knight in service of his kingdom, the skeleton warrior once again takes up the blade for the lich king.")
-			.setImgPath("spooky1.png")
+			.setImgPath("resources/images/skeleton.jpg")
 			.setMovePattern(GridPattern.HEXAGONAL_ADJACENT)
 			.addActiveAbilities(ActiveAbility.SWORD)
 			.addOffensiveModifiers(InteractionModifier.CHAOTIC);
@@ -26,8 +26,8 @@ public class ModifiableUnit extends ModifiableVoogaObject<ModifiableUnit> implem
 			.addUnitStats(ModifiableUnitStat.HITPOINTS.setMaxValue(34.0))
 			.addUnitStats(ModifiableUnitStat.MOVEPOINTS.setMaxValue(6))
 			.setMovePattern(GridPattern.HEXAGONAL_ADJACENT)
-			.setImgPath("spooky2.png")
-			.setDescription("The skeletal corpse of an impoverished serf left to starve, reanimated by necromancy. Now, bow and arrow in hand, he enacts his revenge on the living.")
+			.setImgPath("resources/images/skeleton.jpg")
+			.setDescription("The skeletal corpse of an impoverished serf left to starve, reanimated by necromancy. Now, bow and arrow in hand, he pursues his revenge on the living.")
 			.addOffensiveModifiers(InteractionModifier.CHAOTIC)
 			.addActiveAbilities(ActiveAbility.BOW);
 

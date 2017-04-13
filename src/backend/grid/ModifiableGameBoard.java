@@ -1,7 +1,6 @@
 package backend.grid;
 
 import backend.cell.Cell;
-import backend.cell.ModifiableCell;
 import backend.util.ModifiableVoogaObject;
 
 import java.util.Collection;
@@ -115,9 +114,7 @@ public class ModifiableGameBoard extends ModifiableVoogaObject<ModifiableGameBoa
 		return IntStream.range(0, rows).boxed()
 				.flatMap(i -> IntStream.range(0, columns).mapToObj(j -> new CoordinateTuple(i, j)))
 				.parallel()
-				.map(e -> e
-						.convertToDimension(templateCell
-								.dimension()))
+				.map(e -> e.convertToDimension(templateCell.dimension()))
 				.collect(Collectors.toMap(e -> e, e -> templateCell.copy().setLocation(e)));
 	}
 

@@ -1,8 +1,17 @@
 package controller;
 
+import java.util.Collection;
+
+import backend.cell.Terrain;
 import backend.grid.GameBoard;
+import backend.grid.ModifiableGameBoard;
+import backend.player.ImmutablePlayer;
+import backend.unit.ModifiableUnit;
+import backend.unit.Unit;
 import backend.util.AuthoringGameState;
+import backend.util.GameplayState;
 import frontend.View;
+import util.net.Modifier;
 import util.net.ObservableClient;
 
 /**
@@ -15,16 +24,23 @@ public class CommunicationController implements Controller {
 	private MyBuffer<AuthoringGameState> gameStateHistory;
 	private AuthoringGameState mGameState;
 	private View mView;
-	private ObservableClient mClient;
+	private ObservableClient<AuthoringGameState> mClient;
 
 	public CommunicationController(AuthoringGameState gameState, View view) {
 		this.mGameState = gameState;
 		this.mView = view;
+		mClient.addListener(e -> updateGameState(e));
 	}
 
 	@Override
 	public GameBoard getGrid() {
 		return mGameState.getGrid();
+	}
+	
+	public void updateGameState(AuthoringGameState newGameState)
+	{
+		mGameState = newGameState;
+		mView.update();
 	}
 
 	@Override
@@ -57,6 +73,53 @@ public class CommunicationController implements Controller {
 
 	public AuthoringGameState getMostRecentGameState() {
 		return gameStateHistory.getBufferHead();
+	}
+
+	@Override
+	public AuthoringGameState getAuthoringGameState() {
+		return mGameState;
+	}
+
+	@Override
+	public GameplayState getGameplayState() {
+		return mGameState;
+	}
+
+	@Override
+	public ImmutablePlayer getPlayer(String name) {
+		return mGameState.getPlayerByName(name);
+	}
+
+	@Override
+	public ModifiableGameBoard getModifiableCells() {
+		return mGameState.getGrid();
+	}
+
+	@Override
+	public void sendModifier(Modifier<AuthoringGameState> modifier) {
+		mClient.addToOutbox(modifier);	
+	}
+
+	@Override
+	public Collection<? extends Unit> getUnits() {
+		return mGameState.getGrid().getUnits();
+	}
+
+	@Override
+	public Collection<? extends Terrain> getTerrains() {
+		//Todo
+		return null;
+	}
+
+	@Override
+	public Collection<? extends Unit> getUnitTemplate() {
+		return ModifiableUnit.getPredefinedUnits();
+	}
+
+	@Override
+	public Collection<? extends Terrain> getTerrainTemplate() {
+		//return ModifiableUnit.getPredefinedTerrain(); TOTO
+		return null;
 	}
 
 }

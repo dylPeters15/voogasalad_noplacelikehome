@@ -20,8 +20,8 @@ public class ObservableQueue<E> implements Queue<E>, Observable {
 	}
 
 	public ObservableQueue(Collection<? extends E> elements) {
-		this.elements = new ArrayList<E>(elements);
-		listeners = new ArrayList<InvalidationListener>();
+		this.elements = new ArrayList<>(elements);
+		listeners = new ArrayList<>();
 	}
 
 	@Override
