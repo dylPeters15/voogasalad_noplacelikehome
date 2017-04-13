@@ -1,0 +1,6 @@
+<backend.unit.properties.InteractionModifier>
+  <name>Assassin</name>
+  <description>Attacks do extra damage to isolated units with no nearby allies</description>
+  <imgPath>Zabaniya.png</imgPath>
+  <modifier class="null"/>
+</backend.unit.properties.InteractionModifier>

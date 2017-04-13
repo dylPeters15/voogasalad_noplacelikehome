@@ -1,0 +1,18 @@
+<HitPoints>1</HitPoints>
+<MovePoints>0</MovePoints>
+<MovePattern>
+	<!--
+      There are no entries in the move pattern map because units do not move in tic tac toe.
+      -->
+</MovePattern>
+<Abilities>
+	<!--
+      There are no entries in the abilities collection because units do not have abilities. They are passive.
+      -->
+</Abilities>
+<Faction>
+	<!--
+      There are no entries in the faction by default. This will be modified during game play as the user creates new Xs and Os.
+      -->
+</Faction>
+<Image>X.png</Image>

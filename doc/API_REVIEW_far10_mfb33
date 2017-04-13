@@ -1,0 +1,35 @@
+NOTE: I was unable to use MarkDown Format in Eclipse, as an error kept on occurring that caused the file to have a NullPointerException when I tried to open it.
+
+Part 1
+1.  What about your API/design is intended to be flexible?
+One aspect of our design that is intended to be flexible is that we use a hierarchy for the components of the frontend that can be added to a grid.  The abstract class Sprite, which is extended by Unit and Terrain, defines the methods that these two components have in common, while leaving the other methods abstract.
+
+2.  How is your API/design encapsulating your implementation decisions?
+We encapsulated our design decisions by keeping the back end and front end completely separated so that extensions in one will not affect the other.
+
+3.  How is your part linked to other parts of the project?
+I am working on specific panes within the frontend that are implemented within the View class, but function on their own.  Their only connection is with this view class.
+
+4.  What exceptions (error cases) might occur in your part and how will you handle them (or not, by throwing)?
+One error that might occur in my part could be from a user entering an input that is not expected.  I will not handle this and will instead throw the user input to the parser that has already been created in another part of my project.
+
+5.  Why do you think your API/design is good (also define what your measure of good is)?
+My measure of good is that a design is flexible and extendible.  I think that our design is both.  This is because our approach to the project is to build a basic functioning version of a game and add extensions afterwards.  Because of this, we had to create a design that will allow us to improve upon our game without having to redo completed classes.
+
+
+Part 2
+1.  What feature/design problem are you most excited to work on?
+I am most excited to work with CSS formatting on my sections of the UI.  This is because I learned html formatting last project but have not attacked CSS yet.  However, I feel like this is an important skill to leave this class with.
+
+2.  What feature/design problem are you most worried about working on?
+I am most worried about effectively implementing dragging as a way of moving sprites onto the game grid.  The Java documentation for this seems fairly complicated and I am unsure as to how I should implement this in a way such that an entire pane can be dragged instead of just an image of a sprite within the pane.
+
+3.  What major feature do you plan to implement this weekend?
+I plan on implementing dragging and the info pane this weekend.
+
+4.  Discuss the use cases/issues created for your pieces: are they descriptive, appropriate, and reasonably sized?
+We created only two use cases for my pieces specifically, one for when a sprite is clicked and one for when a sprite is dragged.  They are effective as they laid out the class flow that needs to occur in order to implement this feature.  TemplatePane -> Sprite -> View
+
+
+5.  Do you have use cases for errors that might occur?
+No, I do not as I am unsure as to how to create use cases for something in the front end.  I believe that for many of the UI aspects, it is easier to test them by just interacting with the elements that have been implemented.  However, one test case that I do want to make is one that checks that a sprite is stored within the cell that it is dragged into.
