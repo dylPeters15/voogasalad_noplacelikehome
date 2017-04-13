@@ -43,6 +43,10 @@ public class TemplatePane extends BaseUIManager<Region> {
 
 	}
 
+	public TemplatePane(Collection<? extends Unit> unitTemplate) {
+		// TODO Auto-generated constructor stub
+	}
+
 	private void createCollabsible(String label, Collection<? extends VoogaEntity> sprites) {
 		TitledPane spritePane = new TitledPane();
 		spritePane.setText(label);

@@ -10,6 +10,7 @@ import backend.unit.Unit;
 import backend.util.AuthoringGameState;
 import backend.util.GameplayState;
 import frontend.util.Updatable;
+import backend.util.ReadonlyGameplayState;
 import util.net.Modifier;
 
 /**
@@ -19,7 +20,7 @@ public interface Controller {
 
 	GameBoard getGrid();
 	
-	AuthoringGameState getGameState();
+	ReadonlyGameplayState getGameState();
 	
 	AuthoringGameState getAuthoringGameState();
 
@@ -27,11 +28,11 @@ public interface Controller {
 
 	ImmutablePlayer getPlayer(String name);
 
-	void setGameState(AuthoringGameState newGameState);
+	void setGameState(ReadonlyGameplayState newGameState);
 	
 	ModifiableGameBoard getModifiableCells();
 	
-	void sendModifier(Modifier<AuthoringGameState> modifier);
+	void sendModifier(Modifier<? extends ReadonlyGameplayState> modifier);
 
 	Collection<? extends Unit> getUnits();
 
