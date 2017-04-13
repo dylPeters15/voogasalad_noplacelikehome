@@ -2,6 +2,7 @@ package backend.util;
 
 import backend.cell.ModifiableCell;
 import backend.cell.ModifiableTerrain;
+import backend.cell.Terrain;
 import backend.game_engine.ResultQuadPredicate;
 import backend.grid.BoundsHandler;
 import backend.grid.GameBoard;
@@ -31,7 +32,7 @@ public class AuthoringGameState extends GameplayState implements VoogaEntity {
 		super(name, null, "", "");
 		templates = new HashMap<>();
 		templates.put(GAMEBOARD, new ModifiableVoogaCollection<>("GameBoards", "", "", ModifiableGameBoard.getPredefinedGameBoards()));
-		templates.put(TERRAIN, new ModifiableVoogaCollection<>("Terrain", "", "", ModifiableTerrain.getPredefinedTerrain()));
+		templates.put(TERRAIN, new ModifiableVoogaCollection<>("Terrain", "", "", Terrain.getPredefinedTerrain()));
 		templates.put(UNIT, new ModifiableVoogaCollection<>("Units", "", "", ModifiableUnit.getPredefinedUnits()));
 		templates.put(UNIT_TRIGGERED_EFFECT, new ModifiableVoogaCollection<>("Unit Passive/Triggered Abilities", "", "", ModifiableTriggeredEffect.getPredefinedUnitPassives()));
 		templates.put(CELL_TRIGGERED_EFFECT, new ModifiableVoogaCollection<>("Cell Passive/Triggered Abilities", "", "", ModifiableTriggeredEffect.getPredefinedCellPassives()));

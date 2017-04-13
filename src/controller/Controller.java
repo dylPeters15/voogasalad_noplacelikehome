@@ -10,32 +10,31 @@ import backend.unit.Unit;
 import backend.util.AuthoringGameState;
 import frontend.View;
 import backend.util.GameplayState;
+import backend.util.ReadonlyGameplayState;
 import util.net.Modifier;
 
 /**
  * @author Created by ncp14 on 4/3/2017.
  */
-public interface Controller {
+public interface Controller<T extends ReadonlyGameplayState> {
 
 	GameBoard getGrid();
 	
-	AuthoringGameState getGameState();
+	ReadonlyGameplayState getReadOnlyGameState();
 	
 	AuthoringGameState getAuthoringGameState();
 
-	GameplayState getGameplayState();
+	T getGameState();
 
 	ImmutablePlayer getPlayer(String name);
 
 	void setView(View view);
 
-	Object getUnitTemplates();
-
-	void setGameState(AuthoringGameState newGameState);
+	void setGameState(T newGameState);
 	
 	ModifiableGameBoard getModifiableCells();
 	
-	void sendModifier(Modifier<AuthoringGameState> modifier);
+	void sendModifier(Modifier<T> modifier);
 
 	Collection<? extends Unit> getUnits();
 

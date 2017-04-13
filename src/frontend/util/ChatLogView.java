@@ -1,6 +1,7 @@
 package frontend.util;
 
 import backend.player.ChatMessage;
+import backend.util.GameplayState;
 import controller.Controller;
 import javafx.collections.FXCollections;
 import javafx.geometry.Pos;
@@ -24,9 +25,9 @@ public class ChatLogView extends BaseUIManager {
 	private final BorderPane pane;
 	private final TextArea textArea;
 	private final String playerName;
-	private final Controller controller;
+	private final Controller<GameplayState> controller;
 
-	public ChatLogView(String playerName, Controller controller) {
+	public ChatLogView(String playerName, Controller<GameplayState> controller) {
 		pane = new BorderPane();
 		textArea = initTextArea();
 		pane.setCenter(textArea);
@@ -46,8 +47,13 @@ public class ChatLogView extends BaseUIManager {
 		return textArea;
 	}
 
-	public void update(Controller controller) {
-		textArea.setText(textArea.getText() + "\n" + controller.getGameplayState().getPlayerByName(playerName).getChatLog().stream().map(Object::toString).collect(Collectors.joining("\n")));
+	public void update() {
+		textArea.setText(textArea.getText() + "\n" + controller.getGameState()
+				.getPlayerByName(playerName)
+				.getChatLog()
+				.stream()
+				.map(Object::toString)
+				.collect(Collectors.joining("\n")));
 	}
 
 	private HBox initTextInputBox() {
@@ -88,6 +94,12 @@ public class ChatLogView extends BaseUIManager {
 	private void submitMessage(KeyEvent evt, ComboBox<ChatMessage.AccessLevel> chatModeChooser, TextField textContentInputField) {
 		if (evt.getCode() == KeyCode.ENTER) {
 			controller.sendModifier(chatModeChooser.getValue().getSendMessageModifier(textContentInputField.getText(), playerName));
+			try {
+				Thread.sleep(300);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			update();
 			textContentInputField.clear();
 		}
 	}

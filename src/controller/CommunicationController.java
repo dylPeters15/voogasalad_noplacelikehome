@@ -10,6 +10,7 @@ import backend.unit.ModifiableUnit;
 import backend.unit.Unit;
 import backend.util.AuthoringGameState;
 import backend.util.GameplayState;
+import backend.util.ReadonlyGameplayState;
 import frontend.View;
 import util.net.Modifier;
 import util.net.ObservableClient;
@@ -20,16 +21,16 @@ import util.net.ObservableClient;
  *         The primary purpose of my controller is to hide implementation of backend structure, specifically how
  *         our networking works and how the GameState is structured.
  */
-public class CommunicationController implements Controller {
+public class CommunicationController<T extends ReadonlyGameplayState> implements Controller<T> {
 	private MyBuffer<AuthoringGameState> gameStateHistory;
-	private AuthoringGameState mGameState;
+	private T mGameState;
 	private View mView;
-	private ObservableClient<AuthoringGameState> mClient;
+	private ObservableClient<T> mClient;
 
-	public CommunicationController(AuthoringGameState gameState, View view) {
+	public CommunicationController(T gameState, View view) {
 		this.mGameState = gameState;
 		this.mView = view;
-		mClient.addListener(e -> updateGameState(e));
+		mClient.addListener(this::updateGameState);
 	}
 
 	@Override
@@ -37,22 +38,17 @@ public class CommunicationController implements Controller {
 		return mGameState.getGrid();
 	}
 	
-	public void updateGameState(AuthoringGameState newGameState)
+	public void updateGameState(T newGameState)
 	{
 		mGameState = newGameState;
 		mView.update();
-	}
-
-	@Override
-	public Object getUnitTemplates() {
-		return mGameState.getTemplateByCategory("unit");
 	}
 
 	public void setView(View view) {
 		this.mView = view;
 	}
 
-	public void setClient(ObservableClient client) {
+	public void setClient(ObservableClient<T> client) {
 		this.mClient = client;
 		mView.update();
 	}
@@ -61,27 +57,28 @@ public class CommunicationController implements Controller {
 		return mClient;
 	}
 
-	public void setGameState(AuthoringGameState gameState) {
+	public void setGameState(T gameState) {
 		gameStateHistory.addToBuffer(gameState);
 		this.mGameState = gameState;
 		mView.update();
 	}
 
-	public AuthoringGameState getGameState() {
+	@Override
+	public ReadonlyGameplayState getReadOnlyGameState() {
 		return mGameState;
 	}
 
-	public AuthoringGameState getMostRecentGameState() {
+	public ReadonlyGameplayState getMostRecentGameState() {
 		return gameStateHistory.getBufferHead();
 	}
 
 	@Override
 	public AuthoringGameState getAuthoringGameState() {
-		return mGameState;
+		return (AuthoringGameState) mGameState;
 	}
 
 	@Override
-	public GameplayState getGameplayState() {
+	public T getGameState() {
 		return mGameState;
 	}
 
@@ -92,12 +89,12 @@ public class CommunicationController implements Controller {
 
 	@Override
 	public ModifiableGameBoard getModifiableCells() {
-		return mGameState.getGrid();
+		return (ModifiableGameBoard) mGameState.getGrid();
 	}
 
 	@Override
-	public void sendModifier(Modifier<AuthoringGameState> modifier) {
-		mClient.addToOutbox(modifier);	
+	public void sendModifier(Modifier<T> modifier) {
+		mClient.addToOutbox(modifier);
 	}
 
 	@Override
