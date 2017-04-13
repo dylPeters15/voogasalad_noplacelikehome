@@ -99,7 +99,6 @@ public class ChatLogView extends BaseUIManager {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			update();
 			textContentInputField.clear();
 		}
 	}

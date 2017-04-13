@@ -36,7 +36,6 @@ public class CommunicationController<T extends ReadonlyGameplayState> implements
 	public CommunicationController(T gameState, View view, Collection<Updatable> thingsToUpdate) {
 		this.mGameState = gameState;
 		this.mView = view;
-		mClient.addListener(this::updateGameState);
 		this.thingsToUpdate = new ArrayList<Updatable>();
 		if (thingsToUpdate != null){
 			this.thingsToUpdate.addAll(thingsToUpdate);

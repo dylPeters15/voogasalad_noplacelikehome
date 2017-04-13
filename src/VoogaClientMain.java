@@ -40,6 +40,7 @@ public class VoogaClientMain extends Application {
 	public static final String CHATBOX = "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n------------TEST GAME STATE CHAT LOG------------\n\n%s\n\n >>  ";
 	private static ObservableClient<GameplayState> client;
 	private static GameplayState gameplayState;
+	private static ChatLogView chatLogView;
 
 	public static void main(String[] args) throws IOException, InterruptedException {
 		String name = System.getProperty("user.name");
@@ -49,7 +50,9 @@ public class VoogaClientMain extends Application {
 			try {
 				System.out.printf(CHATBOX, state.getPlayerByName(name).getChatLog().parallelStream().map(Object::toString).collect(Collectors.joining("\n")));
 				gameplayState = state;
+				chatLogView.update();
 			} catch (NullPointerException e) {
+				e.printStackTrace();
 			}
 		});
 		Executors.newSingleThreadExecutor().submit(client);
