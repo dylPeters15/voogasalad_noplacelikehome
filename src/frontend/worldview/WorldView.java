@@ -3,7 +3,7 @@ package frontend.worldview;
 import java.util.function.Consumer;
 
 import backend.grid.GameBoard;
-import backend.util.VoogaEntity;
+import controller.Controller;
 import frontend.util.BaseUIManager;
 import frontend.worldview.grid.CellView;
 import frontend.worldview.grid.GridView;
@@ -15,13 +15,15 @@ public class WorldView extends BaseUIManager<Region> {
 	private GridView myGrid;
 	private BorderPane borderPane;
 
-//	public WorldView(GameBoard gameBoard) {
-//		initialize(gameBoard);
-//		update(gameBoard);
-//	}
+	public WorldView(Controller controller) {
+		setController(controller);
+		initialize();
+		update();
+	}
 
-	public void update(GameBoard grid) {
-		myGrid.update(grid);
+	@Override
+	public void update() {
+		myGrid.update();
 	}
 
 	@Override
@@ -33,9 +35,9 @@ public class WorldView extends BaseUIManager<Region> {
 		myGrid.setOnCellClick(consumer);
 	}
 
-	private void initialize(GameBoard gameBoard) {
+	private void initialize() {
 		borderPane = new BorderPane();
-		myGrid = new GridView(gameBoard);
+		myGrid = new GridView(getController());
 		borderPane.setCenter(myGrid.getObject());
 		// borderPane.setOnDragDetected(event -> System.out.println("WorldView
 		// drag drop" + event));

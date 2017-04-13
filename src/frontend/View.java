@@ -3,12 +3,6 @@
  */
 package frontend;
 
-import java.util.Collection;
-import java.util.stream.Collectors;
-
-import backend.cell.ModifiableTerrain;
-import backend.cell.Terrain;
-import backend.unit.ModifiableUnit;
 import backend.util.AuthoringGameState;
 import controller.Controller;
 import frontend.detailpane.DetailPane;
@@ -77,7 +71,7 @@ public class View extends BaseUIManager<Region> {
 	 */
 	private void initPanesAndListeners() {
 		menuBar = new VoogaMenuBar();
-		worldView = new WorldView();
+		worldView = new WorldView(getController());
 		toolsPane = new ToolsPane();
 		detailPane = new DetailPane(worldView);
 		tempPane = new TemplatePane(detailPane, worldView, getController());
