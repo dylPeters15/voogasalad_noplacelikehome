@@ -1,7 +1,6 @@
 package frontend.util;
 
 import backend.player.ChatMessage;
-import backend.util.GameplayState;
 import controller.Controller;
 import javafx.collections.FXCollections;
 import javafx.geometry.Pos;
@@ -36,7 +35,7 @@ public class ChatLogView extends BaseUIManager {
 	private final String playerName;
 	private final MediaPlayer mediaPlayer;
 
-	public ChatLogView(String playerName, Controller<GameplayState> controller) {
+	public ChatLogView(String playerName, Controller controller) {
 		super(controller);
 		HEADER = String.format("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n----Joined [No place like 127.0.0.1]'s chat room!----\n\n---%s----\n\n", Instant.now().atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG)));
 		pane = new BorderPane();

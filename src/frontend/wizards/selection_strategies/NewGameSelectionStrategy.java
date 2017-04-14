@@ -25,7 +25,7 @@ public class NewGameSelectionStrategy extends BaseSelectionStrategy<AuthoringGam
 		boardBuilder.setRows(gridInstantiationPage.getRows());
 		boardBuilder.setColumns(gridInstantiationPage.getCols());
 		boardBuilder.setTemplateCell(gridInstantiationPage.getTemplateCell());
-		boardBuilder.setBoundsHandler(BoundsHandler.FINITE_BOUNDS);
+		boardBuilder.setBoundsHandler(BoundsHandler.INFINITE_BOUNDS);
 		AuthoringGameState gameState = new AuthoringGameState(gameNamePage.getName());
 		gameState.setDescription(gameNamePage.getDescription());
 		gameState.setImgPath(gameNamePage.getImagePath());

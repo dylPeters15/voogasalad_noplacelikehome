@@ -143,4 +143,16 @@ public class ModifiableGameBoard extends ModifiableVoogaObject<ModifiableGameBoa
 	public static Collection<? extends GameBoard> getPredefinedGameBoards() {
 		return getPredefined(ModifiableGameBoard.class);
 	}
+
+	@Override
+	public String toString() {
+		String s = "";
+		for (int i = 0; i < columns; i++) {
+			for (int j = 0; j < rows; j++) {
+				s += String.format("%-10s", get(new CoordinateTuple(i, j).convertToRectangular()).getTerrain().toString());
+			}
+			s += "\n";
+		}
+		return s;
+	}
 }

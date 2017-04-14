@@ -7,16 +7,14 @@ import backend.player.ImmutablePlayer;
 import backend.unit.ModifiableUnit;
 import backend.unit.Unit;
 import backend.util.AuthoringGameState;
+import backend.util.GameplayState;
 import backend.util.ReadonlyGameplayState;
-import backend.util.io.XMLSerializer;
 import frontend.util.Updatable;
 import util.net.Modifier;
 import util.net.ObservableClient;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.concurrent.Executors;
 
 /**
  * @author Created by ncp14
@@ -24,13 +22,12 @@ import java.util.concurrent.Executors;
  *         The primary purpose of my controller is to hide implementation of backend structure, specifically how
  *         our networking works and how the GameState is structured.
  */
-public class CommunicationController<T extends ReadonlyGameplayState> implements Controller<T> {
-	private MyBuffer<AuthoringGameState> gameStateHistory;
-	private T mGameState;
-	private ObservableClient<T> mClient;
+public class CommunicationController implements Controller {
+	private ReadonlyGameplayState mGameState;
+	private ObservableClient<? extends ReadonlyGameplayState> mClient;
 	private Collection<Updatable> thingsToUpdate;
 
-	public CommunicationController(T gameState, Collection<Updatable> thingsToUpdate) {
+	public <U extends ReadonlyGameplayState> CommunicationController(U gameState, Collection<Updatable> thingsToUpdate) {
 		this.mGameState = gameState;
 //		try {
 //			mClient = new ObservableClient<T>("127.0.0.1", 10023, new XMLSerializer<T>(), new XMLSerializer<T>(), Duration.ofSeconds(60));
@@ -52,12 +49,12 @@ public class CommunicationController<T extends ReadonlyGameplayState> implements
 		return mGameState.getGrid();
 	}
 
-	public void updateGameState(T newGameState) {
+	public <U extends ReadonlyGameplayState> void updateGameState(U newGameState) {
 		mGameState = newGameState;
 		updateAll();
 	}
 
-	public void setClient(ObservableClient<T> client) {
+	public void setClient(ObservableClient<? extends ReadonlyGameplayState> client) {
 		this.mClient = client;
 		updateAll();
 	}
@@ -66,7 +63,8 @@ public class CommunicationController<T extends ReadonlyGameplayState> implements
 		return mClient;
 	}
 
-	public void setGameState(T gameState) {
+	@Override
+	public <U extends ReadonlyGameplayState> void setGameState(U gameState) {
 		this.mGameState = gameState;
 		updateAll();
 	}
@@ -76,18 +74,14 @@ public class CommunicationController<T extends ReadonlyGameplayState> implements
 		return mGameState;
 	}
 
-	public ReadonlyGameplayState getMostRecentGameState() {
-		return gameStateHistory.getBufferHead();
-	}
-
 	@Override
 	public AuthoringGameState getAuthoringGameState() {
 		return (AuthoringGameState) mGameState;
 	}
 
 	@Override
-	public T getGameState() {
-		return mGameState;
+	public GameplayState getGameState() {
+		return (GameplayState) mGameState;
 	}
 
 	@Override
@@ -101,9 +95,10 @@ public class CommunicationController<T extends ReadonlyGameplayState> implements
 	}
 
 	@Override
-	public void sendModifier(Modifier<T> modifier) {
+	public <U extends ReadonlyGameplayState> void sendModifier(Modifier<U> modifier) {
 //		mClient.addToOutbox(modifier);
-		mGameState = modifier.modify(mGameState);
+		//lol this is so unsafe
+		mGameState = modifier.modify((U) mGameState);
 		updateAll();
 	}
 
@@ -128,12 +123,14 @@ public class CommunicationController<T extends ReadonlyGameplayState> implements
 		return Terrain.getPredefinedTerrain();
 	}
 
+	@Override
 	public void addToUpdated(Updatable updatable) {
 		if (!thingsToUpdate.contains(updatable)) {
 			thingsToUpdate.add(updatable);
 		}
 	}
 
+	@Override
 	public void removeFromUpdated(Updatable updatable) {
 		if (thingsToUpdate.contains(updatable)) {
 			thingsToUpdate.remove(updatable);
@@ -141,7 +138,7 @@ public class CommunicationController<T extends ReadonlyGameplayState> implements
 	}
 
 	private void updateAll() {
-		thingsToUpdate.stream().forEach(updatable -> updatable.update());
+		thingsToUpdate.forEach(Updatable::update);
 	}
 
 }

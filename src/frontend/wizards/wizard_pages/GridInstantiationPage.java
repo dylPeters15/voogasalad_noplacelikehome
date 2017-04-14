@@ -87,6 +87,7 @@ public class GridInstantiationPage extends WizardPage {
 	}
 
 	private void checkCanNext() {
+		//TODO: Small logical error when you select terrain img first
 		canNextWritable().setValue(!cellShapeChooser.getValue().isEmpty() && !cellShapeChooser.getValue().isEmpty()
 				&& rows.getValue() != 0 && cols.getValue() != 0);
 	}

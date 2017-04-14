@@ -12,33 +12,33 @@ import java.util.stream.IntStream;
  */
 public class BoundsHandler extends ImmutableVoogaObject<BoundsHandler> {
 	//TODO ResourceBundlify this
-	public static final BoundsHandler INFINITE_BOUNDS = new BoundsHandler("Infinite Bounds", (input, grid) -> input, "Allows grid to expand to accommodate out of bounds coordinates.");
-	public static final BoundsHandler FINITE_BOUNDS = new BoundsHandler("Finite Bounds",
+	public transient static final BoundsHandler INFINITE_BOUNDS = new BoundsHandler("Infinite Bounds", (input, grid) -> input, "Allows grid to expand to accommodate out of bounds coordinates.");
+	public transient static final BoundsHandler FINITE_BOUNDS = new BoundsHandler("Finite Bounds",
 			(input, grid) -> fitToBound(input, grid.getBounds()),
 			"Converts out of bounds coordinates to the closest inbounds coordinate on the grid.");
-	public static final BoundsHandler SQUARE_FINITE_BOUNDS = new BoundsHandler("Square Finite Bounds",
+	public transient static final BoundsHandler SQUARE_FINITE_BOUNDS = new BoundsHandler("Square Finite Bounds",
 			(input, grid) -> fitToBound(input.convertToRectangular(), grid.getRectangularBounds()).convertToDimension(input.dimension()), "Converts out of bounds coordinates to the closest inbounds coordinate on a square grid.");
-	public static final BoundsHandler TOROIDAL_BOUNDS = new BoundsHandler("Toroidal Bounds",
+	public transient static final BoundsHandler TOROIDAL_BOUNDS = new BoundsHandler("Toroidal Bounds",
 			(input, grid) -> wrapToBound(input, grid.getBounds()),
 			"Wraps out of bounds coordinates to the opposite side of the grid",
 			"Torus.png");
-	public static final BoundsHandler SQUARE_TOROIDAL_BOUNDS = new BoundsHandler("Square Toroidal Bounds",
+	public transient static final BoundsHandler SQUARE_TOROIDAL_BOUNDS = new BoundsHandler("Square Toroidal Bounds",
 			(input, grid) -> wrapToBound(input.convertToRectangular(), grid.getRectangularBounds()).convertToDimension(input.dimension()),
 			"Wraps out of bounds coordinates to the opposite side of a square grid.",
 			"Torus.png");
 
-	private final BiFunction<CoordinateTuple, ModifiableGameBoard, CoordinateTuple> boundsGetter;
+	private final BiFunction<CoordinateTuple, GameBoard, CoordinateTuple> boundsGetter;
 
-	public BoundsHandler(String name, BiFunction<CoordinateTuple, ModifiableGameBoard, CoordinateTuple> boundsGetter, String description) {
+	public BoundsHandler(String name, BiFunction<CoordinateTuple, GameBoard, CoordinateTuple> boundsGetter, String description) {
 		this(name, boundsGetter, description, "");
 	}
 
-	public BoundsHandler(String name, BiFunction<CoordinateTuple, ModifiableGameBoard, CoordinateTuple> boundsGetter, String description, String imgPath) {
+	public BoundsHandler(String name, BiFunction<CoordinateTuple, GameBoard, CoordinateTuple> boundsGetter, String description, String imgPath) {
 		super(name, description, imgPath);
 		this.boundsGetter = boundsGetter;
 	}
 
-	public CoordinateTuple getMappedCoordinate(ModifiableGameBoard grid, CoordinateTuple input) {
+	public CoordinateTuple getMappedCoordinate(GameBoard grid, CoordinateTuple input) {
 		return boundsGetter.apply(input, grid);
 	}
 

@@ -33,7 +33,7 @@ import java.util.concurrent.Executors;
  * @author Created by th174 on 4/4/2017.
  */
 public class VoogaClientMain extends Application {
-	
+
 	public static final int PORT = 10023;
 	//	public static final String HOST = ObservableClient.LOCALHOST;
 	public static final String HOST = "25.4.129.184";
@@ -51,7 +51,7 @@ public class VoogaClientMain extends Application {
 	@Override
 	public void start(Stage primaryStage) throws IOException {
 		primaryStage.setTitle(ResourceBundle.getBundle("resources/Selections", Locale.getDefault()).getString("Title"));
-		String name = System.getProperty("user.name");
+		String name = "Timmy";
 		XMLSerializer<GameplayState> serializer = new XMLSerializer<>();
 		client = new ObservableClient<>(HOST, PORT, serializer, serializer, Duration.ofSeconds(TIMEOUT));
 		client.addListener(state -> {
@@ -66,7 +66,7 @@ public class VoogaClientMain extends Application {
 			state.addPlayer(new Player(name, "It's me!", ""));
 			return state;
 		});
-		chatLogView = new ChatLogView(name, new Controller<GameplayState>() {
+		chatLogView = new ChatLogView(name, new Controller() {
 			@Override
 			public GameBoard getGrid() {
 				return null;
@@ -93,7 +93,7 @@ public class VoogaClientMain extends Application {
 			}
 
 			@Override
-			public void setGameState(GameplayState newGameState) {
+			public void setGameState(ReadonlyGameplayState newGameState) {
 
 			}
 
@@ -103,8 +103,8 @@ public class VoogaClientMain extends Application {
 			}
 
 			@Override
-			public void sendModifier(Modifier<GameplayState> modifier) {
-				client.addToOutbox(modifier);
+			public <U extends ReadonlyGameplayState> void sendModifier(Modifier<U> modifier) {
+				client.addToOutbox((GameplayState) modifier);
 			}
 
 			@Override

@@ -3,11 +3,8 @@
  */
 package frontend.worldview.grid;
 
-import java.util.function.Consumer;
-
 import backend.cell.Cell;
 import backend.grid.CoordinateTuple;
-import backend.unit.Unit;
 import backend.util.GameplayState;
 import backend.util.VoogaEntity;
 import controller.Controller;
@@ -21,67 +18,69 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Polygon;
 import util.net.Modifier;
 
+import java.util.function.Consumer;
+
 /**
  * @author Stone Mathers
- * Created 3/29/2017
+ *         Created 3/29/2017
  */
-public class CellView extends BaseUIManager<Parent>{
-	
+public class CellView extends BaseUIManager<Parent> {
+
 	Cell cellModel;
 	Polygon polygon;
 	Group group;
-	
-	public CellView(Cell cellModel, Controller controller){
+
+	public CellView(Cell cellModel, Controller controller) {
 		setController(controller);
 		this.cellModel = cellModel;
 		polygon = new Polygon();
 		group = new Group();
 		group.translateXProperty().bind(polygon.translateXProperty());
 		group.translateYProperty().bind(polygon.translateYProperty());
-		
+
 		update(cellModel);
 	}
-	
+
 	/**
 	 * @return DisplayCoordinates at which the CellView is displayed.
 	 */
-	public CoordinateTuple getCoordinateTuple(){
+	public CoordinateTuple getCoordinateTuple() {
 		return cellModel.getLocation();
 	}
-	
-	public double getX(){
+
+	public double getX() {
 		return polygon.getLayoutX();
 	}
-	
-	public void setX(double x){
+
+	public void setX(double x) {
 		polygon.setLayoutX(x);
 	}
-	
-	public double getY(){
+
+	public double getY() {
 		return polygon.getLayoutY();
 	}
-	
-	public void setY(double y){
+
+	public void setY(double y) {
 		polygon.setLayoutY(y);
 	}
-	
-	public Polygon getPolygon(){
+
+	public Polygon getPolygon() {
 		return polygon;
 	}
-	
-	public void setPolygon(Polygon polygon){
-		if (group.getChildren().contains(polygon)){
+
+	public void setPolygon(Polygon polygon) {
+		if (group.getChildren().contains(polygon)) {
 			group.getChildren().remove(polygon);
 		}
 		this.polygon = polygon;
 		update(cellModel);
 	}
-	
-	public void update(){
+
+	public void update() {
 		update(getController().getAuthoringGameState().getGrid().get(cellModel.getLocation()));
 	}
-	
-	public void update(Cell cellModel){
+
+	public void update(Cell cellModel) {
 		this.cellModel = cellModel;
 		group.getChildren().clear();
 		Image polygonImage = new Image(cellModel.getTerrain().getImgPath());
@@ -89,11 +88,11 @@ public class CellView extends BaseUIManager<Parent>{
 		polygon.setFill(polygonFill);
 		polygon.setStrokeWidth(10);
 		group.getChildren().add(polygon);
-		cellModel.getOccupants().stream().forEach(unit -> {
+		cellModel.getOccupants().forEach(unit -> {
 			ImageView imageView = new ImageView(new Image(unit.getImgPath()));
 			imageView.setFitWidth(50);
 			imageView.setFitHeight(50);
-			if (polygon.getPoints().size() >= 2){
+			if (polygon.getPoints().size() >= 2) {
 				imageView.setX(polygon.getPoints().get(0));
 				imageView.setY(polygon.getPoints().get(1));
 			}
@@ -102,21 +101,25 @@ public class CellView extends BaseUIManager<Parent>{
 
 	}
 
-	public void setOnCellClick(Consumer<CellView> consumer){
+	public void setOnCellClick(Consumer<CellView> consumer) {
 		polygon.setOnMouseClicked(event -> consumer.accept(this));
 	}
-	
-	public void add(VoogaEntity sprite){
+
+	public void add(VoogaEntity sprite) {
+		System.out.println(cellModel.getLocation());
 		Modifier<GameplayState> toSend = game -> {
-			game.getGrid().get(cellModel.getLocation()).arrive((Unit) sprite.copy(), game);
+			game.getGrid()
+					.get(cellModel.getLocation())
+					.arrive(sprite
+							.copy(), game);
 			return game;
 		};
 		getController().sendModifier(toSend);
 	}
-	
+
 	@Override
 	public Parent getObject() {
 		return group;
 	}
-	
+
 }
