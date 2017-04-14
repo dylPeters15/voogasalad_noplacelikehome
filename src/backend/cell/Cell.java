@@ -15,8 +15,7 @@ import java.util.Map;
 /**
  * @author Created by th174 on 3/28/2017.
  */
-public interface Cell extends VoogaEntity {
-	@Override
+public interface Cell {
 	ModifiableCell copy();
 
 	void startTurn(GameplayState gameState);

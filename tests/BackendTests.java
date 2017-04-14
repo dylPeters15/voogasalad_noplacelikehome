@@ -1,6 +1,6 @@
-import backend.cell.Cell;
 import backend.cell.ModifiableCell;
 import backend.cell.ModifiableTerrain;
+import backend.cell.Terrain;
 import backend.grid.*;
 import backend.player.ImmutablePlayer;
 import backend.player.Player;
@@ -137,7 +137,7 @@ public class BackendTests {
 		try {
 			Files.write(Paths.get("data/saved_game_data/test_base_gamestate.xml"), ((String) serializer.serialize(authoringGameState)).getBytes());
 			AuthoringGameState loadedGameState = serializer.unserialize(new String(Files.readAllBytes(Paths.get("data/saved_game_data/test_base_gamestate.xml"))));
-			assertTrue(loadedGameState.getGrid().getTemplateCell().getTerrain().equals(ModifiableTerrain.FLAT));
+			assertTrue(loadedGameState.getGrid().getTemplateCell().getTerrain().equals(Terrain.FLAT));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

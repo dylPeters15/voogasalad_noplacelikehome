@@ -12,7 +12,7 @@ public class Region extends ModifiableVoogaCollection<Terrain, Region> {
 	public static final Region DEFAULT_REGION = new Region("Default Region")
 			.setDescription("The default region contains all the pre-defined terrains")
 			.setImgPath("default_region.png")
-			.addAll(ModifiableTerrain.getPredefinedTerrain());
+			.addAll(Terrain.getPredefinedTerrain());
 
 	public Region(String name) {
 		super(name, "", "");

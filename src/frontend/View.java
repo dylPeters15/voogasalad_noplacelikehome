@@ -3,10 +3,7 @@
  */
 package frontend;
 
-import backend.cell.ModifiableTerrain;
-import backend.unit.ModifiableUnit;
 import backend.util.AuthoringGameState;
-import controller.CommunicationController;
 import controller.Controller;
 import frontend.detailpane.DetailPane;
 import frontend.menubar.VoogaMenuBar;
@@ -14,16 +11,12 @@ import frontend.templatepane.TemplatePane;
 import frontend.toolspane.ToolsPane;
 import frontend.util.BaseUIManager;
 import frontend.worldview.WorldView;
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
-import util.net.ObservableClient;
-
-import java.util.Collection;
-import java.util.stream.Collectors;
 
 /**
  * @author Stone Mathers, Dylan Peters Created 4/3/2017
@@ -36,34 +29,10 @@ public class View extends BaseUIManager<Region> {
 	private ToolsPane toolsPane;
 	private DetailPane detailPane;
 	private TemplatePane tempPane;
-	private Controller myController;
 
 	public View(Controller controller) {
-		myController = controller;
+		super(controller);
 		initBorderPane();
-	}
-
-	/**
-	 * Updates the display of the GameState. This method is to be called by the
-	 * GameState whenever changes are made.
-	 */
-	public void update() {
-		@SuppressWarnings("unchecked")
-		Collection<ModifiableUnit> units = (Collection<ModifiableUnit>) myController.getGameState()
-				.getTemplateByCategory(AuthoringGameState.UNIT).getAll().stream()
-				.filter(voogaEntity -> voogaEntity instanceof ModifiableUnit).collect(Collectors.toList());
-		tempPane.updateUnits(units);
-		@SuppressWarnings("unchecked")
-		Collection<ModifiableTerrain> terrains = (Collection<ModifiableTerrain>) myController.getGameState()
-				.getTemplateByCategory(AuthoringGameState.TERRAIN).getAll().stream()
-				.filter(voogaEntity -> voogaEntity instanceof ModifiableTerrain).collect(Collectors.toList());
-		tempPane.updateTerrains(terrains);
-		// tempPane.updateUnits(myController.getUnits()); //TODO add this method
-		// to controller
-		// tempPane.updateTerrains(myController.getTerrains()); //TODO add this
-		// method to controller
-		worldView.update(myController.getGrid());
-
 	}
 
 	/**
@@ -81,18 +50,6 @@ public class View extends BaseUIManager<Region> {
 	 */
 	public void enterPlayMode() {
 		removeSidePanes();
-	}
-
-	/**
-	 * Sets Controller and updates View.
-	 * 
-	 * @param Controller
-	 *            to be used by the View to obtain data from the Model and send
-	 *            requests from the GUI.
-	 */
-	public void setController(Controller controller) {
-		myController = controller;
-		update();
 	}
 
 	/**
@@ -116,34 +73,17 @@ public class View extends BaseUIManager<Region> {
 	 */
 	private void initPanesAndListeners() {
 		menuBar = new VoogaMenuBar();
-		menuBar.getRequests().passTo(this.getRequests());
-		 worldView = new WorldView(myController.getGrid());
-		worldView.getRequests().passTo(this.getRequests());
-		toolsPane = new ToolsPane();
-		toolsPane.getRequests().passTo(this.getRequests());
-		detailPane = new DetailPane();
-		detailPane.getRequests().passTo(this.getRequests());
-		@SuppressWarnings("unchecked")
-		Collection<ModifiableUnit> units = (Collection<ModifiableUnit>) myController.getGameState()
-				.getTemplateByCategory(AuthoringGameState.UNIT).getAll().stream()
-				.filter(voogaEntity -> voogaEntity instanceof ModifiableUnit).collect(Collectors.toList());
-		@SuppressWarnings("unchecked")
-		Collection<ModifiableTerrain> terrains = (Collection<ModifiableTerrain>) myController.getGameState()
-				.getTemplateByCategory(AuthoringGameState.TERRAIN).getAll().stream()
-				.filter(voogaEntity -> voogaEntity instanceof ModifiableTerrain).collect(Collectors.toList());
-		tempPane = new TemplatePane(myController.getGameState(), detailPane, worldView);
-		// tempPane = new TemplatePane(myController.getUnitTemplates(),
-		// myController.getModifiableCells());
-		tempPane.getRequests().passTo(this.getRequests());
-		getRequests().addListener(new InvalidationListener() {
+		menuBar.getStyleSheet().addListener(new ChangeListener<String>() {
 			@Override
-			public void invalidated(Observable observable) {
-				while (!getRequests().isEmpty()) {
-					// myClient.addToOutbox(getRequests().poll());
-					// myController.sendRequest(getRequests().poll());
-				}
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				getObject().getStylesheets().clear();
+				getObject().getStylesheets().add(newValue);
 			}
 		});
+		worldView = new WorldView(getController());
+		toolsPane = new ToolsPane();
+		detailPane = new DetailPane(worldView);
+		tempPane = new TemplatePane(detailPane, worldView, getController());
 	}
 
 	/**
@@ -168,7 +108,7 @@ public class View extends BaseUIManager<Region> {
 	}
 
 	public void setGameState(AuthoringGameState newGameState) {
-		myController.setGameState(newGameState);
+		getController().setGameState(newGameState);
 	}
 
 	public void sendAlert(String s) {

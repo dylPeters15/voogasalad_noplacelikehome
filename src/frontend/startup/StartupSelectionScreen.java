@@ -11,7 +11,6 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 import backend.util.AuthoringGameState;
-import backend.util.GameplayState;
 import controller.CommunicationController;
 import controller.Controller;
 import frontend.View;
@@ -28,7 +27,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-import util.net.ObservableClient;
 
 public class StartupSelectionScreen extends VBox {
 
@@ -41,7 +39,6 @@ public class StartupSelectionScreen extends VBox {
 		this.stage = stage;
 		this.setUpPane();
 		this.ui = ui;
-		System.out.println(this.getChildren());
 	}
 
 	public void setUpPane() {
@@ -70,7 +67,7 @@ public class StartupSelectionScreen extends VBox {
 	private void play() {
 		read("play");
 	}
-	
+
 	private void edit() {
 		read("load");
 	}
@@ -87,9 +84,11 @@ public class StartupSelectionScreen extends VBox {
 		});
 
 	}
+
 	private void createGame(AuthoringGameState state, boolean editable) {
 		Controller control = new CommunicationController(state, null);
 		View view = new View(control);
+		control.addToUpdated(view);
 		//myClient.setGameState(state);
 		//control.setClient(myClient);
 		view.setEditable(editable);
@@ -106,7 +105,6 @@ public class StartupSelectionScreen extends VBox {
 		fileChooser.setTitle("Open Resource File");
 		Window stage = null;
 		File file = fileChooser.showOpenDialog(stage);
-		System.out.println(saveOrLoad);
 
 		try {
 

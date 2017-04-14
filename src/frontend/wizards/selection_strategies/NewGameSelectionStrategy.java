@@ -1,5 +1,6 @@
 package frontend.wizards.selection_strategies;
 
+import backend.grid.BoundsHandler;
 import backend.grid.ModifiableGameBoard;
 import backend.util.AuthoringGameState;
 import frontend.wizards.wizard_pages.GridInstantiationPage;
@@ -24,6 +25,7 @@ public class NewGameSelectionStrategy extends BaseSelectionStrategy<AuthoringGam
 		boardBuilder.setRows(gridInstantiationPage.getRows());
 		boardBuilder.setColumns(gridInstantiationPage.getCols());
 		boardBuilder.setTemplateCell(gridInstantiationPage.getTemplateCell());
+		boardBuilder.setBoundsHandler(BoundsHandler.FINITE_BOUNDS);
 		AuthoringGameState gameState = new AuthoringGameState(gameNamePage.getName());
 		gameState.setDescription(gameNamePage.getDescription());
 		gameState.setImgPath(gameNamePage.getImagePath());
@@ -32,9 +34,9 @@ public class NewGameSelectionStrategy extends BaseSelectionStrategy<AuthoringGam
 	}
 
 	private void initialize() {
-		gameNamePage = new ImageNameDescriptionPage("Create New Game", "Enter the icon, name, and description");
-		boardNamePage = new ImageNameDescriptionPage("Create New Board",
-				"Enter the background image, board name, and board description.");
+		gameNamePage = new ImageNameDescriptionPage(getString("CreateNewGame"), getString("CreateNewGameDesc"));
+		boardNamePage = new ImageNameDescriptionPage(getString("CreateNewBoard"),
+				getString("CreateNewBoardDesc"));
 		gridInstantiationPage = new GridInstantiationPage();
 		getPages().addAll(gameNamePage, boardNamePage, gridInstantiationPage);
 	}

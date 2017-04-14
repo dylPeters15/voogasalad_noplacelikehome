@@ -7,10 +7,12 @@ package frontend.worldview.grid;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import backend.cell.Cell;
 import backend.grid.CoordinateTuple;
 import backend.grid.GameBoard;
+import controller.Controller;
 import frontend.util.BaseUIManager;
 import javafx.scene.Group;
 import javafx.scene.control.ScrollPane;
@@ -29,35 +31,44 @@ public class GridView extends BaseUIManager<Region> {
 	private LayoutManager myLayoutManager;
 	private Collection<CellView> cellViews;
 	
-	public GridView(GameBoard gameBoard){
-		initialize(gameBoard);
-		update(gameBoard);
+	public GridView(Controller controller){
+		setController(controller);
+		initialize();
+		update();
 	}
 
-	private void initialize(GameBoard gameBoard) {
+	private void initialize() {
 		myScrollPane = new ScrollPane();
 		cellViewObjects = new Group();
 		cellViews = new ArrayList<CellView>();
 	}
 	
-	public void update(GameBoard gameBoard){
+	public void update(){
 		cellViewObjects.getChildren().clear();
 
-		if (gameBoard.dimension() == 2){
+		getController();
+		getController().getGrid();
+		getController().getGrid().dimension();
+		if (getController().getGrid().dimension() == 2){
 			myLayoutManager = new SquareLayout();
 		} else {
-			//myLayoutManager = new HexagonalLayout();
+			myLayoutManager = new HexagonalManager();
 		}
 		
-		Map<CoordinateTuple, Cell> backendCells = gameBoard.getCells();
+		Map<CoordinateTuple, Cell> backendCells = getController().getGrid().getCells();
 		backendCells.values().stream().forEach(cell -> {
-			CellView cl = new CellView(cell);
-			cellViewObjects.getChildren().add(cl.getObject());
+			CellView cl = new CellView(cell,getController());
 			myLayoutManager.layoutCell(cl, SCALE, MIN, MAX);
 			cellViews.add(cl);
+			cellViewObjects.getChildren().add(cl.getObject());
+			getController().addToUpdated(cl);
 		});
 		
 		myScrollPane.setContent(cellViewObjects);
+	}
+	
+	public void setOnCellClick(Consumer<CellView> consumer){
+		cellViews.stream().forEach(cellView -> cellView.setOnCellClick(consumer));
 	}
 
 	@Override

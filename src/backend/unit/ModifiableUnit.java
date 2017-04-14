@@ -15,21 +15,23 @@ import java.util.stream.Collectors;
  */
 public class ModifiableUnit extends ModifiableVoogaObject<ModifiableUnit> implements Unit {
 	//TODO ResourceBundlify
-	public static final Unit SKELETON_WARRIOR = new ModifiableUnit("Skeleton Warrior")
+	public static final Unit SKELETON_WARRIOR = new ModifiableUnit("X")
 			.addUnitStats(ModifiableUnitStat.HITPOINTS.setMaxValue(39.0), ModifiableUnitStat.MOVEPOINTS.setMaxValue(5))
 			.setDescription("Once a noble knight in service of his kingdom, the skeleton warrior once again takes up the blade for the lich king.")
-			.setImgPath("spooky1.png")
+			.setImgPath("resources/images/x.png")
 			.setMovePattern(GridPattern.HEXAGONAL_ADJACENT)
 			.addActiveAbilities(ActiveAbility.SWORD)
 			.addOffensiveModifiers(InteractionModifier.CHAOTIC);
-	public static final Unit SKELETON_ARCHER = new ModifiableUnit("Skeleton Archer")
+	public static final Unit SKELETON_ARCHER = new ModifiableUnit("O")
 			.addUnitStats(ModifiableUnitStat.HITPOINTS.setMaxValue(34.0))
 			.addUnitStats(ModifiableUnitStat.MOVEPOINTS.setMaxValue(6))
 			.setMovePattern(GridPattern.HEXAGONAL_ADJACENT)
-			.setImgPath("spooky2.png")
-			.setDescription("The skeletal corpse of an impoverished serf left to starve, reanimated by necromancy. Now, bow and arrow in hand, he enacts his revenge on the living.")
+			.setImgPath("resources/images/o.png")
+			.setDescription("The skeletal corpse of an impoverished serf left to starve, reanimated by necromancy. Now, bow and arrow in hand, he pursues his revenge on the living.")
 			.addOffensiveModifiers(InteractionModifier.CHAOTIC)
 			.addActiveAbilities(ActiveAbility.BOW);
+	
+	
 
 	private final ActiveAbilitySet activeAbilities;
 	private final TriggeredAbilitySet triggeredAbilities;

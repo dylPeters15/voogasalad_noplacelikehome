@@ -6,39 +6,41 @@ import java.util.Map;
 import backend.cell.ModifiableTerrain;
 import backend.cell.Terrain;
 import backend.unit.ModifiableUnit;
-import backend.unit.properties.ActiveAbility;
 import backend.util.VoogaEntity;
 import frontend.util.BaseUIManager;
-import javafx.geometry.Insets;
-import javafx.scene.Scene;
+import frontend.worldview.WorldView;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 
 public class DetailPane extends BaseUIManager<Region>{
 
 	VBox pane = new VBox();
 	Label spriteInfo;
 	String content = "";
+	Button addButton;
+	WorldView worldView;
 	
-	public DetailPane() {
+	public DetailPane(WorldView worldView) {
+		this.worldView = worldView;
 		pane.setFillWidth(true);
 		Text title = new Text("Sprite Details");
 		pane.getChildren().add(title);
 		spriteInfo = new Label(content);
+		addButton = new Button("Add");
 		setLabel();
 		clearContent();
 		
 	}
 	
+	private void setAddButton(VoogaEntity sprite) {
+		addButton.setOnAction(event -> worldView.setOnCellClick(cellView -> {
+			cellView.add(sprite);
+		}));
+	}
+
 	public void setContent(VoogaEntity sprite, String spriteType) {
 		clearContent();
 		addString("Name", sprite.getName());
@@ -50,10 +52,10 @@ public class DetailPane extends BaseUIManager<Region>{
 		else {
 			newSpriteInfo = new Label(setTerrainContent((ModifiableTerrain) sprite));
 		}
-		pane.getChildren().remove(spriteInfo);
 		spriteInfo = newSpriteInfo;
 		setLabel();
-		
+		setAddButton(sprite);
+		pane.getChildren().add(addButton);
 	}
 
 	private void setLabel() {
@@ -99,6 +101,8 @@ public class DetailPane extends BaseUIManager<Region>{
 	
 	private void clearContent() {
 		content = "";
+		pane.getChildren().remove(spriteInfo);
+		pane.getChildren().remove(addButton);
 	}
 	
 	@Override
