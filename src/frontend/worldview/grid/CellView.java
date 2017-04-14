@@ -32,32 +32,58 @@ public class CellView extends BaseUIManager<Parent>{
 	}
 	
 	/**
+	 * gets the tuple coordinate of the cell
 	 * @return DisplayCoordinates at which the CellView is displayed.
 	 */
 	public CoordinateTuple getCoordinateTuple(){
 		return cellModel.getLocation();
 	}
 	
+	
+	/**
+	 * 
+	 * @return 
+	 */
 	public double getX(){
 		return polygon.getLayoutX();
 	}
 	
+	/**
+	 * 
+	 * @param x
+	 */
 	public void setX(double x){
 		polygon.setLayoutX(x);
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public double getY(){
 		return polygon.getLayoutY();
 	}
 	
+	/**
+	 * 
+	 * @param y
+	 */
 	public void setY(double y){
 		polygon.setLayoutY(y);
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public Polygon getPolygon(){
 		return polygon;
 	}
 	
+	/**
+	 * 
+	 * @param cellModel
+	 */
 	public void update(Cell cellModel){
 		cellModel = cellModel;
 		group.getChildren().clear();
